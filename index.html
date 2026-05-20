@@ -987,7 +987,24 @@ window.dataAsOf = function() {
   return "Performance as on " + window.DATA_DATES.performance +
          " & Analytics as on " + window.DATA_DATES.analytics;
 };
-// ==================================================================
+// ===================================================================
+// Link dividend-plan (IDCW) analytics to the matching growth-plan (G)
+// fund. Analytics files name funds by their IDCW option while MF Monitor
+// (MASTER) uses (G); same portfolio, so alias the analytics to (G).
+window.linkIdcwToGrowth = function() {
+  var rx = /\((IDCW[^)]*|Div[^)]*|Dividend[^)]*|D)\)\s*$/i;
+  ["EQUITY_ANALYTICS","HYBRID_ANALYTICS","DEBT_ANALYTICS"].forEach(function(name){
+    var obj = window[name]; if (!obj) return;
+    Object.keys(obj).forEach(function(k){
+      if (rx.test(k)) {
+        var g = k.replace(rx, "(G)");
+        if (g !== k && !(g in obj)) obj[g] = obj[k];
+      }
+    });
+  });
+};
+window.linkIdcwToGrowth();
+// ===================================================================
 (function() {
 
   const fmtPct = (v, dec = 2) => (v == null || isNaN(v)) ? "—" : (v * 100).toFixed(dec) + "%";
