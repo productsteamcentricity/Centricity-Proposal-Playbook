@@ -1003,7 +1003,7 @@ Each tool also accepts `--html <path>`; it defaults to `index.html` beside the s
 - **`CENTRICITY_SELECT` keys present in MASTER must stay 178/178.** This is the rename canary.
 - **0 duplicate MASTER names.**
 - After the Direct Equity refresh, the **top 10 stocks by market cap must all read "Large Cap"**. `sebi_mcap` is joined by name, never by row.
-- In `merge_reckoner.js`, if the DROPPED list and the "NO MASTER MATCH" list mirror each other, **stop**. That is a join failure, not an editorial change.
+- In `merge_reckoner.js`, if the DROPPED list and the "NO MASTER MATCH" list mirror each other, **stop**. That is a join failure, not an editorial change. Since 16-Oct-2026 the tool refuses it, and also refuses more than 5% dropped or an emptied category unless `--accept-drops <n>` matches the reviewed count (D71).
 - In `pin_pms_alias.js`, any `*** key not in PMS_PERFORMANCE.pms` blocks *all* pins. Fix both `PINS` and `merge_pms_performance.js`'s `REPIN`.
 - In `merge_direct_equity_returns.js`, the tool refuses when a return column is wholly empty. Never force it. The join deletes missing returns.
 - In `merge_expense_exitload.js`, the tool refuses on 0 joins. Watch for banner rows above the header.
@@ -1100,7 +1100,7 @@ All tools are dry-run unless `--apply` is passed. All default to `index.html` be
 | merge_risk_matrix.js | `<Fund Risk Ratios ....xlsx> --as-on "31 Oct 2026" [--apply]` |
 | merge_pms_performance.js | `<PMS_Scheme_Performance.xlsx> --as-on "<date>" --html index.html [--apply]` |
 | pin_pms_alias.js | `--html index.html [--apply]` |
-| merge_reckoner.js | `<Reckoner.pptx> --html index.html [--apply]` |
+| merge_reckoner.js | `<Reckoner.pptx> --html index.html [--accept-drops <n>] [--apply]` |
 | merge_aif_performance.js | `<Reckoner.pptx> [--apply]` |
 | add_reckoner_funds.js | `<Reckoner.pptx> --pms <PMS perf.xlsx> --html index.html [--apply]` (universe change) |
 | merge_pms_aif_analytics.js | `<PMS & AIF Analytics.xlsx> --as-on "<date>" [--apply]` |

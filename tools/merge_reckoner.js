@@ -1,6 +1,14 @@
 // MONTHLY: refresh window.CENTRICITY_SELECT from Monthly Investment Reckoner - <Month Year>.pptx
 //
-//   node merge_reckoner.js "<pptx>" --html <index.html> [--apply]
+//   node tools/merge_reckoner.js "<pptx>" --html site/index.html [--accept-drops <n>] [--apply]
+//
+// Drop gates (KNOWN_ISSUES A4, D71). A join failure looks like an editorial change: the deck still
+// recommends a fund under a spelling resolve() cannot place, so its Select entry drops while the
+// deck name lands in NO MASTER MATCH. The run is refused when (1) a dropped entry's category also
+// holds a deck name that matched nothing, (2) more than 5% of the current list drops, or (3) a
+// category is emptied. --accept-drops <n> waives (2) and (3) once the owner has read the DROPPED
+// list, and only if this run drops exactly n; (1) is never waived — pin the name (PIN), add the
+// fund (add_reckoner_funds.js) or record it in NO_MASTER_NOTE, then re-run.
 //
 // Membership comes from the deck. The dashboard's own category structure is preserved: a deck
 // heading maps to an existing `sheet`/`category` pair, and headings the dashboard has no Select
@@ -19,8 +27,10 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const HTML = flag('--html');
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html');
-if (!SRC || !HTML) { console.error('Usage: node merge_reckoner.js "<pptx>" --html <index.html> [--apply]'); process.exit(2); }
+const ACCEPT = argv.includes('--accept-drops') ? flag('--accept-drops') : null;
+const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html' && argv[i - 1] !== '--accept-drops');
+if (!SRC || !HTML) { console.error('Usage: node tools/merge_reckoner.js "<pptx>" --html site/index.html [--accept-drops <n>] [--apply]'); process.exit(2); }
+if (ACCEPT !== null && !/^\d+$/.test(ACCEPT || '')) { console.error('*** --accept-drops takes the number of dropped funds the owner reviewed'); process.exit(2); }
 
 // ---------- deck heading -> dashboard bucket ----------
 const GRID = {
@@ -171,6 +181,11 @@ const rows = R.parse(SRC);
 const next = new Map();
 const skipped = new Map();
 const note = (k, v) => { if (!skipped.has(k)) skipped.set(k, []); skipped.get(k).push(v); };
+// Deck names that matched nothing, with the Select categories they would have filled (for the
+// drop gates). A deck name the owner has recorded in NO_MASTER_NOTE (exact key, so a short or empty
+// key cannot exempt everything) is a known gap, not a join failure.
+const missed = [];
+const miss = (name, cats) => { if (!Object.prototype.hasOwnProperty.call(NO_MASTER_NOTE, name)) missed.push({ name: name, cats: cats }); };
 
 for (const r of rows) {
   const h = r.heading || '';
@@ -178,7 +193,12 @@ for (const r of rows) {
   const g = GRID[h];
   if (!g) { note('(unmapped) ' + h, r.name); continue; }
   const m = resolve(r.name);
-  if (!m) continue;
+  if (!m) {
+    miss(r.name, g[0] === '@SECTORAL_SPLIT' ? ['SECTORAL FUNDS', 'THEMATIC FUNDS']
+      : g[0] === '@SMART_BETA' ? (SMART_BETA.test(r.name) ? ['SMART BETA FUNDS'] : [])
+      : [g[1]]);
+    continue;
+  }
   let sheet = g[0], cat = g[1];
   const kind = g[2];
   if (sheet === '@SECTORAL_SPLIT') {
@@ -195,7 +215,7 @@ for (const sheet of Object.keys(NARRATIVE)) {
   const spec = NARRATIVE[sheet];
   for (const n of spec.names) {
     const m = resolve(n);
-    if (!m) continue;
+    if (!m) { miss(n, [spec.cat]); continue; }
     if (!next.has(m)) next.set(m, { sheet: sheet, category: spec.cat, kind: spec.kind, deckName: n });
   }
 }
@@ -248,6 +268,27 @@ console.log('GATE rationale present: ' + Object.values(out).filter(v => v.ration
 const cats = {}; Object.values(out).forEach(v => { cats[v.category] = (cats[v.category] || 0) + 1; });
 console.log('GATE categories: ' + Object.keys(cats).length + ' (was ' + new Set(Object.values(S0).map(v => v.category)).size + ')');
 
+// ---------- drop gates (see the header; KNOWN_ISSUES A4, D71) ----------
+// Sep-2026, before resolve() learnt prev_name, went 178 -> 160 this way — 20 funds and two whole
+// categories — with every gate above passing.
+const missByCat = new Map();
+for (const u of missed) for (const c of u.cats) { if (!missByCat.has(c)) missByCat.set(c, new Set()); missByCat.get(c).add(u.name); }
+const mirror = Object.keys(S0).filter(k => !next.has(k) && missByCat.has(S0[k].category));
+const n0 = Object.keys(S0).length, DROP_LIMIT = Math.floor(n0 * 0.05);
+const lostCats = [...new Set(Object.values(S0).map(v => v.category))].filter(c => !cats[c]).sort();
+const accepted = ACCEPT !== null && Number(ACCEPT) === dropped.length;
+console.log('GATE dropped vs NO MASTER MATCH in the same category: ' + (mirror.length
+  ? '*** FAIL — ' + mirror.length + ' Select fund(s) drop where the deck lists a name that matched nothing (a join failure, not an editorial change)'
+  : 'PASS'));
+mirror.sort().forEach(k => console.log('     - ' + k + '   [' + S0[k].category + ']   deck: ' + [...missByCat.get(S0[k].category)].join(' | ')));
+console.log('GATE drops within ' + DROP_LIMIT + ' (5% of ' + n0 + '): ' + dropped.length + ' — ' +
+  (dropped.length <= DROP_LIMIT ? 'PASS' : accepted ? 'ACCEPTED (--accept-drops ' + ACCEPT + ')' : '*** FAIL'));
+console.log('GATE no Select category emptied: ' + (!lostCats.length ? 'PASS'
+  : (accepted ? 'ACCEPTED (--accept-drops ' + ACCEPT + ') — ' : '*** FAIL — ') + lostCats.join(' | ')));
+if (ACCEPT !== null && !accepted) console.log('*** --accept-drops ' + ACCEPT + ' does not match the ' + dropped.length + ' funds this run drops — re-read the DROPPED list');
+const fail = badKeys.length > 0 || mirror.length > 0 || (ACCEPT !== null && !accepted) ||
+  (!accepted && (dropped.length > DROP_LIMIT || lostCats.length > 0));
+
 if (viaPrev.length) {
   console.log('\n===== RESOLVED VIA prev_name (deck still on the pre-rename spelling) =====');
   [...new Set(viaPrev)].sort().forEach(v => console.log('  ~ ' + v));
@@ -255,7 +296,7 @@ if (viaPrev.length) {
 
 console.log('\n================ ADDED ================');
 added.sort().forEach(a => console.log('  + ' + a));
-console.log('\n================ DROPPED (not in the August Reckoner) ================');
+console.log('\n================ DROPPED (not in this deck) ================');
 dropped.sort().forEach(d => console.log('  - ' + d));
 if (unresolved.length) {
   console.log('\n================ DECK NAMES WITH NO MASTER MATCH ================');
@@ -272,7 +313,11 @@ for (const pair of skipped) console.log('  [' + pair[0] + ']  ' + pair[1].length
 console.log('\ncounts per category:');
 Object.keys(cats).sort().forEach(c => console.log('   ' + String(cats[c]).padStart(3) + '  ' + c));
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(0); }
-if (badKeys.length) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
+if (!APPLY) {
+  console.log('\n[dry run] pass --apply to write');
+  if (fail) console.error('*** a gate failed — --apply would refuse');
+  process.exit(fail ? 1 : 0);
+}
+if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 const bytes = B.writeBlocks(HTML, [{ prefix: 'window.CENTRICITY_SELECT = ', value: out }]);
 console.log('\nWROTE ' + HTML + ' — ' + bytes + ' bytes');
