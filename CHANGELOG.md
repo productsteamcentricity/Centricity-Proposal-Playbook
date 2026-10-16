@@ -18,22 +18,30 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-16 — First publish from the new repository
+
+- PR #1 merged as `25e71a3`; Actions run 38866042211 (`verify` + `publish`) succeeded. The live site
+  https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ serves files byte-identical
+  to `site/` (SHA-256 of all eight checked) and passes the browser checks.
+- Docs (PR #2): publish evidence recorded in `docs/REPLICATION_REPORT.md` §7 and
+  `docs/PROJECT_STATE.md`; `docs/KNOWN_ISSUES.md` R7 narrowed to "old site still live".
+
 ## 2026-10-16 — Transfer to new owner (setup, no dashboard change)
 
 The repository passed from the outgoing owner to the owner (Centricity Products team, GitHub account
 `productsteamcentricity`). The work is on branch `setup/transfer-baseline`: cd05c97, 0f33137, 4600f82,
-and the docs commit (this PR). The dashboard did not change. All eight files in `site/` are the same git
+c71b8e6 and 0afaf69, merged by PR #1 as `25e71a3`. The dashboard did not change. All eight files in `site/` are the same git
 blobs as at upstream 72e1f1e, so `node tools/verify_page.js site` prints the same output as the baseline
 below. Decisions D60–D69 are recorded in `docs/DECISIONS.md`.
 
 ### Added
-- (this PR) Documentation:
+- (PR #1) Documentation:
   - At the root: `README.md`, a new short `CLAUDE.md` and this `CHANGELOG.md`.
   - In `docs/`: `README.md` (doc map), `PRD.md` (the handover PRD), `ARCHITECTURE.md`,
     `MONTHLY_UPDATE_PROCESS.md`, `INPUT_FILES.md`, `DEVELOPMENT_SETUP.md`, `TESTING.md`, `DEPLOYMENT.md`,
     `DECISIONS.md`, `PROJECT_STATE.md`, `KNOWN_ISSUES.md`, `HANDOVER.md`, `REPLICATION_REPORT.md` and
     `update-log/`.
-- (this PR) Claude Code configuration:
+- (PR #1) Claude Code configuration:
   - `.claude/agents/` holds 8 specialist agents: docs-keeper, financial-data-reviewer,
     implementation-engineer, principal-architect, qa-verifier, release-manager, repo-archaeologist and
     security-reviewer.
@@ -66,7 +74,7 @@ below. Decisions D60–D69 are recorded in `docs/DECISIONS.md`.
   | `index.html`, the six `Centricity_*.js` files, `robots.txt` | `site/` |
   | the 25 `*.js` tools, `build_risk_matrix.py` | `tools/` |
   | `blocklib.js`, `pptx.js`, `reck_parse.js`, `reck_narrative.js` | `tools/lib/` |
-  | `CLAUDE.md` | `docs/OPERATING_MANUAL.md` (byte-identical at the move; edited in this PR, see below) |
+  | `CLAUDE.md` | `docs/OPERATING_MANUAL.md` (byte-identical at the move; edited in PR #1, see below) |
   | `README.md` (stale since May) | `docs/archive/README_original_2026-05.md` |
   | `Risk_Matrix_Update_Prompt.md`, `PMS_Performance_Update_Prompt.md` | `docs/runbooks/` |
   | `Equity_Debt_Analytics_Build_Prompt.md`, `Portfolio_Review_Build_Prompt.md` | `docs/specs/` |
@@ -77,7 +85,7 @@ below. Decisions D60–D69 are recorded in `docs/DECISIONS.md`.
   - `index.html` needed no edit, because it loads its siblings by bare relative name.
   - The commit message records that all 25 tools printed identical dry-run output on the Sep-2026 inputs,
     before and after the move.
-- (this PR) `docs/OPERATING_MANUAL.md` gains an "About this file" note at the top, its commands and file
+- (PR #1) `docs/OPERATING_MANUAL.md` gains an "About this file" note at the top, its commands and file
   references now use the new layout, changed owner and location facts are marked "(updated 16-Oct-2026)",
   and a closing *Errata (16-Oct-2026)* section corrects statements known to be stale.
 - Hosting (D60, D63):
@@ -96,7 +104,7 @@ below. Decisions D60–D69 are recorded in `docs/DECISIONS.md`.
   30-Jun-2026. It is listed in `docs/KNOWN_ISSUES.md`.
 
 ### Fixed
-- (this PR) Documentation:
+- (PR #1) Documentation:
   - Corrected the in-force fund-manager state: the Sep-2026 bake had replaced the 31-Aug roster with the
     Monitor's first-named manager (PRD §11.3 said 31-Aug).
   - Replaced the sample-portfolio figures in `docs/specs/Portfolio_Review_Build_Prompt.md` with
