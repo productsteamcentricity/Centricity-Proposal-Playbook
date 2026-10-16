@@ -1,0 +1,67 @@
+# Verify the dashboard on every push and pull request; publish site/ to GitHub Pages from main.
+#
+# The parity gate re-runs tools/verify_page.js (the page's own scripts in a Node vm, all five
+# sibling files included) and refuses to publish a build that would break production:
+# a missing sibling, duplicate MASTER names, a truncated index.html, a script error, or a
+# Centricity Select key that no longer resolves to a MASTER fund (the rename canary).
+name: Verify and publish dashboard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Six-file deploy set is present
+        run: |
+          for f in index.html Centricity_ExtraSlides.js Centricity_PMS_AIF_Terms.js \
+                   Centricity_June_Refresh.js Centricity_IRR_Offshore.js Centricity_SIF_Refresh.js; do
+            test -s "site/$f" || { echo "::error::site/$f is missing or empty"; exit 1; }
+          done
+      - name: Parity gate (tools/verify_page.js)
+        run: |
+          node tools/verify_page.js site | tee verify.txt
+          fail() { echo "::error::$1"; exit 1; }
+          grep -q 'MISSING SIBLING' verify.txt && fail "a sibling script is missing"
+          grep -qx 'duplicate MASTER names    0' verify.txt || fail "duplicate MASTER names"
+          grep -qx 'file ends </html>         yes' verify.txt || fail "index.html does not end with </html>"
+          grep -qx 'script errors (excluding the CDN globals): 0' verify.txt || fail "script errors in the page"
+          sel=$(grep '^CENTRICITY_SELECT' verify.txt)
+          total=$(echo "$sel" | awk '{print $2}')
+          present=$(echo "$sel" | sed -E 's/.*MASTER: ([0-9]+)\).*/\1/')
+          [ -n "$total" ] && [ "$total" = "$present" ] || fail "Centricity Select keys missing from MASTER ($present of $total)"
+          echo "### Parity gate passed" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"; cat verify.txt >> "$GITHUB_STEP_SUMMARY"; echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: verify
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v5
