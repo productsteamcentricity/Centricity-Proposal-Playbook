@@ -23,13 +23,13 @@
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
-const blocklib = require('./blocklib.js');
+const blocklib = require('./lib/blocklib.js');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const ASON = flag('--as-on');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 const SRC = argv.find(a => !a.startsWith('--') && argv[argv.indexOf(a) - 1] !== '--as-on' && argv[argv.indexOf(a) - 1] !== '--html');
 if (!SRC || !ASON) {
   console.error('Usage: node merge_risk_matrix.js "<Fund Risk Ratios ....xlsx>" --as-on "31 Aug 2026" [--html <p>] [--apply]');

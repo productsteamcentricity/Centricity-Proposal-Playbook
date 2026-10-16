@@ -25,13 +25,13 @@
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
-const blocklib = require('./blocklib.js');
+const blocklib = require('./lib/blocklib.js');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const MON = flag('--monitor');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!MON || !fs.existsSync(MON)) {
   console.error('Usage: node fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]');
   process.exit(2);

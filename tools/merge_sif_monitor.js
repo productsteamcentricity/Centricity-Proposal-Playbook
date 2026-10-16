@@ -14,13 +14,13 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const XLSX = require('xlsx');
-const blocklib = require('./blocklib.js');
+const blocklib = require('./lib/blocklib.js');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const ASON = flag('--as-on');
-const SIB = flag('--sibling') || path.join(__dirname, 'Centricity_SIF_Refresh.js');
+const SIB = flag('--sibling') || path.join(__dirname, '..', 'site', 'Centricity_SIF_Refresh.js');
 const SRC = argv.find(a => !a.startsWith('--') && a !== ASON && a !== SIB);
 if (!SRC || !fs.existsSync(SRC)) {
   console.error('Usage: node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" [--as-on "31st August 2026"] [--sibling <p>] [--apply]');

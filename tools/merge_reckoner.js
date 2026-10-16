@@ -11,9 +11,9 @@
 // take their rationale and details from their own narrative slide. New MF entries have no source
 // for either — the deck's MF pages are performance grids only — so they are listed at the end.
 const fs = require('fs');
-const B = require('./blocklib');
-const R = require('./reck_parse');
-const N = require('./reck_narrative');
+const B = require('./lib/blocklib');
+const R = require('./lib/reck_parse');
+const N = require('./lib/reck_narrative');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };

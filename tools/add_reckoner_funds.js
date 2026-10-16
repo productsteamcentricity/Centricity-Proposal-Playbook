@@ -10,13 +10,13 @@
 // run time, so the run fails loudly if a peer group ever stops being unanimous.
 const fs = require('fs');
 const path = require('path');
-const B = require('./blocklib');
-const N = require('./reck_narrative');
+const B = require('./lib/blocklib');
+const N = require('./lib/reck_narrative');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 const PMSX = flag('--pms');
 const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html' && argv[i - 1] !== '--pms');
 if (!SRC) { console.error('Usage: node add_reckoner_funds.js "<pptx>" --pms "<xlsx>" --html <p> [--apply]'); process.exit(2); }

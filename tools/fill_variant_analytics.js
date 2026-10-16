@@ -16,7 +16,7 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!DIR) { console.error('Usage: node fill_variant_analytics.js --dir "<Month folder>" [--apply] [--html <p>]'); process.exit(2); }
 const AN = path.join(DIR, 'Analytics');
 const pick = re => path.join(AN, fs.readdirSync(AN).find(f => re.test(f)));

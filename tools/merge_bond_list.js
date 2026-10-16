@@ -4,7 +4,7 @@
 //
 //   node merge_bond_list.js "<Bond List_<date>.xlsx>"            # dry run
 //   node merge_bond_list.js "<Bond List_<date>.xlsx>" --apply    # writes index.html
-//   ... [--html <path>]   defaults to index.html beside this script
+//   ... [--html <path>]   defaults to ../site/index.html (the dashboard)
 //
 // Expected sheet layout (row 1-2 are a two-tier merged header, data from row 3):
 //   B Issuer | C Rating | D/E Expected Pre Tax IRR (low/high) | F Maturity Date | H Residual Tenor
@@ -34,7 +34,7 @@ for (let i = 0; i < argv.length; i++) {
   if (a.startsWith('--')) { console.error('unknown flag: ' + a); process.exit(2); }
   if (SRC === null) SRC = a;
 }
-HTML = HTML || path.join(__dirname, 'index.html');
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !fs.existsSync(SRC)) { console.error('Usage: node merge_bond_list.js "<Bond List.xlsx>" [--apply] [--html <index.html>]'); process.exit(2); }
 if (!fs.existsSync(HTML)) { console.error('*** index.html not found: ' + HTML); process.exit(2); }
 

@@ -16,12 +16,12 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const B = require('./blocklib');
+const B = require('./lib/blocklib');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 const DIR = path.dirname(HTML);
 
 // ---------- the analytics blocks, straight from the file (baseline, pre-sibling) ----------

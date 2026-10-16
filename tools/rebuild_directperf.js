@@ -11,7 +11,7 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const SRC = argv.find(a => !a.startsWith('--') && argv[argv.indexOf(a) - 1] !== '--html');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !fs.existsSync(SRC)) { console.error('Usage: node rebuild_directperf.js "<Direct monitor.xlsx>" [--apply] [--html <p>]'); process.exit(2); }
 
 const html = fs.readFileSync(HTML, 'utf8');

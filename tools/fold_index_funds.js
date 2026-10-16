@@ -10,12 +10,12 @@
 // Re-running is a no-op once the fold is done.
 const fs = require('fs');
 const path = require('path');
-const B = require('./blocklib');
+const B = require('./lib/blocklib');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 
 const MASTER = B.read(HTML, 'window.MASTER = ').value;
 const targets = MASTER.filter(r => r.product_class === 'Index Fund');

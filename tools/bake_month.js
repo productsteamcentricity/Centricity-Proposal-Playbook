@@ -16,7 +16,7 @@ const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');            // month folder
 const ASON = flag('--as-on');         // e.g. "31st July 2026"
 const ASON_AN = flag('--as-on-analytics') || ASON;
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!DIR || !ASON) { console.error('Usage: node bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html <p>] [--apply]'); process.exit(2); }
 
 const P = {

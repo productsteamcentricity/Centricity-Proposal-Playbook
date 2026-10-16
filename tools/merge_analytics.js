@@ -17,7 +17,7 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const ASON = flag('--as-on');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 const KINDS = [['equity', 'EQUITY_ANALYTICS'], ['hybrid', 'HYBRID_ANALYTICS'], ['debt', 'DEBT_ANALYTICS']]
   .map(([k, g]) => ({ kind: k, global: g, src: flag('--' + k) }))
   .filter(x => x.src);
@@ -132,7 +132,7 @@ const fileOf = p => ({ name: path.basename(p), arrayBuffer: async () => fs.readF
   if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
   if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-  const B = require('./blocklib');
+  const B = require('./lib/blocklib');
   B.writeBlocks(HTML, writes.map(([prefix, value]) => ({ prefix, value })));
   let h = fs.readFileSync(HTML, 'utf8');
   h = h.replace(/(analytics:\s*)"[^"]*"/, '$1"' + ASON + '"');

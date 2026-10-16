@@ -12,13 +12,13 @@
 // values match the AIF grid's to the rounding the deck prints.
 const fs = require('fs');
 const path = require('path');
-const B = require('./blocklib');
-const PPT = require('./pptx');
+const B = require('./lib/blocklib');
+const PPT = require('./lib/pptx');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html');
 if (!SRC) { console.error('Usage: node merge_aif_performance.js "<pptx>" [--html <p>] [--apply]'); process.exit(2); }
 

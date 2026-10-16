@@ -19,7 +19,7 @@ for (let i = 0; i < argv.length; i++) {
   if (a.startsWith('--')) { console.error('unknown flag: ' + a); process.exit(2); }
   if (SRC === null) SRC = a;
 }
-HTML = HTML || path.join(__dirname, 'index.html');
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !fs.existsSync(SRC)) { console.error('Usage: node merge_de_universe.js "<Listed Direct Equity_<Month>.xlsx>" [--apply] [--html <p>]'); process.exit(2); }
 
 const NBSP = String.fromCharCode(160);

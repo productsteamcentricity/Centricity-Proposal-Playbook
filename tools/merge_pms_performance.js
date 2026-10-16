@@ -8,7 +8,7 @@
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
-const B = require('./blocklib');
+const B = require('./lib/blocklib');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };

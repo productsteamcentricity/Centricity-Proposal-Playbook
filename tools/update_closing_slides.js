@@ -12,13 +12,13 @@
 // because the export overlays whichever logo the user picked in the header switcher.
 const fs = require('fs');
 const path = require('path');
-const B = require('./blocklib');
+const B = require('./lib/blocklib');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');
-const SIB = flag('--sibling') || path.join(__dirname, 'Centricity_ExtraSlides.js');
+const SIB = flag('--sibling') || path.join(__dirname, '..', 'site', 'Centricity_ExtraSlides.js');
 if (!DIR) { console.error('Usage: node update_closing_slides.js --dir "<render dir>" [--apply]'); process.exit(2); }
 
 // PNG for the text-heavy disclaimer (crisper and, here, smaller than JPEG); JPEG for the

@@ -17,7 +17,7 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const EXP = flag('--expense'), EXIT = flag('--exitload');
-const HTML = flag('--html') || path.join(__dirname, 'index.html');
+const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if ((!EXP && !EXIT) || (EXP && !fs.existsSync(EXP)) || (EXIT && !fs.existsSync(EXIT))) {
   console.error('Usage: node merge_expense_exitload.js --expense <x.xlsx> --exitload <y.xlsx> [--apply] [--html <p>]');
   process.exit(2);

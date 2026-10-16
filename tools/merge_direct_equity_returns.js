@@ -10,7 +10,7 @@
 // Usage:
 //   node merge_direct_equity_returns.js "<returns-workbook.xlsx>"           # dry run
 //   node merge_direct_equity_returns.js "<returns-workbook.xlsx>" --apply   # writes index.html
-//   ... [--html <path to index.html>]   defaults to index.html beside this script
+//   ... [--html <path to index.html>]   defaults to ../site/index.html (the dashboard)
 //
 // The dry run prints the join statistics and the regression gates; always read it before
 // passing --apply.
@@ -34,7 +34,7 @@ for (let i = 0; i < argv.length; i++) {
   if (a.startsWith('--')) { console.error(`unknown flag: ${a}`); process.exit(2); }
   if (SRC === null) SRC = a;
 }
-HTML = HTML || path.join(__dirname, 'index.html');
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 
 if (!SRC) {
   console.error('Usage: node merge_direct_equity_returns.js "<returns-workbook.xlsx>" [--apply] [--html <index.html>]');

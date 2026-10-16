@@ -9,7 +9,7 @@ const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const SLIDES = flag('--slides');
-const JS = flag('--js') || path.join(__dirname, 'Centricity_ExtraSlides.js');
+const JS = flag('--js') || path.join(__dirname, '..', 'site', 'Centricity_ExtraSlides.js');
 if (!SLIDES || !fs.existsSync(SLIDES)) { console.error('Usage: node update_market_slides.js --slides <dir> [--apply] [--js <p>]'); process.exit(2); }
 
 const files = fs.readdirSync(SLIDES)

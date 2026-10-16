@@ -2,7 +2,7 @@
 // Each pin below is corroborated by two sources: the deck names the strategy Centricity actually
 // recommends, and the performance file carries exactly one scheme matching that strategy.
 //   node pin_pms_alias.js --html <index.html> [--apply]
-const B = require('./blocklib');
+const B = require('./lib/blocklib');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
