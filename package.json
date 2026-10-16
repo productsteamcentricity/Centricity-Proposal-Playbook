@@ -1,0 +1,16 @@
+{
+  "name": "centricity-proposal-playbook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Centricity Investment Proposal Dashboard (static site in site/) and its monthly data-refresh tools (tools/).",
+  "scripts": {
+    "serve": "node .claude/serve.js",
+    "verify": "node tools/verify_page.js site"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "xlsx": "0.18.5"
+  }
+}

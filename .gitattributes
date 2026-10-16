@@ -1,0 +1,14 @@
+# The production files are LF-terminated (HANDOVER PRD §2.3). Keep them LF on every machine so the
+# SHA-256 of the deployed bytes stays stable; git blob SHAs are line-ending agnostic either way.
+* text=auto eol=lf
+
+# rename_schemes.js uses a literal NUL byte as a key separator, so git would otherwise treat it as
+# binary and hide its diffs. Force textual diffs without touching its bytes.
+tools/rename_schemes.js diff
+
+# Never commit these, but if one is ever force-added, do not mangle it.
+*.xlsx binary
+*.pptx binary
+*.png binary
+*.jpg binary
+*.zip binary
