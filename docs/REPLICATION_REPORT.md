@@ -41,7 +41,7 @@ PowerPoint 16 COM. `npm ci` installs `xlsx@0.18.5` (pinned to match the in-page 
 | Every Live Output tab + "⬇ Download slide" | PASS | 9/9 tabs; Performance Sheet 4 slides, others 1 |
 | Credit Rating doughnut = 100% with fixed colours, same in PPT | PASS | 8.72 + 74.97 + 4.93 + 10.85 + 0.24 + 0.30 = 100 on screen; PPT colours identical per bucket (PPT slice values are rounded to 2 dp and total 100.01 — inherited, cosmetic) |
 | Section 7 MF Monitor upload (session only) | PASS | Sep-2026 monitor: "Updated 1900 schemes · as on 30th September 2026"; values unchanged (same data) |
-| Deployed Pages URL passes the same checks | see §7 | |
+| Deployed Pages URL passes the same checks | PASS | see §7 |
 | `CLAUDE.md` updated with owner, repo, source folder, visibility | PASS | root `CLAUDE.md`; manual's owner facts updated |
 
 Tool parity: all 25 tool invocations (every tool, dry-run, against the Sep-2026 inputs) produce
@@ -104,5 +104,6 @@ Filled in at release time:
 |---|---|
 | Repository `productsteamcentricity/Centricity-Proposal-Playbook` created (public) | Verified — `main` = `862e40b` + tag pushed |
 | Pages enabled, build type GitHub Actions, HTTPS enforced | Verified |
-| Transfer pull request, `verify` check, merge | pending at time of writing |
-| Live URL serves files byte-identical to `site/` | pending at time of writing |
+| Transfer pull request, `verify` check, merge | Verified — PR #1 (https://github.com/productsteamcentricity/Centricity-Proposal-Playbook/pull/1): `verify` passed on the PR; merged as `25e71a3` on 16-Oct-2026; Actions run 38866042211 `verify` + `publish` succeeded |
+| Live URL serves files byte-identical to `site/` | Verified — all 8 files match by SHA-256 (`index.html` `5872958d…` = PRD §2.3); `docs/`, `tools/`, `CLAUDE.md`, `monthly-updates/` return 404 (not published) |
+| Live site browser checks | Verified — clean console; "Universe — 7682 instruments."; footer dates; 4-fund proposal at 100%; Excel 13 sheets; PowerPoint 25 slides with the logo on all 25 |

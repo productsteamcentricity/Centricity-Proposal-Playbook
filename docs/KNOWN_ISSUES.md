@@ -99,7 +99,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | R4 | `xlsx` 0.18.5 has two high-severity advisories | Security | P2 | Accepted | — | `package.json`; `site/index.html:1227` |
 | R5 | Stale `Centricity_Risk_Matrix.js` is published | Hosting | P3 | Accepted (D69) | — | `site/Centricity_Risk_Matrix.js` |
 | R6 | The git repository lives inside OneDrive | Repo | P2 | Open (owner decision) | **Affects** | repo root |
-| R7 | Old site still live; new site not yet published | Hosting | P2 | Open | **Affects** (first publish) | `.github/workflows/pages.yml` |
+| R7 | Old site still live alongside the new one | Hosting | P2 | Open (outgoing owner) | — | old Pages site |
 | E1 | Operating manual keeps stale statements as history | Docs | P3 | Accepted | — | `docs/OPERATING_MANUAL.md` → Errata |
 | E2 | PRD contains wrong tool and hosting facts | Docs | P3 | Open | — | `docs/PRD.md` §2, §5, §11, §13, §14 |
 | E3 | Runbooks and specs are out of date | Docs | P2 | Open | **Affects** (if followed) | `docs/runbooks/`, `docs/specs/` |
@@ -877,17 +877,16 @@ regenerate it outside `site/`.
 - **Suggested fix (owner decision):** Move the clone outside OneDrive and keep only the
   `monthly-updates/` inputs there.
 
-### R7. Old site still live; new site not yet published
-**P2 · Open · Affects the first publish**
+### R7. Old site still live alongside the new one
+**P2 · Open (outgoing owner) · —**
 
-- On 16-Oct-2026 the outgoing owner's site served the baseline, and the new URL
-  (`https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/`) returned 404. The Pages
-  workflow publishes only from `main` (a push or a manual run), and the transfer branch was not yet
-  merged.
+- The new site went live on 16-Oct-2026 (PR #1, merge `25e71a3`, Actions run 38866042211); all eight
+  files at `https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/` are byte-identical
+  to `site/`. The outgoing owner's site still serves the same baseline.
 - The old site will not receive monthly updates, and users' bookmarks and shared `#p=` links point to
   it.
-- **Action:** After the first successful publish from `main`, give users the new URL. Ask the
-  outgoing owner to replace the old site with a notice or redirect (together with R1).
+- **Action:** Give users the new URL now. Ask the outgoing owner to replace the old site with a
+  notice or redirect (together with R1).
 
 ---
 

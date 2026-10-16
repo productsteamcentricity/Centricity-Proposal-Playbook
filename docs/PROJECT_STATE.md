@@ -51,8 +51,9 @@ MASTER PMS with perf      23 of 27
 script errors (excluding the CDN globals): 0
 ```
 
-Browser checks (local, 16-Oct-2026): all 11 checks in `TESTING.md` §3 pass. Live-site status: see
-"Release" below.
+Browser checks (local, 16-Oct-2026): all 11 checks in `TESTING.md` §3 pass. Live site (16-Oct-2026):
+all 8 files byte-identical to `site/`; clean console, universe 7682, footer dates, Excel 13 sheets,
+PowerPoint 25 slides with the logo on all 25.
 
 ## Release
 
@@ -61,7 +62,8 @@ Browser checks (local, 16-Oct-2026): all 11 checks in `TESTING.md` §3 pass. Liv
 | Repository | https://github.com/productsteamcentricity/Centricity-Proposal-Playbook (public) |
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
-| Transfer PR / merge commit | recorded in `REPLICATION_REPORT.md` §7 |
+| Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
+| Live status | Published 16-Oct-2026; live files = `site/` (SHA-256 checked) |
 
 ## Completed (Stage A — replication and baseline)
 
