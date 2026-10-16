@@ -193,8 +193,8 @@ quotes, backslashes or `$` in them.
 | 17 | `node tools/verify_page.js site` | see B6 |
 
 Periodic inputs (P1–P5) follow the "Periodic" section of `tools/README.md` and always need the
-owner's confirmation of what changed. Before any Bond List run read `KNOWN_ISSUES.md` A1 (the tool
-reads only the first sheet).
+owner's confirmation of what changed. A Bond List run names its desk (`--desk Invictus` or
+`--desk OneDigital`); the tool refuses a workbook where the sheet for that desk is ambiguous.
 
 ### B5. Market Update slides (PowerPoint on this machine)
 The decks are native shapes, so they must be rendered (script in `tools/README.md` §4):

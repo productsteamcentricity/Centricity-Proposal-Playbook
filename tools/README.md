@@ -23,10 +23,10 @@ after the move out of the repository root.
    - `verify_page.js` never writes.
    - `build_risk_matrix.py` has no dry run. It always writes the file named by its 4th argument.
    - `tools/lib/reck_parse.js`, run as a command, always writes its 2nd argument.
-3. **Read the gates, not the exit code.** Ten tools exit 0 from a dry run even when a gate failed,
+3. **Read the gates, not the exit code.** Nine tools exit 0 from a dry run even when a gate failed,
    because they enforce their gates only under `--apply`:
    - `bake_month`, `merge_de_universe`, `merge_direct_equity_returns`, `merge_expense_exitload`
-   - `merge_bond_list`, `rebuild_directperf`
+   - `rebuild_directperf`
    - `merge_pms_performance`, `pin_pms_alias`, `merge_reckoner`
    - `update_market_slides`
 
@@ -227,7 +227,7 @@ writing `site/index.html` writes only the blocks named.
 
 | Tool | Reads | Writes (only with `--apply`) | Gates to read in the dry run | CLI |
 |---|---|---|---|---|
-| `merge_bond_list.js` | `Bond List_<date>.xlsx`: the **first sheet only**, fixed columns B–F and H, data from row 3. Also the MASTER line. | MASTER Bonds rows whose desk is `DESK = 'Invictus'` (a constant). | `! row N has no IRR`, name-vs-cell year mismatches, duplicate blocks with differing IRR or rating, the maturity range, and the full new list. Gates are enforced only under `--apply`. | `node tools/merge_bond_list.js "<Bond List_<date>.xlsx>" [--html <p>]` |
+| `merge_bond_list.js` | `Bond List_<date>.xlsx`: one sheet, chosen by `--sheet`, else the only sheet, else the one tab named for the desk; fixed columns B–F and H (row 1 checked), data from row 3. Also the MASTER line. | MASTER Bonds rows of the `--desk` named (`Invictus` or `OneDigital`); every other desk is left as it is. | The `desk … sheet …` line. `! row N has no IRR`, name-vs-cell year mismatches, duplicate blocks with differing IRR or rating, the maturity gate (after today), the maturity range, and the full new list. The dry run exits 1 on failure. | `node tools/merge_bond_list.js "<Bond List_<date>.xlsx>" --desk <Invictus\|OneDigital> [--sheet "<tab>"] [--html <p>]` |
 | `update_closing_slides.js` | `<dir>/disclaimer.png` and `<dir>/thankyou.jpg`, both 2001×1125. Also `EXTRA_SLIDES`. | `site/Centricity_ExtraSlides.js`: the `disclaimer` and `thankyou` keys only (blocklib splice). | The per-key dimensions and `OK` lines, old KB → new KB, and the payload size. | `node tools/update_closing_slides.js --dir "<render dir>" [--sibling <p>]` |
 | `merge_analytics.js` | One to three Analytics workbooks, through `REFRESH.parseAnalytics`. | The given analytics stores and `DATA_DATES.analytics`. | `before -> after`, refreshed/added, the STALE list, the holdings-total gate (30–130%), and `refreshed nothing — wrong file or wrong kind?`. The dry run exits 1 on failure. | `node tools/merge_analytics.js [--equity "<xlsx>"] [--hybrid "<xlsx>"] [--debt "<xlsx>"] --as-on "<label>" [--html <p>]` |
 | `rebuild_directperf.js` | The Direct monitor, through the page's `REFRESH.parseMfMonitorDirect`. | DIRECT_PERF, replaced in full. | The scale GATE lines (decimals; m-cap sums to 1 ± 0.05). `expense present after rebuild`. `DIRECT_PERF old -> new`: a drop means lost overlays, which are not listed. The dry run exits 0. | `node tools/rebuild_directperf.js "<Daily MF Monitor_Direct_<date>.xlsx>" [--html <p>]` |
@@ -558,11 +558,14 @@ Only what an operator must know before running each tool. Line references are to
   `NEW_GIFT` if it is missing, so deleting it from the sibling by hand does not stick.
 
 **merge_bond_list.js**
-- It reads only the **first sheet** and labels every row `(Invictus)`, from the `DESK` constant
-  (`:42`). The June-2026 workbook has the OneDigital sheet first. Run it on a single-sheet copy of
-  the Invictus sheet, or stop. OneDigital needs a code change.
-- The "maturity not in the past" gate hard-codes the year 2026 (`:200`), so from 2027 it lets
-  matured bonds through.
+- `--desk` is required: it names the desk whose rows are replaced and the `(<desk>)` suffix on each
+  name. The June-2026 workbook has both desks, OneDigital first. With `--desk` alone the tool takes
+  the one tab named for that desk; it refuses a workbook where that is ambiguous (pass `--sheet`),
+  and a tab named for the other desk. Confirm with the owner which sheet is which desk anyway.
+- Run on the June-2026 file, `--desk OneDigital` reproduces today's 14 OneDigital rows (two
+  `irr_low` values differ only by float noise, `0.085` vs `0.08499999999999999`). The June
+  Invictus sheet holds the same 14 bonds; applying it would replace today's 36 Invictus bonds,
+  which came from the newer 06-Aug-2026 list.
 
 **merge_analytics.js**
 - One `DATA_DATES.analytics` label covers all three classes, so re-baking one class re-dates the

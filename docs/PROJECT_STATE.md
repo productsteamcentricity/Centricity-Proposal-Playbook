@@ -1,6 +1,6 @@
 # Project state
 
-_Last updated: 16-Oct-2026 — transfer baseline (Stage A) completed._
+_Last updated: 16-Oct-2026 — transfer baseline (Stage A) completed; P1 tool fixes in progress._
 
 ## Summary
 
@@ -75,6 +75,12 @@ PowerPoint 25 slides with the logo on all 25.
 - Workspace organised: `monthly-updates/00_INBOX` + month folders, `backups/`, `handover-archive/`.
 - Local preview hardened (serves `site/` on localhost only); CI parity gate + Pages publishing.
 - Documentation set, 8 specialist agents, `/monthly-update` and `/verify-dashboard` skills.
+
+## Tool fixes since the transfer (no dashboard data changed)
+
+| Item | Fix | Branch |
+|---|---|---|
+| `KNOWN_ISSUES.md` A1 — Bond List tool read the first sheet as Invictus | `merge_bond_list.js` needs `--desk`; refuses an ambiguous sheet (`d48620e`) | `fix/bond-list-sheet-desk` |
 
 ## In progress / blockers
 
