@@ -4,6 +4,15 @@
 *.xlsm
 *.xls
 *.xlsb
+*.csv
+*.ppt
+*.pptm
+*.doc
+*.rar
+*.msg
+*.eml
+.env
+.env.*
 uploads/
 inputs/
 

@@ -1,9 +1,14 @@
-# Verify the dashboard on every push and pull request; publish site/ to GitHub Pages from main.
+# Verify the dashboard on every pull request, push to main and manual run; publish site/ to
+# GitHub Pages from main.
 #
 # The parity gate re-runs tools/verify_page.js (the page's own scripts in a Node vm, all five
 # sibling files included) and refuses to publish a build that would break production:
 # a missing sibling, duplicate MASTER names, a truncated index.html, a script error, or a
 # Centricity Select key that no longer resolves to a MASTER fund (the rename canary).
+#
+# Security: the workflow token is read-only by default; only the publish job (main only, and the
+# github-pages environment only accepts main) gets Pages/OIDC write. Actions are pinned to commit
+# SHAs (tag in the trailing comment) and checkout does not persist credentials.
 name: Verify and publish dashboard
 
 on:
@@ -14,8 +19,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages-${{ github.ref }}
@@ -25,8 +28,10 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
       - name: Six-file deploy set is present
@@ -54,14 +59,20 @@ jobs:
     needs: verify
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         with:
           path: site
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
