@@ -1,3 +1,8 @@
+> **Status (16-Oct-2026):** historical, chat-era runbook. The PMS refresh is now done by
+> `tools/merge_pms_performance.js` then `tools/pin_pms_alias.js` (steps 12–13 of
+> `docs/MONTHLY_UPDATE_PROCESS.md` B4; details in `tools/README.md`). Keep this file for its units and
+> exit-load grammar reference only; its AUM rule, Top-Sector parsing and deploy steps are superseded.
+
 # Monthly PMS Scheme Performance Update — Prompt & Spec
 
 **Use:** every month, attach the new `PMS_Scheme_Performance_<Month Year>.xlsx` (template: `PMS_Scheme_Performance_Template.xlsx` in this folder) and paste the prompt below.

@@ -1,7 +1,8 @@
 # monthly-updates/ (local only)
 
 The source workbooks and decks that feed the dashboard. **Nothing in this folder is ever pushed to
-GitHub** except the two README files: the data is sensitive and licensed.
+GitHub** except the two README files: the data is sensitive and licensed. (It does sync to the
+company OneDrive, because the project folder lives there.)
 
 ```
 monthly-updates/
@@ -12,8 +13,8 @@ monthly-updates/
 │   ├── Daily MF monitor_30th Sep 2026.xlsx          (monitors and other files at the top level)
 │   ├── …
 │   ├── Analytics/                                   (Equity / Hybrid / Debt Analytics + DE universe)
-│   └── _review/                                     (created by Claude: sample PPT/Excel exports
-│                                                     and tool logs for that month's update)
+│   └── _review/                                     (created by Claude: every tool's dry-run and
+│                                                     apply output, verify before/after)
 └── _handover_manifest.json   ← SHA-256 of every file extracted from the handover zip
 ```
 
@@ -24,7 +25,8 @@ Rules (Claude follows these; listed so anyone can check):
 - `tools/bake_month.js` expects the two MF Monitors at the top of the month folder and the
   Equity / Hybrid / Debt Analytics workbooks in its `Analytics/` subfolder, so Claude files them that
   way when moving them out of the inbox.
-- Files are kept under their original names. The update log in `docs/update-log/<YYYY-MM>.md`
+- Files are kept under their original names. The update log in
+  `docs/update-log/<YYYY-MM>_<Mon-YYYY>.md`
   (which is on GitHub) records each file's name, as-on date and SHA-256, so the exact inputs of every
   published update can be proven later without publishing the files themselves.
 - `2026-04` … `2026-09` came from the outgoing owner's handover zip (`handover-archive/`). The April

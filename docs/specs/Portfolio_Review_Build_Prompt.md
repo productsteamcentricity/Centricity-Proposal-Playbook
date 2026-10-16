@@ -1,6 +1,10 @@
 # CENTRICITY WEALTHTECH — PORTFOLIO REVIEW DASHBOARD
 ## Complete Build Prompt for Claude
 
+> **Note (16-Oct-2026):** this is the spec for the separate Portfolio Review project, kept here for
+> reference. Client names and the sample portfolio's figures have been removed from this public copy
+> (`docs/DECISIONS.md` D64); the expected values live in the privately held sample workbook.
+
 > Paste this entire document into a **new Claude project chat ("Portfolio Review")** as the first message. Then, separately, upload (a) the monthly/weekly **reference data files** (analytics + performance) and (b) one **client base file** to generate from. The agent must produce a single self-contained `Portfolio_Review.html` dashboard that ingests a client's existing-holdings Excel and outputs a downloadable PowerPoint (and matching Excel) of the **6 core review slides + an Observations slide**, in Centricity's exact design language.
 >
 > This prompt is the single source of truth. Anything not stated here defaults to the visual language of the sample deck **`Portfolio Update_ Sample Client Family_20th May 2026.pptx`** and the sister build **`Dashboard_Build_Prompt.md`** (Centricity Proposal Playbook). The Portfolio Review reuses the Proposal Playbook's design system, analytics engine, performance tables, and overlap matrix verbatim — only the inputs (an actual client portfolio, not a hand-built proposal) and the slide set differ.
@@ -166,7 +170,7 @@ One slide **per client** in the base file (e.g. one for `CLIENT A`, one for `CLI
 | Instrument Name | Invested Value (Cr) | Current Market Value (Cr) | Total Gain/Loss (Cr) | Allocation (%) | XIRR (%) | BMXIRR (%) |
 
 - Hierarchy: **Asset Name** row (e.g. `Equity`, `grey-m`) → **Product Name** row (e.g. `Mutual Funds`, `grey-l`/tan) → **instrument rows** (white), sorted by CMV descending → **Grand Total** row (black).
-- **`Allocation (%)` is RE-BASED to that client's own total CMV** (not the family total). In the sample, HDFC Mid Cap shows 15.95% on Client A's sheet (0.97 ÷ 6.07) vs 8.79% family-wide. Compute per-client.
+- **`Allocation (%)` is RE-BASED to that client's own total CMV** (not the family total). In the sample, a holding that is ≈ 9% of the family book shows ≈ 16% on its client's sheet (holding CMV ÷ that client's CMV). Compute per-client.
 - Asset/Product/Grand-Total **XIRR & BMXIRR** = CMV-weighted average of the rows beneath (use the base file's totals row if it provides one).
 - Negative `Total Gain/Loss` values in `--red`. If a sheet overflows, split across continuation slides (`… (cont.)`).
 
@@ -349,12 +353,12 @@ Percentages 2 decimals; ₹ Crore; flag outliers; negatives in red number format
 ## 11. Smoke Test
 
 Use the sample family `Portfolio Update_ Sample Client Family_20th May 2026.xlsx`. Expected:
-- 100% Equity, 100% Mutual Funds; family CMV ≈ ₹11.01 Cr.
+- 100% Equity, 100% Mutual Funds; family CMV = the sample workbook's grand total (figures withheld from this public spec, 16-Oct-2026).
 - Mcap split ≈ Large 38.91% / Mid 35.53% / Small 18.60% / Others 6.96%.
-- Two client holding slides (Client A ≈ ₹6.07 Cr CMV, Client B ≈ ₹4.94 Cr CMV) with per-client weights (HDFC Mid Cap = 15.95% on Client A's sheet).
-- AMC chart: **no breach** in this sample — the largest AMC (HDFC) is ≈ 13.08% of the MF book, under the 20% cap. So Observation #2 should *confirm the portfolio respects the per-AMC cap*, not flag a breach. (A breach would only show if an AMC exceeded 20.00%.)
+- Two client holding slides (Client A, Client B; each slide's total = that client's CMV in the sample workbook) with per-client weights re-based as in §4C.
+- AMC chart: **no breach** in this sample — the largest AMC is below 20% of the MF book, under the 20% cap. So Observation #2 should *confirm the portfolio respects the per-AMC cap*, not flag a breach. (A breach would only show if an AMC exceeded 20.00%.)
 - Overlap matrix with the ~11 eligible equity funds.
-- Observations: aggressive 100%-equity profile; AMC-cap respected (max ≈13.08%); "all mutual funds → introduce Centricity-focused PMS/AIF"; plus overlap/under-performer/rebalancing notes.
+- Observations: aggressive 100%-equity profile; AMC-cap respected (largest AMC below 20%); "all mutual funds → introduce Centricity-focused PMS/AIF"; plus overlap/under-performer/rebalancing notes.
 
 ---
 

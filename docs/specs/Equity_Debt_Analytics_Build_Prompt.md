@@ -1,3 +1,8 @@
+> **Status (16-Oct-2026):** build spec, reference only. The live engine in `site/index.html` has
+> diverged from it (no-holdings funds are skipped rather than given fallbacks; ratings use 7 fixed
+> buckets from the full rating map; overlap is a symmetric Σmin on weight maps; issuer parsing was
+> replaced). Where they differ, the code wins — see `docs/ARCHITECTURE.md` §5 and `docs/PRD.md` §8.
+
 # Equity & Debt Look-Through Analytics — End-to-End Build Prompt
 
 > **Purpose of this prompt.** Paste this into a new project to reproduce the exact Equity & Debt analytics engine used in the Centricity Proposal Playbook dashboard. It specifies (A) the **data pipeline** that builds the per-fund analytics JSON from source factsheets, and (B) the **look-through aggregation engine** that rolls those holdings up across a selected portfolio into market-cap split, sector allocation, top stocks, issuer/rating breakdown, and fund-overlap. The two layers are decoupled — the engine reads three JSON dictionaries; the pipeline produces them. Build them to the contract below and they interoperate.

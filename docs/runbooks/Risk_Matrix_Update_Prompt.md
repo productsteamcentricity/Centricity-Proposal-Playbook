@@ -1,3 +1,8 @@
+> **Status (16-Oct-2026):** historical runbook for the *Python* route. The route in use is
+> `node tools/merge_risk_matrix.js "<M>/Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx" --as-on "31 Oct 2026"`
+> (step 10 of `docs/MONTHLY_UPDATE_PROCESS.md` B4). Paths below predate the move: the page is
+> `site/index.html`, the script is `tools/build_risk_matrix.py` (see `tools/README.md` §5, unvalidated on pandas 3).
+
 # Portfolio Matrix — Monthly Risk Matrix Refresh
 
 **What this does.** Regenerates the **Portfolio Matrix** tab's data (`window.RISK_MATRIX`) from that month's

@@ -1,14 +1,38 @@
+> **About this file (16-Oct-2026).** Until the transfer this was the project's `CLAUDE.md`, written
+> by the outgoing owner. It moved here unchanged when the project passed to the owner (Centricity
+> Products team, GitHub account `productsteamcentricity`). The root `CLAUDE.md` is now a short index
+> that points here. This file is still the authoritative catalogue of traps and the reasons for them.
+>
+> - **Dates and counts** are as of the date stated beside them. Re-derive the current ones with
+>   `node tools/verify_page.js site` (or `npm run verify`); never trust a number here over that output.
+> - **Line numbers into `index.html`** (`L1031`, `L4192`, …) are historical and have drifted. The
+>   current map is in `docs/ARCHITECTURE.md` and `docs/PRD.md` §3.4. Find blocks with Grep; never
+>   Read the whole file.
+> - **Layout:** `site/` (the six deploy files, the unused `Centricity_Risk_Matrix.js`, `robots.txt`),
+>   `tools/` (monthly tools and `build_risk_matrix.py`), `tools/lib/` (`blocklib.js`, `pptx.js`,
+>   `reck_parse.js`, `reck_narrative.js`), `docs/`. Local only (gitignored): `monthly-updates/`
+>   (source files), `backups/` (pre-refresh snapshots of the six deploy files, replacing the
+>   `index.html.bak_*` files that used to sit beside the page), `handover-archive/`. Run every
+>   command from the repo root. A bare tool or file name in the prose names the artefact, not its location.
+> - **Owner, repository and hosting facts** in this file are superseded by `docs/DEPLOYMENT.md` and
+>   `docs/DECISIONS.md` (D60–D69).
+> - **Edits made on 16-Oct-2026:** commands and file references were rewritten for the new layout,
+>   and owner/location facts that changed are marked "(updated 16-Oct-2026)". Other statements known
+>   to be stale are left as written and corrected in *Errata (16-Oct-2026)* at the end.
+
 # Centricity Proposal Playbook — working notes for Claude Code
 
 Internal investment-proposal builder for the Centricity Products team (HNI / UHNI / Family Office).
 No backend, no database, no build step: `index.html` is a single self-contained React page with the
 entire fund universe embedded in `<script>` tags.
 
-**Authoritative spec:** `Centricity_Dashboard_PRD.docx` (30-Jul-2026). This file is the short
+**Authoritative spec:** the handover PRD, `docs/PRD.md` (updated 16-Oct-2026; it was
+`Centricity_Dashboard_PRD.docx` of 30-Jul-2026, which was not transferred and is superseded). This file is the short
 operating manual; the PRD has the full feature history and rationale. Where they disagree, the
 live code wins — see *Verifying* below.
 
-Owner/admin: Rahul Yadav (rahul.yadav@centricity.co.in). Verified against the live files
+Owner/admin: the Centricity Products team, GitHub account `productsteamcentricity` (updated
+16-Oct-2026; before that, the outgoing owner). Verified against the live files
 13-Oct-2026 (Sep-2026 data refresh).
 
 ---
@@ -56,11 +80,11 @@ Do not re-add a script tag for it without first checking the inline block would 
 | `index.html` | **LIVE — this is the one you edit** |
 | the 5 siblings above | **LIVE — ship with index.html** |
 | `Centricity_Dashboard.html` | **DEPRECATED.** Predecessor, last synced 22-Jun-2026, missing later features. An edit to `index.html` does *not* apply to it. Confirm before touching. |
-| `README.md` | **STALE — do not follow it.** Documents `tools/build_*.py` scripts, a GitHub Pages repo and `cdnjs.cloudflare.com`. None exist: the folder has **zero subfolders** (no `tools/`, no `.git`) and the CDNs are actually unpkg + jsdelivr. |
-| `build_risk_matrix.py` + `Risk_Matrix_Update_Prompt.md` | LIVE — the monthly Portfolio Matrix runbook |
-| `PMS_Performance_Update_Prompt.md` | LIVE — monthly PMS performance runbook |
+| `docs/archive/README_original_2026-05.md` | **STALE — do not follow it.** Documents `tools/build_*.py` scripts, a GitHub Pages repo and `cdnjs.cloudflare.com`. None exist: the folder has **zero subfolders** (no `tools/`, no `.git`) and the CDNs are actually unpkg + jsdelivr. |
+| `build_risk_matrix.py` + `docs/runbooks/Risk_Matrix_Update_Prompt.md` | LIVE — the monthly Portfolio Matrix runbook |
+| `docs/runbooks/PMS_Performance_Update_Prompt.md` | LIVE — monthly PMS performance runbook |
 | `merge_pms_performance.js` + `pin_pms_alias.js` | LIVE — the PMS performance refresh |
-| `merge_reckoner.js` + `reck_parse.js` + `reck_narrative.js` + `pptx.js` | LIVE — the Centricity Select refresh |
+| `merge_reckoner.js` + `tools/lib/reck_parse.js` + `tools/lib/reck_narrative.js` + `tools/lib/pptx.js` | LIVE — the Centricity Select refresh |
 | `add_reckoner_funds.js` | LIVE — adds instruments the deck recommends but MASTER lacks (a **universe** change) |
 | `rename_schemes.js` | LIVE — **run FIRST every month.** Folds SEBI scheme renames onto the existing records instead of letting the bake duplicate them |
 | `fold_duplicate_names.js` | LIVE — one-off/idempotent: folds a same-fund-two-spellings pair that `rename_schemes.js` cannot reach. The Monitor picks the survivor |
@@ -74,9 +98,9 @@ Do not re-add a script tag for it without first checking the inline block would 
 | `fold_index_funds.js` | LIVE — one-off/idempotent: Index Fund → a sub-category of Mutual Fund |
 | `split_sif_add_mld.js` | LIVE — one-off/idempotent: SIF split by strategy + the MLD product class |
 | `update_closing_slides.js` | LIVE — re-renders the Disclaimer / Thank You slides into `EXTRA_SLIDES` |
-| `blocklib.js` | LIVE — brace-matching splicer; **every merge_*.js tool requires it** |
+| `tools/lib/blocklib.js` | LIVE — brace-matching splicer; **every merge_*.js tool requires it** |
 | `verify_page.js` | LIVE — runs the page in a Node `vm` and prints the true in-browser counts |
-| `*_Build_Prompt.md` | Historical build specs, reference only |
+| `docs/specs/*_Build_Prompt.md` | Historical build specs, reference only |
 | `*.bak*`, `*.broken*` | 49 rollback snapshots. Archive candidates >60 days old. |
 
 74 files, ~298 MB, flat (no subfolders).
@@ -293,7 +317,7 @@ Three places make it stick; miss any one and it half-reverts:
 still carry harmless `'Index Fund'` keys whose values are identical to the `'Mutual Fund'` ones —
 left as defensive fallbacks, not live paths. The monthly tools all test
 `['Mutual Fund','Index Fund','ETF'].includes(...)`, which still matches. Rerun
-`node fold_index_funds.js --apply` (idempotent) if a stray record ever reappears.
+`node tools/fold_index_funds.js --apply` (idempotent) if a stray record ever reappears.
 
 **ETF remains a separate product class** (252 records) and was not touched. 257 of the folded
 records are named "…ETF" but were filed as index funds upstream — that pre-dates this change.
@@ -320,7 +344,7 @@ later — that one-day offset is the same artefact seen elsewhere, and it is why
 tie-breaks never paired them either.
 
 ```bash
-node fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" --apply
+node tools/fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" --apply
 ```
 
 | dropped (orphan) | kept (survivor, = the Monitor's spelling) |
@@ -352,7 +376,9 @@ return, AUM, TER, YTM, duration, or the m-cap split (atomic, and the survivor's 
 **OneDrive / bash-mount staleness.** The Linux sandbox's view of large files here lags edits made
 through the Edit tool, in both directions. Never trust a bash-side `node --check` or `grep` on
 `index.html`. Verify by reading the specific changed line ranges, or via PowerShell/Node on the
-Windows path.
+Windows path. (Updated 16-Oct-2026: the repo still lives under OneDrive on the new owner's
+machine. In the transfer session the Bash tool was Git Bash on the same Windows path, not a Linux
+mount. The lag has not been re-tested there, so keep verifying with Node or Grep on the Windows path.)
 
 **Multi-megabyte lines.** `EQUITY_ANALYTICS` is a single 6.7 MB line; `MASTER` is 2.4 MB. PowerShell
 `-match`/`-replace` on these hangs for minutes. Use Node (`fs.readFileSync` + index arithmetic) or
@@ -429,8 +455,9 @@ Windows path.
 node .claude/serve.js
 ```
 
-Serves the project folder on http://localhost:8080 (also wired as the `playbook` preview config in
-`.claude/launch.json`). Use http, not `file://` — the siblings load fine either way but the export
+Serves `site/` only, on http://127.0.0.1:8080/ (updated 16-Oct-2026; it used to serve the whole
+project folder). `npm run serve` runs the same server. It is also wired as the `playbook` preview config in
+`.claude/launch.json`. Use http, not `file://` — the siblings load fine either way but the export
 paths and uploaders don't. Confirm on load: the header reads **Universe — 7652 instruments** and
 the console is clean. Needs internet for the five CDN libraries.
 
@@ -473,7 +500,7 @@ $pres.Slides.Item($i).Export($path, "PNG", 2001, 1125)
 ```
 
 ```bash
-node update_closing_slides.js --dir "<render dir>" --apply
+node tools/update_closing_slides.js --dir "<render dir>" --apply
 ```
 
 - **2001 x 1125**, like every other image in `EXTRA_SLIDES`; the tool gates on it.
@@ -487,7 +514,8 @@ node update_closing_slides.js --dir "<render dir>" --apply
 
 The deck's slides are native PowerPoint shapes — **there are no embedded images to extract**
 (`ppt/media/` is empty). They have to be *rendered*. PowerPoint COM does it faithfully; there is
-no LibreOffice on this machine.
+no LibreOffice on this machine. (Updated 16-Oct-2026: the same holds on the new owner's machine.
+`PowerPoint.Application` is registered, so the COM route below works there, and LibreOffice is not installed.)
 
 ```powershell
 $app  = New-Object -ComObject PowerPoint.Application
@@ -497,7 +525,7 @@ $pres.Close(); $app.Quit()
 ```
 
 ```bash
-node update_market_slides.js --slides "<dir of slide1..5.jpg>" --apply
+node tools/update_market_slides.js --slides "<dir of slide1..5.jpg>" --apply
 ```
 
 - **2001 × 1125** — every image in `EXTRA_SLIDES` is this size; the tool gates on it.
@@ -531,7 +559,12 @@ September 2026 export: 1,768 KB raw → 1,308 KB at quality 82, 5 slides, all 20
 
 ## Monthly source files
 
-Rahul drops these each cycle. June 2026 set lives at:
+These arrive each cycle. **Where they live now (updated 16-Oct-2026):** new files are dropped in
+`monthly-updates/00_INBOX/`, then filed under `monthly-updates/<YYYY-MM_Mon-YYYY>/`, named for the
+*data* month (e.g. `monthly-updates/2026-09_Sep-2026/`), with the analytics workbooks in its
+`Analytics/` subfolder. Paths written below as "the month folder" mean that folder. It is local
+only: `.gitignore` excludes everything under `monthly-updates/` except the README files.
+Until the transfer the outgoing owner dropped them, and the June 2026 set lived at:
 
 `Desktop\AI Dashboard Updates\For Centricity Proposal Playbook Portal\<Month Year>\`
 
@@ -544,7 +577,7 @@ Rahul drops these each cycle. June 2026 set lives at:
 | `Analytics\Debt Analytics_<Month>.xlsx` | `DEBT_ANALYTICS` |
 | `Analytics\Listed Direct Equity_<Month>.xlsx` | Direct Equity sector / mcap / ISIN (**join `sebi_mcap` by name**) |
 | `Listed Direct Equity_<date>.xlsx` | Direct Equity **returns** → `merge_direct_equity_returns.js` |
-| `NAV Data as on <date>.xlsx` | `RISK_MATRIX` via `build_risk_matrix.py` — **needs Python, which this machine does not have** |
+| `NAV Data as on <date>.xlsx` | `RISK_MATRIX` via `build_risk_matrix.py` — **needs Python, which this machine does not have** (updated 16-Oct-2026: the new owner's machine has it; see *Two routes into `RISK_MATRIX`*) |
 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | `RISK_MATRIX` via `merge_risk_matrix.js` (Sep-2026 on). Was a spot-check sample under the old name `3Y Rolling + Risk Ratios - MF`; now ships the full 1,088-fund universe plus a `Data Flags` tab |
 | `SIF Master List_<Month Year>.xlsx` | SIF **universe** → `Centricity_SIF_Refresh.js` |
 | `SIF Monitor_<date>.xlsx` | SIF **performance** → `merge_sif_monitor.js` (Aug-2026 on) |
@@ -558,14 +591,15 @@ the `_MF` from `Exit Load`, and reverted the market deck to `Monthly Outlook Pag
 Match on the stem, not the separator, and check the folder listing before assuming a path.
 
 **Two files share the "Listed Direct Equity" name and are not interchangeable.** The one in
-`Analytics\` carries sector / industry / market cap / ISIN (~5,300 rows). The one at the Desktop
-root carries the price returns (~8,400 rows) and nothing else. Only the second one feeds returns.
+`Analytics\` carries sector / industry / market cap / ISIN (~5,300 rows). The one at the top of the
+month folder (updated 16-Oct-2026; the outgoing owner kept it at the Desktop root) carries the
+price returns (~8,400 rows) and nothing else. Only the second one feeds returns.
 
 **Expense ratio and exit load ARE wired** (corrected 13-Aug-2026 — an earlier note here said they
 weren't). `MASTER.expense` and `MASTER.exit_load` both exist and are ~99% populated. Refresh with:
 
 ```bash
-node merge_expense_exitload.js --expense "<Expense ratio_<Month>.xlsx>" --exitload "<Exit Load_MF_<Month>.xlsx>"
+node tools/merge_expense_exitload.js --expense "<Expense ratio_<Month>.xlsx>" --exitload "<Exit Load_MF_<Month>.xlsx>"
 ```
 
 The expense workbook's **`Ratio`** column is the total TER that `expense` holds (verified against
@@ -577,7 +611,7 @@ cap: SIF / long-short schemes in this universe genuinely run 4–6%+.
 name; `Fund Manager Data_<date>.xlsx` is one row per manager per stint and names the whole team:
 
 ```bash
-node merge_fund_managers.js "<Fund Manager Data_<date>.xlsx>" --apply
+node tools/merge_fund_managers.js "<Fund Manager Data_<date>.xlsx>" --apply
 ```
 
 "Current" is decided **per scheme**, not against one global date — AMCs report to different
@@ -601,11 +635,13 @@ feature, not a refresh.
    Sheet (on-screen, Excel and PPT). Re-run each month (dry run first, always read the gates):
 
    ```bash
-   node merge_direct_equity_returns.js "<Desktop>/Listed Direct equity_<date>.xlsx"
+   node tools/merge_direct_equity_returns.js "monthly-updates/<YYYY-MM_Mon-YYYY>/Listed Direct Equity_<date>.xlsx"
+   # source path updated 16-Oct-2026 (was "<Desktop>/Listed Direct equity_<date>.xlsx")
    ```
 
-   Add `--apply` to write. `--html <path>` overrides the target; it defaults to `index.html`
-   beside the script. Needs `npm install xlsx@0.18.5`.
+   Add `--apply` to write. `--html <path>` overrides the target; it defaults to `site/index.html`
+   (updated 16-Oct-2026). Needs `npm ci` in the repo root (updated 16-Oct-2026: `package-lock.json`
+   pins `xlsx` 0.18.5 and `npm ci` installs exactly that version).
 3. **No-holdings funds excluded from analytics** — `H.hasEqHoldings` / `H.hasDbHoldings` gate both
    the chip list and the aggregation. Removed two fallbacks that fabricated data: an equity
    fund-level mcap guess that added exposure but no sectors/stocks (diluting every percentage),
@@ -644,6 +680,22 @@ feature, not a refresh.
 
 ## Deploying to GitHub
 
+**Now (updated 16-Oct-2026; details in `docs/DEPLOYMENT.md`):**
+
+- Repo: `https://github.com/productsteamcentricity/Centricity-Proposal-Playbook` (remote `origin`,
+  branch `main`). The outgoing owner's repo is kept as remote `upstream`, a read-only reference
+  with its push URL disabled.
+- Live site: `https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/`. GitHub
+  Actions (`.github/workflows/pages.yml`) builds it from `site/` on every push to `main`, but only
+  after a `verify` job passes (all six deploy files present, then the `tools/verify_page.js` parity
+  gate). The outgoing owner's site was `https://magazineishita1108-boop.github.io/Centricity-Proposal-Playbook/`.
+- This folder **is** the git working copy; there is no clone-and-copy step. Work on a branch
+  (`data/<YYYY-MM>`, `feat/…`, `fix/…`, `docs/…`, `chore/…`) and open a PR. The `verify` check
+  runs on the PR, and merging to `main` publishes. The `gh` CLI is installed, `core.autocrlf` is
+  `false` and `.gitattributes` keeps LF, so `git status` no longer shows CRLF noise.
+
+The outgoing owner's route, kept for history (no longer applies):
+
 Repo: `https://github.com/magazineishita1108-boop/Centricity-Proposal-Playbook` (branch `main`).
 The project folder has **no `.git`** — it is not a working copy. How to push (13-Oct-2026): clone
 `main` to a temp dir, copy every *tracked* file over it from the project folder
@@ -655,11 +707,15 @@ trust `git diff --stat`, not `status`.
 **⚠ The repo is PUBLIC.** README asks that the tool not be shared beyond the Products team, and
 `robots.txt` only stops search engines — it does nothing about GitHub. The whole fund universe,
 Centricity Select rationales, PMS/AIF terms and house IRR bands are world-readable. Raise this
-before pushing.
+before pushing. (Updated 16-Oct-2026: raised and decided. The owner chose a PUBLIC repo with free
+GitHub Pages, the same exposure as the old repo; see D60 in `docs/DECISIONS.md`. Source workbooks
+and decks stay out of git.)
 
 The two former pre-push blockers are resolved (verified 13-Oct-2026): `Centricity_SIF_Refresh.js`
 is tracked, so all six deploy files are on `main`, and `.gitignore` carries `*.bak_*` /
 `*.bak[0-9]*`, so the dated backups stay local. `*.xlsx`, `*.pptx` and `.claude/` are ignored too.
+(Updated 16-Oct-2026: `.claude/` is ignored except `agents/`, `skills/`, `serve.js` and
+`launch.json`, which are shared project config; see D67 in `docs/DECISIONS.md`.)
 `Centricity_Risk_Matrix.js` is still tracked; it is unused, so that is harmless.
 
 ---
@@ -673,22 +729,26 @@ embedded blocks — so a bake produces exactly what the Section 7 uploader would
 The full monthly order, as run for Aug-2026. **`rename_schemes.js` comes first** — see the next
 section for why. Every step is dry-run by default; read the gates before adding `--apply`.
 
+(Historical record of the Aug-2026 run. For a new run use `tools/README.md` §2 and
+`docs/MONTHLY_UPDATE_PROCESS.md` B4: dry-run each step first.)
+
 ```bash
-npm install xlsx@0.18.5              # not vendored; the folder ships with no node_modules
-node rename_schemes.js --monitor "<Month folder>/Daily MF Monitor ....xlsx" --apply
-node bake_month.js --dir "<Month folder>" --as-on "31st August 2026" --apply
-node fill_variant_analytics.js --dir "<Month folder>" --apply
-node rekey_sif_analytics.js --apply
-node merge_de_universe.js "<Analytics/Listed Direct Equity_<Month>.xlsx>" --apply
-node merge_direct_equity_returns.js "<Listed Direct Equity_<date>.xlsx>" --apply
-node merge_expense_exitload.js --expense "<Expense Ratio_<Month>.xlsx>" --exitload "<Exit Load_<Month>.xlsx>" --apply
-node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --apply
-node merge_fund_managers.js "<Fund Manager Data_<date>.xlsx>" --apply
-node merge_risk_matrix.js "<Fund Risk Ratios & 3Y Rolling ....xlsx>" --as-on "31 Aug 2026" --apply
-node verify_page.js .
+npm ci                               # updated 16-Oct-2026: installs xlsx 0.18.5 exactly from package-lock.json; node_modules/ is gitignored
+                                     # (was: npm install xlsx@0.18.5 - the folder shipped with no node_modules)
+node tools/rename_schemes.js --monitor "<Month folder>/Daily MF Monitor ....xlsx" --apply
+node tools/bake_month.js --dir "<Month folder>" --as-on "31st August 2026" --apply
+node tools/fill_variant_analytics.js --dir "<Month folder>" --apply
+node tools/rekey_sif_analytics.js --apply
+node tools/merge_de_universe.js "<Analytics/Listed Direct Equity_<Month>.xlsx>" --apply
+node tools/merge_direct_equity_returns.js "<Listed Direct Equity_<date>.xlsx>" --apply
+node tools/merge_expense_exitload.js --expense "<Expense Ratio_<Month>.xlsx>" --exitload "<Exit Load_<Month>.xlsx>" --apply
+node tools/merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --as-on "31st August 2026" --apply # --as-on added 16-Oct-2026
+node tools/merge_fund_managers.js "<Fund Manager Data_<date>.xlsx>" --apply
+node tools/merge_risk_matrix.js "<Fund Risk Ratios & 3Y Rolling ....xlsx>" --as-on "31 Aug 2026" --apply
+node tools/verify_page.js site
 ```
 
-### Two routes into `RISK_MATRIX` — and this machine can only take one
+### Two routes into `RISK_MATRIX` — and this machine can only take one (updated 16-Oct-2026: the new owner's machine has Python)
 
 The Portfolio Matrix tab (6.4) reads `window.RISK_MATRIX`, baked inline. There are two ways to fill it:
 
@@ -700,7 +760,14 @@ The Portfolio Matrix tab (6.4) reads `window.RISK_MATRIX`, baked inline. There a
 **There is no Python on this machine** — not `python`, not `python3`, not the `py` launcher, and no
 interpreter anywhere on disk (the `python` you get is the Microsoft Store alias stub). That is why
 Sep-2026 went through the Node tool. Install Python 3 + `pandas numpy openpyxl` if you want the
-canonical derivation back; the runbook in `Risk_Matrix_Update_Prompt.md` still describes it.
+canonical derivation back; the runbook in `docs/runbooks/Risk_Matrix_Update_Prompt.md` still describes it.
+
+**(Updated 16-Oct-2026)** That was the outgoing owner's machine. The new owner's machine has Python
+3.14.4 with pandas 3.0.2, numpy 2.4.4, openpyxl 3.1.5 and python-dateutil; there is still no `py`
+launcher. The command takes four positional arguments (`tools/build_risk_matrix.py:16`):
+`python -I tools/build_risk_matrix.py "<NAV Data as on <date>.xlsx>" site/index.html "<AS_ON>" <out.js>`.
+It has not been run on this machine yet, and it has not been validated against pandas 3.x, so compare its
+output with the Node route before trusting it.
 
 **`c` is dropped, not carried forward.** The risk-ratios workbook has no CAGR column. `c` is read by
 *nothing*: the tab's `COLS` and the PowerPoint export's `MCOLS` are the same nine keys
@@ -819,7 +886,7 @@ the debt side. Currently 23 of 28 SIF funds reach equity analytics and 11 of 28 
 ### PMS/AIF look-through is written in TWO places
 
 ```bash
-node merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "31st July 2026" --apply
+node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "31st July 2026" --apply
 ```
 
 The workbook is one row per holding — `Product Category | Scheme Name | Company Name | Corrected
@@ -845,7 +912,7 @@ July mapped 13 of 15 schemes; `3P INDIA EQUITY FUND 1` and `AlfAccurate India Eq
 have no MASTER instrument and are reported, not invented. Effective PMS/AIF with look-through:
 **17 of 55**.
 
-**Rahul re-issues this file mid-cycle.** The 20-Aug morning copy had 10 schemes; the 11:22 copy had
+**This file has been re-issued mid-cycle (by the outgoing owner, Aug-2026).** The 20-Aug morning copy had 10 schemes; the 11:22 copy had
 15, adding the five ICICI strategies. Re-check the scheme count before assuming a re-run is a no-op.
 
 **`blocklib.writeBlocks` derives its `</html>` guard from the input**, so it keeps the guarantee
@@ -860,7 +927,7 @@ into `Centricity_SIF_Refresh.js`'s `var SIF` block the same way the MF Monitor i
 `MASTER`:
 
 ```bash
-node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --apply
+node tools/merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --as-on "31st August 2026" --apply # --as-on added 16-Oct-2026
 ```
 
 It runs **the sibling's own `REFRESH.parseSif`** in a `vm` sandbox — the same parser the Section 7
@@ -904,7 +971,7 @@ then simply unreachable: the fund shows no sectors, no stocks and no credit prof
 errors and no count looks wrong — the store size is right, the keys are not.
 
 ```bash
-node rekey_sif_analytics.js --apply
+node tools/rekey_sif_analytics.js --apply
 ```
 
 No fuzzy matching is involved: `Centricity_SIF_Refresh.js` records the workbook name on each
@@ -924,7 +991,7 @@ Probing a hybrid field on an equity record returns undefined and reads as "no ho
 **Always follow a bake with `fill_variant_analytics.js`:**
 
 ```bash
-node fill_variant_analytics.js --dir "<Month folder>" --apply
+node tools/fill_variant_analytics.js --dir "<Month folder>" --apply
 ```
 
 A fund missing from the workbook under its Growth name is usually **present under another option
@@ -977,8 +1044,8 @@ if the two differ, the scale or the merge is wrong. Only returns, TER and AUM sh
 | MASTER performance | `Daily MF monitor_<date>.xlsx` (48 sheets) | ~15 days | 30 Sep 2026 |
 | Direct-plan overlay | `Daily MF Monitor_Direct_<date>.xlsx` | with above | 30 Sep 2026 |
 | Equity/Hybrid/Debt Analytics | `<Class> Analytics_<Month>.xlsx` | monthly | 30 Sep 2026 (SIF look-through still 31 Aug — Sep workbooks carry no SIFs) |
-| PMS/AIF look-through | `PMS & AIF Analytics <Month Year>.xlsx` (Desktop root) | monthly | 31 Jul 2026 |
-| PMS scheme performance | `PMS_Scheme_Performance_<Month Year>.xlsx` *(Desktop root)* | monthly | 31 Aug 2026 |
+| PMS/AIF look-through | `PMS & AIF Analytics <Month Year>.xlsx` (Desktop root; updated 16-Oct-2026: the month folder — the July copy is in its `Analytics/`) | monthly | 31 Jul 2026 |
+| PMS scheme performance | `PMS_Scheme_Performance_<Month Year>.xlsx` *(Desktop root; updated 16-Oct-2026: the month folder)* | monthly | 31 Aug 2026 |
 | AIF performance + benchmarks | the Reckoner deck itself → `merge_aif_performance.js` | monthly | 31 Aug 2026 |
 | Direct Equity | `Listed Direct Equity_<Month>.xlsx` (universe + returns) | monthly | universe + returns 30 Sep 2026 |
 | Bonds | `Bond List_<date>.xlsx` → `merge_bond_list.js` | periodic | Invictus 6 Aug 2026; OneDigital older |
@@ -990,7 +1057,7 @@ if the two differ, the scale or the merge is wrong. Only returns, TER and AUM sh
 | Expected IRR | Exit Load & Expected IRR file (**format changed** — verify columns each run) | monthly | — |
 | Portfolio Matrix | `Fund Risk Ratios & 3Y Rolling ....xlsx` -> `merge_risk_matrix.js` | monthly | 30 Sep 2026 (1,088 funds; 966 with metrics; 433 with 3Y rolling) |
 | Market Update slides | `Monthly Outlook Pagers_<Month Year>.pptx` | monthly | October 2026 deck = Sep-2026 data (6 slides) |
-| Centricity Select | `Monthly Investment Reckoner - <Month Year>.pptx` *(Desktop root)* | monthly | Sep-2026 deck = as on 31 Aug 2026 |
+| Centricity Select | `Monthly Investment Reckoner - <Month Year>.pptx` *(Desktop root; updated 16-Oct-2026: the month folder)* | monthly | Sep-2026 deck = as on 31 Aug 2026 |
 
 **Procedure for any refresh:**
 1. Identify which embedded block *or* which sibling the source file drives.
@@ -1003,14 +1070,15 @@ if the two differ, the scale or the merge is wrong. Only returns, TER and AUM sh
 
 ## The monthly Reckoner (Centricity Select + PMS performance)
 
-Two separate refreshes, both driven by files Rahul drops in the month folder. Run PMS first — the
+Two separate refreshes, both driven by files in the month folder (updated 16-Oct-2026: dropped
+in `monthly-updates/00_INBOX/` and then filed; until the transfer the outgoing owner dropped them). Run PMS first — the
 Reckoner's own index is the tie-breaker for the alias pins.
 
 ```bash
-node merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "31st August 2026" --html index.html
-node pin_pms_alias.js --html index.html
-node merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html index.html
-node verify_page.js .
+node tools/merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "31st August 2026" --html site/index.html
+node tools/pin_pms_alias.js --html site/index.html
+node tools/merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html site/index.html
+node tools/verify_page.js site
 ```
 
 All four are dry-run by default; add `--apply` to write. Gates refuse to write on a regression.
@@ -1066,7 +1134,7 @@ AIF had no recurring workbook and sat frozen at May 2026. It does have a source:
 Cash & Others` — on the deck's own as-on date.
 
 ```bash
-node merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --apply
+node tools/merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --apply
 ```
 
 - `pms` is carried forward untouched; `merge_pms_performance.js` owns that half.
@@ -1188,7 +1256,7 @@ Skip the `React is not defined` errors from the UI blocks — expected without a
 ## Open items
 
 1. Fold siblings 3–5 into the embedded blocks and retire them (six-file deploy → one).
-2. Reconcile or rewrite `README.md` — confirm where, or whether, the git repo and build scripts live.
+2. Reconcile or rewrite `docs/archive/README_original_2026-05.md` — confirm where, or whether, the git repo and build scripts live.
 3. Decide `Centricity_Dashboard.html`'s fate: retire it or resume syncing.
 4. Archive `*.bak_*` older than ~60 days out of OneDrive.
 5. ~~Re-establish a recurring AIF performance + benchmarks source.~~ Done 20-Aug-2026 — the
@@ -1218,7 +1286,9 @@ Skip the `React is not defined` errors from the UI blocks — expected without a
 12. **No Python on this machine**, so `build_risk_matrix.py` — the authoritative RISK_MATRIX
     route — cannot run. `merge_risk_matrix.js` covers everything rendered, but installing
     Python 3 + pandas/numpy/openpyxl would restore the canonical derivation and the `c` field.
-7. `Risk_Matrix_Update_Prompt.md` flags: re-confirm Rf = 4.5% is still the desk convention
+    (Updated 16-Oct-2026: Python is now installed. What remains is a first validated run; see
+    *Two routes into `RISK_MATRIX`*.)
+7. `docs/runbooks/Risk_Matrix_Update_Prompt.md` flags: re-confirm Rf = 4.5% is still the desk convention
    (91-day T-Bill is ~5.26%).
 
 ## Related projects — do not confuse
@@ -1228,3 +1298,58 @@ Skip the `React is not defined` errors from the UI blocks — expected without a
   refresh here should prompt a check there.
 - **Centricity MF Screener** — entirely separate repo, AMFI-scheme-code keyed, no shared code. Its
   known-issues catalogue (the `centricity-dashboard-issues` skill) **does not apply here.**
+
+---
+
+## Errata (16-Oct-2026)
+
+Each row is a statement above that was stale, or that the code contradicted, when the project was
+transferred. The original lines are left as written so the history stays readable. Rows marked
+"corrected in place" were also fixed above, with an "(updated 16-Oct-2026)" note.
+
+- `CL:n` is line n of the original `CLAUDE.md` (`git show handover-baseline:CLAUDE.md`). The same
+  text appears above, a few lines lower because of the header and the dated updates.
+- `site/index.html:n` and the counts are as of 16-Oct-2026.
+- "vm run" means the page's scripts were run in Node exactly as `tools/verify_page.js` runs them.
+  On 16-Oct-2026 `node tools/verify_page.js site` printed the same values as *Verifying* above for
+  every figure it reports.
+
+| # | Original line(s) and claim | Correct value (16-Oct-2026) | Evidence |
+|---|---|---|---|
+| 1 | CL:7. The authoritative spec is `Centricity_Dashboard_PRD.docx`. | It was not transferred, and the handover PRD (now `docs/PRD.md`) supersedes it. Corrected in place. | PRD §2 lists the .docx as superseded and not needed. |
+| 2 | CL:11-12. Verified against the live files on 13-Oct-2026. | The last upstream change is the 14-Oct-2026 credit-rating fix (CL:240): upstream commit `72e1f1e`, which is our `862e40b` (tag `handover-baseline`). On 16-Oct-2026 `tools/verify_page.js` printed the same values as *Verifying* for every figure it reports, including "MASTER PMS with perf 23 of 27". | PRD header (State line); `git log`; `tools/verify_page.js` output. |
+| 3 | CL:34-38. The siblings load at L836, L837 and L4189-4191. | `site/index.html:1232-1233` (siblings 1-2) and `:5083-5085` (siblings 3-5). | Grep `<script src="Centricity_`. |
+| 4 | CL:36-38. MASTER goes 7452 → 7456 → 7456 → 7460, and SIF goes 12 → 28. | MASTER goes 7672 → 7676 → 7676 → 7682. The SIF sibling removes 24 rows: the 12 legacy `SIF` rows plus 12 SIFs mis-filed as `Mutual Fund`, matched by normalised name. It then appends 30 (Equity SIF 16 + Hybrid SIF 14). | `site/Centricity_SIF_Refresh.js:38-54`; vm run (`__SIF_REFRESH_APPLIED`: removed 24, dupRemoved 12, added 30). |
+| 5 | CL:36. The June sibling mutates `DATA_DATES`. | It no longer does. The stamp was removed on 13-Aug-2026, as CL:133-135 says. | `site/Centricity_June_Refresh.js:14-17`. |
+| 6 | CL:38. The SIF sibling mutates MASTER, DATA_DATES, REFRESH and BENCHMARKS. | It also sets `RATIONALE` and `LIQUIDITY_MAP` entries when they are missing. | `site/Centricity_SIF_Refresh.js:62-65`. |
+| 7 | CL:47, CL:109. The risk matrix is baked at L4192. | It is at `site/index.html:5086-5094`, with `RISK_MATRIX` at `:5091` and `DATA_DATES.riskMatrix = '30 Sep 2026'` at `:5093`. The block comment at `:5087` still says "as on 30 Jun 2026". The date line is the one that counts. | Grep. |
+| 8 | CL:59, CL:82, CL:648. "Zero subfolders (no `tools/`, no `.git`)"; "74 files, ~298 MB, flat"; "no `.git`". | The folder is the git working copy, laid out as `site/`, `tools/`, `tools/lib/` and `docs/`, plus the local-only `monthly-updates/`, `backups/` and `handover-archive/`. `tools/` exists now, but the old README's `tools/build_*.py` scripts (`build_basedata.py`, `build_pms_analytics.py`, `build_centricity_select_v3.py`) still do not. `tools/build_risk_matrix.py` is a different script. The deploy route at CL:647-653 is corrected in place (a dated block above it; the old text is kept as history). | `git ls-files`; `docs/archive/README_original_2026-05.md:48-50`. |
+| 9 | CL:58, CL:80. `Centricity_Dashboard.html` (deprecated) and 49 `.bak` snapshots. | Neither was transferred and neither exists, so open items 3 and 4 (CL:1192-1193) no longer apply. Snapshots now go in `backups/`. | PRD §2; `git ls-files`. |
+| 10 | CL:88. `index.html` is 10,404,383 bytes and 7,853 lines. | It is 12,827,311 bytes and 9,097 lines, with LF line endings. | `site/index.html`. |
+| 11 | CL:91-112. The line map and its counts. | `MASTER` is at `:1434` (baseline 7,672, not 7,599). `EQUITY/HYBRID/DEBT_ANALYTICS` are at `:1435-1437` (1,203 / 264 / 511, not 1,110 / 199 / 490). `MF_BENCHMARK_PERF` is at `:1444` (47 categories, not 26). `DATA_DATES` `:1448`, `PMS_PERFORMANCE` `:2932`, `REFRESH` `:3837`, `EXPORTS` `:5077`, `createRoot` `:9096`. | Grep; vm run. The current map is in `docs/ARCHITECTURE.md` and PRD §3.4. |
+| 12 | CL:114. Runtime `window.MASTER` assignments at L2629, L2829, L2949, L7593-94 and L7629-30. | They are at `site/index.html:3375, 3698, 3818, 8795-8796, 8831-8832`. The only baseline is `:1434`. | Grep `window.MASTER =`. |
+| 13 | CL:123. `EQUITY_ANALYTICS` 1,205 is listed among the baseline sizes. | The baseline block holds 1,203. 1,205 is the effective count after the June sibling (CL:1168 has it right). | vm run. |
+| 14 | CL:129-131. The 225 `prev_name` records are 217 MF + 5 MF + 3 Direct Equity. | The total of 225 is right. By `product_class` it is Mutual Fund 218, ETF 4, Direct Equity 3, so "MF" there included ETFs [inference]. | vm run. |
+| 15 | CL:191-192, 197, 816-817, 915. Equity SIF 15, Hybrid SIF 13, "array of 28", "of 28". | There are 30 rows: Equity SIF 16 and Hybrid SIF 14 (CL:119 has it right). The sibling's own comments are stale too: `:13` says 29 rows and `:39` says 28 names, and `:3-4` name the June universe and the 31-Aug Monitor while `:61` sets 30-Sep. | `site/Centricity_SIF_Refresh.js`; vm run. |
+| 16 | CL:205-206. The sibling's delete filter matches `/SIF$/`. | The delete filter tests the three class names explicitly. It also drops any row whose normalised name matches a SIF (`:48-49`), which is what removes the 12 mis-filed MF rows (Mutual Fund 1,782 baseline → 1,770 effective). Of the three named, only `parseSif` (`:108`) and `tools/rekey_sif_analytics.js:59` use `/SIF$/` (as do `tools/merge_sif_monitor.js:65` and `tools/split_sif_add_mld.js:109-122`). | `site/Centricity_SIF_Refresh.js`; vm run. |
+| 17 | CL:212. "A fixed six-bucket vocabulary". | Seven buckets, as the list on the next line shows. | `H.CREDIT_BUCKETS`, `site/index.html:2144`. |
+| 18 | CL:278, CL:289. 522 index funds. | 543 (CL:120 has it right). | vm run. |
+| 19 | CL:298. ETF has 252 records. | 259. | vm run. |
+| 20 | CL:303-305. `PC_ORDER` is at L1082; the plural class is filtered out of the "main product list" at L4509; singular Mutual Fund has 1,200. | `PC_ORDER` is at `site/index.html:1486`. The filter is at `:5410`, in `AddFundForm`'s product-class list (`:5408`). Singular Mutual Fund has 1,782 baseline and 1,770 effective. | Grep; vm run. |
+| 21 | CL:357. `EQUITY_ANALYTICS` is a 6.7 MB line and `MASTER` 2.4 MB. | 5.80 MB (`:1435`) and 2.86 MB (`:1434`). The advice (use Node or Grep, never Read the whole file) stands. | Line lengths. |
+| 22 | CL:434. "The header reads **Universe — 7652 instruments**". | The text is Section 3's description, `` `Universe — ${master.length} instruments.` ``, and with the Sep-2026 data it reads 7682. | `site/index.html:8981`; PRD §7. |
+| 23 | CL:540, 555, 740. The Monitor is named `Daily MF Monitor as on <date>`. | The name drifts monthly. The Sep-2026 file is `Daily MF monitor_30th Sep 2026.xlsx`, with lower-case `monitor` as CL:977 has it. `tools/bake_month.js:30` matches both forms. | `monthly-updates/2026-09_Sep-2026/`. |
+| 24 | CL:561-562, CL:604. The Direct Equity returns file sits at the Desktop root. | It sits at the top of the month folder, e.g. `monthly-updates/2026-09_Sep-2026/Listed Direct Equity_30th Sep 2026.xlsx`. CL:555-556 already said it had moved. Corrected in place. | Folder listing. |
+| 25 | CL:568. The exit-load file is `Exit Load_MF_<Month>.xlsx`. | `_MF` was dropped from Aug-2026 (CL:557), and the Sep file is `Exit Load_Sep 2026.xlsx`. The CL:568 command also has no `--apply`, so as written it is only a dry run. | Folder listing. |
+| 26 | CL:980, CL:993. PMS & AIF Analytics and the Reckoner deck sit at the "(Desktop root)". | They go in the month folder. The handover set has the July copies at `monthly-updates/2026-07_Jul-2026/Analytics/PMS & AIF Analytics July 2026.xlsx` and `monthly-updates/2026-07_Jul-2026/Monthly Investment Reckoner - August 2026.pptx`. Corrected in place. These are missing from the handover set altogether: every `PMS_Scheme_Performance_*`, the September 2026 Reckoner and the August PMS & AIF Analytics (see `docs/INPUT_FILES.md`). | `monthly-updates/_handover_manifest.json`. |
+| 27 | CL:986. The SIF universe is "Jul 2026 (29 schemes incl. Prism)". | The sibling has 30 schemes (CL:987 agrees). Its header names `SIF Master List_June 2026.xlsx` (`:3`), and that is the only SIF Master List in the handover set (`monthly-updates/2026-06_Jun-2026/`). | `site/Centricity_SIF_Refresh.js:3`; manifest. |
+| 28 | CL:608, CL:677. There is no `node_modules`; run `npm install xlsx@0.18.5`. | `package.json` (with `package-lock.json`) pins `xlsx` 0.18.5, and `npm ci` creates `node_modules/`, which is gitignored. Corrected in place. | `package.json`. |
+| 29 | CL:656. `robots.txt` "only stops search engines". | On a project Pages site the file is served at `/Centricity-Proposal-Playbook/robots.txt`, not at the host root where crawlers look, so it probably stops nothing [inference, not tested]. There is no `<meta name="robots">` in `site/index.html:1-3`. D60 accepts this. | `site/robots.txt`; `docs/DECISIONS.md` D60. |
+| 30 | CL:547, CL:700-703, CL:1218-1220. There is no Python. | True only of the outgoing owner's machine. The new one has Python 3.14.4 with pandas, numpy, openpyxl and dateutil, and no `py` launcher. Corrected in place. `tools/build_risk_matrix.py` has not been run here yet. | `python --version` and an import check, 16-Oct-2026. |
+| 31 | CL:915-917. The five SIFs without look-through include Mirae Asset Platinum Hybrid. | Mirae now has an analytics key. The five with no key in any analytics store are Kotak Infinity Hybrid, Quants Qsif Sector Rotation, Franklin Sapphire Equity, Tata Titanium Equity and SBI Magnum Equity Ex-Top 100, all Long-Short funds. PRD §14 item 8 repeats the old list. | vm run (key check). |
+| 32 | CL:816-817. "23 of 28 SIF funds reach equity analytics and 11 of 28 reach debt". | 25 of 30 have an equity or hybrid analytics key, 13 have a `HYBRID_ANALYTICS` key and none has a `DEBT_ANALYTICS` key. Debt reach is therefore at most 13 of 30 [inference: the aggregators were not run]. | vm run (key check). |
+| 33 | CL:77. Every `merge_*.js` tool requires `blocklib`. | 16 tools require `tools/lib/blocklib.js`. Four merge tools do not (`merge_bond_list`, `merge_de_universe`, `merge_direct_equity_returns`, `merge_expense_exitload`), and eight non-merge tools do. | Grep `lib/blocklib` in `tools/`. |
+| 34 | CL:52-80. The files table. | It omits `bake_month.js`, `fill_variant_analytics.js`, `merge_de_universe.js`, `merge_direct_equity_returns.js`, `merge_expense_exitload.js`, `merge_bond_list.js`, `update_market_slides.js`, `robots.txt` and `.gitignore`. `rebuild_directperf.js` rebuilds `DIRECT_PERF` from the Direct monitor with the page's own parser, and this file never mentions it. The full tool list is in PRD §13 and `docs/ARCHITECTURE.md`. | `tools/`; `tools/rebuild_directperf.js:1-4`. |
+| 35 | CL:1190-1222. Open items numbered 1-6, 8, 9, 10, 13, 14, 11, 12, 7. | PRD §14 renumbers them: CL 11 → 3, 13 → 4, 14 → 5, 9 → 6, 10 → 7, 12 → 10, 7 → 11. CL 3 and 4 are dropped (row 9). For CL 2, the old README is archived at `docs/archive/README_original_2026-05.md`, and a new root `README.md` replaces it. The current list is `docs/KNOWN_ISSUES.md`. | PRD §14. |
+| 36 | CL:191, CL:278. The SIF split and the Index Fund fold are dated 21-Aug-2026. | Their commits are dated 25-Aug-2026 ("SIF splits by strategy…", "Index Fund becomes a sub-category…"). 21-Aug is probably when the change was made [inference]. | `git log`; PRD §1 changelog. |
+| 37 | PRD only. "`merge_*.js` (15 scripts)" (PRD §2); the tools "all default to `index.html` beside the script" (PRD §11, §13); Pages served from "`main` / `(root)`" (PRD §5). | There are 12 `merge_*.js` files and 25 Node tools in all, plus `build_risk_matrix.py`. 18 tools default `--html` to `site/index.html`, and 3 default their sibling file into `site/`. `merge_pms_performance.js`, `pin_pms_alias.js` and `merge_reckoner.js` have no default and need `--html site/index.html`. `verify_page.js` takes the folder (`site`). GitHub Actions builds Pages from `site/` (D63). This file makes the same "beside the script" claim at CL:607-608: `merge_direct_equity_returns.js` now defaults to `site/index.html`. | `tools/merge_direct_equity_returns.js:37` and the other tools' default-path lines; `.github/workflows/pages.yml`. |
