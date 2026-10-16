@@ -1,6 +1,6 @@
 # Project state
 
-_Last updated: 16-Oct-2026 — transfer baseline (Stage A) completed; P1 tool fixes in progress._
+_Last updated: 16-Oct-2026 — transfer baseline (Stage A) completed; the three P1 tool fixes (A1, A3, A4) done._
 
 ## Summary
 
@@ -81,7 +81,8 @@ PowerPoint 25 slides with the logo on all 25.
 | Item | Fix | Branch |
 |---|---|---|
 | `KNOWN_ISSUES.md` A1 — Bond List tool read the first sheet as Invictus | `merge_bond_list.js` needs `--desk`; refuses an ambiguous sheet (`d48620e`) | PR #4, merged `1e4b2fc` |
-| `KNOWN_ISSUES.md` A3 — PMS/AIF look-through tool re-dated the MF analytics | `merge_pms_aif_analytics.js` no longer writes `DATA_DATES.analytics` (`71fa58a`, D70) | `fix/pms-aif-analytics-date` |
+| `KNOWN_ISSUES.md` A3 — PMS/AIF look-through tool re-dated the MF analytics | `merge_pms_aif_analytics.js` no longer writes `DATA_DATES.analytics` (`71fa58a`, D70) | PR #5, merged `4fbbad6` |
+| `KNOWN_ISSUES.md` A4 — Reckoner merge had no gate against dropped funds | `merge_reckoner.js` refuses the DROPPED / NO MASTER MATCH mirror, >5% dropped, an emptied category; `--accept-drops <n>` (`2ad7f61`, D71) | `fix/reckoner-drop-gates` |
 
 ## In progress / blockers
 

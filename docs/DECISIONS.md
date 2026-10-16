@@ -87,7 +87,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D53 | — | Refresh procedure: back up, replace one block, verify | Process | Active (amended by D65) |
 | D54 | 20-Aug to 28-Sep-2026 | PMS performance replaced wholesale; pins by hand | Reckoner | Active |
 | D55 | 21-Aug-2026 | AIF performance from the Reckoner deck | Reckoner | Active |
-| D56 | 20-Aug-2026 | Centricity Select from the deck, on 33 fixed categories | Reckoner | Active |
+| D56 | 20-Aug-2026 | Centricity Select from the deck, on 33 fixed categories | Reckoner | Active (amended by D71) |
 | D57 | — | Verify by re-deriving in a `vm`; the rename canary | Process | Active (automated by D63) |
 | D58 | — | Rf = 4.5%, pending desk confirmation | Risk | Open |
 | D59 | — | Check Portfolio Review after a refresh | Process | Active |
@@ -102,6 +102,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D68 | 16-Oct-2026 | Changes go branch → PR → verify → merge | Transfer | Active |
 | D69 | 16-Oct-2026 | `Centricity_Risk_Matrix.js` stays in `site/` for parity | Transfer | Active |
 | D70 | 16-Oct-2026 | `DATA_DATES.analytics` labels the MF analytics only | Analytics | Active |
+| D71 | 16-Oct-2026 | Centricity Select merge refuses join failures and mass drops | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -282,6 +283,27 @@ and the entry says so. "—" means no date is recorded.
   lives only in the docs. `merge_analytics.js` still re-dates all three MF classes when it re-bakes
   one.
 - **Source:** `tools/merge_pms_aif_analytics.js:158-163`, `:168-169`; `site/index.html:1450`.
+
+### D71 · Centricity Select merge refuses join failures and mass drops
+`Active` · 16-Oct-2026 (`2ad7f61`) · **verified in code** · amends D56
+- **Context:** `merge_reckoner.js` wrote any membership whose keys exist in MASTER. A join failure
+  drops a Select entry silently: in Sep-2026, before the `prev_name` tier, the list went 178 -> 160
+  and lost two categories with every gate passing (`KNOWN_ISSUES.md` A4).
+- **Decision:** Three more write gates, which also fail the dry run: (1) no dropped entry whose
+  category also holds a deck name that matched nothing; (2) at most 5% of the current list dropped;
+  (3) no category emptied. `--accept-drops <n>` waives (2) and (3) only when the run drops exactly n,
+  after the owner has read the DROPPED list. (1) is never waived: the fix is a `PIN`,
+  `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry (whose names do not trip it).
+- **Rationale:** Matches the pattern by category, which catches SEBI renames whose names share
+  nothing but the AMC. 5% (8 of 178) clears normal monthly churn (2 drops between the Aug and Sep
+  decks) and stops the Sep-2026 failure (20). Tying the waiver to the exact count makes a re-run
+  with a different result refuse again.
+- **Alternatives / supersedes:** Fuzzy name pairing of DROPPED and NO MASTER MATCH (misses renames
+  like All Seasons Bond -> Dynamic Term); a fixed count; a flag that waives every gate.
+- **Consequences:** A new deck fund with no MASTER record, in a category that also loses a fund,
+  stops the run until the owner decides (it was already a D61 stop). The dry-run exit code is now
+  meaningful for this tool (A2).
+- **Source:** `tools/merge_reckoner.js:5-11` (header), `:184-197`, `:270-289`, `:315-320`.
 
 ---
 
@@ -781,7 +803,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `OPERATING_MANUAL.md:1061-1088`.
 
 #### D56 · Centricity Select from the deck, on 33 fixed categories
-`Active` · 20-Aug-2026 (upstream `d55acea`); `prev_name` resolve 28-Sep-2026 (upstream `b00cb2d`) · **verified in code**
+`Active (amended by D71)` · 20-Aug-2026 (upstream `d55acea`); `prev_name` resolve 28-Sep-2026 (upstream `b00cb2d`) · **verified in code**
 - **Context:** A looser parser created 300 phantom funds; without `prev_name` the Sep-2026 run fell from
   178 to 160 entries.
 - **Decision:** Parse performance grids only. `resolve()` tries name → `prev_name` → normalised forms.
@@ -789,8 +811,10 @@ and the entry says so. "—" means no date is recorded.
   Select category; never auto-add. Write gate: every key exists in MASTER.
 - **Rationale:** A Select badge is a house recommendation, not a data point.
 - **Consequences:** If the DROPPED list mirrors the NO-MATCH list, stop: it is a join failure. A deck
-  product with no MASTER record is a universe change (`add_reckoner_funds.js`).
-- **Source:** `OPERATING_MANUAL.md:1090-1156`; `tools/merge_reckoner.js:138-146, 246, 276`.
+  product with no MASTER record is a universe change (`add_reckoner_funds.js`). Since D71 the tool
+  refuses the mirror, a drop of more than 5% and an emptied category itself.
+- **Source:** `OPERATING_MANUAL.md:1090-1156`; `tools/merge_reckoner.js:146-158, 264, 320` (lines as of
+  D71, which added the drop gates).
 
 ### Risk matrix
 

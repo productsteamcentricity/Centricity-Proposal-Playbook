@@ -35,7 +35,7 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    For each: dry-run → save to `<M>/_review/NN_<tool>_dry.txt` → read every gate → `--apply` → save
    `NN_<tool>_apply.txt`. Shells do not keep variables between calls: set paths in the same command.
    **Stop and ask the owner** (never guess) on: ambiguous or suspicious scheme renames, any
-   `*** AMBIGUOUS`, PMS pin failures, a Reckoner DROPPED list that mirrors the NO-MASTER-MATCH list,
+   `*** AMBIGUOUS`, PMS pin failures, a failed Reckoner drop gate (never add `--accept-drops` without the owner),
    a universe change (step 14a), 0 joins, a wholly empty return column, any FAIL gate, or a count that
    moves for no reason you can explain. Use the `financial-data-reviewer` agent to spot-check scale
    (Monitor percents ÷ 100) and 5–10 sample records against the workbooks.

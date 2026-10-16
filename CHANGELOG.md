@@ -18,6 +18,32 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-16 — Reckoner merge refuses join failures and mass drops (fix/reckoner-drop-gates)
+
+Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output
+as before.
+
+### Fixed
+- `tools/merge_reckoner.js` (`2ad7f61`; `docs/KNOWN_ISSUES.md` A4, now closed; decision D71, which
+  amends D56). Its only write gate was "every key in MASTER", so a join failure that dropped Select
+  funds was written silently (Sep-2026, before the `prev_name` tier: 178 -> 160). New refusal gates,
+  which also make the dry run exit 1:
+  - a dropped Select entry whose category also holds a deck name that matched nothing (never waived);
+  - more than 5% of the current list dropped (8 of 178);
+  - a Select category emptied.
+  - `--accept-drops <n>` waives the last two only when the run drops exactly n, after the owner has
+    read the DROPPED list. `NO_MASTER_NOTE` names count as known gaps. The DROPPED banner no longer
+    names the August deck.
+- Evidence (August-2026 deck, `monthly-updates/2026-07_Jul-2026/`):
+  - Real run on the live site (2 editorial drops): all gates PASS; `tools/dev/rehearse.js` case
+    `reckoner-jul` gives identical output with the old and new tools.
+  - Join failure simulated by stripping `prev_name` from a copy of the page: the old tool wrote
+    178 -> 151 (28 dropped, 5 categories emptied) with exit 0; the new tool refuses on all three
+    gates, even with `--accept-drops 28`, and leaves the copy unchanged.
+  - Ten extra Select entries the deck lacks (12 drops): refused; accepted with `--accept-drops 12`;
+    refused with `--accept-drops 11`. A category the deck no longer fills: refused; accepted with the
+    matching count.
+
 ## 2026-10-16 — PMS/AIF look-through tool leaves the MF analytics date alone (fix/pms-aif-analytics-date)
 
 Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output

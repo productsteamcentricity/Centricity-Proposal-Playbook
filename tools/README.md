@@ -23,11 +23,11 @@ after the move out of the repository root.
    - `verify_page.js` never writes.
    - `build_risk_matrix.py` has no dry run. It always writes the file named by its 4th argument.
    - `tools/lib/reck_parse.js`, run as a command, always writes its 2nd argument.
-3. **Read the gates, not the exit code.** Nine tools exit 0 from a dry run even when a gate failed,
+3. **Read the gates, not the exit code.** Eight tools exit 0 from a dry run even when a gate failed,
    because they enforce their gates only under `--apply`:
    - `bake_month`, `merge_de_universe`, `merge_direct_equity_returns`, `merge_expense_exitload`
    - `rebuild_directperf`
-   - `merge_pms_performance`, `pin_pms_alias`, `merge_reckoner`
+   - `merge_pms_performance`, `pin_pms_alias`
    - `update_market_slides`
 
    `fill_variant_analytics` has no gates at all. The other tools exit 1 from the dry run when a
@@ -170,6 +170,9 @@ line, never off the file name.
     `node tools/pin_pms_alias.js --html site/index.html`
 14. **Centricity Select.**
     `node tools/merge_reckoner.js "$M/Monthly Investment Reckoner - <Month Year>.pptx" --html site/index.html`
+    If a drop gate fails because of the count or an emptied category, and the owner confirms the
+    DROPPED list is the desk's own change, re-run with `--accept-drops <that many>`. A dropped fund
+    whose category also lists an unmatched deck name is never accepted: pin it or use step 14a.
     - **14a. `add_reckoner_funds.js` (on demand).** Only if step 14 lists deck funds with no MASTER
       record (`DECK NAMES WITH NO MASTER MATCH`). This is a universe change, so confirm with the
       owner first. The funds it adds are the ones hard-coded in its `ADD` list (§6).
@@ -218,7 +221,7 @@ writing `site/index.html` writes only the blocks named.
 |---|---|---|---|---|
 | `merge_pms_performance.js` | `PMS_Scheme_Performance_<Month Year>.xlsx`. The sheet is found by its header (`Scheme Name` + `Scheme Return 1 Year`), and 25 columns are required. Also PMS_PERFORMANCE, PMS_PERF_ALIAS and MASTER. | `PMS_PERFORMANCE.pms`, **replaced wholesale** (`aif` and `benchmarks` are carried over). The `REPIN` entries in PMS_PERF_ALIAS. `DATA_DATES.pms`. | `AUM column treated as …` (rupees or crore). The duplicate-row list. `pms N -> M`. The coverage and range GATE lines. The re-pointed pins table: check each 1Y/AUM. The dry run exits 0 on failure. | `node tools/merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "<label>" --html site/index.html` |
 | `pin_pms_alias.js` | PMS_PERF_ALIAS, `PMS_PERFORMANCE.pms` as baked, and the MASTER PMS records. The pins are hard-coded in `PINS`. | PMS_PERF_ALIAS. | Any `*** not in the alias map` or `*** key not in PMS_PERFORMANCE.pms` line: one blocks **all** pins. The per-pin 1Y/3Y/AUM lines. `GATE still pinned null`. The dry run exits 0 on failure. | `node tools/pin_pms_alias.js --html site/index.html` |
-| `merge_reckoner.js` | The Reckoner `.pptx`: its performance grids (8+ columns, presentation order) and its narrative slides. Also CENTRICITY_SELECT, and MASTER (`name`, `prev_name`, `sub_category`). | CENTRICITY_SELECT. | `N -> M (+added, -dropped)`. `GATE categories` must be 33. `RESOLVED VIA prev_name`. `DROPPED` against `DECK NAMES WITH NO MASTER MATCH`. `NEW ENTRIES WITH NO RATIONALE`. The only write gate is that every key is in MASTER. The dry run always exits 0. | `node tools/merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html site/index.html` |
+| `merge_reckoner.js` | The Reckoner `.pptx`: its performance grids (8+ columns, presentation order) and its narrative slides. Also CENTRICITY_SELECT, and MASTER (`name`, `prev_name`, `sub_category`). | CENTRICITY_SELECT. | `N -> M (+added, -dropped)`. `GATE categories` must be 33. `RESOLVED VIA prev_name`. `NEW ENTRIES WITH NO RATIONALE`. Write gates (the dry run exits 1 on any): every key in MASTER; no dropped fund whose category also holds an unmatched deck name; at most 5% dropped; no category emptied (D71). | `node tools/merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html site/index.html [--accept-drops <n>]` |
 | `merge_aif_performance.js` | Two grids in the same `.pptx`: the `AIF PERFORMANCE` grid, and the `PMS – EQUITY` grid (benchmarks with 2Y). Also PMS_PERFORMANCE and the MASTER AIF records. | `PMS_PERFORMANCE.aif`, rebuilt wholesale. `.benchmarks`, only if the count matches. `pms` is left untouched. | The benchmark slide, or `(none — 2Y will be dropped)`. The m-cap sub-header note. The per-fund old→new table. `deck rows with no MASTER AIF record`. Gates: returns within ±100%, m-cap sum ≤ 102%, AIF coverage must not fall. | `node tools/merge_aif_performance.js "<Reckoner .pptx>" [--html <p>]` |
 | `merge_pms_aif_analytics.js` | `PMS & AIF Analytics <Month Year>.xlsx`: first sheet only; `Holding(%)` is a fraction. Also MASTER, EQUITY_ANALYTICS and `var EQ` in `site/Centricity_June_Refresh.js`. | EQUITY_ANALYTICS (the schemes it builds are replaced). Also `var EQ` in `Centricity_June_Refresh.js`, for shared keys. Never `DATA_DATES` (D70). | The `mapped N of M` table (total %). `no MASTER instrument — holdings skipped`. The sibling EQ keys it refreshes. Totals must be 95–105. The coverage gate. The `look-through as on` line, for the update log. | `node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "<label>" [--html <p>]` |
 | `add_reckoner_funds.js` (on demand) | The Reckoner `.pptx`, at the slide numbers hard-coded in `ADD`. Also MASTER, CENTRICITY_SELECT, PMS_PERF_ALIAS, PMS_PERFORMANCE, and `NEW_GIFT` in the June sibling. | MASTER (new records), CENTRICITY_SELECT, PMS_PERF_ALIAS. GIFT City adds also go into `NEW_GIFT` in `Centricity_June_Refresh.js`. | `already in MASTER — skipping` (all four today). Each `=== <fund> ===` block: IRR band and peers, AUM conversion, rationale. `MASTER baseline N -> M`. The dry run exits 1 on failure. | `node tools/add_reckoner_funds.js "<Reckoner .pptx>" [--html <p>]` |
@@ -527,11 +530,16 @@ Only what an operator must know before running each tool. Line references are to
 - The key `'Karma Capital Wealth Builder '` ends with a space on purpose; never trim it.
 
 **merge_reckoner.js**
-- If `DROPPED` and `DECK NAMES WITH NO MASTER MATCH` mirror each other, it is a join failure:
-  **stop**. In Sep-2026 this took the list from 178 to 160. The only write gate is "every key in
-  MASTER", so a lost category passes.
-- `NARRATIVE` (`:67`) is hand-copied from the deck's index slides 2–4 and must be re-read every
-  month. `PIN` (`:92`) holds hand pins. The trailing spaces in `'DEBT AIF '` and
+- A join failure (the deck still lists a fund under a spelling `resolve()` cannot place) drops its
+  Select entry and puts the deck name under `DECK NAMES WITH NO MASTER MATCH`; in Sep-2026 it took
+  the list from 178 to 160. The tool now refuses when a dropped entry's category also holds an
+  unmatched deck name, when more than 5% of the list drops, or when a category is emptied (D71).
+- `--accept-drops <n>` waives only the 5% and emptied-category gates, and only when the run drops
+  exactly n: use it after the owner has read the DROPPED list. The mirror gate is never waived; fix
+  it with a `PIN`, `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry for a fund the owner has
+  decided not to add.
+- `NARRATIVE` (`:77`) is hand-copied from the deck's index slides 2–4 and must be re-read every
+  month. `PIN` (`:102`) holds hand pins. The trailing spaces in `'DEBT AIF '` and
   `'Unlisted Equity '` are deliberate.
 
 **merge_aif_performance.js**

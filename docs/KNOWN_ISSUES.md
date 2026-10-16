@@ -40,17 +40,18 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    ambiguous sheet (A1, closed).
 5. If a PMS & AIF Analytics file arrives, record the look-through as-on the tool prints in the update
    log; it no longer changes the MF analytics date (A3, closed).
-6. Reckoner cycle: compare the DROPPED and NO-MASTER-MATCH lists by hand (A4), and expect to edit the
-   pin maps (A18). Decide the Mosaic and Motilal GIFT City items with the desk (C4, C5).
+6. Reckoner cycle: the tool refuses a DROPPED list that mirrors NO MASTER MATCH, more than 5% of the
+   list dropped, or an emptied category (A4, closed); `--accept-drops <n>` only after the owner has
+   read the DROPPED list. Expect to edit the pin maps (A18). Decide the Mosaic and Motilal GIFT City items with the desk (C4, C5).
 
 ## Summary
 
 | ID | Title | Area | Sev | Status | Next refresh | Where |
 |---|---|---|---|---|---|---|
 | A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`) | — | `tools/merge_bond_list.js:63-91` |
-| A2 | Nine tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 8 more |
+| A2 | Eight tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 7 more |
 | A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`) | — | `tools/merge_pms_aif_analytics.js:158-169` |
-| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Open | **Affects** | `tools/merge_reckoner.js:275-276` |
+| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`) | — | `tools/merge_reckoner.js:270-289` |
 | A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Open | **Affects** | `tools/rename_schemes.js:198`, `:211-213` |
 | A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Open | — | `tools/rename_schemes.js:76`; `site/index.html:3349` |
 | A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Open | — | `tools/bake_month.js:217-306`; `tools/rebuild_directperf.js:92-98` |
@@ -141,7 +142,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Required `--sheet` and `--desk` flags; refuse a multi-sheet workbook without
   `--sheet`; compare maturities with today's date.
 
-### A2. Nine tools exit 0 from a dry run when a gate failed
+### A2. Eight tools exit 0 from a dry run when a gate failed
 **P2 · Open · Affects every refresh**
 
 - **What:** In a dry run these tools exit 0 before they check the failure flag, so a failed gate
@@ -149,7 +150,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Evidence:** the dry-run exit and the refusal on the next line: `tools/bake_month.js:146-147`,
   `merge_de_universe.js:109-110`, `merge_direct_equity_returns.js:182-183`,
   `merge_expense_exitload.js:134-135`, `merge_pms_performance.js:185-186`, `pin_pms_alias.js:60-61`,
-  `merge_reckoner.js:275-276`, `rebuild_directperf.js:89-90`,
+  `rebuild_directperf.js:89-90`,
   `update_market_slides.js:68-69`. `verify_page.js` never exits non-zero on a failed check. By contrast,
   `merge_analytics.js:132`, `merge_risk_matrix.js:193` and `merge_aif_performance.js:183` do exit 1
   from a failed dry run.
@@ -193,7 +194,15 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   stop this tool touching `analytics`.
 
 ### A4. `merge_reckoner.js` has no gate against dropped funds
-**P1 · Open · Affects the Reckoner step**
+**P1 · Closed 16-Oct-2026 (`2ad7f61`) · —**
+
+- **Fixed:** three refusal gates before any write (D71): a dropped Select entry whose category also
+  holds a deck name that matched nothing (never waived); more than 5% of the current list dropped;
+  a Select category emptied. `--accept-drops <n>` waives the last two only when the run drops exactly
+  n. `NO_MASTER_NOTE` names count as known gaps. The dry run exits 1 on a failed gate, and the DROPPED
+  banner no longer names the August deck. On the Aug-2026 deck with `prev_name` stripped (the
+  Sep-2026 failure mode) the old tool wrote 178 -> 151 with every gate passing; the new one refuses.
+  On the real deck both write identical output. The evidence below is the code before the fix.
 
 - **What:** Only one gate (`badKeys`) can block the write. Dropped funds and lost categories are
   printed, never checked, and the dry run exits 0.
@@ -563,8 +572,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   Literal no-break spaces (U+00A0) sit inside regexes at `rename_schemes.js:86`, `:95`,
   `bake_month.js:271`, `merge_risk_matrix.js:108`, `merge_pms_aif_analytics.js:53` and
   `merge_bond_list.js:50`. Trailing spaces are deliberate in keys that match live data:
-  `pin_pms_alias.js:20` (`'Karma Capital Wealth Builder '`), `merge_reckoner.js:73` (`'DEBT AIF '`),
-  `:85` (`'Unlisted Equity '`), `add_reckoner_funds.js:57-58`. `.gitattributes` forces text diffs for
+  `pin_pms_alias.js:20` (`'Karma Capital Wealth Builder '`), `merge_reckoner.js:83` (`'DEBT AIF '`),
+  `:95` (`'Unlisted Equity '`), `add_reckoner_funds.js:57-58`. `.gitattributes` forces text diffs for
   `rename_schemes.js`, which git would otherwise treat as binary.
 - **Impact:** An editor, formatter or "trim trailing whitespace" setting silently changes join keys,
   so renames, pins and Select sheets stop matching.
@@ -960,7 +969,7 @@ refresh.
 `tools/fill_variant_analytics.js:6-7` ("nothing … overwritten"; see A17); `merge_de_universe.js:1`
 ("industry"; A14); `rename_schemes.js:211-212` (A5); `merge_expense_exitload.js:94` (">4%" versus
 8%) and `:136`; `pin_pms_alias.js:1` ("August Reckoner and the July PMS file");
-`merge_reckoner.js:258` ("August Reckoner"); `split_sif_add_mld.js:13`, `:75` (28 versus 30);
+`split_sif_add_mld.js:13`, `:75` (28 versus 30);
 `fold_duplicate_names.js:211-214` (historical since the fold); `rekey_sif_analytics.js:97` (a "GATE"
 that only prints).
 
@@ -972,7 +981,7 @@ that only prints).
 **P3 · Open · —**
 
 Every tool's usage string and header example still reads `node <tool>.js …` (except
-`merge_bond_list.js`, rewritten with A1), for example
+`merge_bond_list.js` and `merge_reckoner.js`, rewritten with A1 and A4), for example
 `tools/rename_schemes.js:13`, `:28`, `bake_month.js:20` and `merge_sif_monitor.js:9`, `:26`.
 `merge_pms_performance.js:18` even names `pms_final.js`, and `site/Centricity_SIF_Refresh.js:17` shows
 `node merge_sif_monitor.js`. The correct forms are `node tools/<tool>.js …`, with
@@ -982,7 +991,7 @@ Every tool's usage string and header example still reads `node <tool>.js …` (e
 ### F2. Unused code in tools
 **P3 · Open · —**
 
-Unused requires: `path` in `merge_pms_performance.js:9`, and `fs` in `merge_reckoner.js:13`,
+Unused requires: `path` in `merge_pms_performance.js:9`, and `fs` in `merge_reckoner.js:21`,
 `merge_aif_performance.js:13` and `fold_index_funds.js:11`. Also: the dead `MISSING` regex
 (`merge_expense_exitload.js:31`); the dead `--pms` flag (`add_reckoner_funds.js:20`); a hard-coded
 "WROTE index.html" log whatever `--html` says (`merge_direct_equity_returns.js:188`);
