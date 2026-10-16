@@ -7,6 +7,9 @@
 // security name and is what the store keys on; `Holding(%)` is a FRACTION (each scheme sums to
 // ~1.0), so everything is scaled by 100 to reach the store's percent scale.
 //
+// --as-on is the workbook's own as-on date. It is printed for the update log and written nowhere:
+// DATA_DATES.analytics belongs to the MF analytics, and the page has no PMS/AIF look-through label.
+//
 // THE ENTRY MUST BE WRITTEN TWICE. Centricity_June_Refresh.js carries its own `EQ` object of 12
 // PMS/AIF look-through records from the May-2026 file and re-assigns them on EVERY page load:
 //     window.EQUITY_ANALYTICS[k] = EQ[k]
@@ -152,14 +155,18 @@ console.log('GATE MASTER PMS/AIF with look-through: ' + before + ' -> ' + after 
 if (after < before) fail = true;
 console.log('GATE EQUITY_ANALYTICS ' + Object.keys(EQ0).length + ' -> ' + Object.keys(next).length);
 
+// --as-on is the look-through's own date. It is NOT written into DATA_DATES.analytics: that label is
+// the as-on date of the MF Equity/Hybrid/Debt analytics (footer, analytics tabs, Excel and deck),
+// set by bake_month.js, and this tool used to overwrite it (KNOWN_ISSUES A3, D70).
+const mfAsOn = (fs.readFileSync(HTML, 'utf8').match(/analytics:\s*"([^"]*)"/) || [])[1];
+console.log('\nlook-through as on ' + ASON + ' — record it in the update log (no page label carries it)');
+console.log('DATA_DATES.analytics stays "' + mfAsOn + '" (the MF analytics date; this tool never changes it)');
+
 if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-B.writeBlocks(HTML, [{ prefix: 'window.EQUITY_ANALYTICS = ', value: next }]);
-let h = fs.readFileSync(HTML, 'utf8');
-h = h.replace(/(analytics:\s*)"[^"]*"/, '$1"' + ASON + '"');
-fs.writeFileSync(HTML, h, 'utf8');
-console.log('\nWROTE ' + HTML + ' — ' + h.length + ' bytes; DATA_DATES.analytics = "' + ASON + '"');
+const bytes = B.writeBlocks(HTML, [{ prefix: 'window.EQUITY_ANALYTICS = ', value: next }]);
+console.log('\nWROTE ' + HTML + ' — ' + bytes + ' bytes; EQUITY_ANALYTICS only, DATA_DATES.analytics untouched');
 
 if (sibOverlap.length) {
   const nextSib = Object.assign({}, sibEQ);
