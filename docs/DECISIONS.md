@@ -8,7 +8,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 **How to read it**
 
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
-  archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026). IDs are never reused.
+  archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
+  tool fixes that followed it. IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
 - **Fields.** Each entry has Context, Decision, Rationale, Alternatives / supersedes, Consequences and
@@ -100,6 +101,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D67 | 16-Oct-2026 | Shared Claude config, package manifest and LF tracked | Transfer | Active |
 | D68 | 16-Oct-2026 | Changes go branch → PR → verify → merge | Transfer | Active |
 | D69 | 16-Oct-2026 | `Centricity_Risk_Matrix.js` stays in `site/` for parity | Transfer | Active |
+| D70 | 16-Oct-2026 | `DATA_DATES.analytics` labels the MF analytics only | Analytics | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -258,6 +260,28 @@ and the entry says so. "—" means no date is recorded.
   known issue in `docs/KNOWN_ISSUES.md` (R5).
 - **Source:** `tools/fold_duplicate_names.js:257-261`; `site/Centricity_Risk_Matrix.js:1`;
   `site/index.html` mentions it only in comments (`:5087-5089`, `:7184`).
+
+---
+
+## Tool-fix decisions (Oct-2026 onward)
+
+### D70 · `DATA_DATES.analytics` labels the MF analytics only
+`Active` · 16-Oct-2026 (`71fa58a`) · **verified in code**
+- **Context:** `merge_pms_aif_analytics.js` wrote its `--as-on` into `DATA_DATES.analytics`, the one
+  "Analytics as on" label that the footer, the analytics tabs, the Excel export and the deck show for
+  the Equity/Hybrid/Debt MF analytics. Run after the bake, it relabelled them (`KNOWN_ISSUES.md` A3).
+- **Decision:** Only the MF analytics tools (`bake_month.js`, `merge_analytics.js`) set
+  `DATA_DATES.analytics`. The look-through tool writes no date: `--as-on` stays required and is
+  printed, and the look-through as-on is recorded in the update log and `docs/PROJECT_STATE.md`.
+- **Rationale:** Fixes the client-facing date without changing page data or UI. No part of the page
+  shows a separate look-through date, so a new key would be written but never read.
+- **Alternatives / supersedes:** A `DATA_DATES.pmsAnalytics` key (the suggestion in A3): page data
+  with no reader, worth adding only with a UI label (a feature). A gate refusing when the two dates
+  differ: they differ in most cycles (the look-through lags), so it would block the step.
+- **Consequences:** Run order against the bake no longer matters for the label. The look-through date
+  lives only in the docs. `merge_analytics.js` still re-dates all three MF classes when it re-bakes
+  one.
+- **Source:** `tools/merge_pms_aif_analytics.js:158-163`, `:168-169`; `site/index.html:1450`.
 
 ---
 

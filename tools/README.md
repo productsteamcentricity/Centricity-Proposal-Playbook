@@ -35,10 +35,10 @@ after the move out of the repository root.
 4. **Back up the six deploy files before the first `--apply` of a run.** They go to
    `backups/<YYYY-MM-DD>_pre-<YYYY-MM>-refresh/` (§2 step 0; `backups/README.md`). Nine tools
    write two files, or the same file twice, with no transaction:
-   - two files: `rename_schemes`, `fold_duplicate_names`, `split_sif_add_mld`, `add_reckoner_funds`
+   - two files: `rename_schemes`, `fold_duplicate_names`, `split_sif_add_mld`, `add_reckoner_funds`,
+     `merge_pms_aif_analytics`
    - the same file twice: `merge_analytics`, `merge_pms_performance`, `merge_risk_matrix`,
      `merge_sif_monitor`
-   - three writes: `merge_pms_aif_analytics`
 
    A failure halfway therefore leaves a half-applied state. Restore with
    `cp backups/<snapshot>/* site/` and run the step again. Do not patch forward.
@@ -176,8 +176,8 @@ line, never off the file name.
       `node tools/add_reckoner_funds.js "$M/Monthly Investment Reckoner - <Month Year>.pptx"`
 15. **AIF performance and benchmarks.** This uses the same deck as step 14.
     `node tools/merge_aif_performance.js "$M/Monthly Investment Reckoner - <Month Year>.pptx"`
-16. **PMS/AIF look-through** (only when the file is supplied). Read the `DATA_DATES.analytics`
-    trap in §6 first.
+16. **PMS/AIF look-through** (only when the file is supplied). Record the `look-through as on` line
+    in the update log; the page has no label for it (D70).
     `node tools/merge_pms_aif_analytics.js "$M/PMS & AIF Analytics <Month Year>.xlsx" --as-on "<that file's as-on>"`
 
 **Finish:**
@@ -220,7 +220,7 @@ writing `site/index.html` writes only the blocks named.
 | `pin_pms_alias.js` | PMS_PERF_ALIAS, `PMS_PERFORMANCE.pms` as baked, and the MASTER PMS records. The pins are hard-coded in `PINS`. | PMS_PERF_ALIAS. | Any `*** not in the alias map` or `*** key not in PMS_PERFORMANCE.pms` line: one blocks **all** pins. The per-pin 1Y/3Y/AUM lines. `GATE still pinned null`. The dry run exits 0 on failure. | `node tools/pin_pms_alias.js --html site/index.html` |
 | `merge_reckoner.js` | The Reckoner `.pptx`: its performance grids (8+ columns, presentation order) and its narrative slides. Also CENTRICITY_SELECT, and MASTER (`name`, `prev_name`, `sub_category`). | CENTRICITY_SELECT. | `N -> M (+added, -dropped)`. `GATE categories` must be 33. `RESOLVED VIA prev_name`. `DROPPED` against `DECK NAMES WITH NO MASTER MATCH`. `NEW ENTRIES WITH NO RATIONALE`. The only write gate is that every key is in MASTER. The dry run always exits 0. | `node tools/merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html site/index.html` |
 | `merge_aif_performance.js` | Two grids in the same `.pptx`: the `AIF PERFORMANCE` grid, and the `PMS – EQUITY` grid (benchmarks with 2Y). Also PMS_PERFORMANCE and the MASTER AIF records. | `PMS_PERFORMANCE.aif`, rebuilt wholesale. `.benchmarks`, only if the count matches. `pms` is left untouched. | The benchmark slide, or `(none — 2Y will be dropped)`. The m-cap sub-header note. The per-fund old→new table. `deck rows with no MASTER AIF record`. Gates: returns within ±100%, m-cap sum ≤ 102%, AIF coverage must not fall. | `node tools/merge_aif_performance.js "<Reckoner .pptx>" [--html <p>]` |
-| `merge_pms_aif_analytics.js` | `PMS & AIF Analytics <Month Year>.xlsx`: first sheet only; `Holding(%)` is a fraction. Also MASTER, EQUITY_ANALYTICS and `var EQ` in `site/Centricity_June_Refresh.js`. | EQUITY_ANALYTICS (the schemes it builds are replaced) and `DATA_DATES.analytics`. Also `var EQ` in `Centricity_June_Refresh.js`, for shared keys. | The `mapped N of M` table (total %). `no MASTER instrument — holdings skipped`. The sibling EQ keys it refreshes. Totals must be 95–105. The coverage gate. | `node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "<label>" [--html <p>]` |
+| `merge_pms_aif_analytics.js` | `PMS & AIF Analytics <Month Year>.xlsx`: first sheet only; `Holding(%)` is a fraction. Also MASTER, EQUITY_ANALYTICS and `var EQ` in `site/Centricity_June_Refresh.js`. | EQUITY_ANALYTICS (the schemes it builds are replaced). Also `var EQ` in `Centricity_June_Refresh.js`, for shared keys. Never `DATA_DATES` (D70). | The `mapped N of M` table (total %). `no MASTER instrument — holdings skipped`. The sibling EQ keys it refreshes. Totals must be 95–105. The coverage gate. The `look-through as on` line, for the update log. | `node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "<label>" [--html <p>]` |
 | `add_reckoner_funds.js` (on demand) | The Reckoner `.pptx`, at the slide numbers hard-coded in `ADD`. Also MASTER, CENTRICITY_SELECT, PMS_PERF_ALIAS, PMS_PERFORMANCE, and `NEW_GIFT` in the June sibling. | MASTER (new records), CENTRICITY_SELECT, PMS_PERF_ALIAS. GIFT City adds also go into `NEW_GIFT` in `Centricity_June_Refresh.js`. | `already in MASTER — skipping` (all four today). Each `=== <fund> ===` block: IRR band and peers, AUM conversion, rationale. `MASTER baseline N -> M`. The dry run exits 1 on failure. | `node tools/add_reckoner_funds.js "<Reckoner .pptx>" [--html <p>]` |
 
 ### Periodic and alternative routes
@@ -543,9 +543,9 @@ Only what an operator must know before running each tool. Line references are to
   PMS_PERFORMANCE.
 
 **merge_pms_aif_analytics.js**
-- It overwrites `DATA_DATES.analytics`, which is the single "Analytics as on" label for the whole
-  page, MF analytics included. If this file's as-on differs from the MF analytics date, stop and
-  decide which label to show (D61).
+- It never writes `DATA_DATES.analytics` (the MF analytics label; D70, `KNOWN_ISSUES.md` A3 closed).
+  `--as-on` is still required: it is printed for the update log, since no page label shows the
+  look-through date.
 - It reads the first sheet only. It also writes `var EQ` in the June sibling. Schemes that are
   absent keep their old look-through. The desk re-issues this file mid-cycle, so re-check the
   scheme count.
