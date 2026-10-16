@@ -1,10 +1,15 @@
 // PERIODIC: replace one Bonds desk sub-list in window.MASTER from a Bond List workbook.
-// Set DESK below to the sub_category being refreshed ("Invictus" / "OneDigital"); every other
-// desk is left byte-for-byte alone and a gate enforces that.
+// --desk names the sub_category being refreshed ("Invictus" / "OneDigital"); every other desk is
+// left byte-for-byte alone and a gate enforces that.
 //
-//   node merge_bond_list.js "<Bond List_<date>.xlsx>"            # dry run
-//   node merge_bond_list.js "<Bond List_<date>.xlsx>" --apply    # writes index.html
-//   ... [--html <path>]   defaults to ../site/index.html (the dashboard)
+//   node tools/merge_bond_list.js "<Bond List_<date>.xlsx>" --desk Invictus            # dry run
+//   node tools/merge_bond_list.js "<Bond List_<date>.xlsx>" --desk Invictus --apply    # writes index.html
+//   ... [--sheet "<tab name>"] [--html <path>]   --html defaults to ../site/index.html (the dashboard)
+//
+// Which sheet: --sheet if given; else the workbook's only sheet; else the one sheet whose tab name
+// contains the desk ("Invictus Bonds Options"). Anything else is refused as ambiguous, and so is a
+// tab whose name contains a different desk. The Jun-2026 workbook carries both desks, OneDigital
+// first; this tool used to load whichever sheet came first and label it Invictus.
 //
 // Expected sheet layout (row 1-2 are a two-tier merged header, data from row 3):
 //   B Issuer | C Rating | D/E Expected Pre Tax IRR (low/high) | F Maturity Date | H Residual Tenor
@@ -26,30 +31,75 @@ const path = require('path');
 const XLSX = require('xlsx');
 
 const argv = process.argv.slice(2);
-let APPLY = false, SRC = null, HTML = null;
+let APPLY = false, SRC = null, HTML = null, SHEET = null, DESK_ARG = null;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === '--apply') { APPLY = true; continue; }
   if (a === '--html') { HTML = argv[++i] || null; continue; }
+  if (a === '--sheet') { SHEET = argv[++i] || null; continue; }
+  if (a === '--desk') { DESK_ARG = argv[++i] || null; continue; }
   if (a.startsWith('--')) { console.error('unknown flag: ' + a); process.exit(2); }
   if (SRC === null) SRC = a;
 }
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
-if (!SRC || !fs.existsSync(SRC)) { console.error('Usage: node merge_bond_list.js "<Bond List.xlsx>" [--apply] [--html <index.html>]'); process.exit(2); }
+const USAGE = 'Usage: node tools/merge_bond_list.js "<Bond List.xlsx>" --desk <Invictus|OneDigital> [--sheet "<tab name>"] [--apply] [--html <index.html>]';
+if (!SRC || !fs.existsSync(SRC)) { console.error(USAGE); process.exit(2); }
 if (!fs.existsSync(HTML)) { console.error('*** index.html not found: ' + HTML); process.exit(2); }
 
-// Which Bonds sub_category this workbook represents. Every other desk is left untouched.
-const DESK = 'Invictus';
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const clean = s => String(s == null ? '' : s).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 const serialToDate = n => new Date(Date.UTC(1899, 11, 30) + Number(n) * 86400000);
 const fmtDate = d => `${d.getUTCDate()}-${MON[d.getUTCMonth()]}-${d.getUTCFullYear()}`;
 
-// --- read ---
+// --- MASTER (read first: the desks that exist decide what --desk may name) ---
+const html = fs.readFileSync(HTML, 'utf8');
+const lines = html.split('\n');
+const li = lines.findIndex(l => l.startsWith('<script>window.MASTER = '));
+if (li < 0) { console.error('*** MASTER line not found'); process.exit(1); }
+const line = lines[li];
+const a = line.indexOf('['), z = line.lastIndexOf(']');
+const master = JSON.parse(line.slice(a, z + 1));
+
+// --- which desk, which sheet: stated, never assumed ---
+const DESKS = [...new Set(master.filter(r => r.product_class === 'Bonds').map(r => r.sub_category))];
+const DESK = DESKS.find(d => DESK_ARG && d.toLowerCase() === DESK_ARG.toLowerCase());
+if (!DESK) {
+  console.error(DESK_ARG ? `*** --desk "${DESK_ARG}" is not a Bonds desk in MASTER` : '*** --desk is required');
+  console.error(`    Bonds desks in MASTER: ${DESKS.join(', ')}\n${USAGE}`);
+  process.exit(2);
+}
 const wb = XLSX.readFile(SRC, { cellDates: false });
-const ws = wb.Sheets[wb.SheetNames[0]];
+const desksIn = tab => DESKS.filter(d => tab.toLowerCase().includes(d.toLowerCase()));
+let sheetName = null;
+if (SHEET !== null) sheetName = wb.SheetNames.includes(SHEET) ? SHEET : null;
+else if (wb.SheetNames.length === 1) sheetName = wb.SheetNames[0];
+else {
+  const m = wb.SheetNames.filter(n => desksIn(n).includes(DESK));
+  if (m.length === 1) sheetName = m[0];
+}
+if (!sheetName) {
+  console.error(SHEET !== null ? `*** no sheet named "${SHEET}" in ${path.basename(SRC)}`
+    : `*** ${path.basename(SRC)} has ${wb.SheetNames.length} sheets and no single one is named for ${DESK} — pass --sheet`);
+  console.error('    sheets: ' + wb.SheetNames.map(n => `"${n}"`).join(', '));
+  process.exit(2);
+}
+const named = desksIn(sheetName);
+if (named.length && !(named.length === 1 && named[0] === DESK)) {
+  console.error(`*** sheet "${sheetName}" is named for ${named.join(' / ')}, but --desk is ${DESK} — refusing`);
+  process.exit(2);
+}
+console.log(`desk ${DESK}   sheet "${sheetName}" (${wb.SheetNames.length} in workbook)`);
+
+// --- read ---
+const ws = wb.Sheets[sheetName];
 const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null, raw: true });
 const C = { NAME: 1, RATING: 2, IRR_LO: 3, IRR_HI: 4, MAT: 5, TENOR: 7 };
+const hdr = (aoa[0] || []).map(clean);
+if (!(/^issuer$/i.test(hdr[C.NAME]) && /^rating$/i.test(hdr[C.RATING]) && /irr/i.test(hdr[C.IRR_LO]) && /^maturity/i.test(hdr[C.MAT]))) {
+  console.error(`*** sheet "${sheetName}" row 1 is not the Bond List header (B Issuer, C Rating, D Expected Pre Tax IRR, F Maturity Date) — layout changed, aborting`);
+  console.error('    row 1: ' + JSON.stringify(aoa[0] || []));
+  process.exit(1);
+}
 
 const rows = [];
 for (let i = 2; i < aoa.length; i++) {
@@ -61,7 +111,7 @@ for (let i = 2; i < aoa.length; i++) {
   if (!isFinite(lo)) { console.log(`  ! row ${i + 1} has no IRR, skipped: ${nm}`); continue; }
   rows.push({ excelRow: i + 1, name: nm, rating: clean(r[C.RATING]), lo, hi: isFinite(hi) ? hi : lo, mat: r[C.MAT], tenor: r[C.TENOR] });
 }
-console.log(`parsed ${rows.length} bond rows from ${path.basename(SRC)}\n`);
+console.log(`parsed ${rows.length} bond rows from ${path.basename(SRC)} [${sheetName}]\n`);
 
 // --- maturity: prefer the date embedded in the NAME (the source's date cell has a history of a
 //     century typo, 2030 stored as 1930). Cross-check the two and report any disagreement. ---
@@ -136,7 +186,7 @@ for (const [, list] of groups) {
 }
 console.log(`\n${rows.length} rows -> ${picked.length} unique bonds (${rows.length - picked.length} duplicate row(s) dropped)\n`);
 
-// --- build records in the shape the existing Invictus rows use ---
+// --- build records in the shape the existing desk rows use ---
 const normRating = r => { const v = clean(r); return /^sov$/i.test(v) ? 'SOV' : v.toUpperCase(); };
 const built = picked.map(b => {
   const nm = `${b.name} (${DESK})`;
@@ -159,19 +209,11 @@ const built = picked.map(b => {
   };
 });
 
-// --- splice into the MASTER block ---
-const html = fs.readFileSync(HTML, 'utf8');
-const lines = html.split('\n');
-const li = lines.findIndex(l => l.startsWith('<script>window.MASTER = '));
-if (li < 0) { console.error('*** MASTER line not found'); process.exit(1); }
-const line = lines[li];
-const a = line.indexOf('['), z = line.lastIndexOf(']');
-const master = JSON.parse(line.slice(a, z + 1));
-
+// --- splice into the MASTER block (read at the top) ---
 const before = master.filter(r => r.product_class === 'Bonds');
 const oldInv = before.filter(r => r.sub_category === DESK);
 const oneDigitalBefore = before.filter(r => r.sub_category !== DESK).map(r => r.name);
-console.log(`MASTER baseline ${master.length}; Bonds ${before.length} (Invictus ${oldInv.length}, other ${before.length - oldInv.length})`);
+console.log(`MASTER baseline ${master.length}; Bonds ${before.length} (${DESK} ${oldInv.length}, other ${before.length - oldInv.length})`);
 
 const firstIdx = master.findIndex(r => r.product_class === 'Bonds' && r.sub_category === DESK);
 const kept = master.filter(r => !(r.product_class === 'Bonds' && r.sub_category === DESK));
@@ -190,24 +232,29 @@ const odSame = od.length === oneDigitalBefore.length && od.every((n, i) => n ===
 console.log(`GATE other bond desks untouched: ${odSame ? 'PASS (' + od.length + ' rows)' : '*** FAIL'}`);
 if (!odSame) fail = true;
 
-console.log(`GATE MASTER count: ${master.length} -> ${next.length}  (Invictus ${oldInv.length} -> ${built.length})`);
+console.log(`GATE MASTER count: ${master.length} -> ${next.length}  (${DESK} ${oldInv.length} -> ${built.length})`);
 const badIrr = built.filter(r => !(r.irr_low > 0 && r.irr_low < 0.30 && r.irr_high >= r.irr_low));
 console.log(`GATE IRR sane (0-30%, high>=low): ${badIrr.length ? '*** FAIL: ' + badIrr.map(r => r.name).join(' | ') : 'PASS'}`);
 if (badIrr.length) fail = true;
-// Every bond must carry a maturity, and it must be in the future — a past date means the
-// century typo slipped through or the row is stale.
+// Every bond must carry a maturity, and it must be after today — a past date means the century
+// typo slipped through or the row is stale. (built[i] is picked[i], so picked[i].date is its date.)
+const now = new Date(), today = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
 const yearOf = r => { const m = r.exit_load.match(/-(\d{4})\)$/); return m ? +m[1] : null; };
-const badDate = built.filter(r => { const y = yearOf(r); return y === null || y < 2026; });
-console.log(`GATE maturity present and not in the past: ${badDate.length ? '*** FAIL: ' + badDate.map(r => `${r.name} [${r.exit_load}]`).join(' | ') : 'PASS'}`);
+const badDate = built.filter((r, i) => !picked[i].date || picked[i].date < today);
+console.log(`GATE maturity present and not before today (${fmtDate(today)}): ${badDate.length ? '*** FAIL: ' + badDate.map(r => `${r.name} [${r.exit_load}]`).join(' | ') : 'PASS'}`);
 if (badDate.length) fail = true;
 const yrs = built.map(yearOf).filter(Boolean);
 console.log(`GATE maturity range: ${Math.min(...yrs)} .. ${Math.max(...yrs)}`);
 console.log(`GATE ratings: ${[...new Set(built.map(r => r.bond_rating))].join(', ')}`);
 
-console.log('\n--- new Invictus list ---');
+console.log(`\n--- new ${DESK} list ---`);
 built.forEach((r, i) => console.log(`  ${String(i + 1).padStart(2)}. ${r.bond_rating.padEnd(4)} ${(r.irr_high * 100).toFixed(2).padStart(6)}%  ${r.exit_load.replace(/^Hold-to-maturity \(?|\)$/g, '').padEnd(12)}  ${r.name}`));
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write index.html'); process.exit(0); }
+if (!APPLY) {
+  console.log('\n[dry run] pass --apply to write index.html');
+  if (fail) console.error('*** a gate failed — --apply would refuse');
+  process.exit(fail ? 1 : 0);
+}
 if (fail) { console.error('\n*** a gate failed — refusing to write'); process.exit(1); }
 lines[li] = line.slice(0, a) + JSON.stringify(next) + line.slice(z + 1);
 const out = lines.join('\n');

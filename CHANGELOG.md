@@ -18,6 +18,25 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-16 — Bond List tool names its desk and sheet (fix/bond-list-sheet-desk)
+
+Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output
+as before.
+
+### Fixed
+- `tools/merge_bond_list.js` (`d48620e`; `docs/KNOWN_ISSUES.md` A1, now closed). It read only the first
+  worksheet and labelled every row Invictus from a constant; the Jun-2026 workbook has the OneDigital
+  sheet first, and no gate would have caught the swap.
+  - `--desk Invictus|OneDigital` is required and must be a Bonds desk already in MASTER.
+  - The sheet is `--sheet`, else the only sheet, else the one tab named for the desk. An ambiguous
+    workbook, a missing tab, or a tab named for the other desk is refused (exit 2).
+  - Row 1 must be the Bond List header; the maturity gate compares with today instead of the year
+    2026; the dry run exits 1 when a gate failed.
+  - Dry runs on `Bond List_08th June 2026.xlsx`: before, the OneDigital sheet loaded as Invictus
+    (Invictus 36 -> 14, all gates PASS). After, no `--desk` is refused; `--desk Invictus` takes
+    `Invictus Bonds Options`; `--desk OneDigital` reproduces today's 14 OneDigital rows (two `irr_low`
+    values differ only by float noise).
+
 ## 2026-10-16 — First publish from the new repository
 
 - PR #1 merged as `25e71a3`; Actions run 38866042211 (`verify` + `publish`) succeeded. The live site

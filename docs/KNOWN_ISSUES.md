@@ -36,7 +36,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    `verify_page.js` hides some script errors (A23).
 3. Start from a clean git tree, snapshot the six deploy files into `backups/`, and keep OneDrive from
    syncing mid-run (A8, R6).
-4. Do not run `merge_bond_list.js` until A1 is handled.
+4. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
+   ambiguous sheet (A1, closed).
 5. If a PMS & AIF Analytics file arrives, mind the analytics date (A3).
 6. Reckoner cycle: compare the DROPPED and NO-MASTER-MATCH lists by hand (A4), and expect to edit the
    pin maps (A18). Decide the Mosaic and Motilal GIFT City items with the desk (C4, C5).
@@ -45,8 +46,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 
 | ID | Title | Area | Sev | Status | Next refresh | Where |
 |---|---|---|---|---|---|---|
-| A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Open | **Blocks** a Bond List run | `tools/merge_bond_list.js:42`, `:50` |
-| A2 | Ten tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 9 more |
+| A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`) | — | `tools/merge_bond_list.js:63-91` |
+| A2 | Nine tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 8 more |
 | A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Open | **Affects** | `tools/merge_pms_aif_analytics.js:160` |
 | A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Open | **Affects** | `tools/merge_reckoner.js:275-276` |
 | A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Open | **Affects** | `tools/rename_schemes.js:198`, `:211-213` |
@@ -54,7 +55,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Open | — | `tools/bake_month.js:217-306`; `tools/rebuild_directperf.js:92-98` |
 | A8 | Writes are in place, non-atomic and without backup | Tools | P2 | Open | **Affects** | `tools/lib/blocklib.js:47` |
 | A9 | Date labels spliced in unescaped, by first match | Tools | P2 | Open | **Affects** | `tools/bake_month.js:169-170` |
-| A10 | Two tools find MASTER by physical line | Tools | P2 | Open | — | `tools/merge_direct_equity_returns.js:131`; `tools/merge_bond_list.js:165` |
+| A10 | Two tools find MASTER by physical line | Tools | P2 | Open | — | `tools/merge_direct_equity_returns.js:131`; `tools/merge_bond_list.js:57` |
 | A11 | DE returns join deletes returns the file lacks | Tools: DE | P2 | Open | **Affects** | `tools/merge_direct_equity_returns.js:152-155` |
 | A12 | Expense tool: hard-coded sample fund, gate that cannot fail | Tools: expense | P2 | Open | **Affects** | `tools/merge_expense_exitload.js:128-132` |
 | A13 | Header assumed on row 1 (DE universe, fund managers) | Tools | P2 | Open | **Affects** | `tools/merge_de_universe.js:29`; `tools/merge_fund_managers.js:38` |
@@ -114,7 +115,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 ## A. Data-integrity risks in tools
 
 ### A1. `merge_bond_list.js` loads the first sheet and labels it Invictus
-**P1 · Open · Blocks a Bond List run**
+**P1 · Closed 16-Oct-2026 (`d48620e`) · —**
+
+- **Fixed:** `--desk` is required and must be a Bonds desk already in MASTER; the sheet is `--sheet`,
+  else the only sheet, else the one tab named for the desk, and anything else (or a tab named for
+  the other desk) is refused. Row 1 must be the Bond List header, the maturity gate compares with
+  today, and a dry run exits 1 on a failed gate. The evidence below is the code before the fix.
 
 - **What:** The tool reads only the first worksheet and names every bond `<name> (Invictus)` with
   `sub_category` Invictus. The desk is a hard-coded constant, not a flag.
@@ -134,7 +140,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Required `--sheet` and `--desk` flags; refuse a multi-sheet workbook without
   `--sheet`; compare maturities with today's date.
 
-### A2. Ten tools exit 0 from a dry run when a gate failed
+### A2. Nine tools exit 0 from a dry run when a gate failed
 **P2 · Open · Affects every refresh**
 
 - **What:** In a dry run these tools exit 0 before they check the failure flag, so a failed gate
@@ -142,7 +148,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Evidence:** the dry-run exit and the refusal on the next line: `tools/bake_month.js:146-147`,
   `merge_de_universe.js:109-110`, `merge_direct_equity_returns.js:182-183`,
   `merge_expense_exitload.js:134-135`, `merge_pms_performance.js:185-186`, `pin_pms_alias.js:60-61`,
-  `merge_reckoner.js:275-276`, `merge_bond_list.js:210-211`, `rebuild_directperf.js:89-90`,
+  `merge_reckoner.js:275-276`, `rebuild_directperf.js:89-90`,
   `update_market_slides.js:68-69`. `verify_page.js` never exits non-zero on a failed check. By contrast,
   `merge_analytics.js:132`, `merge_risk_matrix.js:193` and `merge_aif_performance.js:183` do exit 1
   from a failed dry run.
@@ -267,7 +273,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   `merge_pms_aif_analytics.js:158,161,167`; `merge_risk_matrix.js:197` then `:203-210` (if the
   `riskMatrix` line is missing it exits after writing the new matrix under the old date, `:206`);
   `merge_sif_monitor.js:108` then `:110-114` (same pattern for `DATA_DATES.sif`);
-  `add_reckoner_funds.js:216,233`; `fold_duplicate_names.js:265,267`. `merge_bond_list.js:22` and the
+  `add_reckoner_funds.js:216,233`; `fold_duplicate_names.js:265,267`. `merge_bond_list.js:27` and the
   runbooks ask for a manual backup, but no tool makes one. blocklib's `</html>` guard applies only
   to HTML input (`:42`, `:46`), so writes to the sibling `.js` files have no end-of-file check.
 - **Impact:** A crash, a full disk or a OneDrive sync clash mid-write can truncate the 12.8 MB page,
@@ -301,7 +307,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 **P2 · Open · —**
 
 - **What and evidence:** `tools/merge_direct_equity_returns.js:131-135`, `:184` and
-  `tools/merge_bond_list.js:165-168`, `:212` look for a line starting `<script>window.MASTER = ` and
+  `tools/merge_bond_list.js:56-61`, `:259` look for a line starting `<script>window.MASTER = ` and
   slice from its first `[` to its last `]`. That holds today (`site/index.html:1434`).
 - **Impact:** Reformatting `index.html` (MASTER no longer on its own line, or anything containing `]`
   after the array on that line) breaks these tools or corrupts MASTER.
@@ -548,7 +554,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **What and evidence:** A NUL byte is the tier-3 key separator in `tools/rename_schemes.js:146`.
   Literal no-break spaces (U+00A0) sit inside regexes at `rename_schemes.js:86`, `:95`,
   `bake_month.js:271`, `merge_risk_matrix.js:108`, `merge_pms_aif_analytics.js:50` and
-  `merge_bond_list.js:44`. Trailing spaces are deliberate in keys that match live data:
+  `merge_bond_list.js:50`. Trailing spaces are deliberate in keys that match live data:
   `pin_pms_alias.js:20` (`'Karma Capital Wealth Builder '`), `merge_reckoner.js:73` (`'DEBT AIF '`),
   `:85` (`'Unlisted Equity '`), `add_reckoner_funds.js:57-58`. `.gitattributes` forces text diffs for
   `rename_schemes.js`, which git would otherwise treat as binary.
@@ -957,7 +963,8 @@ that only prints).
 ### F1. Usage text shows pre-move commands
 **P3 · Open · —**
 
-Every tool's usage string and header example still reads `node <tool>.js …`, for example
+Every tool's usage string and header example still reads `node <tool>.js …` (except
+`merge_bond_list.js`, rewritten with A1), for example
 `tools/rename_schemes.js:13`, `:28`, `bake_month.js:20` and `merge_sif_monitor.js:9`, `:26`.
 `merge_pms_performance.js:18` even names `pms_final.js`, and `site/Centricity_SIF_Refresh.js:17` shows
 `node merge_sif_monitor.js`. The correct forms are `node tools/<tool>.js …`, with
@@ -973,7 +980,7 @@ Unused requires: `path` in `merge_pms_performance.js:9`, and `fs` in `merge_reck
 "WROTE index.html" log whatever `--html` says (`merge_direct_equity_returns.js:188`);
 `Math.min/max(...)` over about 30k values (`merge_direct_equity_returns.js:175`, which fails above
 roughly 100k); a tenor column read but unused, and `Infinity` printed on an empty list
-(`merge_bond_list.js:62`, `:204`); an ambiguous `clen` that holds the file-comment length, not a compressed length
+(`merge_bond_list.js:112`, `:247`); an ambiguous `clen` that holds the file-comment length, not a compressed length
 (`tools/lib/pptx.js:9`).
 
 ### F3. Browser request for `favicon.ico` returns 404

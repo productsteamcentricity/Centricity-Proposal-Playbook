@@ -1104,7 +1104,7 @@ All tools are dry-run unless `--apply` is passed. All default to `index.html` be
 | merge_aif_performance.js | `<Reckoner.pptx> [--apply]` |
 | add_reckoner_funds.js | `<Reckoner.pptx> --pms <PMS perf.xlsx> --html index.html [--apply]` (universe change) |
 | merge_pms_aif_analytics.js | `<PMS & AIF Analytics.xlsx> --as-on "<date>" [--apply]` |
-| merge_bond_list.js | `<Bond List.xlsx> [--apply]` |
+| merge_bond_list.js | `<Bond List.xlsx> --desk <Invictus\|OneDigital> [--sheet "<tab>"] [--apply]` |
 | fold_duplicate_names.js | `--monitor <MF Monitor.xlsx> [--apply]` (idempotent) |
 | fold_index_funds.js / split_sif_add_mld.js | `[--apply]` (one-off, idempotent) |
 | update_market_slides.js | `--slides <dir of slide1..N.jpg> [--js] [--apply]` |

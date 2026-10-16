@@ -441,11 +441,13 @@ exceptions are noted under their files:
   | (blank) | Maturity Date | Secured/ Unsecured | Residual Tenor (months) | Interest Frequency |
   Face Value`. Row 2 has a `Range` sub-header with the low and high IRR in columns D and E. Data
   starts on row 3.
-- **Use:** `merge_bond_list.js` reads **only the first sheet**, at fixed column positions, and loads
-  it as the **Invictus** desk (`:42`, `:50-52`). In the June file the first sheet is OneDigital. Both
-  sheets held identical rows, so no harm was done. Always ask which sheet is which desk (see
-  `KNOWN_ISSUES.md` A1).
-- **Units:** IRR as a fraction. The gate requires 0 < low < 0.30 (`:194`). Maturity is an Excel
+- **Use:** `merge_bond_list.js --desk <Invictus|OneDigital>` reads one sheet, at fixed column
+  positions: `--sheet` if given, else the only sheet, else the one tab whose name contains the desk.
+  It refuses an ambiguous workbook and a tab named for the other desk (`KNOWN_ISSUES.md` A1, closed
+  16-Oct-2026). Until then it read only the first sheet as Invictus; in the June file that is
+  OneDigital, but both sheets held identical rows, so no harm was done. Still ask the desk which
+  sheet is which.
+- **Units:** IRR as a fraction. The gate requires 0 < low < 0.30 (`:236`). Maturity is an Excel
   serial, and the source has a recurring century typo (2030 stored as 1930). The date embedded in
   the issuer name wins. The same bond can appear in two formats, so rows are deduplicated on issuer
   and maturity.
