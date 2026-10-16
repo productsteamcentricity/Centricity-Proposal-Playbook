@@ -4,8 +4,33 @@
 *.xlsm
 *.xls
 *.xlsb
+*.csv
+*.ppt
+*.pptm
+*.doc
+*.rar
+*.msg
+*.eml
+.env
+.env.*
 uploads/
 inputs/
+
+# --- Local-only workspace folders (sensitive or bulky; only their README files are tracked) ---
+# monthly-updates/  the owner drops each month's source files into 00_INBOX/; processed months are archived beside it
+# backups/          snapshots of the six deploy files taken before every refresh
+# handover-archive/ the zips and PRD exactly as received from the outgoing owner
+monthly-updates/*
+!monthly-updates/README.md
+!monthly-updates/00_INBOX/
+monthly-updates/00_INBOX/*
+!monthly-updates/00_INBOX/README.md
+backups/*
+!backups/README.md
+handover-archive/*
+!handover-archive/README.md
+*.zip
+*.7z
 
 # --- Dashboard backups / broken states from local builds ---
 # NOTE: "*.bak" matches only names ENDING in .bak, so the dated snapshots
@@ -20,7 +45,13 @@ inputs/
 *.tmp
 
 # --- Local tooling / scratch ---
-.claude/
+# .claude/ is local except the shared project config: agents, skills (slash commands),
+# the preview server and its launch config. settings.local.json stays private.
+.claude/*
+!.claude/agents/
+!.claude/skills/
+!.claude/serve.js
+!.claude/launch.json
 node_modules/
 _testdata/
 

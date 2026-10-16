@@ -1,83 +1,68 @@
-# Centricity Proposal Dashboard
+# Centricity Investment Proposal Dashboard ("Proposal Playbook")
 
-Internal investment-proposal tool for the Centricity Products team. Builds Investment Proposals, deployment plans and analytics for HNI / UHNI / Family Office clients across MF, ETF, Index, PMS, AIF, SIF, Bonds, REITs and Gift City products.
+An internal tool for the Centricity Products team to build forward-looking investment proposals for
+HNI, UHNI and Family Office clients: set a corpus and risk profile, pick instruments from a universe
+of ~7,700 (MF, Index, ETF, PMS, AIF, SIF, Bonds, MLD, FD, REIT/InvIT, GIFT City, Offshore, listed and
+unlisted equity), allocate to 100%, review live analytics, and export a branded **PowerPoint** and
+**Excel**.
 
-**Live URL:** `https://<your-github-username>.github.io/<repo-name>/`
+**Live dashboard:** https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/
 
-> Anyone who has this link can use the dashboard. Do not share it outside the Products team or beyond the wealth-management organisation.
+> Share the link only inside the Products team / wealth organisation. The repository is public, so
+> the fund universe and research content are readable by anyone who finds it (owner decision,
+> `docs/DECISIONS.md` D60). It contains no client names or contact details; one historical spec in
+> `docs/specs/` describes a sample client portfolio with names and figures removed
+> (`docs/KNOWN_ISSUES.md` R1).
 
----
+## Using the dashboard
 
-## For team members (using the dashboard)
+1. Open the live link in Chrome or Edge (desktop).
+2. Section 1 – set the corpus (₹ Cr or ₹ Lakhs); Section 2 – choose the risk profile.
+3. Section 3 – pick instruments. The gold **★ Centricity Select** chip marks the house shortlist;
+   click it for risk ratios and the shortlisting rationale.
+4. Section 4 – set allocations. PMS / AIF minimum tickets are enforced (₹50 L PMS, ₹1 Cr AIF and
+   Neo Yield Enhancer, ₹5 Cr Campus Fund). Downloads unlock at exactly 100% with no minimum breached.
+5. Section 6 – nine live output tabs; download the full PowerPoint / Excel or a single slide.
+6. The left rail (Data Refresh) lets you load a newer MF Monitor for **your session only**. Nothing
+   you do is saved or shared; every page load starts from the same published data.
 
-1. Open the live URL above in Chrome or Edge.
-2. Set the client's corpus and risk profile in Sections 1 and 2.
-3. Pick funds in Section 3. The gold **Centricity Select** chip marks the firm's shortlisted picks for each sub-category — click the chip to see the risk-reward ratios (Sharpe, Sortino, Beta, Std Dev, Alpha) for mutual funds, or the Reckoner-style detail card (target return, minimum investment, fund structure, fee structure, etc.) for PMS, AIF, SIF and Gift City products. Shortlisting parameters appear at the bottom of every popover.
-4. Adjust allocations in Section 4. PMS / AIF rows enforce their regulatory minimum (`₹50 L` for PMS, `₹1 Cr` for AIF, `₹1 Cr` for Neo Yield Enhancer, `₹5 Cr` for Campus Fund III) — the stepper will not let you go below it. If the corpus is too small to accommodate the minimum, the Add button is disabled.
-5. Section 7 — Data Refresh — lets you drop in the latest **MF Monitor** xlsx for your session if your performance numbers need to be more current than the dashboard's embedded base. **This refresh applies only to your browser session** and is reset when you close the tab. It does not affect the dashboard for anyone else.
-6. Download the proposal as Excel or PowerPoint when 100% is allocated. Both files land in your local Downloads folder.
+Data dates are shown in the footer ("Performance as on … & Analytics as on …").
 
-Nothing you do in the browser is shared back to anyone else. Every user gets a clean copy of the dashboard each time they open the page.
+## Monthly data refresh (for the owner)
 
-### Need fresher base data?
+1. Drop the month's source files into `monthly-updates/00_INBOX/` (list in that folder's README).
+2. In Claude Code (opened on this folder), type `/monthly-update <Month YYYY>`, naming the month the
+   data is *as on* (end-October data → `October 2026`). Most months need two runs: the MF files after
+   month-end, then the Reckoner files later in the month.
+3. Claude checks, updates, verifies, documents and publishes, then reports back.
 
-Base data (the underlying universe, the analytics, the Centricity Select picks) is refreshed by the Products admin once a month. If a fund is missing or your numbers look stale, ping the admin (see below).
+Full process, responsibilities and file list: [`docs/MONTHLY_UPDATE_PROCESS.md`](docs/MONTHLY_UPDATE_PROCESS.md).
 
----
+## Folder layout
 
-## For the admin (refreshing base data)
+```
+site/              the dashboard (published to GitHub Pages) — six files must always ship together
+tools/             monthly data-refresh tools (Node; dry-run by default)  · tools/lib/ shared libraries
+docs/              all documentation — start at docs/README.md
+.claude/           Claude Code agents, skills (/monthly-update, /verify-dashboard), local preview server
+.github/workflows/ automatic verification + publishing
+monthly-updates/   (local only, never pushed) 00_INBOX + one folder per data month
+backups/           (local only) snapshots taken before each refresh
+handover-archive/  (local only) the original handover files, unchanged
+```
 
-You are the only person with push access to this repo, so you are the only one who can refresh the base data the team sees.
+## For developers
 
-### Monthly refresh — what changes
+No build step and no backend: `site/index.html` is a precompiled React 18 page with its data
+embedded; five sibling scripts patch that data at load. Start with
+[`docs/HANDOVER.md`](docs/HANDOVER.md), then [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and
+[`CLAUDE.md`](CLAUDE.md).
 
-| What | Source | Refresh cadence |
-|---|---|---|
-| `MASTER` (universe + performance) | `Daily MF monitor_*.xlsx` | every 15 days |
-| `EQUITY_ANALYTICS` | `Equity Analytics_*.xlsx` | monthly |
-| `HYBRID_ANALYTICS` | `Hybrid_For Analytics_*.xlsx` | monthly |
-| `DEBT_ANALYTICS` | `Debt_For Analytics_*.xlsx` | monthly |
-| `EQUITY_ANALYTICS` (PMS schemes only) | `PMS_Analytics *.xlsx` | monthly |
-| `CENTRICITY_SELECT` | `OneDigital Reckoner_*.xlsx` | monthly |
+```bash
+npm ci                              # Node >= 18; installs xlsx 0.18.5 for the tools
+node tools/verify_page.js site      # in-browser counts and integrity checks
+node .claude/serve.js               # http://127.0.0.1:8080/
+```
 
-### Steps each refresh
-
-1. **Drop the new xlsx files** into your local `uploads/` workspace (the same place you used in Claude before).
-2. **Run the build scripts in order:**
-   ```
-   python tools/build_basedata.py             # MASTER + Equity/Hybrid/Debt Analytics
-   python tools/build_pms_analytics.py        # PMS holdings (merges into Equity Analytics)
-   python tools/build_centricity_select_v3.py # Centricity Select picks
-   ```
-   Each script rewrites the relevant `window.<...>` block inside `index.html`.
-3. **Sanity-check** the new file:
-   ```
-   node --check <(grep -oP '<script[^>]*>\K[\s\S]*?(?=</script>)' index.html)
-   ```
-   or just open it in a browser locally and confirm it renders.
-4. **Commit and push:**
-   ```
-   git add index.html
-   git commit -m "Refresh base data — <month> <year>"
-   git push
-   ```
-5. GitHub Pages auto-deploys in ~1–2 minutes. The team picks up the new version the next time they refresh the page.
-
-If a refresh ships something broken, GitHub's commit history is your rollback — `git revert <commit>` and push. Pages redeploys the previous good version automatically.
-
-### What never goes in the repo
-
-The build scripts are tracked, but the **input xlsx files are not**. They live only on your machine. The `.gitignore` blocks them so they cannot be accidentally pushed.
-
----
-
-## Tech notes
-
-- The dashboard is a single self-contained HTML file (~5 MB). All base data is embedded directly inside `<script>` tags so the page works offline once loaded.
-- External libraries (React, XLSX-JS, PptxGenJS, etc.) load from `cdnjs.cloudflare.com` — users need internet access to fetch them. After the first load, the browser caches them.
-- The page contains no client data and no PII. Only fund-universe metadata, returns, analytics and shortlisting rationales.
-- The `robots.txt` blocks search engines from indexing the page so the URL stays effectively private.
-
----
-
-*Maintained by the Centricity Products team. Questions: `rahul.yadav@centricity.co.in`*
+Every change goes through a branch and pull request; the `verify` check must pass before `main`
+publishes. See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
