@@ -293,7 +293,7 @@ and the entry says so. "—" means no date is recorded.
   category also holds a deck name that matched nothing; (2) at most 5% of the current list dropped;
   (3) no category emptied. `--accept-drops <n>` waives (2) and (3) only when the run drops exactly n,
   after the owner has read the DROPPED list. (1) is never waived: the fix is a `PIN`,
-  `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry (whose names do not trip it).
+  `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry (exact deck names, which do not trip it).
 - **Rationale:** Matches the pattern by category, which catches SEBI renames whose names share
   nothing but the AMC. 5% (8 of 178) clears normal monthly churn (2 drops between the Aug and Sep
   decks) and stops the Sep-2026 failure (20). Tying the waiver to the exact count makes a re-run
@@ -301,9 +301,10 @@ and the entry says so. "—" means no date is recorded.
 - **Alternatives / supersedes:** Fuzzy name pairing of DROPPED and NO MASTER MATCH (misses renames
   like All Seasons Bond -> Dynamic Term); a fixed count; a flag that waives every gate.
 - **Consequences:** A new deck fund with no MASTER record, in a category that also loses a fund,
-  stops the run until the owner decides (it was already a D61 stop). The dry-run exit code is now
+  stops the run until the owner decides (it was already a D61 stop). A renamed fund filed under a
+  different heading is not paired, so the manual read of both lists stays. The dry-run exit code is now
   meaningful for this tool (A2).
-- **Source:** `tools/merge_reckoner.js:5-11` (header), `:184-197`, `:270-289`, `:315-320`.
+- **Source:** `tools/merge_reckoner.js:5-11` (header), `:184-198`, `:271-290`, `:316-321`.
 
 ---
 
@@ -813,7 +814,7 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** If the DROPPED list mirrors the NO-MATCH list, stop: it is a join failure. A deck
   product with no MASTER record is a universe change (`add_reckoner_funds.js`). Since D71 the tool
   refuses the mirror, a drop of more than 5% and an emptied category itself.
-- **Source:** `OPERATING_MANUAL.md:1090-1156`; `tools/merge_reckoner.js:146-158, 264, 320` (lines as of
+- **Source:** `OPERATING_MANUAL.md:1090-1156`; `tools/merge_reckoner.js:146-158, 265, 321` (lines as of
   D71, which added the drop gates).
 
 ### Risk matrix

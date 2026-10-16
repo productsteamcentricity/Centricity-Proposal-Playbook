@@ -536,8 +536,10 @@ Only what an operator must know before running each tool. Line references are to
   unmatched deck name, when more than 5% of the list drops, or when a category is emptied (D71).
 - `--accept-drops <n>` waives only the 5% and emptied-category gates, and only when the run drops
   exactly n: use it after the owner has read the DROPPED list. The mirror gate is never waived; fix
-  it with a `PIN`, `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry for a fund the owner has
-  decided not to add.
+  it with a `PIN`, `add_reckoner_funds.js`, or a `NO_MASTER_NOTE` entry (exact deck name) for a fund
+  the owner has decided not to add.
+- The mirror gate pairs names within one category. Still read DROPPED against `DECK NAMES WITH NO
+  MASTER MATCH` yourself: a renamed fund filed under a different heading passes the gate.
 - `NARRATIVE` (`:77`) is hand-copied from the deck's index slides 2–4 and must be re-read every
   month. `PIN` (`:102`) holds hand pins. The trailing spaces in `'DEBT AIF '` and
   `'Unlisted Equity '` are deliberate.

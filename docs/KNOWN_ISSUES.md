@@ -51,7 +51,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`) | — | `tools/merge_bond_list.js:63-91` |
 | A2 | Eight tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 7 more |
 | A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`) | — | `tools/merge_pms_aif_analytics.js:158-169` |
-| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`) | — | `tools/merge_reckoner.js:270-289` |
+| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`) | — | `tools/merge_reckoner.js:271-290` |
 | A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Open | **Affects** | `tools/rename_schemes.js:198`, `:211-213` |
 | A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Open | — | `tools/rename_schemes.js:76`; `site/index.html:3349` |
 | A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Open | — | `tools/bake_month.js:217-306`; `tools/rebuild_directperf.js:92-98` |
@@ -199,7 +199,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Fixed:** three refusal gates before any write (D71): a dropped Select entry whose category also
   holds a deck name that matched nothing (never waived); more than 5% of the current list dropped;
   a Select category emptied. `--accept-drops <n>` waives the last two only when the run drops exactly
-  n. `NO_MASTER_NOTE` names count as known gaps. The dry run exits 1 on a failed gate, and the DROPPED
+  n. `NO_MASTER_NOTE` names (exact) count as known gaps; the gate pairs within one category only. The dry run exits 1 on a failed gate, and the DROPPED
   banner no longer names the August deck. On the Aug-2026 deck with `prev_name` stripped (the
   Sep-2026 failure mode) the old tool wrote 178 -> 151 with every gate passing; the new one refuses.
   On the real deck both write identical output. The evidence below is the code before the fix.

@@ -182,9 +182,10 @@ const next = new Map();
 const skipped = new Map();
 const note = (k, v) => { if (!skipped.has(k)) skipped.set(k, []); skipped.get(k).push(v); };
 // Deck names that matched nothing, with the Select categories they would have filled (for the
-// drop gates). A name the owner has recorded in NO_MASTER_NOTE is a known gap, not a join failure.
+// drop gates). A deck name the owner has recorded in NO_MASTER_NOTE (exact key, so a short or empty
+// key cannot exempt everything) is a known gap, not a join failure.
 const missed = [];
-const miss = (name, cats) => { if (!Object.keys(NO_MASTER_NOTE).some(k => name.indexOf(k) === 0)) missed.push({ name: name, cats: cats }); };
+const miss = (name, cats) => { if (!Object.prototype.hasOwnProperty.call(NO_MASTER_NOTE, name)) missed.push({ name: name, cats: cats }); };
 
 for (const r of rows) {
   const h = r.heading || '';
