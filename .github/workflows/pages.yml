@@ -40,8 +40,11 @@ jobs:
                    Centricity_June_Refresh.js Centricity_IRR_Offshore.js Centricity_SIF_Refresh.js; do
             test -s "site/$f" || { echo "::error::site/$f is missing or empty"; exit 1; }
           done
+      - name: Unit tests (tools/test)
+        run: node tools/test/blocklib.test.js
       - name: Parity gate (tools/verify_page.js)
         run: |
+          set -o pipefail
           node tools/verify_page.js site | tee verify.txt
           fail() { echo "::error::$1"; exit 1; }
           grep -q 'MISSING SIBLING' verify.txt && fail "a sibling script is missing"

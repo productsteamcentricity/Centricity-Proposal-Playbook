@@ -1,10 +1,13 @@
 // Run index.html's scripts in document order inside a vm with a window/document shim, so the
 // counts below are the real in-browser state including all five sibling mutations.
+//   node tools/verify_page.js [site]     (default: the site/ folder next to tools/)
+// Exits 1 when a hard check fails: a missing sibling, duplicate MASTER names, an index.html that
+// does not end with </html>, a script error, or a Centricity Select key missing from MASTER.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const DIR = process.argv[2];
+const DIR = process.argv[2] || path.join(__dirname, '..', 'site');
 const HTML = path.join(DIR, 'index.html');
 const html = fs.readFileSync(HTML, 'utf8');
 
@@ -75,6 +78,17 @@ const pmsFunds = master.filter(r => r.product_class === 'PMS');
 const hit = pmsFunds.filter(f => alias[f.name] && pmsPerf[alias[f.name]]).length;
 console.log('MASTER PMS with perf      ' + hit + ' of ' + pmsFunds.length);
 
-const real = errors.filter(e => !/React|ReactDOM|Chart|XLSX|PptxGenJS| is not defined/.test(e));
+// Only the five CDN libraries are absent in the vm; hide exactly their "X is not defined" errors and
+// nothing else, so a real ReferenceError from a typo still counts (KNOWN_ISSUES A23).
+const CDN_GLOBAL = /: (React|ReactDOM|Chart|XLSX|PptxGenJS) is not defined$/;
+const real = errors.filter(e => !CDN_GLOBAL.test(e));
 console.log('\nscript errors (excluding the CDN globals): ' + real.length);
 real.slice(0, 8).forEach(e => console.log('   *** ' + e));
+
+const failed = [];
+if (errors.some(e => e.startsWith('MISSING SIBLING'))) failed.push('missing sibling');
+if (dupes.length) failed.push('duplicate MASTER names');
+if (!html.trimEnd().endsWith('</html>')) failed.push('index.html does not end with </html>');
+if (real.length) failed.push('script errors');
+if (inMaster !== cnt(select)) failed.push('Centricity Select keys missing from MASTER');
+if (failed.length) { console.log('\n*** VERIFY FAILED: ' + failed.join('; ')); process.exit(1); }

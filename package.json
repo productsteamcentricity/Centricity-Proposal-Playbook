@@ -5,7 +5,9 @@
   "description": "Centricity Investment Proposal Dashboard (static site in site/) and its monthly data-refresh tools (tools/).",
   "scripts": {
     "serve": "node .claude/serve.js",
-    "verify": "node tools/verify_page.js site"
+    "verify": "node tools/verify_page.js site",
+    "test": "node tools/test/blocklib.test.js",
+    "rehearse": "node tools/dev/rehearse.js"
   },
   "engines": {
     "node": ">=18"
