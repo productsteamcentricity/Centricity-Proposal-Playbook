@@ -18,6 +18,21 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-16 — PMS/AIF look-through tool leaves the MF analytics date alone (fix/pms-aif-analytics-date)
+
+Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output
+as before.
+
+### Fixed
+- `tools/merge_pms_aif_analytics.js` (`71fa58a`; `docs/KNOWN_ISSUES.md` A3, now closed; decision D70).
+  It wrote its `--as-on` into `DATA_DATES.analytics`, the "Analytics as on" label of the MF analytics
+  shown in the footer, the analytics tabs and both exports. It now writes EQUITY_ANALYTICS and the
+  June sibling's `EQ` only. `--as-on` is still required; it is printed for the update log next to
+  the unchanged MF analytics date.
+  - Rehearsed with `--apply` on copies of `site/` (`tools/dev/rehearse.js`, case
+    `pms-aif-analytics-jul`, July-2026 workbook): the old tool's only change to the page was the
+    label, 30th September -> 31st July 2026; the new tool leaves all eight files identical.
+
 ## 2026-10-16 — Bond List tool names its desk and sheet (fix/bond-list-sheet-desk)
 
 Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output

@@ -189,7 +189,7 @@ quotes, backslashes or `$` in them.
 | 14 | `node tools/merge_reckoner.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` | the DROPPED list mirrors the NO-MASTER-MATCH list (a join failure, not an editorial change); `NARRATIVE` not refreshed from the deck's index slides |
 | 14a | `node tools/add_reckoner_funds.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` — only if step 14 lists deck funds with no MASTER record | always confirm with the owner: this changes the universe |
 | 15 | `node tools/merge_aif_performance.js "<M>/<Monthly Investment Reckoner….pptx>"` | MASTER-coverage gate fails |
-| 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | it also rewrites `DATA_DATES.analytics` — afterwards check the footer still shows the MF analytics date (`KNOWN_ISSUES.md` A3) |
+| 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | a failed gate (totals, or `MASTER PMS/AIF with look-through` falling); a scheme listed under `no MASTER instrument`. Record the printed `look-through as on` date in the update log: the tool leaves `DATA_DATES.analytics` alone (D70) |
 | 17 | `node tools/verify_page.js site` | see B6 |
 
 Periodic inputs (P1–P5) follow the "Periodic" section of `tools/README.md` and always need the

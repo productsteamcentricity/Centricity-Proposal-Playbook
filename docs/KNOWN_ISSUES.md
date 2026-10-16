@@ -38,7 +38,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    syncing mid-run (A8, R6).
 4. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
    ambiguous sheet (A1, closed).
-5. If a PMS & AIF Analytics file arrives, mind the analytics date (A3).
+5. If a PMS & AIF Analytics file arrives, record the look-through as-on the tool prints in the update
+   log; it no longer changes the MF analytics date (A3, closed).
 6. Reckoner cycle: compare the DROPPED and NO-MASTER-MATCH lists by hand (A4), and expect to edit the
    pin maps (A18). Decide the Mosaic and Motilal GIFT City items with the desk (C4, C5).
 
@@ -48,7 +49,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 |---|---|---|---|---|---|---|
 | A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`) | — | `tools/merge_bond_list.js:63-91` |
 | A2 | Nine tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 8 more |
-| A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Open | **Affects** | `tools/merge_pms_aif_analytics.js:160` |
+| A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`) | — | `tools/merge_pms_aif_analytics.js:158-169` |
 | A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Open | **Affects** | `tools/merge_reckoner.js:275-276` |
 | A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Open | **Affects** | `tools/rename_schemes.js:198`, `:211-213` |
 | A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Open | — | `tools/rename_schemes.js:76`; `site/index.html:3349` |
@@ -161,7 +162,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   monthly skill check exit codes.
 
 ### A3. `merge_pms_aif_analytics.js` re-dates the MF analytics
-**P1 · Open · Affects the refresh when a PMS & AIF Analytics file arrives**
+**P1 · Closed 16-Oct-2026 (`71fa58a`) · —**
+
+- **Fixed:** the tool no longer writes `DATA_DATES.analytics`; it writes EQUITY_ANALYTICS and the
+  sibling `EQ` only. `--as-on` stays required and is printed, with the unchanged MF analytics date,
+  for the update log (D70). Rehearsed with `--apply` on the July workbook: the old tool's only page
+  change was the label (30th September -> 31st July 2026); the new one leaves all files identical.
+  Not changed: `merge_analytics.js:138` still re-dates all three classes when it re-bakes one, and
+  the "Also in this tool" points below stand. The evidence below is the code before the fix.
 
 - **What:** The tool writes its `--as-on` into `DATA_DATES.analytics`. That key is the as-on date of
   the Equity, Hybrid and Debt **MF** analytics, shown on the page as "Analytics as on …".
@@ -270,7 +278,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   rename, and no backup. Several tools write two or three times per run.
 - **Evidence:** `tools/lib/blocklib.js:47`. Multi-step writes: `rename_schemes.js:248,250`;
   `merge_analytics.js:136,139`; `merge_pms_performance.js:187-193`;
-  `merge_pms_aif_analytics.js:158,161,167`; `merge_risk_matrix.js:197` then `:203-210` (if the
+  `merge_pms_aif_analytics.js:168,174`; `merge_risk_matrix.js:197` then `:203-210` (if the
   `riskMatrix` line is missing it exits after writing the new matrix under the old date, `:206`);
   `merge_sif_monitor.js:108` then `:110-114` (same pattern for `DATA_DATES.sif`);
   `add_reckoner_funds.js:216,233`; `fold_duplicate_names.js:265,267`. `merge_bond_list.js:27` and the
@@ -289,8 +297,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 
 - **What:** `--as-on` values go into regex replacements and JS string literals without validation.
   The regexes take the first match anywhere in the 12.8 MB file.
-- **Evidence:** `tools/bake_month.js:169-170`; `merge_analytics.js:138`; `merge_pms_performance.js:192`;
-  `merge_pms_aif_analytics.js:160`. The last three do not check that the pattern matched, and log
+- **Evidence:** `tools/bake_month.js:169-170`; `merge_analytics.js:138`; `merge_pms_performance.js:192`.
+  The last two do not check that the pattern matched, and log
   success regardless. `merge_risk_matrix.js:208` escapes only single quotes.
   `build_risk_matrix.py:150` puts the label inside single quotes unescaped. Today each pattern
   matches exactly once (`site/index.html:1449-1451`).
@@ -553,7 +561,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 
 - **What and evidence:** A NUL byte is the tier-3 key separator in `tools/rename_schemes.js:146`.
   Literal no-break spaces (U+00A0) sit inside regexes at `rename_schemes.js:86`, `:95`,
-  `bake_month.js:271`, `merge_risk_matrix.js:108`, `merge_pms_aif_analytics.js:50` and
+  `bake_month.js:271`, `merge_risk_matrix.js:108`, `merge_pms_aif_analytics.js:53` and
   `merge_bond_list.js:50`. Trailing spaces are deliberate in keys that match live data:
   `pin_pms_alias.js:20` (`'Karma Capital Wealth Builder '`), `merge_reckoner.js:73` (`'DEBT AIF '`),
   `:85` (`'Unlisted Equity '`), `add_reckoner_funds.js:57-58`. `.gitattributes` forces text diffs for

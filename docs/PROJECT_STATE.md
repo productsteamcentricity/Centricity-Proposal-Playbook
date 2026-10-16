@@ -23,7 +23,7 @@ on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 
 | Market Update slides | October-2026 deck (September outlook) | next Outlook deck |
 | Fund managers (internal: search box and Master Editor only) | 30-Sep Monitor, first-named manager only (the Sep bake replaced the 31-Aug full-team roster) | **behind** — needs `Fund Manager Data` as on 30-Sep or later, applied after the bake (step 9) |
 | PMS performance, AIF performance, Centricity Select | 31-Aug-2026 (September-2026 Reckoner) | **behind one cycle** — needs `PMS_Scheme_Performance` as on 30-Sep and the "October 2026" Reckoner deck (`/monthly-update September 2026`) |
-| PMS/AIF look-through | 31-Jul-2026 | when `PMS & AIF Analytics` arrives |
+| PMS/AIF look-through (no page label; D70) | 31-Jul-2026 | when `PMS & AIF Analytics` arrives |
 | Invictus bonds / GIFT City & Offshore / SIF universe | 6-Aug-2026 / Jun–Jul-2026 / Jun-2026 list (28 schemes; 30 live in `var SIF`) | only when the desk sends new lists |
 
 ## Latest verification
@@ -80,7 +80,8 @@ PowerPoint 25 slides with the logo on all 25.
 
 | Item | Fix | Branch |
 |---|---|---|
-| `KNOWN_ISSUES.md` A1 — Bond List tool read the first sheet as Invictus | `merge_bond_list.js` needs `--desk`; refuses an ambiguous sheet (`d48620e`) | `fix/bond-list-sheet-desk` |
+| `KNOWN_ISSUES.md` A1 — Bond List tool read the first sheet as Invictus | `merge_bond_list.js` needs `--desk`; refuses an ambiguous sheet (`d48620e`) | PR #4, merged `1e4b2fc` |
+| `KNOWN_ISSUES.md` A3 — PMS/AIF look-through tool re-dated the MF analytics | `merge_pms_aif_analytics.js` no longer writes `DATA_DATES.analytics` (`71fa58a`, D70) | `fix/pms-aif-analytics-date` |
 
 ## In progress / blockers
 

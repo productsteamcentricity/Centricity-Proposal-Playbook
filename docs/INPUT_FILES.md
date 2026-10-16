@@ -406,11 +406,12 @@ exceptions are noted under their files:
   location works. New months go at the top level.
 - **Layout:** the first sheet, with the header on row 1: `Product Category | Scheme Name |
   Company Name | Corrected Name | Holding(%) | Sector | ISIN | SEBI Mcap`. All but `Company Name`
-  (a fallback for the stock name) and `ISIN` are required (`merge_pms_aif_analytics.js:55-58`).
+  (a fallback for the stock name) and `ISIN` are required (`merge_pms_aif_analytics.js:58-61`).
 - **Units:** **`Holding(%)` is a fraction.** Each scheme sums to about 1.0: in July, 0.999 to 1.003
-  across 15 schemes. The tool multiplies it by 100 (`:93`). `SEBI Mcap` loses its " Cap" suffix.
-- **As-on:** none in the file. `--as-on` is written into `DATA_DATES.analytics`, which also labels
-  the MF analytics (see `KNOWN_ISSUES.md` A3).
+  across 15 schemes. The tool multiplies it by 100 (`:96`). `SEBI Mcap` loses its " Cap" suffix.
+- **As-on:** none in the file. Pass it as `--as-on`; the tool prints it for the update log and writes
+  it nowhere. Until 16-Oct-2026 it overwrote `DATA_DATES.analytics`, the MF analytics label
+  (`KNOWN_ISSUES.md` A3, D70).
 - **Traps:** the tool also rewrites the `EQ` block in `site/Centricity_June_Refresh.js`. Only
   `Product Category` separates a PMS and an AIF whose names differ by a dash character. The file has
   been re-issued mid-cycle with more schemes, so re-check the scheme count. Rows: 320 (Apr),
