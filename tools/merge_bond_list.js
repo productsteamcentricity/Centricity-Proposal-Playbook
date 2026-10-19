@@ -24,41 +24,43 @@
 //  - Ratings arrive as "Sov" or "SOV"; both normalise to "SOV", which is what DEBT_ANALYTICS
 //    holdings use, so the credit-quality chart does not split into two sovereign slices.
 //
-// Requires SheetJS: npm install xlsx@0.18.5. Back up index.html first.
+// Requires SheetJS: npm install xlsx@0.18.5. Back up index.html first (the write itself is atomic).
 // 06-Aug-2026 run: 39 rows -> 36 unique bonds, Invictus 14 -> 36, MASTER 7452 -> 7474.
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
+const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/merge_bond_list.js "<Bond List.xlsx>" --desk <Invictus|OneDigital> [--sheet "<tab name>"] [--apply] [--html <index.html>]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
 let APPLY = false, SRC = null, HTML = null, SHEET = null, DESK_ARG = null;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
+  const val = () => { const v = argv[++i]; if (v == null || v.startsWith('--')) usage('missing value for ' + a); return v; };
   if (a === '--apply') { APPLY = true; continue; }
-  if (a === '--html') { HTML = argv[++i] || null; continue; }
-  if (a === '--sheet') { SHEET = argv[++i] || null; continue; }
-  if (a === '--desk') { DESK_ARG = argv[++i] || null; continue; }
-  if (a.startsWith('--')) { console.error('unknown flag: ' + a); process.exit(2); }
-  if (SRC === null) SRC = a;
+  if (a === '--html') { HTML = val(); continue; }
+  if (a === '--sheet') { SHEET = val(); continue; }
+  if (a === '--desk') { DESK_ARG = val(); continue; }
+  if (a.startsWith('--')) usage('unknown flag: ' + a);
+  if (SRC !== null) usage('unexpected extra argument: ' + a);
+  SRC = a;
 }
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
-const USAGE = 'Usage: node tools/merge_bond_list.js "<Bond List.xlsx>" --desk <Invictus|OneDigital> [--sheet "<tab name>"] [--apply] [--html <index.html>]';
-if (!SRC || !fs.existsSync(SRC)) { console.error(USAGE); process.exit(2); }
+if (!SRC || !fs.existsSync(SRC)) usage(SRC ? '*** workbook not found: ' + SRC : null);
 if (!fs.existsSync(HTML)) { console.error('*** index.html not found: ' + HTML); process.exit(2); }
 
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const clean = s => String(s == null ? '' : s).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+const clean = s => String(s == null ? '' : s).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
 const serialToDate = n => new Date(Date.UTC(1899, 11, 30) + Number(n) * 86400000);
 const fmtDate = d => `${d.getUTCDate()}-${MON[d.getUTCMonth()]}-${d.getUTCFullYear()}`;
 
 // --- MASTER (read first: the desks that exist decide what --desk may name) ---
+// blocklib: brace-matched, and refuses a prefix that occurs more than once.
+const PREFIX = 'window.MASTER = ';
 const html = fs.readFileSync(HTML, 'utf8');
-const lines = html.split('\n');
-const li = lines.findIndex(l => l.startsWith('<script>window.MASTER = '));
-if (li < 0) { console.error('*** MASTER line not found'); process.exit(1); }
-const line = lines[li];
-const a = line.indexOf('['), z = line.lastIndexOf(']');
-const master = JSON.parse(line.slice(a, z + 1));
+const loc = B.locate(html, PREFIX);
+const master = loc.value;
 
 // --- which desk, which sheet: stated, never assumed ---
 const DESKS = [...new Set(master.filter(r => r.product_class === 'Bonds').map(r => r.sub_category))];
@@ -222,9 +224,29 @@ const next = kept.slice(0, at).concat(built, kept.slice(at));
 
 // --- gates ---
 let fail = false;
+console.log(`\nGATE at least one bond parsed: ${built.length ? 'PASS (' + built.length + ')' : '*** FAIL: the sheet gave no bonds — refusing to empty the ' + DESK + ' desk'}`);
+if (!built.length) fail = true;
+
+// A1's failure mode was another desk's list written under this desk's label. Both desks can offer
+// the same bonds (the 08-Jun-2026 workbook's two sheets list the same 14), so overlap is REPORTED,
+// never blocking: when another desk already carries every bond, confirm with the desk that this
+// really is this desk's list before applying.
+const squash = t => t.toLowerCase().replace(/[^a-z0-9]/g, '');
+const baseOf = r => { const sfx = ' (' + r.sub_category + ')'; return squash(r.name.endsWith(sfx) ? r.name.slice(0, -sfx.length) : r.name); };
+const otherDesks = new Map();
+for (const r of before.filter(x => x.sub_category !== DESK)) {
+  if (!otherDesks.has(r.sub_category)) otherDesks.set(r.sub_category, new Set());
+  otherDesks.get(r.sub_category).add(baseOf(r));
+}
+for (const [d, names] of otherDesks) {
+  const hit = picked.filter(b => names.has(squash(b.name))).length;
+  console.log(`CHECK new ${DESK} bonds already listed under ${d}: ${hit} of ${picked.length}` +
+    (picked.length && hit === picked.length ? `  *** every bond — confirm with the desk that this is the ${DESK} list, not the ${d} one` : ''));
+}
+
 const dup = {}; next.forEach(r => dup[r.name] = (dup[r.name] || 0) + 1);
 const dupes = Object.entries(dup).filter(([, c]) => c > 1);
-console.log(`\nGATE duplicate names in MASTER: ${dupes.length ? '*** FAIL: ' + dupes.map(d => d[0]).join(' | ') : 'PASS (0)'}`);
+console.log(`GATE duplicate names in MASTER: ${dupes.length ? '*** FAIL: ' + dupes.map(d => d[0]).join(' | ') : 'PASS (0)'}`);
 if (dupes.length) fail = true;
 
 const od = next.filter(r => r.product_class === 'Bonds' && r.sub_category !== DESK).map(r => r.name);
@@ -233,7 +255,7 @@ console.log(`GATE other bond desks untouched: ${odSame ? 'PASS (' + od.length + 
 if (!odSame) fail = true;
 
 console.log(`GATE MASTER count: ${master.length} -> ${next.length}  (${DESK} ${oldInv.length} -> ${built.length})`);
-const badIrr = built.filter(r => !(r.irr_low > 0 && r.irr_low < 0.30 && r.irr_high >= r.irr_low));
+const badIrr = built.filter(r => !(r.irr_low > 0 && r.irr_low < 0.30 && r.irr_high >= r.irr_low && r.irr_high < 0.30));
 console.log(`GATE IRR sane (0-30%, high>=low): ${badIrr.length ? '*** FAIL: ' + badIrr.map(r => r.name).join(' | ') : 'PASS'}`);
 if (badIrr.length) fail = true;
 // Every bond must carry a maturity, and it must be after today — a past date means the century
@@ -244,8 +266,20 @@ const badDate = built.filter((r, i) => !picked[i].date || picked[i].date < today
 console.log(`GATE maturity present and not before today (${fmtDate(today)}): ${badDate.length ? '*** FAIL: ' + badDate.map(r => `${r.name} [${r.exit_load}]`).join(' | ') : 'PASS'}`);
 if (badDate.length) fail = true;
 const yrs = built.map(yearOf).filter(Boolean);
-console.log(`GATE maturity range: ${Math.min(...yrs)} .. ${Math.max(...yrs)}`);
+console.log(`GATE maturity range: ${yrs.length ? Math.min(...yrs) + ' .. ' + Math.max(...yrs) : 'n/a (no dated bonds)'}`);
 console.log(`GATE ratings: ${[...new Set(built.map(r => r.bond_rating))].join(', ')}`);
+
+// --- splice, then re-read what would be written ---
+const isDesk = r => r.product_class === 'Bonds' && r.sub_category === DESK;
+const out = B.spliceBlocks(html, [{ prefix: PREFIX, value: next }]);
+const reLoc = B.locate(out, PREFIX);
+const outsideSame = out.slice(0, reLoc.s) === html.slice(0, loc.s) && out.slice(reLoc.e + 1) === html.slice(loc.e + 1);
+const keptSame = JSON.stringify(reLoc.value.filter(r => !isDesk(r))) === JSON.stringify(master.filter(r => !isDesk(r)));
+const deskSame = JSON.stringify(reLoc.value.filter(isDesk)) === JSON.stringify(built);
+console.log(`GATE written MASTER re-reads: ${keptSame && deskSame && outsideSame
+  ? `PASS (${reLoc.value.length - built.length} other records identical, ${built.length} ${DESK} rows as listed, bytes outside MASTER unchanged)`
+  : '*** FAIL:' + (keptSame ? '' : ' other records changed;') + (deskSame ? '' : ' desk rows differ from the list;') + (outsideSame ? '' : ' bytes outside MASTER changed')}`);
+if (!(keptSame && deskSame && outsideSame)) fail = true;
 
 console.log(`\n--- new ${DESK} list ---`);
 built.forEach((r, i) => console.log(`  ${String(i + 1).padStart(2)}. ${r.bond_rating.padEnd(4)} ${(r.irr_high * 100).toFixed(2).padStart(6)}%  ${r.exit_load.replace(/^Hold-to-maturity \(?|\)$/g, '').padEnd(12)}  ${r.name}`));
@@ -256,8 +290,6 @@ if (!APPLY) {
   process.exit(fail ? 1 : 0);
 }
 if (fail) { console.error('\n*** a gate failed — refusing to write'); process.exit(1); }
-lines[li] = line.slice(0, a) + JSON.stringify(next) + line.slice(z + 1);
-const out = lines.join('\n');
 if (!out.trimEnd().endsWith('</html>')) { console.error('*** output does not end with </html> — refusing'); process.exit(1); }
-fs.writeFileSync(HTML, out, 'utf8');
+B.writeFilesAtomic([{ file: HTML, content: out }]);   // temp file, then rename
 console.log(`\nWROTE ${HTML} — ${out.length} bytes (was ${html.length})`);

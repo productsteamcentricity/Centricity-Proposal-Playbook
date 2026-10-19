@@ -3,9 +3,14 @@
 // rename (all ten names are in index.html.bak_aug_20260917) — `rename_schemes.js` did not create
 // them and cannot fix them: it only pairs a MASTER name against a monitor name the monitor still
 // carries, and here BOTH spellings are already in MASTER, so every name-keyed gate sees two
-// distinct funds and passes. Logged as open item 8 in CLAUDE.md.
+// distinct funds and passes. Logged as open item 8 in the old CLAUDE.md (now
+// docs/OPERATING_MANUAL.md → Open items; folded 17-Sep-2026).
 //
-//   node fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]
+//   node tools/fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]
+//
+// Exit codes: 0 = folded, or nothing to fold; 1 = a gate failed or a pair cannot be decided
+// (nothing written); 2 = usage error. Centricity_IRR_Offshore.js must sit next to index.html and
+// parse — without it the IRR bands cannot be re-keyed, so the tool stops rather than skip it.
 //
 // WHICH ROW WINS IS NOT A JUDGEMENT CALL — THE MONITOR DECIDES. The pair list below says which
 // two names to consider; the monitor says which of the two is the live instrument. Whatever the
@@ -26,14 +31,26 @@ const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
 const blocklib = require('./lib/blocklib.js');
+const { isoDay } = require('./lib/dates.js');
 
+const USAGE = 'Usage: node tools/fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]';
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const MON = flag('--monitor');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
+const opt = {};
+let APPLY = false;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') { APPLY = true; continue; }
+  if (a === '--monitor' || a === '--html') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) { console.error('missing value for ' + a); console.error(USAGE); process.exit(2); }
+    opt[a] = v; continue;
+  }
+  console.error(a.startsWith('--') ? 'unknown flag: ' + a : 'unexpected argument: ' + a); console.error(USAGE); process.exit(2);
+}
+const MON = opt['--monitor'];
+const HTML = opt['--html'] || path.join(__dirname, '..', 'site', 'index.html');
 if (!MON || !fs.existsSync(MON)) {
-  console.error('Usage: node fold_duplicate_names.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]');
+  console.error(USAGE);
   process.exit(2);
 }
 
@@ -86,7 +103,9 @@ for (const sn of wb.SheetNames) {
     monRows++;
     if (monInc.has(nm)) continue;             // a scheme can be quoted on two sheets (the Quantum
     let inc = null;                           // FoF is on both Equity Oriented and Debt Oriented)
-    if (ic >= 0) { const v = cv(sh, r, ic); if (v instanceof Date && !isNaN(v)) inc = v.toISOString().slice(0, 10); else if (v) inc = String(v).slice(0, 10); }
+    // isoDay, not toISOString: SheetJS returns a Date just before local midnight of the previous
+    // day east of UTC, so the UTC ISO day would be one day early (KNOWN_ISSUES A6).
+    if (ic >= 0) { const v = cv(sh, r, ic); if (v instanceof Date && !isNaN(v)) inc = isoDay(v); else if (v) inc = String(v).slice(0, 10); }
     monInc.set(nm, inc); monSheet.set(nm, sn);
   }
 }
@@ -95,11 +114,31 @@ console.log(`monitor        : ${path.basename(MON)}  (${monRows} fund rows, ${mo
 // ---------- load the page ----------
 const html = fs.readFileSync(HTML, 'utf8');
 const master = blocklib.locate(html, 'window.MASTER = ').value;
-console.log(`${path.basename(HTML)}     : MASTER baseline ${master.length}\n`);
+console.log(`${path.basename(HTML)}     : MASTER baseline ${master.length}`);
 const idxOf = nm => { const out = []; master.forEach((f, i) => { if (f.name === nm) out.push(i); }); return out; };
+const dayBefore = iso => {                                    // "2019-05-15" -> "2019-05-14", pure UTC arithmetic
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+  return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] - 1)).toISOString().slice(0, 10) : null;
+};
+
+// ---------- the IRR sibling (required) ----------
+// Centricity_IRR_Offshore.js re-applies its bands by exact MASTER name on every page load, so a
+// fold that cannot re-key it would strand the survivors' Expected-IRR bands. Missing or unparsable
+// is a hard stop, never a skip.
+const SIBLINGS = [{ file: 'Centricity_IRR_Offshore.js', prefix: 'var IRR = ' }];
+for (const s of SIBLINGS) {
+  s.p = path.join(path.dirname(HTML), s.file);
+  if (!fs.existsSync(s.p)) { console.error(`*** ${s.file} not found next to ${path.basename(HTML)} (${s.p}) — cannot check or re-key the IRR bands. Aborting.`); process.exit(1); }
+  s.src = fs.readFileSync(s.p, 'utf8');
+  try { s.store = blocklib.locate(s.src, s.prefix).value; }
+  catch (e) { console.error(`*** ${s.file}: ${e.message} — cannot check or re-key the IRR bands. Aborting.`); process.exit(1); }
+  console.log(`${s.file.padEnd(14)} : ${s.prefix.trim()} ${Object.keys(s.store).length} keys`);
+}
+const irrStore = SIBLINGS[0].store;
+console.log('');
 
 // ---------- decide each pair ----------
-const folds = [], skipped = [];
+const folds = [], skipped = [], notes = [];
 let abort = false;
 for (const [a, b] of PAIRS) {
   const ia = idxOf(a), ib = idxOf(b);
@@ -111,6 +150,12 @@ for (const [a, b] of PAIRS) {
     const gone = ia.length === 0 ? a : b, kept = ia.length === 0 ? b : a;
     const rec = master[(ia.length === 0 ? ib : ia)[0]];
     skipped.push(`${kept} — already folded${rec.prev_name === gone ? ` (prev_name = "${gone}")` : `  *** but prev_name is ${JSON.stringify(rec.prev_name)}, expected "${gone}"`}`);
+    // A finished fold leaves no band under the dropped spelling; one still there was never re-keyed.
+    // Reported only: a key no MASTER name carries is inert at page load, and the survivor's own
+    // band (if any) is what the browser shows.
+    if (gone in irrStore) {
+      notes.push(`*** note: "${gone}" is still keyed in ${SIBLINGS[0].file} (an orphan band${kept in irrStore ? '; the survivor has its own' : '; the survivor has none there'}) — re-key or remove it by hand`);
+    }
     continue;
   }
   if (ia.length > 1 || ib.length > 1) {
@@ -137,7 +182,12 @@ for (const [a, b] of PAIRS) {
   // later, and it is the survivor's value that has to agree with the monitor.
   const mi = monInc.get(survivorName);
   const si = survivor.inception ? String(survivor.inception).slice(0, 10) : null;
-  const incNote = si === mi ? 'matches monitor' : `*** survivor inception ${si} != monitor ${mi}`;
+  // A6 transition: the monitor is now read as the true calendar day (isoDay), but most stored
+  // MASTER.inception values were baked one day early on an IST machine, so the day before also
+  // counts as a match — the same tolerance as rename_schemes.js; remove both together.
+  const incNote = si === mi ? 'matches monitor'
+    : (si && si === dayBefore(mi)) ? 'matches monitor (MASTER one day early, A6)'
+    : `*** survivor inception ${si} != monitor ${mi}`;
 
   if (survivor.prev_name && survivor.prev_name !== orphanName) {
     console.error(`*** "${survivorName}" already carries prev_name ${JSON.stringify(survivor.prev_name)}; overwriting it would strand that alias. Aborting.`);
@@ -147,6 +197,7 @@ for (const [a, b] of PAIRS) {
 }
 
 for (const s of skipped) console.log(`   skip  ${s}`);
+for (const s of notes) console.log(`   ${s}`);
 if (abort) { console.error('\naborted — nothing written.'); process.exit(1); }
 if (!folds.length) { console.log('\nnothing to fold.'); process.exit(0); }
 
@@ -209,19 +260,16 @@ for (const prefix of STORES) {
 
 // ---------- the sibling ----------
 // Centricity_IRR_Offshore.js re-applies `IRR[f.name] -> irr_low/irr_high` on EVERY page load,
-// keyed by exact MASTER name. All five bands live there under the ORPHAN spelling, so left
-// un-rekeyed the five survivors would show no Expected-IRR band and so no FV projection —
-// the same failure rename_schemes.js guards against for its 215 renames.
-const SIBLINGS = [{ file: 'Centricity_IRR_Offshore.js', prefix: 'var IRR = ' }];
+// keyed by exact MASTER name. When this tool first ran (Sep-2026), all five bands lived there
+// under the ORPHAN spelling; left un-rekeyed, the survivors would have shown no Expected-IRR band
+// and so no FV projection — the same failure rename_schemes.js guards against for its renames.
+// Those five have since been folded, and the already-folded check above confirms no band is left
+// under a dropped spelling.
 const sibWrites = [];
 console.log('\nsiblings:');
 for (const s of SIBLINGS) {
-  const p = path.join(path.dirname(HTML), s.file);
-  if (!fs.existsSync(p)) { console.log(`  (skipped ${s.file} — not found)`); continue; }
-  let store;
-  try { store = blocklib.read(p, s.prefix).value; } catch (e) { console.log(`  (skipped ${s.file} — ${e.message})`); continue; }
-  const out = rekey(store, `${s.file} ${s.prefix.trim()}`);
-  sibWrites.push({ p, file: s.file, updates: [{ prefix: s.prefix, value: out }] });
+  const out = rekey(s.store, `${s.file} ${s.prefix.trim()}`);
+  sibWrites.push({ p: s.p, src: s.src, file: s.file, updates: [{ prefix: s.prefix, value: out }] });
 }
 
 // ---------- gates ----------
@@ -252,16 +300,21 @@ if (irrSib) {
 
 if (fail) { console.error('\naborted — nothing written.'); process.exit(1); }
 
-// Informational: the unloaded build artefact. No <script src> points at it (CLAUDE.md), so a
-// stale name in there cannot reach the browser — but build_risk_matrix.py would re-emit it.
+// Informational and OPTIONAL: the unloaded build artefact. No <script src> points at it, so a
+// stale name in there cannot reach the browser — but build_risk_matrix.py would re-emit it. It is
+// being moved out of site/ (KNOWN_ISSUES R5); when it is not next to index.html the check is skipped.
 const artefact = path.join(path.dirname(HTML), 'Centricity_Risk_Matrix.js');
 if (fs.existsSync(artefact)) {
   const src = fs.readFileSync(artefact, 'utf8');
   const hits = folds.filter(F => src.includes(F.orphanName)).map(F => F.orphanName);
   if (hits.length) console.log(`\nnote: Centricity_Risk_Matrix.js (NOT loaded — build artefact only) still names ${JSON.stringify(hits)}`);
-}
+} else console.log(`\nnote: Centricity_Risk_Matrix.js is not next to ${path.basename(HTML)} — artefact check skipped (R5)`);
 
 if (!APPLY) { console.log(`\n[dry run] pass --apply to write ${path.basename(HTML)}${sibWrites.length ? ' + ' + sibWrites.map(w => w.file).join(', ') : ''}`); process.exit(0); }
-const size = blocklib.writeBlocks(HTML, updates);
-console.log(`\nwrote ${path.basename(HTML)} (${size} bytes)`);
-for (const w of sibWrites) console.log(`wrote ${w.file} (${blocklib.writeBlocks(w.p, w.updates)} bytes)`);
+// Build every output in memory, then write them together, so a failure cannot leave index.html
+// and the IRR sibling disagreeing.
+const outputs = [{ file: HTML, content: blocklib.spliceBlocks(html, updates) }]
+  .concat(sibWrites.map(w => ({ file: w.p, content: blocklib.spliceBlocks(w.src, w.updates) })));
+blocklib.writeFilesAtomic(outputs);
+console.log(`\nwrote ${path.basename(HTML)} (${outputs[0].content.length} bytes)`);
+sibWrites.forEach((w, i) => console.log(`wrote ${w.file} (${outputs[i + 1].content.length} bytes)`));
