@@ -18,6 +18,29 @@
 > handover (public hosting, automatic publishing of verified refreshes, branch → PR → merge) are
 > D60–D69 in `docs/DECISIONS.md`. The in-force data dates are in `docs/PROJECT_STATE.md` (note: §11.3's
 > "fund managers 31 Aug" is no longer true — the Sep bake replaced that roster).
+>
+> **Corrections to the text below (KNOWN_ISSUES E2):** §2.1 "`merge_*.js` (15 scripts)" — there are 12.
+> §11.2 / §13 "every tool defaults to `index.html` beside the script" — 18 tools default to
+> `site/index.html`, three default their own sibling in `site/` (`merge_sif_monitor.js --sibling`,
+> `update_market_slides.js --js`, `update_closing_slides.js --sibling`), three need
+> `--html site/index.html`, and `verify_page.js` takes the folder (default `site`). §5 Pages
+> "main / (root)" — superseded by D63 (Actions publishes `site/`).
+> §11.1 omits `Exit Load & Expected IRR Return Range.xlsx`, the source of the expected-IRR bands.
+> §13 used to list `add_reckoner_funds.js --pms`, which never did anything (the row is now
+> corrected). §14 item 8: Mirae Asset Platinum Hybrid now has a look-through, and SBI Magnum Equity
+> Ex-Top 100 Long-Short does not.
+> §14 item 12: `parseAnalytics` is not dead — the tools run it offline. Tool behaviour has since been
+> hardened (dry runs exit 1 on a failed gate, atomic writes, strict `--as-on` labels; D72); the current CLI
+> reference is `tools/README.md`.
+>
+> **Since 19-Oct-2026 (PRs #7–#14):** hand pins (§11.4, §12) live in `tools/data/pins.json` (D75);
+> `merge_sif_monitor.js` requires `--as-on`; the §13 table was updated in place for the new flags.
+> §2's unused `Centricity_Risk_Matrix.js` moved to `docs/archive/` (D78). §3.2's CDN block is
+> superseded: the five tags now carry SRI `integrity` and `crossorigin="anonymous"`, and Chart.js
+> loads `dist/chart.umd.js` (D77; exact tags in `site/index.html:1224-1228`). §14 item 3 (risk stats the
+> source calls unreliable) is fixed: flagged funds carry a dagger and footnote (D74); item 13 is fixed
+> except the frozen-pane classes. Excel dates are read as calendar days and the Sep-2026 inception
+> dates were corrected (D73). Item status: `docs/KNOWN_ISSUES.md`.
 
 # Centricity Proposal Playbook: Handover PRD
 
@@ -973,7 +996,7 @@ node rekey_sif_analytics.js --apply                                             
 node merge_de_universe.js "<M>/Analytics/Listed Direct Equity_<Month>.xlsx" --apply
 node merge_direct_equity_returns.js "<M>/Listed Direct Equity_<date>.xlsx" --apply
 node merge_expense_exitload.js --expense "<Expense Ratio>.xlsx" --exitload "<Exit Load>.xlsx" --apply
-node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --apply
+node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --as-on "31st October 2026" --apply   # --as-on required since 19-Oct-2026
 node merge_fund_managers.js "<Fund Manager Data_<date>.xlsx>" --apply
 node merge_risk_matrix.js "<Fund Risk Ratios ....xlsx>" --as-on "31 Oct 2026" --apply
 # Reckoner cycle (PMS first; the deck is named for the month it SHIPS, read the as-on date off the slide)
@@ -1004,7 +1027,7 @@ Each tool also accepts `--html <path>`; it defaults to `index.html` beside the s
 - **0 duplicate MASTER names.**
 - After the Direct Equity refresh, the **top 10 stocks by market cap must all read "Large Cap"**. `sebi_mcap` is joined by name, never by row.
 - In `merge_reckoner.js`, if the DROPPED list and the "NO MASTER MATCH" list mirror each other, **stop**. That is a join failure, not an editorial change. Since 16-Oct-2026 the tool refuses it, and also refuses more than 5% dropped or an emptied category unless `--accept-drops <n>` matches the reviewed count (D71).
-- In `pin_pms_alias.js`, any `*** key not in PMS_PERFORMANCE.pms` blocks *all* pins. Fix both `PINS` and `merge_pms_performance.js`'s `REPIN`.
+- In `pin_pms_alias.js`, any `*** key not in PMS_PERFORMANCE.pms` blocks *all* pins. Fix both `PINS` and `merge_pms_performance.js`'s `REPIN`. (Since 19-Oct-2026 both maps are the `pms_alias` section of `tools/data/pins.json`: fix the failing entry's `key` there, with the owner; an entry marked both `repin` and `pin` serves both tools.)
 - In `merge_direct_equity_returns.js`, the tool refuses when a return column is wholly empty. Never force it. The join deletes missing returns.
 - In `merge_expense_exitload.js`, the tool refuses on 0 joins. Watch for banner rows above the header.
 - SIF and MF Monitor returns: spot-check small values (between −1% and +1%) against the workbook. The ±300% gate cannot catch a missed ÷100.
@@ -1089,21 +1112,21 @@ All tools are dry-run unless `--apply` is passed. All default to `index.html` be
 | rename_schemes.js | `--monitor <MF Monitor.xlsx> [--apply]` |
 | bake_month.js | `--dir <month folder> --as-on "<date>" [--as-on-analytics "<date>"] [--html] [--apply]` |
 | fill_variant_analytics.js | `--dir <month folder> [--apply]` |
-| rekey_sif_analytics.js | `[--apply]` |
+| rekey_sif_analytics.js | `[--allow-shrink] [--apply]` |
 | merge_analytics.js | `--hybrid/--equity/--debt <xlsx> --as-on "<date>" [--apply]` (re-bake one class) |
 | rebuild_directperf.js | `<Direct monitor.xlsx> [--apply]` |
 | merge_de_universe.js | `<Analytics/Listed Direct Equity_<Month>.xlsx> [--apply]` |
-| merge_direct_equity_returns.js | `<Listed Direct Equity_<date>.xlsx> [--apply]` |
+| merge_direct_equity_returns.js | `<Listed Direct Equity_<date>.xlsx> [--allow-coverage-drop] [--apply]` |
 | merge_expense_exitload.js | `--expense <xlsx> --exitload <xlsx> [--apply]` |
-| merge_sif_monitor.js | `<SIF Monitor.xlsx> [--as-on] [--sibling] [--apply]` |
+| merge_sif_monitor.js | `<SIF Monitor.xlsx> --as-on "<date>" [--sibling] [--apply]` (`--as-on` required since 19-Oct-2026) |
 | merge_fund_managers.js | `<Fund Manager Data.xlsx> [--apply]` |
 | merge_risk_matrix.js | `<Fund Risk Ratios ....xlsx> --as-on "31 Oct 2026" [--apply]` |
 | merge_pms_performance.js | `<PMS_Scheme_Performance.xlsx> --as-on "<date>" --html index.html [--apply]` |
 | pin_pms_alias.js | `--html index.html [--apply]` |
 | merge_reckoner.js | `<Reckoner.pptx> --html index.html [--accept-drops <n>] [--apply]` |
-| merge_aif_performance.js | `<Reckoner.pptx> [--apply]` |
-| add_reckoner_funds.js | `<Reckoner.pptx> --pms <PMS perf.xlsx> --html index.html [--apply]` (universe change) |
-| merge_pms_aif_analytics.js | `<PMS & AIF Analytics.xlsx> --as-on "<date>" [--apply]` |
+| merge_aif_performance.js | `<Reckoner.pptx> [--allow-layout-change] [--apply]` |
+| add_reckoner_funds.js | `<Reckoner.pptx> [--html index.html] [--usd-inr 88] [--apply]` (universe change; `--pms` is accepted and ignored) |
+| merge_pms_aif_analytics.js | `<PMS & AIF Analytics.xlsx> --as-on "<date>" [--sheet <name>] [--apply]` |
 | merge_bond_list.js | `<Bond List.xlsx> --desk <Invictus\|OneDigital> [--sheet "<tab>"] [--apply]` |
 | fold_duplicate_names.js | `--monitor <MF Monitor.xlsx> [--apply]` (idempotent) |
 | fold_index_funds.js / split_sif_add_mld.js | `[--apply]` (one-off, idempotent) |

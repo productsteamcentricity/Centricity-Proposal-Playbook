@@ -33,24 +33,24 @@ columns and counts only. It never quotes rows.
    month after their data.
 3. **File by data month.** The month folder is `monthly-updates/<YYYY-MM_Mon-YYYY>/`, named by the
    as-on month. `Analytics/` holds exactly four files: inputs #3, #4, #5 and #6. Everything else goes
-   at the top level. `tools/bake_month.js:23-31` needs the two monitors at the top level and the three
+   at the top level. `tools/bake_month.js:54-65` needs the two monitors at the top level and the three
    analytics workbooks in `Analytics/`.
-4. **Names that tools depend on.** Only two tools pick files by name. `tools/bake_month.js:23-31` and
-   `tools/fill_variant_analytics.js:21-23` need the analytics names to start `Equity Analytics_`,
+4. **Names that tools depend on.** Only two tools pick files by name. `tools/bake_month.js:54-65` and
+   `tools/fill_variant_analytics.js:35-46` need the analytics names to start `Equity Analytics_`,
    `Hybrid Analytics_` and `Debt Analytics_` (any case). The Regular monitor must match
    `/^Daily MF ?monitor(?![a-z])/i` without `_Direct`, and the Direct monitor
    `/^Daily MF Monitor_Direct/i`. Every other tool takes an explicit path, so its file name does not
    matter. Strip invisible characters from names (the May-2026 soft hyphen) and record the original
    name in the update log. Any other rename needs the owner's agreement.
-5. **One file per role per month.** The two picking tools take the *first* name match in the folder
-   and do not warn about a second one. A re-issue usually keeps the same name, so a saved copy such as
-   `… (1).xlsx` can be silently ignored or silently preferred. When two files fill one role, compare
-   their LastWriteTime and content (row counts, empty columns, slide titles) and keep only the final
-   one in the month folder. If it is not clear which one is final, stop and ask.
+5. **One file per role per month.** The two picking tools refuse (exit 2) when two files match one
+   role, e.g. a saved `… (1).xlsx`. A re-issue usually keeps the same name. When two files fill one
+   role, compare their LastWriteTime and content (row counts, empty columns, slide titles), keep only
+   the final one in the month folder and move the other to its `_superseded/` subfolder
+   (`MONTHLY_UPDATE_PROCESS.md` B3). If it is not clear which one is final, stop and ask.
 6. **Ignore noise:** `desktop.ini`, `Thumbs.db`, and Excel lock files (`~$…`).
 7. **Read dates safely.** In Node, `cellDates` plus `toISOString()` shows the previous day on this
-   IST machine (31-Aug becomes `2026-08-30`). Read a serial with `XLSX.SSF.parse_date_code`, or
-   format the Date in local time.
+   IST machine (31-Aug becomes `2026-08-30`). Use `isoDay` or `isoDayFromSerial` from
+   `tools/lib/dates.js`, as the tools and the page's parsers do since 19-Oct-2026 (D73).
 8. **Stop and ask** (decision D61) when a file cannot be identified, its layout is one the tool
    rejects (section 3), its as-on date is older than what is live, or its data month differs from
    the month requested. A file that is simply absent is not a reason to stop: its area keeps its
@@ -145,9 +145,9 @@ exceptions are noted under their files:
   date as `--as-on`. The browser uploader uses the picker first, then the file name, then the in-file
   date (`site/index.html:3377`).
 - **Size:** 2,079 (Apr) to 2,161 (Sep) fund rows.
-- **Traps:** the soft-hyphen name defeats a typed path (`rename_schemes.js:27` checks it with
+- **Traps:** the soft-hyphen name defeats a typed path (`rename_schemes.js:43` checks it with
   `fs.existsSync`). An earlier `\bmonitor\b` regex silently missed the underscore names (comment at
-  `bake_month.js:26-29`). From Aug-2026 the monitor carries SEBI scheme renames, so
+  `bake_month.js:59-62`). From Aug-2026 the monitor carries SEBI scheme renames, so
   `rename_schemes.js` must run before the bake. Otherwise about 200 renamed schemes are duplicated.
 
 ### 2. Daily MF Monitor — Direct plans
@@ -161,8 +161,8 @@ exceptions are noted under their files:
   in every month.
 - **Use:** `bake_month.js` keeps only rows whose name contains "direct". It joins them to MASTER on
   the plan base name, with `-Direct Plan`, `-Dir`, `(G)` and similar parts stripped
-  (`bake_month.js:217` onwards). The units are the same as #1: percent columns are divided by 100,
-  and AUM, maturity and duration are kept as they are.
+  (`tools/lib/direct_perf.js:33-45`, `:71-72`, called by `bake_month.js`). The units are the same as
+  #1: percent columns are divided by 100, and AUM, maturity and duration are kept as they are.
 - **As-on:** as #1.
 - **Size:** 1,789 (May) to 1,827 (Sep) fund rows.
 - **Trap:** the Regular pattern excludes only `_Direct`. A Direct file named with a space
@@ -197,7 +197,7 @@ exceptions are noted under their files:
   was cross-checked against the close prices in #7 for Apr–Sep [inference]. In the debt file every
   holding maturing on or before month-end is marked `Out`. The June banner cells (D3 = 01-Jun-2026,
   T3 = 01-May-2026) have an unknown meaning.
-- **Use:** `bake_month.js:23-25` and `fill_variant_analytics.js:21-23` pick these files by name prefix
+- **Use:** `bake_month.js:54-58` and `fill_variant_analytics.js:35-46` pick these files by name prefix
   inside `Analytics/`. `merge_analytics.js` takes explicit paths for a one-class re-bake.
   `rekey_sif_analytics.js` must follow every analytics bake. `--as-on-analytics` sets
   `DATA_DATES.analytics`.
@@ -210,10 +210,11 @@ exceptions are noted under their files:
 - **Names seen:** `Analytics/Listed Direct Equity_<May 2026|June 2026|July 2026|August 2026|Sep 2026>`.
   The April predecessor, `Direct equity_April`, has an incompatible layout (section 3).
 - **Layout:** the first sheet is read. In May and Aug it was named after the first company
-  (`20 Microns Ltd.1`). **The header must be on row 1.** The tool does not search for it
-  (`merge_de_universe.js:29`). It has 7 columns: `Sr.No. | Accord Code | Company Name | CD_Sector |
-  CD_Industry1 | SC_Latest Market Cap | Mcap Allocation`. The columns are matched by pattern, and the
-  tool aborts if name, sector, market cap or bucket is missing (`merge_de_universe.js:32-36`).
+  (`20 Microns Ltd.1`). It has 7 columns: `Sr.No. | Accord Code | Company Name | CD_Sector |
+  CD_Industry1 | SC_Latest Market Cap | Mcap Allocation`. Since 19-Oct-2026 the header row is found
+  in the first 30 rows by the exact names `Company Name`, `CD_Sector`, `SC_Latest Market Cap` and
+  `Mcap Allocation` (case and spaces ignored), so banner rows above it are fine; the tool aborts if
+  one is missing or appears twice (`merge_de_universe.js:50-69`). `CD_Industry1` is not read.
 - **No ISIN.** `docs/PRD.md` §11.1 calls this a "sector, mcap, ISIN" list, but no copy from May to
   Sep has an ISIN column. ISINs are in #7. The join is by normalised company name. A renamed company therefore
   arrives as a new listing (see *Data-hygiene traps* in the operating manual).
@@ -229,32 +230,36 @@ exceptions are noted under their files:
   and `Listed Direct Equity_30th Sep 2026`. The stem is the same as #6. Tell them apart by content
   (3M…5Y returns columns and `CD_ISIN No`, about 8,400–8,650 rows) and by folder.
 - **Layout:** the first sheet is read. The header is the first row with a `Company Name` cell. Sep-2026
-  had three blank rows above it (`merge_direct_equity_returns.js:62-64`). It has 34 columns:
+  had three blank rows above it. It has 34 columns:
   `Sr.No. | Accord Code | Company Name | BRetSimplebse_<ddMonyyyy>_3M | _6M | _1Y | _2Y_CAGR |
   _3Y_CAGR | _5Y_CAGR | CD_ISIN No`, then `_Close Date`, `_Close Price`, `_Prev Date` and
-  `_Prev Price` for each tenor. Return columns are found by suffix (`:71-80`).
+  `_Prev Price` for each tenor. Return columns are found by suffix.
 - **Units:** percent, divided by 100 and rounded to 6 dp. Values outside −100% to +2000% are
-  rejected (`:106`).
+  rejected.
 - **As-on:** the date inside the column names (`BRetSimplebse_30Sep2026_…`) and the `_Close Date`
   values. All six tenors must carry the same date.
-- **Join:** by ISIN first, then by normalised name.
-- **Trap:** the tool refuses to run if any return column is completely empty (`:118-125`), because the
-  join would delete that return from every stock. The first Sep-2026 copy (13:52) dated its 5Y column
-  `30Oct2026` and left it empty. The re-issue, under the same name, fixed it. The pack holds the good
-  copy, modified 14-Oct-2026 14:03 IST.
+- **Join:** by ISIN first, then by normalised name. A repeated ISIN or name: the first row wins and
+  the repeats are reported.
+- **Traps:** the tool refuses to run if any return column is completely empty
+  (`merge_direct_equity_returns.js:132-140`), because the join would delete that return from every
+  stock. The first Sep-2026 copy (13:52) dated its 5Y column `30Oct2026` and left it empty. The
+  re-issue, under the same name, fixed it. The pack holds the good copy, modified 14-Oct-2026 14:03
+  IST. A partly empty column fails the tenor-coverage gate when more than 5% of the matched stocks
+  carrying a tenor would lose it (since 19-Oct-2026): re-request the file; `--allow-coverage-drop`
+  only if the owner accepts the loss.
 
 ### 8. Expense Ratio
 
 - **Names seen:** `Expense Ratio_June 2026` (old columns, see the trap below),
   `Expense ratio_July 2026`, `Expense Ratio_Aug 2026` and `Expense Ratio_Sep 2026`.
 - **Layout:** sheet `Sheet1`, or the first sheet. The header is the first row with a cell that is
-  exactly `Scheme Name` (`merge_expense_exitload.js:39-42`).
+  exactly `Scheme Name` (`merge_expense_exitload.js:46-55`).
   - Jul and Aug, header on row 1: `Scheme Name | Base Expratio | Direct Plan Base Expratio |
     Direct Plan Ratio | Ratio`.
   - Sep: A1 ` >>CTB Output`, B3 `Expense Ratio`, then the header on row 4 with the columns
     reordered (`Ratio` first).
 - **Use:** `Ratio` is the total TER of the Regular plan and goes to `MASTER.expense`.
-  `Direct Plan Ratio` on the same row goes to the Direct overlay (`:72`, `:83`). The join is by exact
+  `Direct Plan Ratio` on the same row goes to the Direct overlay (`:77`, `:88-93`). The join is by exact
   scheme name only.
 - **Units:** percent, divided by 100. Values from 0% to 8% are accepted.
 - **As-on:** none in the file.
@@ -272,7 +277,7 @@ exceptions are noted under their files:
   Sep has A1 ` >>CTB Output`, B3 `Load Info`, and on row 4 `Scheme Name | Exit Load | Remark`. The new
   numeric `Exit Load` column is ignored.
 - **Use:** the first column whose header contains "remark", otherwise `Remark`
-  (`merge_expense_exitload.js:100`). The text is stored as written. `.`, `-`, `NA`, `No Option` and
+  (`merge_expense_exitload.js:107`). The text is stored as written. `.`, `-`, `NA`, `No Option` and
   `Not applicable` mean missing and are skipped. `Nil` is kept.
 - **Not to be confused with:** P4 (`Maturity/Exit Load` + `Expected IRR`), or April's `Exit Loads MF`,
   which has `Exit Load` and no `Remark`, so it would update nothing.
@@ -296,14 +301,17 @@ exceptions are noted under their files:
   mis-mapped columns. AUM is in ₹ crore.
 - **As-on:** Sep has a `Month End` column (30-Sep-2026 on every scheme), but the parser does not read
   it. The parser's order is `--as-on`, then a date in the file name, then an `As on` banner (neither
-  file has one). Pass `--as-on`.
+  file has one). `merge_sif_monitor.js` requires `--as-on` (since 19-Oct-2026; missing → exit 2) and
+  fails a gate unless the date the parser stamps equals it. `Inception Date` is read as the true
+  calendar day (`isoDayLite`; KNOWN_ISSUES A6).
 - **Size:** 29 schemes in Aug and 30 in Sep (16 Equity, 14 Hybrid).
 
 ### 11. Fund Manager Data
 
 - **Names seen:** `Fund Manager Data_31st Aug 2026` only. The June predecessor `Fund Manager_MF_June 2026`
   has one manager per scheme and is rejected (section 3).
-- **Layout:** the first sheet. **The header must be on row 1** (`merge_fund_managers.js:37-43`):
+- **Layout:** the first sheet. The header row is found by its column names in the first 30 rows
+  (`merge_fund_managers.js:51-73`; a repeated column aborts):
   `Scheme Name | Inception Date | Fund Manager | From Date | To Date`. `From Date` is optional. There
   is one row per manager per stint, and 2,101 group rows (`Scheme Name: <scheme>`) are interleaved.
   Aug had 11,522 dated stint rows out of 13,623.
@@ -311,23 +319,27 @@ exceptions are noted under their files:
   file: in Aug the commonest `To Date` was 31-Jul (3,317 rows), against 1,123 at 31-Aug. The tool
   decides who is "current" per scheme, within 90 days of the file's latest date.
 - **Traps:** run it **after** the bake, because the monitor's `[Fund Manager 1]` column overwrites
-  `fund_mgr` on every bake. The tool prints dates one day early (`iso()` at `:45`), so 31-Aug shows as
-  `2026-08-30`. The logic is unaffected.
+  `fund_mgr` on every bake. Until 19-Oct-2026 the tool printed dates one day early (31-Aug as
+  `2026-08-30`); it now reads them with `isoDay`. Roster selection was never affected.
 
 ### 12. Fund Risk Ratios & 3Y Rolling — All Funds
 
 - **Names seen:** `Fund Risk Ratios & 3Y Rolling - All Funds (as on 31-Aug-2026)` and
   `… (as on 30-Sep-2026)`.
 - **Layout:**
-  - The sheet whose name matches `/risk\s*ratios/i` (`merge_risk_matrix.js:42`) is
+  - The sheet whose name matches `/risk\s*ratios/i` (`merge_risk_matrix.js:73`) is
     `Risk Ratios & 3Y Rolling`. A1 is the title with the as-on date. A2 states the 3-year window and
     the 4.5% risk-free rate.
   - Its header is the first row whose column A is `Fund Name`, which is row 4: `Fund Name | CMV |
     Wt % | Beta | SD (Ann.) | Alpha | Sortino | Sharpe | Corr. | Info Ratio | Down Cap. | 3Y Rolling |
     Rationale`. `CMV`, `Wt %` and `Rationale` ship blank.
   - Sheet `Data Flags` has its header on row 4: `Fund Name | Category | Benchmark Used |
-    NAV Days in 3Y Window | Data Flag`.
-  - All nine metric columns are required (`:53-63`).
+    NAV Days in 3Y Window | Data Flag`. Since 19-Oct-2026 the `Data Flag` text becomes `fl` on the
+    RISK_MATRIX entry: `split` when it says a NAV split makes the risk stats unreliable, `lowcorr`
+    for low correlation to the benchmark (D74). A split noted for Max Drawdown only and the
+    short-history flags are not carried. Sep-2026: 167 flagged rows → 28 `split`, 5 `lowcorr`, 12
+    Max-Drawdown-only, 122 other. The page marks the flagged funds.
+  - All nine metric columns are required.
 - **Units:** stored exactly as in the workbook, with **no scaling**. SD and down-capture are already
   in the percent units the dashboard expects. `-` or `—` means fewer than 250 NAV days and is stored
   as empty. A column-A value longer than 120 characters is methodology prose and is skipped.
@@ -362,21 +374,25 @@ exceptions are noted under their files:
   03-Sep-2026 re-issue was merged with `DATA_DATES.pms` left at 31-Jul. This specification comes
   from the code only.
 - **Recognise:** any sheet whose row 1 contains both `Scheme Name` and `Scheme Return 1 Year`. The
-  sheet has been seen as `PMS Performance` and as `Sheet1` (`merge_pms_performance.js:86-99`).
-  25 columns are required (`:101-107`): `Scheme Name`, `AUM`, `P/E Ratio`, `Large Cap`, `Mid Cap`,
+  sheet has been seen as `PMS Performance` and as `Sheet1` (`merge_pms_performance.js:95-105`).
+  25 columns are required (`:107-113`): `Scheme Name`, `AUM`, `P/E Ratio`, `Large Cap`, `Mid Cap`,
   `Small Cap`, `Exit Load`, `Scheme Return 1/3/6 Month`, `Scheme Return 1/2/3/5 Year`,
   `Scheme Return Since Inception`, `Standard Deviation 1/3 Year`, `Sharpe Ratio 1/3 Year`,
   `Sortino Ratio 1/3 Year`, `Alpha 1/3 Year` and `Beta 1/3 Year`.
 - **Units:** returns, SD, alpha and market-cap shares are percent and are divided by 100. Ratios and
   P/E are stored as is. AUM is judged per column: if the largest value is above 1e8, the whole column
-  is in rupees and is divided by 1e7; otherwise it is taken as ₹ crore (`:112`). `Exit Load` is free
-  text, parsed for the year 1, 2 and 3 rates.
-- **As-on:** passed as `--as-on` into `DATA_DATES.pms`. Where the file shows its own date is
-  **[unverified]**.
-- **Traps:** the vendor renames schemes. When it does, update `REPIN` in `merge_pms_performance.js`
-  and `PINS` in `pin_pms_alias.js` together. Both tools, and `merge_reckoner.js`, need
-  `--html site/index.html`. Do not confuse this file with `PMS & AIF Performance <Month>.xlsx`, a
-  Reckoner-grid extract that the tool rejects (section 3).
+  is in rupees and is divided by 1e7; otherwise it is taken as ₹ crore (`:118`). `Exit Load` is free
+  text, parsed for the year 1, 2 and 3 rates; since 19-Oct-2026 a year digit counts only when it
+  stands alone, so "12 months" or "0.25%" no longer read as a year (KNOWN_ISSUES A18).
+- **As-on:** passed as `--as-on` into `DATA_DATES.pms` (a plain label such as "30th September 2026").
+  Where the file shows its own date is **[unverified]**.
+- **Traps:** the vendor renames schemes. When it does, the run stops on a missing `repin` key (and
+  `pin_pms_alias.js` on a missing `pin` key): update that entry's `key` in `tools/data/pins.json`
+  (`pms_alias`), with the owner. Each entry is marked `repin` (re-pointed by
+  `merge_pms_performance.js`), `pin` (re-pointed and checked by `pin_pms_alias.js`), or both, in
+  which case one edit fixes both tools. Both tools, and
+  `merge_reckoner.js`, need `--html site/index.html`. Do not confuse this file with
+  `PMS & AIF Performance <Month>.xlsx`, a Reckoner-grid extract that the tool rejects (section 3).
 
 ### 15. Monthly Investment Reckoner deck
 
@@ -394,21 +410,28 @@ exceptions are noted under their files:
     `Strategy`, `Scheme` or `Name of the Scheme` and that have at least 8 header cells
     (`tools/lib/reck_parse.js`).
   - `merge_aif_performance.js` looks for slides by file name (`slide1.xml` … `slide200.xml`). The
-    AIF grid is the first `Strategy` table on a slide titled `AIF PERFORMANCE`. It assumes the last
-    four columns are the market-cap split.
-  - `add_reckoner_funds.js` uses slide numbers hard-coded for the August-2026 deck. It accepts
-    `--pms <xlsx>` but never reads it (`add_reckoner_funds.js:20`).
+    AIF grid is the first `Strategy` table on a slide titled `AIF PERFORMANCE`. The market-cap split
+    must be the last four columns, and a PMS – EQUITY grid with a 2Y column must exist; otherwise a
+    gate fails (`--allow-layout-change` after a hand check, since 19-Oct-2026).
+  - `merge_reckoner.js` maps deck headings to Select categories through `GRID`; a dropped fund still
+    listed under a heading `GRID` does not map stops the run (D76). Deck-name pins live in
+    `tools/data/pins.json` (`reckoner`).
+  - `add_reckoner_funds.js` uses slide numbers hard-coded for the August-2026 deck; each slide must
+    name its fund, or the run refuses. A fact-card AUM in USD mn is converted at `--usd-inr`
+    (default 88). `--pms <xlsx>` is accepted and ignored (deprecated).
 
 ### 16. PMS & AIF Analytics (look-through)
 
 - **Names seen:** `PMS_Analytics April`, `PMS & AIF Analytics_May 2026` (at the month root) and
   `PMS & AIF Analytics July 2026` (in `Analytics/`). The tool takes an explicit path, so either
   location works. New months go at the top level.
-- **Layout:** the first sheet, with the header on row 1: `Product Category | Scheme Name |
+- **Layout:** one sheet with the header on row 1: `Product Category | Scheme Name |
   Company Name | Corrected Name | Holding(%) | Sector | ISIN | SEBI Mcap`. All but `Company Name`
-  (a fallback for the stock name) and `ISIN` are required (`merge_pms_aif_analytics.js:58-61`).
+  (a fallback for the stock name) and `ISIN` are required. Since 19-Oct-2026 the tool picks the sheet
+  whose header carries these columns, not simply the first sheet; if two sheets qualify, name one
+  with `--sheet` (`merge_pms_aif_analytics.js:77-91`).
 - **Units:** **`Holding(%)` is a fraction.** Each scheme sums to about 1.0: in July, 0.999 to 1.003
-  across 15 schemes. The tool multiplies it by 100 (`:96`). `SEBI Mcap` loses its " Cap" suffix.
+  across 15 schemes. The tool multiplies it by 100. `SEBI Mcap` loses its " Cap" suffix.
 - **As-on:** none in the file. Pass it as `--as-on`; the tool prints it for the update log and writes
   it nowhere. Until 16-Oct-2026 it overwrote `DATA_DATES.analytics`, the MF analytics label
   (`KNOWN_ISSUES.md` A3, D70).
@@ -420,17 +443,18 @@ exceptions are noted under their files:
 ### 17. NAV Data (optional)
 
 - **Names seen:** `NAV Data as on <dd>th <Month> 2026` (June, August, September).
-- **Layout:** three sheets, read by exact name (`build_risk_matrix.py:24-38`):
+- **Layout:** three sheets, read by exact name (`build_risk_matrix.py:66`, `:82`, `:90`):
   - `NAV Data-MF`: row 1 is `Date | <one column per fund>`, about 1,088 funds. Row 2 holds AMFI codes
-    and is dropped.
+    and is dropped when it is not a date (`:68-74`).
   - `CATEGORY FOR MF`: `Instrument Name | Category`.
   - `NAV Data-Benchmark`: `Date | NIFTY 100 - TRI | NIFTY 50 - TRI | NIFTY 500 - TRI |
     Nifty Midcap 150 - TRI | Nifty Smallcap 250 - TRI`.
 - **As-on:** the latest `Date` in `NAV Data-MF`. The document properties of the Aug and Sep copies
   were copied from the June file, so do not date it by its metadata.
-- **Use:** `python -I tools/build_risk_matrix.py "<NAV xlsx>" site/index.html "<AS_ON>" <out.js>`.
-  This route has not been validated on this machine's pandas 3.x. The JavaScript route (#12) is the
-  one in use.
+- **Use:** `python -I tools/build_risk_matrix.py "<NAV xlsx>" site/index.html "<AS_ON>" <out.js>
+  [--rf 0.045]`; the output must be a `.js` path outside `site/` (`tools/README.md` §5). The AMFI-code
+  row is dropped only when it is not a date. This route is not validated for production; the
+  JavaScript route (#12) is the one in use (Sep-2026 trial: 1,086 of 1,088 funds joined).
 
 ### P1. Bond List
 
@@ -448,7 +472,9 @@ exceptions are noted under their files:
   16-Oct-2026). Until then it read only the first sheet as Invictus; in the June file that is
   OneDigital, but both sheets held identical rows, so no harm was done. Still ask the desk which
   sheet is which.
-- **Units:** IRR as a fraction. The gate requires 0 < low < 0.30 (`:236`). Maturity is an Excel
+- **Since 19-Oct-2026:** an empty sheet is refused, and bonds another desk already lists are printed
+  as a `CHECK` (in the June file the two sheets hold the same 14 bonds).
+- **Units:** IRR as a fraction. The gate requires 0 < low ≤ high < 0.30 (`merge_bond_list.js:258`). Maturity is an Excel
   serial, and the source has a recurring century typo (2030 stored as 1930). The date embedded in
   the issuer name wins. The same bond can appear in two formats, so rows are deduplicated on issuer
   and maturity.
@@ -491,7 +517,7 @@ exceptions are noted under their files:
 
 - **Never in the pack.** Render the Disclaimer slide to `disclaimer.png` and the Thank You slide to
   `thankyou.jpg`, both at exactly 2001 × 1125, after deleting the logo and slide-number placeholders.
-  Then run `update_closing_slides.js --dir <render dir>` (`:26-29`, `:57`). The steps are in the
+  Then run `update_closing_slides.js --dir <render dir>` (`:45-48`, `:78`). The steps are in the
   operating manual → *Refreshing the closing slides*.
 
 ---
@@ -520,7 +546,7 @@ a sibling.
 
 | File (folder) | Predecessor of | What the tool does with it |
 |---|---|---|
-| `Direct equity_April.xlsx` (2026-04) | #6 | Aborts with "column layout changed": no `Mcap Allocation` column (`merge_de_universe.js:36`). Its market caps date from Oct-2025. |
+| `Direct equity_April.xlsx` (2026-04) | #6 | Aborts with "column layout changed": no `Mcap Allocation` column (`merge_de_universe.js:55-58`). Its market caps date from Oct-2025. |
 | `Exit Loads MF.xlsx` (2026-04) | #9 | Updates nothing: there is no `Remark` column, so every cell reads as missing |
 | `Expense Ratio_June 2026.xlsx` (2026-06) | #8 | Updates nothing: the columns are `Regular/Direct Plan Expense Ratio`, not `Ratio`, and the gate still passes |
 | `Fund Manager_MF_June 2026.xlsx` (2026-06) | #11 | Aborts: one manager per scheme, and no `Fund Manager` or `To Date` column. It repeats the monitor's own column anyway. |

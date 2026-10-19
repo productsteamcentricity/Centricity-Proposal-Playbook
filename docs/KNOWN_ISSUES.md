@@ -3,7 +3,9 @@
 This is the single register of confirmed defects, risks and gaps that the owner (Centricity Products
 team, GitHub account `productsteamcentricity`) inherited at handover on 16-Oct-2026. **Apart from C2
 (the stale README, replaced by the transfer's docs), none of them was fixed during the transfer.** Fix
-each one as its own task on a `fix/…` branch (D68), never inside a data refresh.
+each one as its own task on a `fix/…` branch (D68), never inside a data refresh. The tool, page and
+data fixes of 16–19-Oct-2026 (PRs #3–#15) closed or narrowed most A, C, R, E and F items; each item's
+status and section say which PR and what is left.
 
 **How to use this file**
 
@@ -13,10 +15,13 @@ each one as its own task on a `fix/…` branch (D68), never inside a data refres
   `docs/DECISIONS.md`; the repository, security and hosting issues were numbered D1–D7 before
   16-Oct-2026 and are now R1–R7.
 - New defect: add a row and a section, using the next free ID in its group. Fixed: set *Status* to
-  `Closed <date> (<commit>)`, keep the section and add one line saying what changed.
-- Line numbers were checked on 16-Oct-2026 against the files as they are now (`site/`, `tools/`).
+  `Closed <date> (<commit or PR>)`, keep the section and add one line saying what changed. Partly
+  fixed: `Partly fixed <date> (<PR>)`, with a line saying what is left.
+- Line numbers were checked on 16-Oct-2026 against the files as they were then (`site/`, `tools/`).
   The reorganisation commit `cd05c97` edited tool lines in place, so tool line numbers match the
-  pre-move audit. Re-find a line with Grep before editing; never Read `site/index.html` whole.
+  pre-move audit. For items fixed or partly fixed since, the evidence lines describe the code
+  **before** the fix; the dated *Fixed* line gives the current state. Re-find a line with Grep before
+  editing; never Read `site/index.html` whole.
 - **[inference]** marks a claim that was reasoned from code, not tested.
 
 **Severity:** **P1** data-integrity risk (wrong or misleading data could reach a client-facing page,
@@ -32,48 +37,70 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 1. Ask the desk for the missing inputs: the PMS performance file (B1), the October Reckoner deck
    (B2), the final issue of the market deck (B3), analytics workbooks that include SIFs (B4), Fund
    Manager Data (B5, C15) and PMS & AIF Analytics (B6).
-2. Read every `GATE` line yourself. A dry run's exit code is not a verdict (A2), and
-   `verify_page.js` hides some script errors (A23).
-3. Start from a clean git tree, snapshot the six deploy files into `backups/`, and keep OneDrive from
-   syncing mid-run (A8, R6).
-4. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
+2. **Owner decision before the next MF cycle's rename `--apply`:** with dates now read correctly
+   (A6), `rename_schemes.js` finds 8 renames in the Sep-2026 (and Aug-2026) Monitor that it used to
+   miss: HDFC Retirement Savings Fund-Hybrid-Debt Plan → HDFC Retirement Fund-Hybrid-Debt Plan; four
+   Kotak overseas FoFs, Omni → Active; two Axis FoFs, Active → Omni; and Motilal Oswal Asset
+   Allocation Passive FoF-Aggressive → Motilal Oswal Multi Asset Passive FoF. All 8 match on the exact
+   inception date. The Motilal one looks suspicious (MASTER files it as Equity ETF, the Monitor lists
+   it on its Hybrid sheet, and the name changes more than a rename usually does): confirm it with the
+   owner. None is applied yet. The new names sit on two Monitor sheets the page parser does not map
+   (`Solution Oriented,ETFs,FOFs` and `Hybrid`; `docs/INPUT_FILES.md`), so the bake refreshes these 8
+   records under neither name: they carry older figures, not September's, and applying the renames
+   changes their names (and store keys), not their figures (C19 is the figures problem). The list is
+   also in `docs/update-log/2026-09_Sep-2026.md` (Run 2, corrected 19-Oct-2026).
+3. A dry run that **exits 1 failed a gate**: stop and read the `GATE` lines. Exit 2 is a usage or
+   input error (unknown flag, extra argument, bad `--as-on`, a duplicate input file, or a missing
+   source in most tools); every tool except `verify_page.js` refuses an unknown flag or an extra
+   argument (PR #15). Exception: a missing source in `merge_pms_performance`,
+   `merge_pms_aif_analytics`, `merge_reckoner`, `merge_aif_performance` or `add_reckoner_funds`, or a
+   wrong `--html` path in several tools, crashes with `ENOENT` (exit 1, a stack trace and no `GATE`
+   lines): an input error, not a gate. Exit 0 still needs a read: count, `CHECK` and `WARN` lines
+   never fail a run (A2, closed). Override flags (`--accept-drops`, `--allow-coverage-drop`,
+   `--allow-shrink`, `--allow-layout-change`) are owner decisions.
+4. Start from a clean git tree, snapshot the six deploy files into `backups/`, and keep OneDrive from
+   syncing mid-run (R6). Writes are atomic now (A8), but a multi-file write is not one transaction.
+5. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
    ambiguous sheet (A1, closed).
-5. If a PMS & AIF Analytics file arrives, record the look-through as-on the tool prints in the update
-   log; it no longer changes the MF analytics date (A3, closed).
-6. Reckoner cycle: the tool refuses a DROPPED list that mirrors NO MASTER MATCH, more than 5% of the
-   list dropped, or an emptied category (A4, closed); `--accept-drops <n>` only after the owner has
-   read the DROPPED list. Expect to edit the pin maps (A18). Decide the Mosaic and Motilal GIFT City items with the desk (C4, C5).
+6. If a PMS & AIF Analytics file arrives, record the look-through as-on the tool prints in the update
+   log; it never changes the MF analytics date (A3, closed).
+7. Reckoner cycle: the tool refuses a DROPPED list that mirrors NO MASTER MATCH, more than 5% of the
+   list dropped, an emptied category, or a dropped fund still listed under a deck heading `GRID`
+   does not map (A4, closed); `--accept-drops <n>` waives only the 5% and emptied-category gates,
+   after the owner has read the DROPPED list. PMS alias and Reckoner pins are edited in
+   `tools/data/pins.json` only, with the owner (A18). Decide the Mosaic and Motilal GIFT City items
+   with the desk (C4, C5).
 
 ## Summary
 
 | ID | Title | Area | Sev | Status | Next refresh | Where |
 |---|---|---|---|---|---|---|
-| A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`) | — | `tools/merge_bond_list.js:63-91` |
-| A2 | Eight tools exit 0 from a dry run when a gate failed | Tools | P2 | Open | **Affects** | `tools/bake_month.js:146` and 7 more |
-| A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`) | — | `tools/merge_pms_aif_analytics.js:158-169` |
-| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`) | — | `tools/merge_reckoner.js:271-290` |
-| A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Open | **Affects** | `tools/rename_schemes.js:198`, `:211-213` |
-| A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Open | — | `tools/rename_schemes.js:76`; `site/index.html:3349` |
-| A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Open | — | `tools/bake_month.js:217-306`; `tools/rebuild_directperf.js:92-98` |
-| A8 | Writes are in place, non-atomic and without backup | Tools | P2 | Open | **Affects** | `tools/lib/blocklib.js:47` |
-| A9 | Date labels spliced in unescaped, by first match | Tools | P2 | Open | **Affects** | `tools/bake_month.js:169-170` |
-| A10 | Two tools find MASTER by physical line | Tools | P2 | Open | — | `tools/merge_direct_equity_returns.js:131`; `tools/merge_bond_list.js:57` |
-| A11 | DE returns join deletes returns the file lacks | Tools: DE | P2 | Open | **Affects** | `tools/merge_direct_equity_returns.js:152-155` |
-| A12 | Expense tool: hard-coded sample fund, gate that cannot fail | Tools: expense | P2 | Open | **Affects** | `tools/merge_expense_exitload.js:128-132` |
-| A13 | Header assumed on row 1 (DE universe, fund managers) | Tools | P2 | Open | **Affects** | `tools/merge_de_universe.js:29`; `tools/merge_fund_managers.js:38` |
-| A14 | DE universe joins by name only; industry never written | Tools: DE | P2 | Open | **Affects** | `tools/merge_de_universe.js:32`, `:66-73` |
-| A15 | Risk-matrix name normaliser strips "(Debt)" and similar | Tools: risk | P2 | Open | — | `tools/merge_risk_matrix.js:107-113` |
-| A16 | SIF Monitor merge can keep an old as-on date | Tools: SIF | P2 | Open | **Affects** | `tools/merge_sif_monitor.js:24`, `:108-113` |
-| A17 | Post-bake analytics tools: heuristic fill, weak gates, file picking | Tools: analytics | P2 | Open | **Affects** | `tools/fill_variant_analytics.js:105`; `tools/rekey_sif_analytics.js:96-97` |
-| A18 | PMS/Reckoner pin maps duplicated and partly stale | Tools: PMS | P2 | Open | **Affects** (may block) | `tools/merge_pms_performance.js:20-50`, `:153-154` |
-| A19 | AIF performance merge carries data forward silently | Tools: AIF | P2 | Open | **Affects** | `tools/merge_aif_performance.js:88-91`, `:139-141` |
-| A20 | `add_reckoner_funds.js`: hard-coded deck facts; re-adds a dropped GIFT City fund | Tools: Reckoner | P2 | Open | **Affects** (universe change only) | `tools/add_reckoner_funds.js:20`, `:199-234` |
-| A21 | Slide tools' gates are weaker than documented | Tools: slides | P2 | Open | **Affects** | `tools/update_market_slides.js:41`, `:65`; `tools/update_closing_slides.js:69-74` |
-| A22 | Python risk-matrix route unvalidated and unguarded | Tools: risk | P2 | Open | — | `tools/build_risk_matrix.py:16-25`, `:152` |
-| A23 | `verify_page.js` and the vm tools hide real errors | Verification | P2 | Open | **Affects** | `tools/verify_page.js:78` |
-| A24 | Shared libraries: latent parsing hazards | `tools/lib` | P2 | Open | — | `tools/lib/reck_parse.js:45-47`; `tools/lib/blocklib.js:25` |
-| A25 | Invisible characters that must survive any edit | Tools | P2 | Open | — | `tools/rename_schemes.js:146` |
-| A26 | One-off tools are not safe to re-run blindly | Tools | P3 | Open | — | `tools/split_sif_add_mld.js:86-93` |
+| A1 | Bond List tool loads the first sheet and labels it Invictus | Tools: bonds | P1 | Closed 16-Oct-2026 (`d48620e`); more gates 19-Oct-2026 (PR #11) | — | `tools/merge_bond_list.js:66-92` |
+| A2 | Eight tools exit 0 from a dry run when a gate failed | Tools | P2 | Closed 19-Oct-2026 (PRs #3, #7–#11) | — | every tool's `process.exit(fail ? 1 : 0)` |
+| A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`); hardened 19-Oct-2026 (PR #10) | — | `tools/merge_pms_aif_analytics.js:200-205` |
+| A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`); fourth gate 19-Oct-2026 (PR #10) | — | `tools/merge_reckoner.js:283-317` |
+| A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Closed 19-Oct-2026 (PR #7; page lookup PR #12) | — | `tools/rename_schemes.js:225-281` |
+| A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) | **Affects** (8 renames await the owner) | `tools/lib/dates.js`; `isoDay` in `site/index.html` |
+| A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Partly fixed 19-Oct-2026 (PR #7) | — | `tools/lib/direct_perf.js`; `REFRESH.parseMfMonitorDirect` in `site/index.html` |
+| A8 | Writes are in place, non-atomic and without backup | Tools | P2 | Closed 19-Oct-2026 (PRs #3, #7–#11) | — | `tools/lib/blocklib.js:60-82` |
+| A9 | Date labels spliced in unescaped, by first match | Tools | P2 | Closed 19-Oct-2026 (PRs #3, #7, #9, #10) | — | `tools/lib/blocklib.js:115-151` |
+| A10 | Two tools find MASTER by physical line | Tools | P2 | Closed 19-Oct-2026 (PRs #8, #11) | — | `B.locate` in both tools |
+| A11 | DE returns join deletes returns the file lacks | Tools: DE | P2 | Closed 19-Oct-2026 (PR #8) | — | `tools/merge_direct_equity_returns.js:189-205` |
+| A12 | Expense tool: hard-coded sample fund, gate that cannot fail | Tools: expense | P2 | Closed 19-Oct-2026 (PR #8) | — | `tools/merge_expense_exitload.js:129-146` |
+| A13 | Header assumed on row 1 (DE universe, fund managers) | Tools | P2 | Closed 19-Oct-2026 (PR #8) | — | `tools/merge_de_universe.js:50-69`; `tools/merge_fund_managers.js:51-73` |
+| A14 | DE universe joins by name only; industry never written | Tools: DE | P2 | Partly fixed 19-Oct-2026 (PR #8) | **Affects** (name-only join) | `tools/merge_de_universe.js:115-122` |
+| A15 | Risk-matrix name normaliser strips "(Debt)" and similar | Tools: risk | P2 | Closed 19-Oct-2026 (PR #9) | — | `tools/merge_risk_matrix.js` `baseName` |
+| A16 | SIF Monitor merge can keep an old as-on date | Tools: SIF | P2 | Closed 19-Oct-2026 (PR #9) | — | `tools/merge_sif_monitor.js:27-49`, `:125-149` |
+| A17 | Post-bake analytics tools: heuristic fill, weak gates, file picking | Tools: analytics | P2 | Closed 19-Oct-2026 (PR #7) | — | `tools/fill_variant_analytics.js:33-46`, `:136`; `tools/rekey_sif_analytics.js:142` |
+| A18 | PMS/Reckoner pin maps duplicated and partly stale | Tools: PMS | P2 | Closed 19-Oct-2026 (PR #10) | **Affects** (pins still by hand) | `tools/data/pins.json` |
+| A19 | AIF performance merge carries data forward silently | Tools: AIF | P2 | Partly fixed 19-Oct-2026 (PR #10) | **Affects** | `tools/merge_aif_performance.js:227-229` |
+| A20 | `add_reckoner_funds.js`: hard-coded deck facts; re-adds a dropped GIFT City fund | Tools: Reckoner | P2 | Partly fixed 19-Oct-2026 (PR #10) | **Affects** (universe change only) | `tools/add_reckoner_funds.js:57-105`, `:150-161` |
+| A21 | Slide tools' gates are weaker than documented | Tools: slides | P2 | Closed 19-Oct-2026 (PR #11) | — | `tools/update_market_slides.js:34`, `:82-104` |
+| A22 | Python risk-matrix route unvalidated and unguarded | Tools: risk | P2 | Partly fixed 19-Oct-2026 (PR #9) | — | `tools/build_risk_matrix.py:21-49` |
+| A23 | `verify_page.js` and the vm tools hide real errors | Verification | P2 | Partly fixed 19-Oct-2026 (PRs #3, #7) | — | `tools/verify_page.js:83-94` |
+| A24 | Shared libraries: latent parsing hazards | `tools/lib` | P2 | Partly fixed 16-Oct-2026 (PR #3) | — | `tools/lib/reck_parse.js:45-47`; `tools/lib/pptx.js:8-24` |
+| A25 | Invisible characters that must survive any edit | Tools | P2 | Partly fixed 19-Oct-2026 (PRs #7, #9–#11, #15) | — | `.gitattributes` |
+| A26 | One-off tools are not safe to re-run blindly | Tools | P3 | Closed 19-Oct-2026 (PR #11) | — | `tools/split_sif_add_mld.js`, `fold_duplicate_names.js`, `fold_index_funds.js` |
 | B1 | No PMS performance file transferred; PMS at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
 | B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-07_Jul-2026/` |
 | B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-09_Sep-2026/` |
@@ -83,7 +110,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | B7 | Periodic inputs missing from the pack | Inputs | P3 | Open (desk) | — | `monthly-updates/` |
 | C1 | Siblings 3–5 not folded into the page (six-file deploy) | Architecture | P2 | Open | — | `site/index.html:5083-5085` |
 | C2 | README stale | Docs | — | Closed 16-Oct-2026 | — | `docs/archive/README_original_2026-05.md` |
-| C3 | Risk stats flagged unreliable by the source are shown as normal | UI/data | P1 | Open (feature) | — | `tools/merge_risk_matrix.js:88-96` |
+| C3 | Risk stats flagged unreliable by the source are shown as normal | UI/data | P1 | Closed 19-Oct-2026 (PRs #9, #12, #13) | — | `tools/merge_risk_matrix.js:129-136`; `H.riskFlagged` |
 | C4 | Mosaic Multiyield Series I keeps a Select badge | Data | P2 | Open (desk) | **Affects** | `CENTRICITY_SELECT` |
 | C5 | Motilal Oswal Gift City India Equity Fund – Inbound not in MASTER | Data | P2 | Open (desk) | **Affects** | MASTER; `site/Centricity_June_Refresh.js` |
 | C6 | Prism Hybrid Long-Short Fund has no AMC prefix | Data | P3 | Open | — | `site/Centricity_SIF_Refresh.js` |
@@ -91,38 +118,47 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C8 | Five SIFs have no look-through (PRD list corrected) | Data | P2 | Open (desk) | **Affects** | analytics stores |
 | C9 | Debt rating chart covered only the top 20 holdings | UI | — | Closed 14-Oct-2026 (`862e40b`) | — | — |
 | C10 | `RISK_MATRIX` has no `c`; `RISK_MATRIX_BENCH_SD` stale | Data | P3 | Open | — | `site/index.html:5091-5094` |
-| C11 | Rf = 4.5% to re-confirm with the desk | Data | P2 | Open (desk) | — | `tools/build_risk_matrix.py:17` |
+| C11 | Rf = 4.5% to re-confirm with the desk | Data | P2 | Open (desk) | — | `tools/build_risk_matrix.py:28` (`--rf`, default 0.045) |
 | C12 | Dead code kept for parity (`parseAnalytics` is not dead) | Code | P3 | Accepted | — | `site/index.html:6700`, `:6796-6807` |
-| C13 | Cosmetic UI inconsistencies kept for parity | UI | P3 | Accepted | — | `site/index.html:8335`, `:8867`, `:8874` |
-| C14 | Shared links drop funds renamed since the link was made | UI | P2 | Open | — | `site/index.html:8695-8706` |
+| C13 | Cosmetic UI inconsistencies kept for parity | UI | P3 | Closed 19-Oct-2026 (PR #12), frozen-pane classes kept | — | `site/index.html` Master Editor heading; tab `num` 6.1–6.9 |
+| C14 | Shared links drop funds renamed since the link was made | UI | P2 | Closed 19-Oct-2026 (PR #12) | — | `hashPick` in `site/index.html` |
 | C15 | Fund-manager roster overwritten by the Sep bake | Data | P2 | Open (desk) | **Affects** | MASTER `fund_mgr`; `tools/merge_fund_managers.js` |
+| C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: inception differs by 364 days | Data | P3 | Open (desk) | — | MASTER `inception`; Sep-2026 Monitor |
+| C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Open | — | `site/index.html:4968` |
+| C18 | Select popover ratios are never marked unreliable | UI | P3 | Open | — | `CentricitySelectPopover`, `site/index.html:5322-5338` |
+| C19 | 225 funds on four unmapped Monitor sheets show 30-Jun-2026 performance | Data | P1 | Open (fix in progress) | **Affects** | `SHEET_MAP`, `site/index.html:3162-3209`, `:3350` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
-| R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60) | — | `site/robots.txt` |
-| R3 | CDN scripts load without integrity (SRI) | Security | P2 | Open | — | `site/index.html:1224-1228` |
+| R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
+| R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
 | R4 | `xlsx` 0.18.5 has two high-severity advisories | Security | P2 | Accepted | — | `package.json`; `site/index.html:1227` |
-| R5 | Stale `Centricity_Risk_Matrix.js` is published | Hosting | P3 | Accepted (D69) | — | `site/Centricity_Risk_Matrix.js` |
+| R5 | Stale `Centricity_Risk_Matrix.js` is published | Hosting | P3 | Closed 19-Oct-2026 (PR #12, D78) | — | `docs/archive/Centricity_Risk_Matrix_2026-06-30.js` |
 | R6 | The git repository lives inside OneDrive | Repo | P2 | Open (owner decision) | **Affects** | repo root |
 | R7 | Old site still live alongside the new one | Hosting | P2 | Open (outgoing owner) | — | old Pages site |
 | E1 | Operating manual keeps stale statements as history | Docs | P3 | Accepted | — | `docs/OPERATING_MANUAL.md` → Errata |
 | E2 | PRD contains wrong tool and hosting facts | Docs | P3 | Open | — | `docs/PRD.md` §2, §5, §11, §13, §14 |
 | E3 | Runbooks and specs are out of date | Docs | P2 | Open | **Affects** (if followed) | `docs/runbooks/`, `docs/specs/` |
-| E4 | Stale comments inside the deploy files | Docs/code | P3 | Open | — | `site/index.html:2928-2931`, `:5087-5090`, `:7184` |
-| E5 | Tool comments that contradict the code | Docs/code | P3 | Open | — | `tools/fill_variant_analytics.js:6-7` and others |
-| F1 | Usage text shows pre-move commands | Tools | P3 | Open | — | every tool's usage string |
-| F2 | Unused code in tools | Tools | P3 | Open | — | see F2 |
-| F3 | Browser request for `favicon.ico` returns 404 | Site | P3 | Open | — | `site/index.html:1-3` |
+| E4 | Stale comments inside the deploy files | Docs/code | P3 | Closed 19-Oct-2026 (PR #12) | — | — |
+| E5 | Tool comments that contradict the code | Docs/code | P3 | Closed 19-Oct-2026 (PRs #7–#11) | — | — |
+| F1 | Usage text shows pre-move commands | Tools | P3 | Closed 19-Oct-2026 (PRs #7–#12) | — | every tool's usage string |
+| F2 | Unused code in tools | Tools | P3 | Partly fixed 19-Oct-2026 (PRs #8, #10, #11, #15) | — | `tools/merge_bond_list.js:114`; `tools/lib/pptx.js:9` |
+| F3 | Browser request for `favicon.ico` returns 404 | Site | P3 | Partly fixed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:3` |
 
 ---
 
 ## A. Data-integrity risks in tools
 
 ### A1. `merge_bond_list.js` loads the first sheet and labels it Invictus
-**P1 · Closed 16-Oct-2026 (`d48620e`) · —**
+**P1 · Closed 16-Oct-2026 (`d48620e`); more gates 19-Oct-2026 (PR #11) · —**
 
 - **Fixed:** `--desk` is required and must be a Bonds desk already in MASTER; the sheet is `--sheet`,
   else the only sheet, else the one tab named for the desk, and anything else (or a tab named for
   the other desk) is refused. Row 1 must be the Bond List header, the maturity gate compares with
   today, and a dry run exits 1 on a failed gate. The evidence below is the code before the fix.
+- **Fixed 19-Oct-2026 (PR #11), on top of that:** MASTER is found with `B.locate` and written
+  atomically after a re-read gate (other records and every byte outside MASTER unchanged); an empty
+  sheet is refused ("at least one bond parsed") instead of emptying the desk; the IRR gate also
+  requires `irr_high` < 30%; bonds another desk already lists are printed as a `CHECK` (report only;
+  the June workbook's two sheets overlap 14 of 14); unknown flags and extra arguments exit 2.
 
 - **What:** The tool reads only the first worksheet and names every bond `<name> (Invictus)` with
   `sub_category` Invictus. The desk is a hard-coded constant, not a flag.
@@ -143,7 +179,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   `--sheet`; compare maturities with today's date.
 
 ### A2. Eight tools exit 0 from a dry run when a gate failed
-**P2 · Open · Affects every refresh**
+**P2 · Closed 19-Oct-2026 (PRs #3, #7–#11) · —**
+
+- **Fixed 19-Oct-2026:** every tool now exits 1 from a dry run when a gate failed and refuses
+  `--apply` on the same condition (for example `bake_month.js:198`, `rebuild_directperf.js:90`,
+  `merge_de_universe.js:148`, `merge_direct_equity_returns.js:223`, `merge_expense_exitload.js:146`,
+  `merge_pms_performance.js:214`, `pin_pms_alias.js:80`, `update_market_slides.js:104`).
+  `verify_page.js` exits 1 on a hard failure (PR #3). Exit 2 means a usage or input error (a
+  missing source still crashes with exit 1 in five PMS, AIF and Reckoner tools: *Before the next
+  refresh*, item 3). Lines marked `CHECK`, `WARN` or carrying only counts never fail a run, so the
+  dry run is still read. The evidence below is the code before the fix.
 
 - **What:** In a dry run these tools exit 0 before they check the failure flag, so a failed gate
   appears only as text.
@@ -163,7 +208,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   monthly skill check exit codes.
 
 ### A3. `merge_pms_aif_analytics.js` re-dates the MF analytics
-**P1 · Closed 16-Oct-2026 (`71fa58a`) · —**
+**P1 · Closed 16-Oct-2026 (`71fa58a`); hardened 19-Oct-2026 (PR #10) · —**
 
 - **Fixed:** the tool no longer writes `DATA_DATES.analytics`; it writes EQUITY_ANALYTICS and the
   sibling `EQ` only. `--as-on` stays required and is printed, with the unchanged MF analytics date,
@@ -171,6 +216,11 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   change was the label (30th September -> 31st July 2026); the new one leaves all files identical.
   Not changed: `merge_analytics.js:138` still re-dates all three classes when it re-bakes one, and
   the "Also in this tool" points below stand. The evidence below is the code before the fix.
+- **Fixed 19-Oct-2026 (PR #10), the "Also in this tool" points:** the holdings sheet is found by its
+  header (`--sheet` picks one when several qualify; an empty or notes sheet first no longer crashes);
+  stale look-through entries are listed, never deleted; the page and the June sibling are written in
+  one `writeFilesAtomic` call after every gate passed; `--as-on` must be a plain label. Still no date
+  is written (D70).
 
 - **What:** The tool writes its `--as-on` into `DATA_DATES.analytics`. That key is the as-on date of
   the Equity, Hybrid and Debt **MF** analytics, shown on the page as "Analytics as on …".
@@ -194,7 +244,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   stop this tool touching `analytics`.
 
 ### A4. `merge_reckoner.js` has no gate against dropped funds
-**P1 · Closed 16-Oct-2026 (`2ad7f61`) · —**
+**P1 · Closed 16-Oct-2026 (`2ad7f61`); fourth gate 19-Oct-2026 (PR #10) · —**
 
 - **Fixed:** three refusal gates before any write (D71): a dropped Select entry whose category also
   holds a deck name that matched nothing (never waived); more than 5% of the current list dropped;
@@ -203,6 +253,13 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   banner no longer names the August deck. On the Aug-2026 deck with `prev_name` stripped (the
   Sep-2026 failure mode) the old tool wrote 178 -> 151 with every gate passing; the new one refuses.
   On the real deck both write identical output. The evidence below is the code before the fix.
+- **Fixed 19-Oct-2026 (PR #10), a fourth gate (D76):** a dropped entry the deck still lists under a
+  heading `GRID` does not map (a renamed heading such as "Focused Fund" for "Focused Funds") fails,
+  and `--accept-drops` does not waive it. Rows under an unmapped heading never reach `resolve()`, so
+  gate (1) could not see them. Pairing is heuristic: the same normalised name ignoring spaces, or at
+  least 80% of words shared; a rename sharing less is not caught. `PIN` moved to
+  `tools/data/pins.json` (A18). Not built: a check that the deck is newer than the live Select data
+  (an older deck applied over a newer list passes every gate).
 
 - **What:** Only one gate (`badKeys`) can block the write. Dropped funds and lost categories are
   printed, never checked, and the dry run exits 0.
@@ -222,7 +279,17 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   block; refuse when DROPPED and NO-MASTER-MATCH overlap by normalised name.
 
 ### A5. `rename_schemes.js` keeps orphan keys and loses earliest names
-**P2 · Open · Affects step 1 of every refresh**
+**P2 · Closed 19-Oct-2026 (PR #7; page lookup PR #12) · —**
+
+- **Fixed 19-Oct-2026 (PR #7, D79):** when the live name already has an entry in a store, the stale
+  old-name entry is dropped and listed; a record renamed again keeps `prev_name` (the immediate old
+  name) and gains `prev_names` (every earlier name, oldest first); a key from two renames ago moves
+  to the live name; a name live in MASTER is never mapped away. Only changed blocks are written, page
+  and IRR sibling in one `writeFilesAtomic` call, and a re-run with nothing new writes nothing. A
+  missing or unreadable store fails a gate. PR #12: `H.buildFundIndex` indexes `prev_names` too, so
+  a name from two renames ago resolves in the page. Each Sep/Aug run reports about 15 dropped stale
+  keys; most are re-created by the bake and dropped again next month (harmless). The evidence below
+  is the code before the fix.
 
 - **What:** (1) When a rename target already has an entry in a store, the old-name entry is
   **kept**, although the comment says it is dropped. (2) On a chain rename (A→B earlier, B→C now)
@@ -242,7 +309,28 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   history list.
 
 ### A6. Excel dates read one day early on an IST machine
-**P2 · Open · —**
+**P2 · Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) · Affects the next rename step (8 renames await the owner)**
+
+- **Fixed 19-Oct-2026 (D73):**
+  - Tools: `tools/lib/dates.js` `isoDay` (round to the nearest local day) is used by
+    `rename_schemes.js` (PR #7), `merge_fund_managers.js` (PR #8) and `fold_duplicate_names.js`
+    (PR #11).
+  - Page: `isoDay` in `parseMfMonitor` and `isoDayLite` in the SIF sibling's `parseSif` (PR #12).
+  - Data (PR #13): MASTER `inception` +1 day on 1,851 records (Mutual Fund 1,689, Mutual Funds 12,
+    ETF 150); SIF sibling 30 of 30 +1 day. Detail: `docs/update-log/2026-09_Sep-2026.md`, Run 2.
+  - PR #14 removed the temporary one-day allowance from `rename_schemes.js`: inception is compared
+    on the exact day. Since PR #13, 2,070 of the 2,072 Sep-2026 Monitor rows found in MASTER carry
+    the Monitor's exact inception (219 before). The two exceptions: JioBlackRock Nifty 8-13 yr G-Sec
+    Index Fund-Reg(G), a 364-day source conflict (C16), and DSP World Gold Mining Overseas Equity
+    Omni FoF-Reg(G), a legacy "Mutual Funds" record the bake does not refresh, still one day early.
+  - Side effect: reading the Monitor's true date, `rename_schemes.js` now finds 8 renames it used
+    to miss, all on the exact inception date. They are not applied and wait for the owner ("Before
+    the next refresh", item 2).
+  - Left as is: `fold_duplicate_names.js` still labels a one-day difference "matches monitor
+    (MASTER one day early, A6)" in an informational note (no data effect). The page's
+    `parseMfMonitor` fallback as-on label uses local date getters on a SheetJS date; today's
+    Monitors never reach it.
+  - The evidence below is the code before the fix.
 
 - **What:** SheetJS 0.18.5 with `cellDates` returns 23:59:50 local time on the previous day. The
   tools and the page then take `toISOString().slice(0,10)`.
@@ -260,7 +348,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   with `XLSX.SSF.parse_date_code`; then re-bake and expect every inception date to move by a day.
 
 ### A7. Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js`
-**P2 · Open · —**
+**P2 · Partly fixed 19-Oct-2026 (PR #7) · —**
+
+- **Fixed 19-Oct-2026 (PR #7):** the bake's builder moved verbatim into `tools/lib/direct_perf.js`
+  and both `bake_month.js` and `rebuild_directperf.js` use it (Aug Direct monitor: 0 value
+  differences, property order only). `rebuild_directperf.js` reads MASTER and DIRECT_PERF with
+  `B.locate` and stops with nothing written if either is missing, duplicated or unbalanced; both
+  tools refuse a DIRECT_PERF below 95% of the current block. **Still open:** the page's Section 7
+  Direct uploader (`REFRESH.parseMfMonitorDirect`) is a separate parser and still differs (merges
+  into the session store; `Number()` conversion; maturity only with a `YTM (%)` column). On the Aug
+  and Sep files both give identical values. The evidence below is the code before the fix.
 
 - **What:** `bake_month.js` builds `DIRECT_PERF` with its own private parser. `rebuild_directperf.js`
   and the page's Direct-plan upload use the page's `REFRESH.parseMfMonitorDirect`. They disagree.
@@ -281,7 +378,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   `blocklib.writeBlocks`.
 
 ### A8. Writes are in place, non-atomic and without backup
-**P2 · Open · Affects every refresh**
+**P2 · Closed 19-Oct-2026 (PRs #3, #7–#11) · —**
+
+- **Fixed (D72):** `blocklib.writeFileAtomic` writes a `.tmp` file beside the target and renames it
+  over the target (PR #3); `writeFilesAtomic` checks every output (non-empty, `</html>` kept) before
+  writing any. Every tool now builds its outputs in memory and writes once, after every gate passed
+  (PRs #7–#11); no tool calls `fs.writeFileSync` on a site file. `build_risk_matrix.py` writes a temp
+  file and renames it. **Left as is:** a two-file write is two renames, not one transaction; tools
+  make no backup (the process does, `docs/MONTHLY_UPDATE_PROCESS.md` B3); `tools/lib/reck_parse.js`
+  run as a command still writes its argument directly (A24). The evidence below is the code before
+  the fix.
 
 - **What:** Every tool overwrites files in place with `fs.writeFileSync`: no temporary file and
   rename, and no backup. Several tools write two or three times per run.
@@ -302,7 +408,15 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   have each tool snapshot what it changes.
 
 ### A9. Date labels spliced in unescaped, by first match
-**P2 · Open · Affects every `--as-on`**
+**P2 · Closed 19-Oct-2026 (PRs #3, #7, #9, #10) · —**
+
+- **Fixed:** `blocklib.checkAsOn` accepts only "31st October 2026" (long) or "31 Oct 2026" (short)
+  and every other label exits 2; `setDataDate` changes one key inside `window.DATA_DATES = {…}` only
+  and refuses unless it matches exactly once; `replaceOnce` refuses zero or several matches and
+  treats `$` literally (PR #3). Used by `bake_month.js`, `merge_analytics.js` (PR #7),
+  `merge_risk_matrix.js` (line-anchored `DATA_DATES.riskMatrix`), `merge_sif_monitor.js` (PR #9) and
+  `merge_pms_performance.js` (PR #10). `build_risk_matrix.py` applies the same short-label rule. The
+  evidence below is the code before the fix.
 
 - **What:** `--as-on` values go into regex replacements and JS string literals without validation.
   The regexes take the first match anywhere in the 12.8 MB file.
@@ -321,7 +435,11 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   `DATA_DATES` block; assert exactly one match.
 
 ### A10. Two tools find MASTER by physical line
-**P2 · Open · —**
+**P2 · Closed 19-Oct-2026 (PRs #8, #11) · —**
+
+- **Fixed:** both tools find MASTER with `B.locate`, which refuses a second `window.MASTER = [`
+  literal, and write it with blocklib (`merge_direct_equity_returns.js`, PR #8;
+  `merge_bond_list.js`, PR #11, with a re-read gate). The evidence below is the code before the fix.
 
 - **What and evidence:** `tools/merge_direct_equity_returns.js:131-135`, `:184` and
   `tools/merge_bond_list.js:56-61`, `:259` look for a line starting `<script>window.MASTER = ` and
@@ -332,7 +450,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Use `blocklib.read` and `writeBlocks`, like the other tools.
 
 ### A11. DE returns join deletes returns the file lacks
-**P2 · Open · Affects the Direct Equity step**
+**P2 · Closed 19-Oct-2026 (PR #8) · —**
+
+- **Fixed:** a per-tenor coverage gate counts, among matched stocks carrying a tenor, the ones that
+  would **lose** it (gains elsewhere cannot hide losses) and fails above 5%, printing a before /
+  after / lost table (`merge_direct_equity_returns.js:189-205`). `--allow-coverage-drop` lets
+  `--apply` through after the owner accepts it. Repeated ISINs and names: the first row wins for
+  both, and repeats are reported. Up to 5% of a tenor can still be lost with exit 0, by design; read
+  the `lost` column. The evidence below is the code before the fix.
 
 - **What:** For every matched stock, any return the file lacks is deleted from MASTER.
 - **Evidence:** `tools/merge_direct_equity_returns.js:152-155`. The refusal at `:118-125` catches
@@ -346,7 +471,13 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** A per-tenor coverage gate relative to the current block.
 
 ### A12. Expense tool: hard-coded sample fund, gate that cannot fail
-**P2 · Open · Affects the expense/exit-load step**
+**P2 · Closed 19-Oct-2026 (PR #8) · —**
+
+- **Fixed:** a missing sample fund prints "SAMPLE skipped"; the count gate compares with the count
+  read before the run; Direct-plan writes are counted only when the value changes ("updated N
+  (unchanged M)"); the text says "outside 0-8%"; the unused `MISSING` regex is gone. MASTER and
+  DIRECT_PERF are written in one atomic write. The read range starts at the sheet's used range, so a
+  sheet that does not start at A1 is read correctly. The evidence below is the code before the fix.
 
 - **What:** The tool looks up one named fund for a sample line and dereferences it unguarded. Its
   "MASTER count unchanged" gate compares an array with itself.
@@ -364,7 +495,13 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   Direct-plan writes only when the value changes.
 
 ### A13. Header assumed on row 1 (DE universe, fund managers)
-**P2 · Open · Affects the DE universe and fund-manager steps**
+**P2 · Closed 19-Oct-2026 (PR #8) · —**
+
+- **Fixed:** both tools find the header row by its exact column names (case and spaces ignored)
+  within the first 30 rows, and refuse a column that appears twice. `merge_fund_managers.js` joins
+  exact name, then `prev_name` (a live name always wins), then normalised name; a `prev_name` or
+  normalised name shared by two records is reported as ambiguous and not written. The evidence below
+  is the code before the fix.
 
 - **What:** Two tools read the first row as the header. In Sep-2026 the expense and exit-load files
   arrived with a "CTB Output" banner above the header, and the DE returns file with three blank rows
@@ -382,7 +519,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Find the header by content in both tools.
 
 ### A14. DE universe joins by name only; industry never written
-**P2 · Open · Affects the DE universe step**
+**P2 · Partly fixed 19-Oct-2026 (PR #8) · Affects the DE universe step**
+
+- **Fixed:** exact header names (a new "Sector Code" column can no longer be picked up), the workbook
+  is read once, and the dead industry parsing and its header claim are gone (MASTER has no industry
+  field). A new listing that equals an existing record's `prev_name` is flagged with `!` before
+  `--apply`. **Still open:** the join is by normalised name only (the file has no ISIN), the tool
+  never renames or stamps `prev_name`, and the `prev_name` warning does not fail the run. Keep the
+  workaround below. The evidence below is the code before the fix.
 
 - **What and evidence:** `tools/merge_de_universe.js` joins on a normalised company name only
   (`:26-27`, `:67`), with no ISIN and no `prev_name`. It parses `industry` (`:32`, `:48`) but never
@@ -396,7 +540,11 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   header names; drop or wire `industry`.
 
 ### A15. Risk-matrix name normaliser strips "(Debt)" and similar
-**P2 · Open · —**
+**P2 · Closed 19-Oct-2026 (PR #9) · —**
+
+- **Fixed:** `baseName` strips exactly `(G)`, `(D)`, `(Growth)`, `(IDCW…)` and `(Dividend…)`. Only
+  the four MASTER names with `(Debt)`, `(Delhi)` or `(Gujarat)` change base name; Sep join tiers are
+  unchanged (exact 1,027 / prev_name 32 / plan-base 29). The evidence below is the code before the fix.
 
 - **What and evidence:** `baseName` in `tools/merge_risk_matrix.js:107-113` removes any parenthetical
   that starts with G or D, such as "(Debt)", "(Delhi)" or "(Gujarat)". This contradicts its own
@@ -408,7 +556,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Match the real plan markers exactly.
 
 ### A16. SIF Monitor merge can keep an old as-on date
-**P2 · Open · Affects the SIF step**
+**P2 · Closed 19-Oct-2026 (PR #9) · —**
+
+- **Fixed:** `--as-on` is required (missing → exit 2) and must be a long label; exactly one
+  positional workbook, and an unknown flag such as `--html` exits 2. The date the sibling stamps on
+  load is cleared before parsing; new gates check that `DATA_DATES.sif` equals `--as-on` and that the
+  fallback line exists exactly once. The SIF block and its date land in one atomic write after every
+  gate passed. Not checked: that `--as-on` matches the month in the file name. The evidence below is
+  the code before the fix.
 
 - **What and evidence:** The source is the first argument that is neither `--as-on` nor `--sibling`
   (`tools/merge_sif_monitor.js:24`), so an unsupported flag such as `--html site/index.html` placed
@@ -422,7 +577,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Require `--as-on`; check the date line before writing.
 
 ### A17. Post-bake analytics tools: heuristic fill, weak gates, file picking
-**P2 · Open · Affects the analytics steps**
+**P2 · Closed 19-Oct-2026 (PR #7) · —**
+
+- **Fixed:** `fill_variant_analytics.js` lists a tie for best sibling as ambiguous and does not fill
+  it (no ties in the Sep or Aug workbooks); its header now says entries are replaced. `bake_month.js`
+  and `fill_variant_analytics.js` refuse two files for one stem or a missing file or folder (exit 2).
+  The DIRECT_PERF gate is relative: below 95% of the current block, or 0 matched, fails (bake and
+  rebuild). `rekey_sif_analytics.js` fails and lists any key a store would lose unless
+  `--allow-shrink`, skips a SIF whose `sif_raw` equals its name, and shows the siblings' console
+  (an error fails the run). `bake_month.js` and `fill_variant_analytics.js` (and `merge_analytics.js`)
+  fail a gate on an inline-script error (A23). The evidence below is the code before the fix.
 
 - **`fill_variant_analytics.js`:** picks a plan-variant sibling by rank, then by shortest name
   (`:105`), with no ambiguity report. It crashes with a TypeError if one of the three analytics files
@@ -443,7 +607,22 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Ambiguity reports; refuse duplicate matches; relative shrink gates.
 
 ### A18. PMS/Reckoner pin maps duplicated and partly stale
-**P2 · Open · Affects the PMS step (may block it)**
+**P2 · Closed 19-Oct-2026 (PR #10) · Affects the PMS step (pins are still set by hand)**
+
+- **Fixed (D75):** `tools/data/pins.json` holds the PMS alias, Reckoner and AIF-performance pins
+  (`merge_pms_aif_analytics.js` keeps its own look-through `PIN` map and `add_reckoner_funds.js` its
+  `ADD` list, both edited in code with the owner): `pms_alias` (MASTER PMS name →
+  scheme key; `repin` entries are re-pointed by `merge_pms_performance.js`, `pin` entries by
+  `pin_pms_alias.js`), `reckoner` (deck name → MASTER name, read by `merge_reckoner.js`), and
+  `aif_performance` (deck names `merge_aif_performance.js` looks up in `reckoner`). The four maps
+  were moved unchanged (12 repin, 5 pin, 12 reckoner, 3 AIF). `trailing_space` lists the names that
+  end in a space on purpose; all four tools exit 1 if that list and the data disagree (A25).
+  "Still pinned null" is built from the live alias map (4 today). The exit-load year digit must
+  stand alone (`(?<![0-9.])1(?![0-9])`), so "12 months: 1%" no longer reads as year 1 or 2.
+  **Left as is:** the PMS block is still replaced wholesale, guarded by the MASTER-coverage and
+  value-range gates only (there is no drop or category gate and no override flag); the exit-load
+  change could not be checked against a real PMS file (B1), so read the `exit_load` changes on the
+  next PMS run. The evidence below is the code before the fix.
 
 - **What and evidence:** `REPIN` in `tools/merge_pms_performance.js:20-37` and `PINS` in
   `tools/pin_pms_alias.js:13-31` both pin Emkay and must change together. Every `REPIN` key must
@@ -464,7 +643,15 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   live data.
 
 ### A19. AIF performance merge carries data forward silently
-**P2 · Open · Affects the Reckoner step**
+**P2 · Partly fixed 19-Oct-2026 (PR #10) · Affects the Reckoner step**
+
+- **Fixed:** "GATE deck layout as expected" fails when the market-cap sub-header is not in the last
+  four columns, when no PMS – EQUITY grid with a 2Y column is found, or when the benchmark count
+  differs from the stored block. `--allow-layout-change` accepts it after the slides were checked by
+  hand; the stored benchmarks are then carried forward. The run prints that benchmark SI is set to
+  null. **Still open:** slides are scanned by XML file number, not deck order; no AIF as-on date is
+  stored; "GATE every key is a MASTER AIF record" prints but cannot fail. The evidence below is the
+  code before the fix.
 
 - **What and evidence:** In `tools/merge_aif_performance.js`, benchmarks are replaced only if their
   count matches; otherwise the old block is kept with a note (`:139-141`). Benchmark SI is forced to
@@ -480,7 +667,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Fail on layout notes; record an AIF as-on date.
 
 ### A20. `add_reckoner_funds.js`: hard-coded deck facts; re-adds a dropped GIFT City fund
-**P2 · Open · Affects the refresh only if the deck adds funds (see C4, C5)**
+**P2 · Partly fixed 19-Oct-2026 (PR #10) · Affects the refresh only if the deck adds funds (see C4, C5)**
+
+- **Fixed:** before an `ADD` slide number is used, that slide must name the fund, or the run
+  refuses and says which slides do; a GIFT City fund is written to `NEW_GIFT` only while this deck
+  still names it, with an exact-name presence test; the page and the June sibling are written in one
+  `writeFilesAtomic` call after every gate; `--usd-inr` (default 88) sets the USD mn → ₹ crore rate;
+  `--pms` is accepted, ignored and reported as deprecated; the dry run exits 1 on a failed gate.
+  **Still open:** `ADD` is still hard-coded (slides are not found from the deck index), and PMS
+  additions keep their non-schema keys (not removed, to avoid a data change). The evidence below is
+  the code before the fix.
 
 - **What and evidence:** `ADD` hard-codes slide numbers per fund (`:30`, `:41`, `:51`, `:65`).
   `--pms` is parsed (`:20`) but never used: the data comes from the baked PMS block. PMS additions get
@@ -500,7 +696,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   make the FX rate an input.
 
 ### A21. Slide tools' gates are weaker than documented
-**P2 · Open · Affects the market-slide step**
+**P2 · Closed 19-Oct-2026 (PR #11) · —**
+
+- **Fixed:** every slide must be 2001×1125 (a fixed size, not the current first image); the
+  `EXTRA_SLIDES` literal is found and spliced with blocklib, with no vm; gates re-read the result
+  (untouched keys byte-identical, market equals the new slides, every byte outside `EXTRA_SLIDES`
+  unchanged). The closing tool also checks that `disclaimer.png` is a PNG and `thankyou.jpg` a JPEG.
+  The re-read gates catch splice faults only, which is what was asked. The evidence below is the code
+  before the fix.
 
 - **`update_market_slides.js`:** rewrites the whole sibling as line 1 plus
   `window.EXTRA_SLIDES = …` (`:65`), discarding anything else in the file. The reference size is the
@@ -515,7 +718,17 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** Fixed expected dimensions; real before/after comparisons; splice with blocklib.
 
 ### A22. Python risk-matrix route unvalidated and unguarded
-**P2 · Open · —**
+**P2 · Partly fixed 19-Oct-2026 (PR #9) · —**
+
+- **Fixed:** argparse takes exactly four positionals plus `--rf` (decimal, default 0.045); any misuse
+  exits 2 before anything is read. The output must be a `.js` path outside `site/`, not one of the
+  inputs, in an existing folder; it is written to a temp file and renamed. The label must be a plain
+  short date. A `prev_name` tier joins renamed funds. NAV and benchmark values ≤ 0 count as missing,
+  near-zero dispersions are guarded, non-finite values are dropped, and the run stops (exit 1) on two
+  MASTER literals, duplicate dates, a missing benchmark column or less than 5 years of history.
+  Sep-2026 run (scratch output): 1,086 of 1,088 joined. **Still open:** not validated for
+  production (it agrees with the live matrix on most fields, `co` least); Rf to confirm (C11); it
+  reads only the inline MASTER. The evidence below is the code before the fix.
 
 - **What and evidence:** `tools/build_risk_matrix.py` has no dry run and writes its fourth argument
   unconditionally (`:16`, `:152`), so swapped arguments could overwrite `site/index.html`. The label
@@ -530,7 +743,17 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** A validated run, argument checks and a `prev_name` tier.
 
 ### A23. `verify_page.js` and the vm tools hide real errors
-**P2 · Open · Affects every verification**
+**P2 · Partly fixed 19-Oct-2026 (PRs #3, #7) · —**
+
+- **Fixed:** `verify_page.js` hides only the exact "React / ReactDOM / Chart / XLSX / PptxGenJS is
+  not defined" messages, so a typo's ReferenceError counts; it defaults to `site/` and exits 1 on a
+  missing sibling, duplicate names, a page not ending `</html>`, a script error or a Select key
+  missing from MASTER (PR #3). `bake_month.js`, `fill_variant_analytics.js` and `merge_analytics.js`
+  fail "GATE sandbox inline blocks" on any other inline-script error; `rekey_sif_analytics.js` shows
+  the siblings' warnings and errors and fails on an error (PR #7). **Still open:** no count is
+  compared with a baseline (compare with `docs/PROJECT_STATE.md` by hand); a protocol-relative
+  `src` would still count as a missing sibling; the script regex is still lazy. The evidence below
+  is the code before the fix.
 
 - **What and evidence:** `tools/verify_page.js:78` drops every error whose message contains
   " is not defined", or mentions React, ReactDOM, Chart, XLSX or PptxGenJS. The script never exits
@@ -549,7 +772,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   on failure; compare counts against a committed baseline.
 
 ### A24. Shared libraries: latent parsing hazards
-**P2 · Open · —**
+**P2 · Partly fixed 16-Oct-2026 (PR #3) · —**
+
+- **Fixed (blocklib):** `locate` refuses a prefix with more than one literal assignment, and
+  `spliceBlocks` refuses duplicate or overlapping prefixes in one write. **Still open:** the
+  `pptx.js`, `reck_parse.js` and `reck_narrative.js` points below are unchanged. The evidence below
+  is the code before the fix.
 
 - **`tools/lib/blocklib.js`:** finds the first occurrence of a prefix (`:25`). A JSON-looking literal
   inserted above a data block would be targeted silently. Overlapping prefixes in one call are not
@@ -566,7 +794,17 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** As listed; low priority.
 
 ### A25. Invisible characters that must survive any edit
-**P2 · Open · —**
+**P2 · Partly fixed 19-Oct-2026 (PRs #7, #9–#11, #15) · —**
+
+- **Fixed:** the NUL separator in `rename_schemes.js` is now `'\u0000'`, and the no-break spaces in
+  `rename_schemes.js`, `tools/lib/direct_perf.js` (the bake's old parser), `merge_risk_matrix.js` and
+  `merge_bond_list.js` are `\u00A0` escapes. The trailing-space pin names moved to
+  `tools/data/pins.json`, whose `trailing_space` list the four pin tools check (A18). `'DEBT AIF '`
+  and `'Unlisted Equity '` stay in `merge_reckoner.js`, commented as data. PR #15 replaced the last
+  two literal no-break spaces (`tools/merge_fund_managers.js:112`,
+  `tools/merge_pms_aif_analytics.js:70`) with escapes; no literal U+00A0 or NUL is left in `tools/`.
+  **Still open:** the `.gitattributes` comment still says `rename_schemes.js` holds a NUL (harmless).
+  The evidence below is the code before the fix.
 
 - **What and evidence:** A NUL byte is the tier-3 key separator in `tools/rename_schemes.js:146`.
   Literal no-break spaces (U+00A0) sit inside regexes at `rename_schemes.js:86`, `:95`,
@@ -579,11 +817,18 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   so renames, pins and Select sheets stop matching.
 - **Workaround:** Edit these files with a tool that preserves bytes; check that `git diff` shows only
   the intended change.
-- **Suggested fix:** Replace NUL and NBSP with `\u0000` and ` ` escapes (same behaviour);
+- **Suggested fix:** Replace NUL and NBSP with `\u0000` and `\u00A0` escapes (same behaviour);
   comment the trailing-space keys, which are data.
 
 ### A26. One-off tools are not safe to re-run blindly
-**P3 · Open · —**
+**P3 · Closed 19-Oct-2026 (PR #11) · —**
+
+- **Fixed:** `split_sif_add_mld.js` inserts the MLD record only when it is missing and reports any
+  difference from its values (comments now say 30 SIFs); `fold_duplicate_names.js` stops (exit 1)
+  when the IRR sibling is missing or does not parse, and treats `Centricity_Risk_Matrix.js` as
+  optional (R5); `fold_index_funds.js` reports, never fixes, a product_class "Index Fund" that a
+  sibling brings back at load (live: 7,682 records, 0). The 12 legacy SIF rows remain for C1. The
+  evidence below is the code before the fix.
 
 - `tools/split_sif_add_mld.js` upserts the Neo MLD record from hard-coded values on every `--apply`
   (`:86-93`), reverting later desk edits to it. Its comments say 28 SIFs (`:13`, `:75`); the sibling
@@ -674,7 +919,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 
 ## C. Product and UI known gaps (`docs/PRD.md` §14)
 
-C1–C13 are PRD §14 items 1–13, re-checked on 16-Oct-2026. C14 and C15 are not in the PRD.
+C1–C13 are PRD §14 items 1–13, re-checked on 16-Oct-2026. C14–C18 are not in the PRD.
 
 ### C1. Siblings 3–5 not folded into the page
 **P2 · Open · —**
@@ -693,7 +938,17 @@ The original README is archived as `docs/archive/README_original_2026-05.md`; th
 commit adds a new root `README.md`.
 
 ### C3. Risk stats flagged unreliable by the source are shown as normal
-**P1 · Open (feature) · —**
+**P1 · Closed 19-Oct-2026 (PRs #9, #12, #13) · —**
+
+- **Fixed (D74):** `merge_risk_matrix.js` carries the source's reliability flag as `fl` on the
+  RISK_MATRIX entry: `split` when the note says the risk stats are unreliable after a NAV split
+  (split outranks low correlation), `lowcorr` for low correlation to the benchmark (PR #9). Not
+  carried: the 12 Sep-2026 notes that a split affects Max Drawdown only (the page never shows it)
+  and the 122 short-history flags (those funds already show "—"). `H.riskFlagged(entry)` (it takes a
+  RISK_MATRIX entry, not a name) puts a dagger on the fund and adds `H.RISK_FLAG_NOTE` as a footnote
+  on the Portfolio Matrix tab and its PowerPoint slide; the Excel export has no RISK_MATRIX sheet
+  (PR #12). The Sep-2026 data carries 33 flags: 28 `split`, 5 `lowcorr` (PR #13). Follow-ups: C17,
+  C18. The evidence below is the state before the fix.
 
 - **What:** The risk workbook's `Data Flags` sheet marks funds whose figures need care. The flags
   never reach the page.
@@ -760,8 +1015,9 @@ A22 for the remaining validation.
 ### C11. Rf = 4.5% to re-confirm with the desk
 **P2 · Open (desk) · —**
 
-Hard-coded at `tools/build_risk_matrix.py:17`. It matters only for the Python route;
-`merge_risk_matrix.js` takes the vendor's ratios as given [inference].
+Since 19-Oct-2026 (PR #9) it is the `--rf` argument of `tools/build_risk_matrix.py` (default 0.045,
+printed on every run). It matters only for the Python route; `merge_risk_matrix.js` takes the
+vendor's ratios as given [inference].
 
 ### C12. Dead code kept for parity
 **P3 · Accepted · —**
@@ -775,7 +1031,11 @@ card is gone: the rail renders the MF Monitor card plus the PMS/AIF holdings and
 unreachable. Do not delete `parseAnalytics`.
 
 ### C13. Cosmetic UI inconsistencies kept for parity
-**P3 · Accepted · —**
+**P3 · Closed 19-Oct-2026 (PR #12), except the frozen-pane classes · —**
+
+- **Fixed:** the heading reads "Master Data Editor", and the Live Output tab numbers run 6.1–6.9
+  with no repeat (they are not displayed). The frozen-pane classes still have no CSS and are left
+  alone: there is no design to apply. The text below is the state before the fix.
 
 The Master Editor heading reads "Section 6 · Master Data Editor" (`site/index.html:8335`). Portfolio
 Matrix and Equity Analytics share tab number 6.4 (`:8867`, `:8874`); the number is not rendered.
@@ -783,7 +1043,15 @@ The frozen-pane classes (`frozen-pane`, `frozen-lock`, `frozen-title`, `frozen-s
 rule (checked 16-Oct-2026).
 
 ### C14. Shared links drop funds renamed since the link was made
-**P2 · Open · —**
+**P2 · Closed 19-Oct-2026 (PR #12) · —**
+
+- **Fixed:** the `#p=` loader (`hashPick`) resolves each name not in MASTER verbatim through
+  `H.resolveFundName`, so an old (`prev_name` / `prev_names`) name loads the live fund and an old and
+  current name for one fund are folded together. A banner lists the names it could not find
+  (unknown, empty or ambiguous), and a second line lists names matched only to a similar name (plan,
+  prefix or close tier: "check before exporting"). The banner has no dismiss control. More funds now
+  load than before: the old loader dropped every non-exact name silently, renamed or similar. The
+  evidence below is the code before the fix.
 
 - **What and evidence:** The `#p=` share-link loader matches fund names exactly against MASTER and
   silently drops any it cannot find (`site/index.html:8695-8706`). It does not consult `prev_name`.
@@ -809,6 +1077,59 @@ rule (checked 16-Oct-2026).
   named first.
 - **Fix:** In the next MF cycle, run `merge_fund_managers.js` after the bake (process step 9). It
   needs Fund Manager Data as on the same month-end (B5).
+
+### C16. JioBlackRock Nifty 8-13 yr G-Sec Index Fund: inception differs by 364 days
+**P3 · Open (desk) · —**
+
+After the A6 correction (PR #13), MASTER gives `JioBlackRock Nifty 8-13 yr G-Sec Index Fund-Reg(G)`
+an inception of 2025-08-18, while the 30-Sep-2026 Monitor says 2026-08-17 (checked 19-Oct-2026). It
+is one of only two Sep Monitor rows in MASTER whose inception differs (2,070 of 2,072 agree; the
+other is the A6 "Mutual Funds" leftover). A year apart is a source conflict, not a parsing error,
+and the Monitor's date is probably the Regular plan's launch, as for JioBlackRock's other schemes
+(the tier-3 note in `docs/OPERATING_MANUAL.md`) [inference]. With a 364-day gap,
+`rename_schemes.js` cannot match this fund by inception (nor could it with the one-day allowance that
+PR #14 removed). Ask the desk which date is right; change MASTER only through a tool or a reviewed PR.
+
+### C17. Risk-flag footnote overlaps a long Portfolio Matrix slide
+**P3 · Open · —**
+
+The C3 footnote on the Portfolio Matrix slide is placed at y 6.72 (`site/index.html:4968`). With
+about 22 or more selected funds the matrix table reaches that height and the footnote overlaps it
+(QA, 19-Oct-2026; without a flagged fund the slide is unchanged). Suggested fix: move the footnote
+below the table's computed height, or shrink the table font when a flagged fund is present.
+
+### C18. Select popover ratios are never marked unreliable
+**P3 · Open · —**
+
+The Centricity Select popover shows Sharpe, Sortino, Beta, Std Dev and Alpha from the
+`CENTRICITY_SELECT` entry (`CentricitySelectPopover`, `site/index.html:5322-5338`), not from
+RISK_MATRIX, and it has no dagger: a fund flagged under C3 shows plain numbers there (QA,
+19-Oct-2026). Suggested fix: look the fund up in RISK_MATRIX and add the same dagger and note when
+`H.riskFlagged` is true.
+
+### C19. 225 funds on four unmapped Monitor sheets show 30-Jun-2026 performance
+**P1 · Open (fix in progress) · Affects every MF cycle**
+
+- **What:** The Regular MF Monitor has four fund sheets that the page parser's `SHEET_MAP`
+  (`site/index.html:3162-3209`) does not list: `Debt Oriented34` (97 funds), `Solution
+  Oriented,ETFs,FOFs` (87), `Solution Oriented - Childrens ` (12, trailing space) and `Hybrid` (50).
+  `parseMfMonitor` skips every row on them (`if (!map) continue;`), so `bake_month.js` never refreshes
+  those funds. `docs/INPUT_FILES.md` records that the rows "are not merged"; the consequence was not
+  measured until 19-Oct-2026.
+- **Impact (measured 19-Oct-2026 against the 30-Sep-2026 Monitor):** 233 of the 246 rows are MASTER
+  funds. **225 of them carry the 30-Jun-2026 Monitor's 1-month return**, 1 July's, 1 none, and only 6
+  September's. The control holds: on mapped sheets 1,880 of 1,906 MASTER funds equal September's
+  figure. MASTER classes: ETF / Debt ETF 97 (target-maturity index funds), Mutual Funds /
+  International 55, Mutual Fund / Hybrid Other 44, Mutual Fund / Solution Oriented 37. The page labels
+  all performance "30th September 2026", so these funds show three-month-old returns under a current
+  date in the app, the Excel and the deck. 13 rows on these sheets have no MASTER record.
+- **Why June:** the figures stopped moving after the 30-Jun-2026 data; from July the bakes ran the
+  page's own parser through `bake_month.js` [inference from the dates; the earlier Python route is in
+  the outgoing owner's export — `docs/handover/DATA_EXTRACTION_PROMPT.md`].
+- **Fix direction:** refresh the existing MASTER records on these sheets by exact name (performance,
+  AUM, expense and debt metrics as for any mapped sheet) without creating new records from them, so no
+  taxonomy is guessed; report the 13 unmatched rows. Then re-run the September chain (as Run 2). Needs
+  a financial-data review before it is published.
 
 ---
 
@@ -841,7 +1162,11 @@ rule (checked 16-Oct-2026).
   or re-fetch the `upstream` remote.
 
 ### R2. Public repo and site; `robots.txt` ineffective
-**P2 · Accepted (D60) · —**
+**P2 · Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) · —**
+
+- **19-Oct-2026 (PR #12, D77):** `site/index.html:3` now carries
+  `<meta name="robots" content="noindex, nofollow">`, which asks crawlers not to index the page. The
+  site and repository stay public (D60); the text below is the state before that change.
 
 - Everything in `site/` is public at the Pages URL, including the whole fund universe and the unused
   `Centricity_Risk_Matrix.js`. The repository itself is public on GitHub.
@@ -853,7 +1178,12 @@ rule (checked 16-Oct-2026).
   hosting with access control.
 
 ### R3. CDN scripts load without integrity (SRI)
-**P2 · Open · —**
+**P2 · Closed 19-Oct-2026 (PR #12, D77) · —**
+
+- **Fixed:** all five CDN tags carry `integrity="sha384-…"` and `crossorigin="anonymous"`; each hash
+  was computed from the served file and all five CDNs allow cross-origin loading. Chart.js now loads
+  `dist/chart.umd.js` (same 4.4.0): jsDelivr's `chart.umd.min.js` is generated on the fly and says
+  not to use SRI with it. Versions are unchanged. The text below is the state before the fix.
 
 `site/index.html:1224-1228` load React, ReactDOM, Chart.js, SheetJS and PptxGenJS from unpkg and
 jsDelivr, pinned to exact versions, with no `integrity` attribute; `crossorigin` is set only on the
@@ -875,7 +1205,13 @@ test in a browser.
   `cdn.sheetjs.com`, then re-verify the parsers and date handling (A6) on a full month.
 
 ### R5. Stale `Centricity_Risk_Matrix.js` is published
-**P3 · Accepted (D69) · —**
+**P3 · Closed 19-Oct-2026 (PR #12, D78) · —**
+
+- **Fixed:** the file moved, unchanged, to `docs/archive/Centricity_Risk_Matrix_2026-06-30.js`, so it
+  is no longer published (the live URL returned 404 on 19-Oct-2026). The page never loaded it, so the
+  six-file deploy set is unchanged. `fold_duplicate_names.js` skips its check when the file is not
+  beside `index.html`, `build_risk_matrix.py` refuses to write into `site/`, and the comment that said
+  the tab reads it is gone. D78 supersedes D69. The text below is the state before the fix.
 
 `site/Centricity_Risk_Matrix.js` is as on 30-Jun-2026 (its line 1) and carries `c` on 917 records.
 The page does not load it (its sibling `<script src>` tags are only at `site/index.html:1232-1233`
@@ -889,14 +1225,19 @@ regenerate it outside `site/`.
 **P2 · Open (owner decision) · Affects every refresh**
 
 - The repo sits under `OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop`, so
-  `.git`, `node_modules/` and the 12.8 MB `index.html` sync continuously, and the tools overwrite in
-  place (A8).
+  `.git`, `node_modules/` and the 12.8 MB `index.html` sync continuously. Tool writes are atomic since 19-Oct-2026 (A8), but a sync can still
+  block a rename or leave a conflict copy.
 - Risks: sync-conflict copies or a half-synced file during a tool run; Files-On-Demand placeholders;
   a bash-side view of large files that lags the real file (`docs/OPERATING_MANUAL.md` → Traps,
   "OneDrive / bash-mount staleness"); damage to `.git` if OneDrive restores an older version of its
   files [inference].
+- **Seen 19-Oct-2026:** in the Sep-2026 corrections run (PR #13), the first
+  `merge_risk_matrix.js --apply` failed after its gates with `EPERM` on the rename of its temp file,
+  because OneDrive was syncing `index.html`. The atomic write (A8) left the page untouched and the
+  retry wrote (`docs/update-log/2026-09_Sep-2026.md`, Run 2).
 - **Workaround:** Set the folder to "Always keep on this device"; pause OneDrive sync during tool runs
-  and git operations; verify with Node on the real Windows path. GitHub (`origin`) is the real backup.
+  and git operations; verify with Node on the real Windows path. On `EPERM` during a write, check the
+  file is unchanged and re-run the step. GitHub (`origin`) is the real backup.
 - **Suggested fix (owner decision):** Move the clone outside OneDrive and keep only the
   `monthly-updates/` inputs there.
 
@@ -932,14 +1273,20 @@ wrong: "`merge_*.js` (15 scripts)" (there are 12); tools "all default to `index.
 script" (§11.2, §13: 18 tools default to `../site/index.html`, three require `--html`, and
 `verify_page.js` needs the folder); Pages from "main / (root)" (§5; superseded by D63); §11.1 omits
 the Exit Load & Expected IRR file (B7); §13 lists `add_reckoner_funds.js --pms`, a dead flag (A20);
-§14 item 8 (C8) and item 12 (C12).
+§14 item 8 (C8) and item 12 (C12). Since 19-Oct-2026 the PRD's tool facts have also moved on (exit
+codes, `--as-on` required for the SIF tool, the new override flags, `tools/data/pins.json`, the
+archived risk-matrix file); the header note lists the corrections and the §13 CLI table and §11.4
+pin advice were updated in place. `tools/README.md` is the current CLI reference.
 
 ### E3. Runbooks and specs are out of date
 **P2 · Open · Affects anyone who follows them**
 
 - `docs/runbooks/Risk_Matrix_Update_Prompt.md`: describes only the Python route and omits
   `merge_risk_matrix.js`, which was used in Aug and Sep. Its command uses bare relative paths (`:15`)
-  and its counts and dates are old.
+  and its counts and dates are old. Since 19-Oct-2026 its command (`:20`, output
+  `Centricity_Risk_Matrix.js` beside the page) is refused: `build_risk_matrix.py` writes only a `.js`
+  outside `site/` (exit 2 otherwise), and the old output is archived (R5). Run it as
+  `python -I tools/build_risk_matrix.py …` (`tools/README.md` §5).
 - `docs/runbooks/PMS_Performance_Update_Prompt.md`: a pre-tool manual flow. It gives a per-row AUM
   rule (the tool decides per column, `tools/merge_pms_performance.js:109-113`), three exit-load
   columns (the tool needs one), and a Top Sector field (not parsed). It says to deploy by uploading
@@ -952,7 +1299,13 @@ the Exit Load & Expected IRR file (B7); §13 lists `add_reckoner_funds.js --pms`
   grammar).
 
 ### E4. Stale comments inside the deploy files
-**P3 · Open · —**
+**P3 · Closed 19-Oct-2026 (PR #12) · —**
+
+- **Fixed:** the comments now point to `DATA_DATES` instead of naming dates and counts, the risk-matrix
+  comment no longer says the tab reads `Centricity_Risk_Matrix.js`, and the SIF sibling's header
+  gives the current `node tools/merge_sif_monitor.js … --as-on "<date>" --apply` command. The code
+  fallback `"30 Jun 2026"` is code, not a comment, and stays. The text below is the state before the
+  fix.
 
 `site/index.html:1235` and `:1442` say "15-Jun-2026". `:2928-2931` say PMS data is "as on 30th June
 2026", with 314 schemes (it is 692, as on 31-Aug), and AIF data "as on 31st May 2026". `:5087-5090`
@@ -964,7 +1317,11 @@ monitor, `:13` says 29 rows and `:39` says 28 names, while there are 30 rows and
 refresh.
 
 ### E5. Tool comments that contradict the code
-**P3 · Open · —**
+**P3 · Closed 19-Oct-2026 (PRs #7–#11) · —**
+
+- **Fixed:** every comment listed below was corrected with its tool, and the `merge_risk_matrix.js`
+  header now names the Node route as production (D43) and the Python route as not validated. The
+  text below is the state before the fix.
 
 `tools/fill_variant_analytics.js:6-7` ("nothing … overwritten"; see A17); `merge_de_universe.js:1`
 ("industry"; A14); `rename_schemes.js:211-212` (A5); `merge_expense_exitload.js:94` (">4%" versus
@@ -978,7 +1335,11 @@ that only prints).
 ## F. Cosmetic
 
 ### F1. Usage text shows pre-move commands
-**P3 · Open · —**
+**P3 · Closed 19-Oct-2026 (PRs #7–#12) · —**
+
+- **Fixed:** every tool's usage string and header example reads `node tools/<tool>.js …` (with
+  `--html site/index.html` where required), or `python -I tools/build_risk_matrix.py …`; the SIF
+  sibling's comment was fixed in PR #12. The text below is the state before the fix.
 
 Every tool's usage string and header example still reads `node <tool>.js …` (except
 `merge_bond_list.js` and `merge_reckoner.js`, rewritten with A1 and A4), for example
@@ -989,7 +1350,14 @@ Every tool's usage string and header example still reads `node <tool>.js …` (e
 `pin_pms_alias.js`, `merge_reckoner.js`).
 
 ### F2. Unused code in tools
-**P3 · Open · —**
+**P3 · Partly fixed 19-Oct-2026 (PRs #8, #10, #11, #15) · —**
+
+- **Fixed:** the unused requires in `merge_pms_performance.js`, `merge_aif_performance.js`,
+  `merge_reckoner.js` (PR #15) and `fold_index_funds.js` (now uses `fs`), the `MISSING` regex, the
+  hard-coded WROTE log, the `Math.min/max(...)` spreads in the DE returns and expense tools, and the
+  bond tool's `Infinity` on an empty list. `--pms` is accepted and reported as deprecated (A20).
+  **Still open:** the tenor column read but unused (`tools/merge_bond_list.js:114`), and `clen` in
+  `tools/lib/pptx.js:9`. The text below is the state before the fix.
 
 Unused requires: `path` in `merge_pms_performance.js:9`, and `fs` in `merge_reckoner.js:21`,
 `merge_aif_performance.js:13` and `fold_index_funds.js:11`. Also: the dead `MISSING` regex
@@ -1001,7 +1369,12 @@ roughly 100k); a tenor column read but unused, and `Infinity` printed on an empt
 (`tools/lib/pptx.js:9`).
 
 ### F3. Browser request for `favicon.ico` returns 404
-**P3 · Open · —**
+**P3 · Partly fixed 19-Oct-2026 (PR #12, D77) · —**
+
+- **Fixed:** `site/index.html:3` has `<link rel="icon" href="data:,">` and the page console is clean.
+  **Not proven:** in review the in-app browser still requested `/favicon.ico` on 5 of 10 loads (its
+  own tab-icon fetch). A 1×1 PNG data URI would probably stop it. The text below is the state before
+  the fix.
 
 `site/index.html` has no `<link rel="icon">`, so browsers request `/favicon.ico`. On the old site
 (16-Oct-2026) both the project-path and the host-root requests returned 404. The only effect is a

@@ -11,7 +11,7 @@ How to get a working copy on a new machine. Verified on the owner's laptop on 16
 | Node.js | ≥ 18 (24.x in use) | the tools and the preview server |
 | GitHub CLI `gh` | optional but used by Claude | pull requests, Pages, Actions |
 | Microsoft PowerPoint (Windows) | 16 / Microsoft 365 | rendering Market Update / closing slides (COM) — only for slide refreshes |
-| Python 3 + pandas, numpy, openpyxl, python-dateutil | optional | `tools/build_risk_matrix.py` (canonical risk-matrix route; not yet validated on pandas 3.x) |
+| Python 3 + pandas, numpy, openpyxl, python-dateutil | optional | `tools/build_risk_matrix.py` (alternative risk-matrix route, not validated for production; production uses `merge_risk_matrix.js`, D43) |
 | Internet | — | the page loads 5 CDN libraries |
 
 No environment variables, secrets or API keys are needed. There is no `.env`.
@@ -53,8 +53,10 @@ The workspace lives in a OneDrive-synced folder. This works, with two precaution
 | Symptom | Cause / fix |
 |---|---|
 | `Cannot find module 'xlsx'` | run `npm ci` in the repo root |
-| A tool says `Usage:` and exits 2 | a required argument is missing, or the input path contains an invisible character (e.g. the May-2026 soft hyphen) — rename the file |
+| A tool exits 2 (usually with `Usage:`; a bad `--as-on` in `bake_month`/`merge_analytics` prints only a `***` line) | a required argument is missing, a flag is misspelt or unknown, an `--as-on` label is not a plain date, or the input path contains an invisible character (e.g. the May-2026 soft hyphen) — fix the command or rename the file |
+| A dry run exits 1 | a gate failed: read the `GATE … *** FAIL` lines; nothing was written (`tools/README.md` §1). With no `GATE` lines and an `Error: ENOENT` stack trace, an input or `--html` path does not exist (a typo or an invisible character): fix the path |
 | Preview shows "Not found: /index.html" | `site/index.html` is missing or an online-only OneDrive placeholder; restore it (`git status`, "Always keep on this device"). The server always serves the `site/` folder next to `.claude/`, whatever the current folder |
 | Page blank, console "React is not defined" | no internet / CDN blocked |
-| `verify_page.js` reports 0 script errors but the browser console shows a ReferenceError | its filter hides every "… is not defined" error (the CDN globals), which also hides a real typo — always load the page in the browser too (`KNOWN_ISSUES.md` A23) |
+| `verify_page.js` reports 0 script errors but the browser console shows an error | it runs the page in a Node vm without a DOM or the CDN libraries, so browser-only errors do not show there — always load the page in the browser too (`KNOWN_ISSUES.md` A23) |
+| A write fails with `EPERM` | OneDrive was syncing the file (`KNOWN_ISSUES.md` R6); the atomic write left that file untouched, but a two-file tool may already have written its other file: check against the backup (`tools/README.md` §1 rule 4), then re-run the step |
 | `Filename too long` from git in temp folders | use a short path, or `git -c core.longpaths=true` |

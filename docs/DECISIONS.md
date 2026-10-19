@@ -73,19 +73,19 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D39 | 18-Aug-2026 | Return overrides live on the selection, applied last | UI | Active |
 | D40 | 31-Jul-2026 | Tiered fund-name resolution; ambiguity reported | UI | Active |
 | D41 | 13-Oct-2026 | Push via a temp clone; raise the public-repo issue | Deploy | Superseded by D60, D63, D65, D68 |
-| D42 | 13-Aug-2026 | Bake with the page's own parsers; dry-run by default | Tooling | Active |
+| D42 | 13-Aug-2026 | Bake with the page's own parsers; dry-run by default | Tooling | Active (amended by D72) |
 | D43 | 18-Sep-2026 | Node route into `RISK_MATRIX`; drop `c` | Risk | Active (premise reopened) |
 | D44 | 18-Sep-2026 | Risk joins via `prev_name` and plan-base | Risk | Active |
-| D45 | 18-Sep-2026 | Data Flags are not surfaced in the UI | Risk | Open |
-| D46 | 17-Sep-2026 | Rename before every bake; identity = inception + AMC | Data model | Active |
+| D45 | 18-Sep-2026 | Data Flags are not surfaced in the UI | Risk | Superseded by D74 |
+| D46 | 17-Sep-2026 | Rename before every bake; identity = inception + AMC | Data model | Active (amended by D73, D79) |
 | D47 | 13-Aug-2026 | Variant fill after every bake | Analytics | Active |
 | D48 | 20-Aug-2026 | One hybrid predicate for all four analytics gates | Analytics | Active |
 | D49 | 20-Aug-2026 | PMS/AIF look-through is written in two places | Analytics | Active |
 | D50 | 17-Sep-2026 | SIF Monitor baked into the SIF sibling; always ÷100 | Tooling | Active |
 | D51 | 20-Aug-2026 | Re-key SIF analytics via `sif_raw` | Analytics | Active |
 | D52 | 13-Aug-2026 | `DIRECT_PERF` on MASTER's scale; atomic m-cap split | Analytics | Active |
-| D53 | — | Refresh procedure: back up, replace one block, verify | Process | Active (amended by D65) |
-| D54 | 20-Aug to 28-Sep-2026 | PMS performance replaced wholesale; pins by hand | Reckoner | Active |
+| D53 | — | Refresh procedure: back up, replace one block, verify | Process | Active (amended by D65, D72) |
+| D54 | 20-Aug to 28-Sep-2026 | PMS performance replaced wholesale; pins by hand | Reckoner | Active (amended by D75) |
 | D55 | 21-Aug-2026 | AIF performance from the Reckoner deck | Reckoner | Active |
 | D56 | 20-Aug-2026 | Centricity Select from the deck, on 33 fixed categories | Reckoner | Active (amended by D71) |
 | D57 | — | Verify by re-deriving in a `vm`; the rename canary | Process | Active (automated by D63) |
@@ -100,9 +100,17 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D66 | 16-Oct-2026 | Preview server serves only `site/`, on 127.0.0.1 | Transfer | Active |
 | D67 | 16-Oct-2026 | Shared Claude config, package manifest and LF tracked | Transfer | Active |
 | D68 | 16-Oct-2026 | Changes go branch → PR → verify → merge | Transfer | Active |
-| D69 | 16-Oct-2026 | `Centricity_Risk_Matrix.js` stays in `site/` for parity | Transfer | Active |
+| D69 | 16-Oct-2026 | `Centricity_Risk_Matrix.js` stays in `site/` for parity | Transfer | Superseded by D78 |
 | D70 | 16-Oct-2026 | `DATA_DATES.analytics` labels the MF analytics only | Analytics | Active |
-| D71 | 16-Oct-2026 | Centricity Select merge refuses join failures and mass drops | Reckoner | Active |
+| D71 | 16-Oct-2026 | Centricity Select merge refuses join failures and mass drops | Reckoner | Active (extended by D76) |
+| D72 | 19-Oct-2026 | One contract for every tool: exit codes, gates before writes, atomic writes, strict CLI | Tooling | Active |
+| D73 | 19-Oct-2026 | Workbook dates are calendar days (`isoDay`); inception corrected | Tooling | Active |
+| D74 | 19-Oct-2026 | Source reliability flags reach the page as `fl` | Risk | Active |
+| D75 | 19-Oct-2026 | Hand pins live in `tools/data/pins.json` | Reckoner | Active |
+| D76 | 19-Oct-2026 | Reckoner merge refuses a drop under an unmapped deck heading | Reckoner | Active |
+| D77 | 19-Oct-2026 | CDN scripts carry SRI; page asks not to be indexed; inline favicon | Deploy | Active |
+| D78 | 19-Oct-2026 | The unused `Centricity_Risk_Matrix.js` moves to `docs/archive/` | Deploy | Active |
+| D79 | 19-Oct-2026 | Rename history kept in `prev_names`; stale old-name keys dropped | Data model | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -250,7 +258,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `.github/workflows/pages.yml` (`pull_request` trigger; `publish` only on `main`).
 
 ### D69 · `Centricity_Risk_Matrix.js` stays in `site/` for parity
-`Active` · 16-Oct-2026 · **verified in code**
+`Superseded by D78` (19-Oct-2026) · 16-Oct-2026 · **verified in code**
 - **Context:** Nothing has loaded the file since `RISK_MATRIX` was baked inline (D3), but upstream
   tracked and published it.
 - **Decision:** Keep it in `site/`, beside `index.html`.
@@ -264,7 +272,7 @@ and the entry says so. "—" means no date is recorded.
 
 ---
 
-## Tool-fix decisions (Oct-2026 onward)
+## Tool and page fix decisions (Oct-2026 onward)
 
 ### D70 · `DATA_DATES.analytics` labels the MF analytics only
 `Active` · 16-Oct-2026 (`71fa58a`) · **verified in code**
@@ -282,10 +290,10 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** Run order against the bake no longer matters for the label. The look-through date
   lives only in the docs. `merge_analytics.js` still re-dates all three MF classes when it re-bakes
   one.
-- **Source:** `tools/merge_pms_aif_analytics.js:158-163`, `:168-169`; `site/index.html:1450`.
+- **Source:** `tools/merge_pms_aif_analytics.js:200-205`; `site/index.html:1450`.
 
 ### D71 · Centricity Select merge refuses join failures and mass drops
-`Active` · 16-Oct-2026 (`2ad7f61`) · **verified in code** · amends D56
+`Active (extended by D76)` · 16-Oct-2026 (`2ad7f61`) · **verified in code** · amends D56
 - **Context:** `merge_reckoner.js` wrote any membership whose keys exist in MASTER. A join failure
   drops a Select entry silently: in Sep-2026, before the `prev_name` tier, the list went 178 -> 160
   and lost two categories with every gate passing (`KNOWN_ISSUES.md` A4).
@@ -304,7 +312,155 @@ and the entry says so. "—" means no date is recorded.
   stops the run until the owner decides (it was already a D61 stop). A renamed fund filed under a
   different heading is not paired, so the manual read of both lists stays. The dry-run exit code is now
   meaningful for this tool (A2).
-- **Source:** `tools/merge_reckoner.js:5-11` (header), `:184-198`, `:271-290`, `:316-321`.
+- **Source:** `tools/merge_reckoner.js:5-11` (header), `:194-199`, `:207-211`, `:282-299`,
+  `:316-317`, `:343-348`.
+
+### D72 · One contract for every tool: exit codes, gates before writes, atomic writes, strict CLI
+`Active` · 19-Oct-2026 (PR #3 `32943e8`; PRs #7–#11; PR #15 `184939e`) · **verified in code**
+- **Context:** Eight tools exited 0 from a dry run with a failed gate, every tool overwrote files in
+  place, several wrote two files (or one file twice) one after the other, and unknown flags were
+  ignored, so a typo such as `--aply` became a silent dry run (`KNOWN_ISSUES.md` A2, A8, F2). D61
+  publishes automatically, so exit codes and partial writes matter.
+- **Decision:** Every tool: (1) exits **0** when every gate passed, **1** when a gate failed (dry
+  run or `--apply`; `--apply` then writes nothing), **2** on a usage or input error (unknown flag,
+  stray word, value flag with no value, bad `--as-on`, missing or duplicate input file; exception: a
+  missing file in the six PMS/AIF/Reckoner tools, or a mistyped `--html` page in several others,
+  still crashes with Node's ENOENT stack trace and exits 1); (2) prints each gate as PASS or `***`
+  (normally `GATE <name>: PASS | *** FAIL …`; a few print `***` and a reason, and
+  `fold_duplicate_names.js` omits the `GATE` prefix) and decides before any write; (3) builds
+  every output in memory and writes once through `tools/lib/blocklib.js` (`writeFileAtomic`: temp file + rename;
+  `writeFilesAtomic`: check every output, then write); (4) finds blocks with `B.locate`, which
+  refuses a second literal; (5) takes dates only as plain labels (`checkAsOn`) set through
+  `setDataDate` / `replaceOnce`. Overrides are explicit flags reserved for the owner's decision
+  (`--accept-drops`, `--allow-coverage-drop`, `--allow-shrink`, `--allow-layout-change`).
+- **Rationale:** A dry run's exit code can then be trusted by a script or a reviewer, and a crash, a
+  full disk or a sync clash can no longer leave a truncated page.
+- **Alternatives / supersedes:** Reading every gate by eye with exit 0 meaning nothing; backups as
+  the only protection. Amends D42 and D53 (procedure unchanged; the guarantees move into the tools).
+- **Consequences:** A two-file write is still two renames, so the backup step stays; `CHECK`, `WARN`
+  and count lines never fail a run and must still be read. `verify_page.js` follows the same rule
+  (exit 1 on a hard failure); it has no flags and reads its first argument as the folder.
+  `npm test` runs `tools/test/*.test.js` in CI.
+- **Source:** `tools/lib/blocklib.js:60-82`, `:115-151`; e.g. `tools/bake_month.js:20-38`, `:198-217`;
+  `tools/verify_page.js:88-94`; `.github/workflows/pages.yml` (unit-test step).
+
+### D73 · Workbook dates are calendar days (`isoDay`); inception corrected
+`Active` · 19-Oct-2026 (PRs #7, #8, #11, #12; data PR #13; PR #14) · **verified in code** · amends D46
+- **Context:** SheetJS 0.18.5 with `cellDates` returns 23:59:50 of the previous day on an IST machine,
+  and the tools and the page took `toISOString().slice(0,10)`, so every date read from a workbook was
+  one day early (`KNOWN_ISSUES.md` A6). MASTER and SIF inception dates were baked a day early.
+- **Decision:** Read every Excel date as the nearest local calendar day: `tools/lib/dates.js`
+  `isoDay` in the tools, the same rule in the page's `parseMfMonitor` and the SIF sibling's
+  `parseSif`. Re-bake the Sep-2026 inputs once (PR #13: 1,851 MASTER and 30 SIF inception dates +1
+  day). `rename_schemes.js` carried a one-day allowance until the corrected dates were live, then
+  compared the exact day again (PR #14).
+- **Rationale:** A date has no time zone; the tools must give the same answer on any machine, and a
+  bake must equal an upload.
+- **Alternatives / supersedes:** `XLSX.SSF.parse_date_code` on raw serials (kept as
+  `isoDayFromSerial`); upgrading SheetJS (ruled out for parity, R4); keeping the allowance for good
+  (it could pair a scheme with a same-AMC launch from the day before).
+- **Consequences:** 2,070 of the 2,072 Sep Monitor rows in MASTER now carry the exact inception
+  (C16 and one legacy record differ). Reading the true date, `rename_schemes.js` finds 8 renames it
+  used to miss; they wait for the owner (`docs/PROJECT_STATE.md`).
+- **Source:** `tools/lib/dates.js`; `tools/rename_schemes.js:93`, `:128-135`, `:149`; `isoDay` in
+  `site/index.html` (`parseMfMonitor`); `isoDayLite` in `site/Centricity_SIF_Refresh.js:111`;
+  `docs/update-log/2026-09_Sep-2026.md` (Run 2).
+
+### D74 · Source reliability flags reach the page as `fl`
+`Active` · 19-Oct-2026 (PRs #9, #12; data PR #13) · **verified in code** · supersedes D45
+- **Context:** The risk workbook's Data Flags sheet calls some funds' risk statistics unreliable, but
+  the page showed them as ordinary numbers in a client-facing tab and slide (`KNOWN_ISSUES.md` C3).
+- **Decision:** `merge_risk_matrix.js` adds `fl` to a RISK_MATRIX entry: `split` when the note says
+  a NAV split makes the risk stats unreliable (split outranks low correlation), `lowcorr` for low
+  correlation to the benchmark (β < 0.30). Unflagged entries get no key. Not carried: a split that
+  affects Max Drawdown only (not shown on the page) and short-history flags (those funds show "—").
+  The page marks a flagged fund with a dagger and `H.RISK_FLAG_NOTE` on the Portfolio Matrix tab and
+  its slide (`H.riskFlagged(entry)`).
+- **Rationale:** The source's own warning reaches the reader of the proposal; numbers are not hidden.
+- **Alternatives / supersedes:** Supersedes D45 (pending). Hiding flagged figures (would drop data
+  the desk publishes); flagging all 40 split notes, including the 12 about Max Drawdown only.
+- **Consequences:** Sep-2026: 33 flagged (28 `split`, 5 `lowcorr`). The Excel export has no
+  RISK_MATRIX sheet; the Select popover is not marked (C18); the footnote can overlap a slide with
+  about 22 or more funds (C17).
+- **Source:** `tools/merge_risk_matrix.js:21-29`, `:129-136`, `:201-202`; `H.riskFlagged`,
+  `H.RISK_FLAG_NOTE` in `site/index.html`.
+
+### D75 · Hand pins live in `tools/data/pins.json`
+`Active` · 19-Oct-2026 (PR #10) · **verified in code** · amends D54
+- **Context:** `REPIN` (`merge_pms_performance.js`), `PINS` (`pin_pms_alias.js`), `PIN`
+  (`merge_reckoner.js`) and `PIN` (`merge_aif_performance.js`) were separate copies that had to change
+  together, and a deliberate trailing space in a key was easy to lose (`KNOWN_ISSUES.md` A18, A25).
+- **Decision:** One data file, `tools/data/pins.json`: `pms_alias` (each entry `key`, with `repin`
+  and/or `pin`), `reckoner` (deck name → MASTER name), `aif_performance` (deck names looked up in
+  `reckoner`), notes, and a `trailing_space` list per section. The four tools load it and exit 1 if a
+  name's edge spaces disagree with that list. "Still pinned null" is built from the live alias map.
+- **Rationale:** One place to edit a pin, so two tools cannot drift apart.
+- **Alternatives / supersedes:** Keeping the maps in code and editing them together.
+- **Consequences:** A vendor rename is a reviewed edit of `pins.json` with the owner (D61), never a
+  code change. `add_reckoner_funds.js` keeps its own `ADD` list; `merge_pms_aif_analytics.js` keeps its
+  own look-through `PIN`.
+- **Source:** `tools/data/pins.json` (`_about`); `tools/merge_pms_performance.js:36-53`;
+  `tools/pin_pms_alias.js:29-41`; `tools/merge_reckoner.js:45-60`, `:137`;
+  `tools/merge_aif_performance.js:43-66`.
+
+### D76 · Reckoner merge refuses a drop under an unmapped deck heading
+`Active` · 19-Oct-2026 (PR #10) · **verified in code** · extends D71
+- **Context:** Review of D71 found a bypass: rows under a deck heading that `GRID` does not map (a
+  renamed heading such as "Focused Fund" for "Focused Funds") never reach `resolve()`, so their funds
+  drop with every D71 gate passing.
+- **Decision:** A fourth gate, never waived by `--accept-drops`: fail when a dropped Select entry
+  matches a fund listed under an unmapped heading (same normalised name ignoring spaces, or at least
+  80% of words shared). The fix is to map the heading in `GRID` and re-run.
+- **Rationale:** A heading rename is a mapping failure, not an editorial drop.
+- **Alternatives / supersedes:** Letting `--accept-drops` waive it; strict name equality (would miss
+  small rewordings).
+- **Consequences:** A heuristic: a rename sharing less than 80% of words is not caught, so the manual
+  read of DROPPED against the deck stays. The real Aug-2026 deck has no unmapped heading.
+- **Source:** `tools/merge_reckoner.js:11-13`, `:198`, `:205`, `:300-317`.
+
+### D77 · CDN scripts carry SRI; page asks not to be indexed; inline favicon
+`Active` · 19-Oct-2026 (PR #12) · **verified in code**
+- **Context:** The five CDN scripts loaded without `integrity`, so a compromised CDN response would
+  run in every user's page (`KNOWN_ISSUES.md` R3). The public page had no `noindex` (R2, D60), and
+  browsers fetched a missing `/favicon.ico` (F3).
+- **Decision:** `integrity="sha384-…"` and `crossorigin="anonymous"` on all five tags, hashes taken
+  from the served files; Chart.js from `dist/chart.umd.js` (jsDelivr's `.min` is generated on the fly
+  and unfit for SRI); `<meta name="robots" content="noindex, nofollow">`; `<link rel="icon"
+  href="data:,">`. Library versions unchanged.
+- **Rationale:** A tampered library is refused by the browser, at no runtime cost.
+- **Alternatives / supersedes:** Vendoring the libraries into `site/` (more deploy files). Keeps D60
+  (still public).
+- **Consequences:** A CDN that changes a file's bytes stops the page loading until the hash is
+  updated in a reviewed PR; never update a hash without re-checking the file. Upgrading a library
+  stays forbidden for parity.
+- **Source:** `site/index.html:3`, `:1224-1228`.
+
+### D78 · The unused `Centricity_Risk_Matrix.js` moves to `docs/archive/`
+`Active` · 19-Oct-2026 (PR #12) · **verified in code** · supersedes D69
+- **Context:** D69 kept the 30-Jun-2026 file in `site/` for parity, so a stale, unloaded file was
+  published (`KNOWN_ISSUES.md` R5).
+- **Decision:** Move it unchanged to `docs/archive/Centricity_Risk_Matrix_2026-06-30.js`.
+- **Rationale:** The page never loads it; the deploy set is still the six files.
+- **Alternatives / supersedes:** Supersedes D69. Deleting it (it is the only Python-route reference
+  output, useful for a parity run).
+- **Consequences:** The live URL returns 404. `fold_duplicate_names.js` skips its check when the file
+  is absent; `build_risk_matrix.py` refuses any output inside `site/`.
+- **Source:** `git show 3a75afb --stat`; `tools/fold_duplicate_names.js:305-311`;
+  `tools/build_risk_matrix.py:43-47`.
+
+### D79 · Rename history kept in `prev_names`; stale old-name keys dropped
+`Active` · 19-Oct-2026 (PR #7; page PR #12) · **verified in code** · amends D46
+- **Context:** When a store already had an entry under the live name, the old-name entry was kept,
+  unreachable; a second rename overwrote `prev_name`, losing the first name (`KNOWN_ISSUES.md` A5).
+- **Decision:** The live-name entry wins; the stale old-name entry is dropped and listed. A record
+  renamed again keeps `prev_name` = its immediate old name and gains `prev_names` = every earlier
+  name, oldest first; a key from two renames ago moves to the live name; a name live in MASTER is
+  never mapped away. `H.buildFundIndex` indexes `prev_names` too.
+- **Rationale:** No orphan keys, and an old allocation sheet or link still resolves.
+- **Alternatives / supersedes:** Keeping both entries; a single `prev_name`.
+- **Consequences:** Each run lists about 15 dropped keys that the bake re-creates under old workbook
+  names; harmless. No MASTER record carries `prev_names` yet (none renamed twice).
+- **Source:** `tools/rename_schemes.js:19-23`, `:221-277`; `H.buildFundIndex` in `site/index.html`.
 
 ---
 
@@ -570,7 +726,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `OPERATING_MANUAL.md:386-395`.
 
 #### D46 · Rename before every bake; identity = inception + AMC
-`Active` · 17-Sep-2026 (upstream `1ce60e9`; Aug-2026 cycle)
+`Active (amended by D73: exact calendar day; D79: prev_names history)` · 17-Sep-2026 (upstream `1ce60e9`; Aug-2026 cycle)
 - **Context:** SEBI's name standardisation renamed 217 schemes; baking without renaming would have added
   about 215 duplicate funds.
 - **Decision:** `rename_schemes.js` runs first. It matches in three tiers (normalised name → inception +
@@ -757,7 +913,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `OPERATING_MANUAL.md:560-562, 599-608`.
 
 #### D42 · Bake with the page's own parsers; dry-run by default
-`Active` · 13-Aug-2026 (upstream `4e67438`) · **verified in code**
+`Active (amended by D72: exit codes, atomic writes)` · 13-Aug-2026 (upstream `4e67438`) · **verified in code**
 - **Decision:** `bake_month.js` runs the page's inline parsers in a Node `vm` (skipping CDN scripts and
   siblings) and writes the globals back. The monthly order is fixed, with `rename_schemes.js` first.
   Every tool is a dry run unless given `--apply`.
@@ -780,7 +936,7 @@ and the entry says so. "—" means no date is recorded.
 ### Reckoner / PMS / AIF
 
 #### D54 · PMS performance replaced wholesale; pins by hand
-`Active` · 20-Aug to 28-Sep-2026 (upstream `d55acea`, `7be34c7`, `ac4347b`) · **verified in code**
+`Active (amended by D75: the pins moved to tools/data/pins.json)` · 20-Aug to 28-Sep-2026 (upstream `d55acea`, `7be34c7`, `ac4347b`) · **verified in code**
 - **Context:** The vendor renames schemes, changes sheet names and repeats rows.
 - **Decision:** Run PMS before the Reckoner. Replace `PMS_PERFORMANCE.pms` wholesale (`aif`, `benchmarks`
   carried over). Find the sheet by header; keep the richer duplicate row; decide AUM units per column.
@@ -841,7 +997,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `OPERATING_MANUAL.md:711-721`.
 
 #### D45 · Data Flags are not surfaced in the UI
-`Open` · 18-Sep-2026
+`Superseded by D74` (19-Oct-2026) · 18-Sep-2026
 - **Context:** In the 30-Sep-2026 file, 45 funds show risk stats the source flags as unreliable (NAV
   split, or β < 0.30).
 - **Decision:** Pending: add a UI marker (a flag on `RISK_MATRIX` records plus a footnote).
@@ -867,7 +1023,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `OPERATING_MANUAL.md:59, 1191`; `docs/PRD.md` §14 item 2.
 
 #### D53 · Refresh procedure: back up, replace one block, verify
-`Active` (amended by D65)
+`Active` (amended by D65; D72 makes each write atomic, backups still taken)
 - **Decision:** Identify the block or sibling the source file drives; back up; replace only that block;
   read the changed ranges; confirm the file still ends with `</html>`.
 - **Rationale:** Keep each edit small and reversible in a 12.8 MB file with multi-MB lines.

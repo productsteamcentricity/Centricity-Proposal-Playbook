@@ -168,29 +168,39 @@ their mandatory followers, e.g. steps 3–4 after a bake).
 
 ### B4. Run the tools (dry-run → read → apply), skipping any whose input is absent
 
-Same numbering as `tools/README.md` §2. Date labels are examples — replace them, and never include
-quotes, backslashes or `$` in them.
+Same numbering as `tools/README.md` §2. Date labels are examples — replace them; only plain labels
+are accepted ("31st October 2026"; "31 Oct 2026" for the risk matrix), anything else exits 2.
+
+**Reading a dry run (D72).** Exit 0: every gate passed; still read the whole output (`CHECK`, `WARN`
+and count lines never fail a run). **Exit 1: a gate failed — stop and read the `GATE` lines; never
+`--apply`** (it would refuse anyway). Exit 2: a usage or input error (unknown flag, bad label, a
+missing value, two files for one input; a missing input file in most tools) — fix the command or the
+folder. Exception: the Reckoner-cycle tools (steps 12, 14, 14a, 15, 16) crash with `ENOENT` and
+exit 1 on a missing file, so a dry run that exits 1 with no `GATE` line means check the path.
+Override flags are owner decisions, never Claude's: `--accept-drops <n>` (step 14),
+`--allow-coverage-drop` (step 6), `--allow-shrink` (step 4), `--allow-layout-change` (step 15).
+`merge_pms_performance.js` (step 12) has no override.
 
 | Step | Command (add `--apply` after a clean dry-run) | Stop and ask when |
 |---|---|---|
-| 1 | `node tools/rename_schemes.js --monitor "<M>/<Regular monitor>.xlsx"` — **always first** | any `*** AMBIGUOUS`; an `inception`/`category` pairing that is not obviously the same fund; "new to MASTER" near 200 |
-| 2 | `node tools/bake_month.js --dir "<M>" --as-on "31st October 2026"` | a FAIL gate; MASTER count change you cannot explain |
-| 3 | `node tools/fill_variant_analytics.js --dir "<M>"` | — (always after a bake) |
-| 4 | `node tools/rekey_sif_analytics.js` | leftover-key gate fails (always after a bake) |
-| 5 | `node tools/merge_de_universe.js "<M>/Analytics/Listed Direct Equity_<Month>.xlsx"` | "column layout changed" (banner rows) |
-| 6 | `node tools/merge_direct_equity_returns.js "<M>/Listed Direct Equity_<date>.xlsx"` | top-10 by market cap not all "Large Cap"; a wholly empty return column (never force) |
+| 1 | `node tools/rename_schemes.js --monitor "<M>/<Regular monitor>.xlsx"` — **always first** | any `*** AMBIGUOUS`; an `inception`/`category` pairing that is not obviously the same fund; "new to MASTER" near 200. The 8 renames pending since Sep-2026 (`PROJECT_STATE.md`) need the owner's answer before this `--apply` |
+| 2 | `node tools/bake_month.js --dir "<M>" --as-on "31st October 2026"` | exit 1 (a FAIL gate) or exit 2 (two files for one input); MASTER count change you cannot explain |
+| 3 | `node tools/fill_variant_analytics.js --dir "<M>"` | an `ambiguous … not filled` line (always after a bake) |
+| 4 | `node tools/rekey_sif_analytics.js` | a store-size or leftover-key gate fails (always after a bake); `--allow-shrink` only once the owner agrees the fund changed class |
+| 5 | `node tools/merge_de_universe.js "<M>/Analytics/Listed Direct Equity_<Month>.xlsx"` | no header row found; a `!` new listing that is a renamed record's `prev_name` |
+| 6 | `node tools/merge_direct_equity_returns.js "<M>/Listed Direct Equity_<date>.xlsx"` | top-10 by market cap not all "Large Cap"; a wholly empty return column (never force); the tenor-coverage gate (`--allow-coverage-drop` only with the owner) |
 | 7 | `node tools/merge_expense_exitload.js --expense "<M>/Expense Ratio_<Month>.xlsx" --exitload "<M>/Exit Load_<Month>.xlsx"` | 0 joins |
-| 8 | `node tools/merge_sif_monitor.js "<M>/SIF Monitor_<date>.xlsx" --as-on "31st October 2026"` | small returns not ÷100 (spot-check values between −1% and +1% against the workbook); if it prints `NEW schemes added`, re-run step 4 afterwards |
-| 9 | `node tools/merge_fund_managers.js "<M>/Fund Manager Data_<date>.xlsx"` — **after** the bake (the bake overwrites `fund_mgr`) | "column layout changed" |
-| 10 | `node tools/merge_risk_matrix.js "<M>/Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx" --as-on "31 Oct 2026"` | ambiguous joins; counts shrink |
+| 8 | `node tools/merge_sif_monitor.js "<M>/SIF Monitor_<date>.xlsx" --as-on "31st October 2026"` (`--as-on` required) | small returns not ÷100 (spot-check values between −1% and +1% against the workbook); if it prints `NEW schemes added`, re-run step 4 afterwards |
+| 9 | `node tools/merge_fund_managers.js "<M>/Fund Manager Data_<date>.xlsx"` — **after** the bake (the bake overwrites `fund_mgr`) | no header row found; many `ambiguous, not written` |
+| 10 | `node tools/merge_risk_matrix.js "<M>/Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx" --as-on "31 Oct 2026"` | ambiguous joins; counts shrink; reliability counts far from last month's (Sep-2026: 28 split, 5 lowcorr) |
 | 11 | Market slides: render (B5), then `node tools/update_market_slides.js --slides "C:/t/q82"` | dimension/size gate fails |
-| 12 | `node tools/merge_pms_performance.js "<M>/<PMS_Scheme_Performance….xlsx>" --as-on "31st October 2026" --html site/index.html` | a `REPIN` key missing from the new file (vendor rename) |
+| 12 | `node tools/merge_pms_performance.js "<M>/<PMS_Scheme_Performance….xlsx>" --as-on "31st October 2026" --html site/index.html` | a `repin` key missing from the new file (vendor rename: the owner confirms the new key, then edit `tools/data/pins.json`); `pms N -> M` falls for no reason |
 | 13 | `node tools/pin_pms_alias.js --html site/index.html` (after step 12 is applied) | any `*** key not in PMS_PERFORMANCE.pms` (blocks all pins) |
-| 14 | `node tools/merge_reckoner.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` | a drop gate fails (a DROPPED fund whose category also lists an unmatched deck name — a join failure; more than 5% dropped; a category emptied). Re-run with `--accept-drops <n>` only after the owner confirms the DROPPED list; `NARRATIVE` not refreshed from the deck's index slides |
+| 14 | `node tools/merge_reckoner.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` | a drop gate fails: a DROPPED fund whose category also lists an unmatched deck name (a join failure), more than 5% dropped, a category emptied, or a dropped fund still under an unmapped deck heading. Only the 5% and emptied-category gates can be waived, with `--accept-drops <n>` after the owner confirms the DROPPED list; `NARRATIVE` not refreshed from the deck's index slides |
 | 14a | `node tools/add_reckoner_funds.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` — only if step 14 lists deck funds with no MASTER record | always confirm with the owner: this changes the universe |
-| 15 | `node tools/merge_aif_performance.js "<M>/<Monthly Investment Reckoner….pptx>"` | MASTER-coverage gate fails |
-| 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | a failed gate (totals, or `MASTER PMS/AIF with look-through` falling); a scheme listed under `no MASTER instrument`. Record the printed `look-through as on` date in the update log: the tool leaves `DATA_DATES.analytics` alone (D70) |
-| 17 | `node tools/verify_page.js site` | see B6 |
+| 15 | `node tools/merge_aif_performance.js "<M>/<Monthly Investment Reckoner….pptx>"` | MASTER-coverage gate fails; the deck-layout gate fails (`--allow-layout-change` only after the slides were checked with the owner) |
+| 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | a failed gate (totals, or `MASTER PMS/AIF with look-through` falling); a scheme listed under `no MASTER instrument`; two sheets qualify (pass `--sheet`). Record the printed `look-through as on` date in the update log: the tool leaves `DATA_DATES.analytics` alone (D70) |
+| 17 | `node tools/verify_page.js site` | exit 1, or see B6 |
 
 Periodic inputs (P1–P5) follow the "Periodic" section of `tools/README.md` and always need the
 owner's confirmation of what changed. A Bond List run names its desk (`--desk Invictus` or

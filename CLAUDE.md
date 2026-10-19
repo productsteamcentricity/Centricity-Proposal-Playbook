@@ -16,7 +16,7 @@ not against documents.
 
 | Path | What | Git |
 |---|---|---|
-| `site/` | **The dashboard = the six-file deploy set**: `index.html` + `Centricity_ExtraSlides.js`, `Centricity_PMS_AIF_Terms.js`, `Centricity_June_Refresh.js`, `Centricity_IRR_Offshore.js`, `Centricity_SIF_Refresh.js` (+ unused `Centricity_Risk_Matrix.js`, `robots.txt`). Published to GitHub Pages. | tracked |
+| `site/` | **The dashboard = the six-file deploy set**: `index.html` + `Centricity_ExtraSlides.js`, `Centricity_PMS_AIF_Terms.js`, `Centricity_June_Refresh.js`, `Centricity_IRR_Offshore.js`, `Centricity_SIF_Refresh.js` (+ `robots.txt`). Published to GitHub Pages. | tracked |
 | `tools/`, `tools/lib/` | Monthly Node tools (dry-run by default) + `build_risk_matrix.py`; shared libraries | tracked |
 | `docs/` | PRD, operating manual (trap catalogue), architecture, process, decisions, state, issues, update logs | tracked |
 | `.claude/` | `agents/` (8 specialists), `skills/` (`monthly-update`, `verify-dashboard`), `serve.js`, `launch.json` | tracked |
