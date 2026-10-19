@@ -125,19 +125,9 @@ for (const f of mfRecs) {
   if (!byInc.has(i)) byInc.set(i, []); byInc.get(i).push(f);
 }
 
-// A6 transition tolerance (added 19-Oct-2026). The Monitor's inception is now read as the true
-// calendar day (isoDay above), but most MASTER.inception values were baked one day early by the
-// page's parser on an IST machine: of the 2,139 Sep-2026 Monitor rows whose scheme is in MASTER,
-// 1,907 carry the day before and 231 the true day (16-Oct-2026). Until the corrected MASTER dates
-// are live, a MASTER date equal to the Monitor's OR exactly one day earlier is a match; the run
-// prints how many renames needed the one-day allowance. REMOVE this tolerance (dayBefore and its
-// use in tier 2, and the `tol` count) once the re-baked, corrected inception dates are live in
-// site/index.html.
-const dayBefore = iso => {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
-  if (!m) return null;
-  return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] - 1)).toISOString().slice(0, 10);   // pure UTC arithmetic
-};
+// Inception is compared on the exact calendar day. A one-day allowance for MASTER dates baked a day
+// early (A6) was used until the corrected dates went live on 19-Oct-2026 (PR #13); since then 2,070
+// of the 2,072 Sep-2026 Monitor rows found in MASTER carry the Monitor's exact date.
 
 // ---------- build the map ----------
 // A MASTER record still present in the monitor under its own name is never a rename target.
@@ -151,16 +141,14 @@ for (const m of mon) {
   const nh = (byNorm.get(norm(m.name)) || []).filter(free);
   if (nh.length === 1) { renames.push({ from: nh[0].name, to: m.name, how: 'name', sub: nh[0].sub_category }); claimed.add(nh[0].name); continue; }
 
-  const days = [m.inception, dayBefore(m.inception)].filter(Boolean);
-  let cands = [...new Set(days.flatMap(d => byInc.get(d) || []))].filter(f => free(f) && amc(f.name) === amc(m.name));
+  let cands = (byInc.get(m.inception) || []).filter(f => free(f) && amc(f.name) === amc(m.name));
   if (cands.length > 1 && m.sub) {
     // Two schemes of one AMC launched the same day: the monitor sheet says which is which.
     const narrowed = cands.filter(f => f.sub_category === m.sub);
     if (narrowed.length === 1) cands = narrowed;
   }
   if (cands.length === 1) {
-    const tol = String(cands[0].inception).slice(0, 10) !== m.inception;
-    renames.push({ from: cands[0].name, to: m.name, how: 'inception', sub: cands[0].sub_category, tol });
+    renames.push({ from: cands[0].name, to: m.name, how: 'inception', sub: cands[0].sub_category });
     claimed.add(cands[0].name);
   }
   else if (cands.length > 1) ambiguous.push({ to: m.name, inception: m.inception, sheet: m.sheet, from: cands.map(c => c.name) });
@@ -203,10 +191,9 @@ if (priorMap.size) console.log(`already renamed: ${priorMap.size} (from prev_nam
 
 const incRenames = renames.filter(r => r.how === 'inception');
 console.log(`renames        : ${renames.length}  (${renames.filter(r => r.how === 'name').length} by name, ${incRenames.length} by inception+AMC, ${renames.filter(r => r.how === 'category').length} by AMC+category 1-to-1)`);
-console.log(`  inception+AMC matched via the one-day tolerance (MASTER = Monitor - 1 day, A6 transition): ${incRenames.filter(r => r.tol).length} of ${incRenames.length}`);
 console.log(`ambiguous      : ${ambiguous.length}`);
 console.log(`new to MASTER  : ${fresh.length}   (left for bake_month.js to add)\n`);
-for (const r of renames) console.log(`   ${r.from}   ->   ${r.to}      [${r.sub} · ${r.how}${r.tol ? ' (-1 day)' : ''}]`);
+for (const r of renames) console.log(`   ${r.from}   ->   ${r.to}      [${r.sub} · ${r.how}]`);
 if (ambiguous.length) {
   console.log('\n*** AMBIGUOUS — not renamed, resolve by hand: ***');
   for (const a of ambiguous) console.log(`   ${a.to}  [inc ${a.inception} · ${a.sheet}]  <-  ${JSON.stringify(a.from)}`);
