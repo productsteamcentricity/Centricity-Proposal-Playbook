@@ -6,29 +6,38 @@
 // The REGULAR row also carries "Direct Plan Ratio", so one row feeds both plans:
 //   MASTER.expense        <- Ratio / 100
 //   DIRECT_PERF[].expense <- Direct Plan Ratio / 100
-// Exit Load workbook is 2-column: Scheme Name | Remark (prose).
+// Exit Load workbook: Scheme Name | Remark (prose).
 //
-//   node merge_expense_exitload.js --expense <x.xlsx> --exitload <y.xlsx> [--apply] [--html <p>]
+//   node tools/merge_expense_exitload.js --expense <x.xlsx> --exitload <y.xlsx> [--apply] [--html <index.html>]
+//
+// Either workbook may be left out, not both. Dry run by default. A failed gate exits 1 (dry run or
+// --apply), and --apply then writes nothing. MASTER and DIRECT_PERF are written in one atomic write.
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
+const B = require('./lib/blocklib.js');
 
+const USAGE = 'Usage: node tools/merge_expense_exitload.js --expense <x.xlsx> --exitload <y.xlsx> [--apply] [--html <index.html>]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const EXP = flag('--expense'), EXIT = flag('--exitload');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-if ((!EXP && !EXIT) || (EXP && !fs.existsSync(EXP)) || (EXIT && !fs.existsSync(EXIT))) {
-  console.error('Usage: node merge_expense_exitload.js --expense <x.xlsx> --exitload <y.xlsx> [--apply] [--html <p>]');
-  process.exit(2);
+let APPLY = false, EXP = null, EXIT = null, HTML = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') { APPLY = true; continue; }
+  if (a === '--expense') { EXP = argv[++i] || usage('--expense needs a path'); continue; }
+  if (a === '--exitload') { EXIT = argv[++i] || usage('--exitload needs a path'); continue; }
+  if (a === '--html') { HTML = argv[++i] || usage('--html needs a path'); continue; }
+  usage(a.startsWith('--') ? 'unknown flag: ' + a : 'unexpected argument: ' + a);
 }
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
+if ((!EXP && !EXIT) || (EXP && !fs.existsSync(EXP)) || (EXIT && !fs.existsSync(EXIT))) usage();
+if (!fs.existsSync(HTML)) usage('*** index.html not found: ' + HTML);
 
 const NBSP = String.fromCharCode(160);
 const tidy = s => String(s == null ? '' : s).split(NBSP).join(' ').replace(/\s+/g, ' ').trim();
 const num = v => { if (v == null || v === '') return null; const n = typeof v === 'number' ? v : parseFloat(String(v).replace(/[,%\s]/g, '')); return isFinite(n) ? n : null; };
 // "Nil" is a real answer (no exit load). ".", "NA", "No Option" and friends mean MISSING and
 // must not overwrite good data with a placeholder.
-const MISSING = /^(\.|-|--|na|n\.a\.?|n\/a|no option|not applicable|nil\.?\s*$|)$/i;
 const isMissing = s => { const t = tidy(s); return t === '' || /^(\.|-|--|na|n\.a\.?|n\/a|no option|not applicable)$/i.test(t); };
 
 // Sep-2026 started shipping both workbooks with a " >>CTB Output" banner above the header, so
@@ -40,26 +49,22 @@ function readRows(file) {
   const grid = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
   const hdr = grid.findIndex(r => (r || []).some(c => tidy(c) === 'Scheme Name'));
   if (hdr < 0) { console.error(`*** no "Scheme Name" header row in ${path.basename(file)}`); process.exit(1); }
-  return XLSX.utils.sheet_to_json(ws, { defval: null, range: hdr })
+  // The grid starts at the sheet's first used row; `range` takes an absolute row number.
+  return XLSX.utils.sheet_to_json(ws, { defval: null, range: XLSX.utils.decode_range(ws['!ref']).s.r + hdr })
     .map(r => { const o = {}; for (const k of Object.keys(r)) o[tidy(k)] = r[k]; return o; });
 }
 let joined = 0;
 
 const html = fs.readFileSync(HTML, 'utf8');
-function block(prefix) {
-  const i = html.indexOf(prefix);
-  if (i < 0) throw new Error('not found: ' + prefix);
-  const s = i + prefix.length;
-  return { s, e: matchEnd(html, s), value: JSON.parse(html.slice(s, matchEnd(html, s) + 1)) };
-}
-const mB = block('window.MASTER = ');
-const dB = block('window.DIRECT_PERF = ');
+const mB = B.locate(html, 'window.MASTER = ');
+const dB = B.locate(html, 'window.DIRECT_PERF = ');
 const master = mB.value, direct = dB.value;
+const MASTER_COUNT_BEFORE = master.length;     // read before anything below can touch the array
 console.log(`MASTER ${master.length}; DIRECT_PERF ${Object.keys(direct).length}`);
 
 const byName = new Map(master.map(r => [tidy(r.name), r]));
-let expReg = 0, expDir = 0, expUnchanged = 0, xl = 0, xlSkipped = 0;
-const expMissRows = [], badExp = [];
+let expReg = 0, expDir = 0, expUnchanged = 0, expDirUnchanged = 0, xl = 0, xlSkipped = 0;
+const badExp = [], badDir = [];
 
 if (EXP) {
   const rows = readRows(EXP);
@@ -81,23 +86,25 @@ if (EXP) {
       }
     }
     const dr = num(r['Direct Plan Ratio']);
-    if (dr != null && dr >= 0 && dr <= 8 && direct[rec.name]) {
-      direct[rec.name].expense = +(dr / 100).toFixed(6);
-      expDir++;
+    if (dr != null && (dr < 0 || dr > 8)) badDir.push(`${nm}=${dr}`);
+    else if (dr != null && direct[rec.name]) {
+      const v = +(dr / 100).toFixed(6);
+      if (direct[rec.name].expense !== v) { direct[rec.name].expense = v; expDir++; } else expDirUnchanged++;
     }
   }
   const covered = master.filter(r => ['Mutual Fund', 'Index Fund', 'ETF'].includes(r.product_class));
   const withExp = covered.filter(r => r.expense != null).length;
   console.log(`  MASTER.expense updated      : ${expReg}  (unchanged ${expUnchanged})`);
-  console.log(`  DIRECT_PERF.expense updated : ${expDir}`);
+  console.log(`  DIRECT_PERF.expense updated : ${expDir}  (unchanged ${expDirUnchanged})`);
   console.log(`  MF/Index/ETF carrying expense: ${withExp} / ${covered.length}`);
-  if (badExp.length) console.log(`  ! rejected out-of-range (>4%): ${badExp.length} — ${badExp.slice(0, 4).join(', ')}`);
+  if (badExp.length) console.log(`  ! rejected out-of-range (outside 0-8%): ${badExp.length} — ${badExp.slice(0, 4).join(', ')}`);
+  if (badDir.length) console.log(`  ! Direct Plan Ratio rejected (outside 0-8%): ${badDir.length} — ${badDir.slice(0, 4).join(', ')}`);
 }
 
 if (EXIT) {
   const rows = readRows(EXIT);
   console.log(`\nexit-load rows: ${rows.length}`);
-  const RCOL = Object.keys(rows[0]).find(k => /remark/i.test(k)) || 'Remark';
+  const RCOL = Object.keys(rows[0] || {}).find(k => /remark/i.test(k)) || 'Remark';
   for (const r of rows) {
     const nm = tidy(r['Scheme Name']);
     const rec = byName.get(nm);
@@ -116,41 +123,31 @@ if (EXIT) {
 
 // ---- gates ----
 let fail = false;
-const exps = master.map(r => r.expense).filter(v => v != null);
+let lo = Infinity, top = -Infinity;
+for (const r of master) if (r.expense != null) { if (r.expense < lo) lo = r.expense; if (r.expense > top) top = r.expense; }
 const hi = master.filter(r => r.expense > 0.04).map(r => `${r.name}=${(r.expense * 100).toFixed(2)}%`);
-console.log(`\nGATE expense range: ${Math.min(...exps)} .. ${Math.max(...exps)} (decimals)`);
-if (Math.max(...exps) > 0.08) { console.log('  *** FAIL: an expense above 8% — likely a unit error'); fail = true; }
+console.log(`\nGATE expense range: ${lo} .. ${top} (decimals)`);
+if (top > 0.08) { console.log('  *** FAIL: an expense above 8% — likely a unit error'); fail = true; }
 else console.log(`  above 4% (SIF / long-short, expected): ${hi.length}${hi.length ? ' — ' + hi.slice(0, 3).join(', ') : ''}`);
 const names = master.map(r => r.name);
 const dupes = names.filter((n, i) => names.indexOf(n) !== i);
 console.log(`GATE duplicate names: ${dupes.length ? '*** FAIL' : 'PASS (0)'}`);
 if (dupes.length) fail = true;
-console.log(`GATE MASTER count unchanged: ${master.length === mB.value.length ? 'PASS' : '*** FAIL'}`);
+const countOk = master.length === MASTER_COUNT_BEFORE;
+console.log(`GATE MASTER count unchanged: ${countOk ? 'PASS' : `*** FAIL (${MASTER_COUNT_BEFORE} -> ${master.length})`}`);
+if (!countOk) fail = true;
 console.log(`GATE source rows joined to MASTER: ${joined ? 'PASS (' + joined + ')' : '*** FAIL (0) — header or naming changed'}`);
 if (!joined) fail = true;
-const sample = master.find(r => r.name === 'Aditya Birla SL Large Cap Fund-Reg(G)');
-console.log(`SAMPLE ${sample.name}: expense=${sample.expense} exit_load="${sample.exit_load}" | Direct expense=${(direct[sample.name] || {}).expense}`);
+const SAMPLE = 'Aditya Birla SL Large Cap Fund-Reg(G)';
+const sample = master.find(r => r.name === SAMPLE);
+if (sample) console.log(`SAMPLE ${sample.name}: expense=${sample.expense} exit_load="${sample.exit_load}" | Direct expense=${(direct[sample.name] || {}).expense}`);
+else console.log(`SAMPLE skipped: ${SAMPLE} is not in MASTER`);
 
+if (fail) { console.error(`\n*** gate failed — ${APPLY ? 'refusing to write' : 'dry run; --apply would refuse'}`); process.exit(1); }
 if (!APPLY) { console.log('\n[dry run] pass --apply to write index.html'); process.exit(0); }
-if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
-// splice DIRECT_PERF first (it sits earlier in the file than MASTER, so do the later one first)
-let out = html;
-const order = [mB, dB].sort((a, b) => b.s - a.s);
-const vals = new Map([[mB, master], [dB, direct]]);
-for (const b of order) out = out.slice(0, b.s) + JSON.stringify(vals.get(b)) + out.slice(b.e + 1);
-if (!out.trimEnd().endsWith('</html>')) { console.error('*** does not end with </html>'); process.exit(1); }
-fs.writeFileSync(HTML, out, 'utf8');
-console.log(`\nWROTE ${HTML} — ${out.length} bytes (was ${html.length})`);
-
-function matchEnd(str, start) {
-  const open = str[start], close = open === '{' ? '}' : ']';
-  let depth = 0, inStr = false, esc = false;
-  for (let k = start; k < str.length; k++) {
-    const ch = str[k];
-    if (inStr) { if (esc) esc = false; else if (ch === '\\') esc = true; else if (ch === '"') inStr = false; continue; }
-    if (ch === '"') { inStr = true; continue; }
-    if (ch === open) depth++;
-    else if (ch === close) { depth--; if (depth === 0) return k; }
-  }
-  throw new Error('unbalanced');
-}
+// Both blocks in one splice and one atomic write (blocklib splices from the end of the file backwards).
+const size = B.writeBlocks(HTML, [
+  { prefix: 'window.MASTER = ', value: master },
+  { prefix: 'window.DIRECT_PERF = ', value: direct },
+]);
+console.log(`\nWROTE ${HTML} — ${size} bytes (was ${html.length})`);
