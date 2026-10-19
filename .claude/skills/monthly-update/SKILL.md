@@ -41,8 +41,12 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    `merge_sif_monitor.js` requires `--as-on`. PMS-alias, Reckoner and AIF pins live only in
    `tools/data/pins.json`; the PMS/AIF look-through pins are still the `PIN` map in
    `merge_pms_aif_analytics.js` (D75).
+   Read the bake's `refresh-only rows not merged` list every month (C19, D80): a new fund on one of
+   the four refresh-only Monitor sheets is added to MASTER by hand with the owner, never by the bake
+   and never by moving the sheet into `SHEET_MAP`.
    **Stop and ask the owner** (never guess) on: ambiguous or suspicious scheme renames (including the
-   8 renames pending since Sep-2026, `docs/PROJECT_STATE.md`), any `*** AMBIGUOUS`, PMS pin failures,
+   8 renames pending since Sep-2026, `docs/PROJECT_STATE.md`), a new fund in that not-merged list, a
+   `WARN expected Monitor sheet …` line, any `*** AMBIGUOUS`, PMS pin failures,
    a failed Reckoner drop gate or a DROPPED fund that matches a NO-MASTER-MATCH name in another
    category (the gate pairs within one), a universe change (step 14a), 0 joins, a wholly empty return
    column, any FAIL gate, or a count that moves for no reason you can explain. Never add an override

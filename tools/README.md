@@ -2,7 +2,8 @@
 
 Every tool that changes or checks the dashboard data: what it reads, what it writes, what to read
 before you let it write, and the exact command. Checked against the code in `tools/` on 19-Oct-2026
-(`main` `1e48781`, after the tool fixes of PRs #3–#15).
+(`main` `1e48781`, after the tool fixes of PRs #3–#15); `bake_month.js`, `rename_schemes.js` and the
+tests re-checked the same day with the C19 parser change (refresh-only Monitor sheets, D80).
 
 - The full monthly procedure, with the checks around the tools: `docs/MONTHLY_UPDATE_PROCESS.md`.
 - What each input file looks like: `docs/INPUT_FILES.md`.
@@ -99,7 +100,8 @@ before you let it write, and the exact command. Checked against the code in `too
     folder and pass `--html <scratch>/index.html`. The tools find the siblings beside it. Three
     tools take a different flag: `merge_sif_monitor.js` (`--sibling`), `update_market_slides.js`
     (`--js`) and `update_closing_slides.js` (`--sibling`). To compare a tool change old against
-    new on whole chains, use `npm run rehearse` (`docs/TESTING.md` §2).
+    new on whole chains, use `npm run rehearse` (`docs/TESTING.md` §2). It cannot compare a change
+    to page code: both sides start from the new `site/` (`docs/KNOWN_ISSUES.md` A27).
 
 ---
 
@@ -228,8 +230,8 @@ writing `site/index.html` writes only the blocks named.
 
 | Tool | Reads | Writes (only with `--apply`) | Gates to read in the dry run | CLI |
 |---|---|---|---|---|
-| `rename_schemes.js` | The Regular Daily MF Monitor: every sheet that has `Scheme Name` in column A (dates read with `isoDay`). Also MASTER, the six name-keyed stores, and `var IRR` in `site/Centricity_IRR_Offshore.js`. | Only the blocks that change, in one `writeFilesAtomic` call: MASTER (`name`, `prev_name`, `prev_names`), EQUITY/HYBRID/DEBT_ANALYTICS, DIRECT_PERF, RISK_MATRIX, CENTRICITY_SELECT, and `var IRR` in `Centricity_IRR_Offshore.js`. Nothing new: nothing written. | Every `old -> new [… · how]` line: check each `inception` and `category` pairing (inception must match on the exact day). The `*** AMBIGUOUS — not renamed` list. `new to MASTER`, where a jump means renames were missed. `stale old-name keys dropped`. Gates (exit 1): unique from/to, no collision, no duplicate names, every name-keyed store readable. | `node tools/rename_schemes.js --monitor "<Regular monitor>.xlsx" [--html <p>] [--apply]` |
-| `bake_month.js` | In `--dir`: exactly one Regular monitor (`Daily MF monitor…`, not `_Direct`) and one `Daily MF Monitor_Direct…`. In `--dir/Analytics/`: one each of `Equity Analytics_…`, `Hybrid Analytics_…`, `Debt Analytics_…` (a duplicate or a missing file exits 2). It parses them with the page's own `REFRESH` parsers; DIRECT_PERF comes from `tools/lib/direct_perf.js`. | `site/index.html`: MASTER, EQUITY/HYBRID/DEBT_ANALYTICS, MF_BENCHMARK_PERF, DIRECT_PERF (replaced in full), `DATA_DATES.performance` and `.analytics`. | The five `<- file` lines. `NEW funds added to MASTER`: about 200 means step 1 was skipped. The STALE list: these funds keep last month's holdings. DIRECT_PERF matched/unmatched. Gates (exit 1): sandbox inline blocks, duplicate names, no block shrank, DIRECT_PERF within 95% of the current block. | `node tools/bake_month.js --dir "<month folder>" --as-on "<label>" [--as-on-analytics "<label>"] [--html <p>] [--apply]` |
+| `rename_schemes.js` | The Regular Daily MF Monitor: every sheet that has `Scheme Name` in column A (dates read with `isoDay`). Also MASTER, the six name-keyed stores, and `var IRR` in `site/Centricity_IRR_Offshore.js`. | Only the blocks that change, in one `writeFilesAtomic` call: MASTER (`name`, `prev_name`, `prev_names`), EQUITY/HYBRID/DEBT_ANALYTICS, DIRECT_PERF, RISK_MATRIX, CENTRICITY_SELECT, and `var IRR` in `Centricity_IRR_Offshore.js`. Nothing new: nothing written. | Every `old -> new [… · how]` line: check each `inception` and `category` pairing (inception must match on the exact day). The `*** AMBIGUOUS — not renamed` list. `new to MASTER`, where a jump means renames were missed. It counts every Monitor row not in MASTER and not renamed, including rows the bake never adds: rows on the four refresh-only sheets (C19, D80) and segregated / unclaimed rows the parser filters out (Sep-2026 Monitor against today's MASTER: 14 = 5 + 9; the bake adds none). `stale old-name keys dropped`. Gates (exit 1): unique from/to, no collision, no duplicate names, every name-keyed store readable. | `node tools/rename_schemes.js --monitor "<Regular monitor>.xlsx" [--html <p>] [--apply]` |
+| `bake_month.js` | In `--dir`: exactly one Regular monitor (`Daily MF monitor…`, not `_Direct`) and one `Daily MF Monitor_Direct…`. In `--dir/Analytics/`: one each of `Equity Analytics_…`, `Hybrid Analytics_…`, `Debt Analytics_…` (a duplicate or a missing file exits 2). It parses them with the page's own `REFRESH` parsers; DIRECT_PERF comes from `tools/lib/direct_perf.js`. | `site/index.html`: MASTER, EQUITY/HYBRID/DEBT_ANALYTICS, MF_BENCHMARK_PERF, DIRECT_PERF (replaced in full), `DATA_DATES.performance` and `.analytics`. | The five `<- file` lines. `NEW funds added to MASTER`: about 200 means step 1 was skipped. The STALE list: these funds keep last month's holdings. `refresh-only rows not merged` (Sep-2026: 19): each is a pending rename, a new fund (added by hand with the owner, never by the bake) or a fund also on a mapped sheet (§6). Any `WARN expected Monitor sheet missing or with no fund rows`. `CHECK MASTER MF/ETF funds on no sheet of this Monitor` (report only; Sep-2026: 42). DIRECT_PERF matched/unmatched. Gates (exit 1): sandbox inline blocks, duplicate names, no block shrank, DIRECT_PERF within 95% of the current block, fund rows on unrecognised Monitor sheets (also FAILs when `index.html` predates the C19 fix). | `node tools/bake_month.js --dir "<month folder>" --as-on "<label>" [--as-on-analytics "<label>"] [--html <p>] [--apply]` |
 | `fill_variant_analytics.js` | The three `Analytics/` workbooks (exactly one each, else exit 2), through `REFRESH.parseAnalytics`, and MASTER's Equity/Hybrid/Debt Mutual Fund, Index Fund and ETF records. | EQUITY/HYBRID/DEBT_ANALYTICS. It adds missing names **and replaces** last month's entries. | `eligible · covered by name · missing` per class. Each `name <- sibling` pair must be the same scheme. `ambiguous … not filled` (equally ranked siblings: resolve by hand). `still no entry anywhere`. Gate (exit 1): sandbox inline blocks. | `node tools/fill_variant_analytics.js --dir "<month folder>" [--html <p>] [--apply]` |
 | `rekey_sif_analytics.js` | The three analytics stores. MASTER after the June, IRR and SIF siblings have run in a vm (for the `sif_raw` join key); the siblings' warnings and errors are shown. | The three analytics stores, with SIF keys moved from `sif_raw` to the MASTER name. | The `re-keyed` list. `no analytics anywhere … chase upstream`. Gates (exit 1): siblings ran without a console error; store sizes (a store never loses a fund; lost keys are listed), which `--allow-shrink` overrides after you check the fund changed class; no workbook-named SIF keys left behind. | `node tools/rekey_sif_analytics.js [--html <p>] [--allow-shrink] [--apply]` |
 | `merge_de_universe.js` | `Analytics/Listed Direct Equity_<Month>.xlsx`, about 5,300 rows: first sheet. The header row is found by its exact column names (`Company Name`, `CD_Sector`, `SC_Latest Market Cap`, `Mcap Allocation`) in the first 30 rows; a repeated column exits 1. | MASTER Direct Equity: `sub_category` (= sector), `mktcap`, `sebi_mcap`. It appends new listings. | `! new listings that are a renamed record's prev_name` (check before `--apply`). Reconcile `in MASTER but not in this month's file` against `new listings`. Gates (exit 1): `top-10 … Large Cap`, duplicate names. | `node tools/merge_de_universe.js "<Analytics/Listed Direct Equity_<Month>.xlsx>" [--html <p>] [--apply]` |
@@ -283,7 +285,7 @@ Some inputs have no tool and are edited by hand, each through a PR:
 |---|---|---|---|---|
 | `verify_page.js` | `<dir>/index.html` (default `site/`) and the five local `<script src>` siblings, in document order, in a vm. It skips the CDN scripts. | Nothing. | Rule 6 in §1. Exit 1 on a hard failure. | `node tools/verify_page.js site` or `npm run verify` |
 | `.claude/serve.js` (not in `tools/`) | `site/` only, on 127.0.0.1 only. | Nothing. | The browser checks in `docs/TESTING.md`. | `npm run serve` (http://127.0.0.1:8080/) |
-| `tools/test/run.js` | Every `tools/test/*.test.js` (today `blocklib.test.js`, 28 checks; `dates.test.js`, 10). | Nothing. | `PASS`/`FAIL` per file; exit 1 if any fails. CI runs it after `npm ci`. | `npm test` |
+| `tools/test/run.js` | Every `tools/test/*.test.js` (today `blocklib.test.js`, 28 checks; `dates.test.js`, 10; `parser_refresh_only.test.js`, 18, on the page's own `REFRESH` block with synthetic workbooks). | Nothing. | `PASS`/`FAIL` per file; exit 1 if any fails. CI runs it after `npm ci`. | `npm test` |
 | `tools/dev/rehearse.js` | `tools/dev/rehearsal_cases.js` (12 cases), the inputs in `monthly-updates/`, and two tool trees. | Disposable copies of `site/` in the OS temp folder, plus `report.json`. Never the real `site/`. | Old-versus-new differences, block by block (see `docs/TESTING.md` §2). | `npm run rehearse -- --old <old repo root> [--new <root>] [--case a,b] [--list] [--keep]` |
 
 ### Libraries (`tools/lib/`) and data (`tools/data/`)
@@ -487,6 +489,8 @@ Only what an operator must know before running each tool. Line references are to
   per run, most of them re-created by the bake under old workbook names. Harmless.
 - The 8 renames it finds in the Sep-2026 Monitor are not applied and wait for the owner
   (`docs/PROJECT_STATE.md`).
+- The four refresh-only Monitor sheets are left out of `SHEET_SUB` on purpose (`:50-52`): they mix
+  classes, and giving them a sub-category lets tier 3 invent a rename. Do not add them.
 - The NUL key separator is now the `'\u0000'` escape; `.gitattributes` still forces textual diffs
   for the file, which does no harm.
 
@@ -497,6 +501,25 @@ Only what an operator must know before running each tool. Line references are to
   from this month's analytics keep last month's holdings; they are listed as STALE.
 - It also rewrites expense ratios and exit loads from the Monitor; step 7 restores them in the same
   run.
+- Four Monitor sheets are **refresh-only** (`REFRESH_ONLY_SHEETS` in `site/index.html`; C19, D80):
+  `Debt Oriented34`, `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens ` and `Hybrid`.
+  Their rows refresh existing records by exact name and never create one or change a class. Read
+  `refresh-only rows not merged`:
+  - `(not in MASTER)` is a pending rename (it refreshes once the rename is applied) or a new fund.
+    A new fund is added to MASTER by hand with the owner, with a class the owner confirms; never
+    by moving the sheet into `SHEET_MAP`.
+  - `(listed on a mapped sheet)` is expected: the mapped sheet's figures win.
+- `GATE fund rows on unrecognised Monitor sheets` FAILs when the desk adds or renames a fund sheet,
+  or when the `index.html` predates the C19 fix. Classify the sheet in `SHEET_MAP` or
+  `REFRESH_ONLY_SHEETS` in `site/index.html` (a reviewed code change, D80); there is no override.
+  A `WARN expected Monitor sheet missing or with no fund rows` is the reverse case: an expected
+  sheet was renamed or lost its header; check the Monitor before applying.
+- `CHECK MASTER MF/ETF funds on no sheet of this Monitor` is report only. It includes records whose
+  Monitor rows the parser filters (segregated / unclaimed plans) and funds absent from the Monitor
+  (Sep-2026: 42, with 11 Debt ETFs, 7 of them matured); they keep their figures. A jump from last
+  month means a block of funds was missed.
+- A blank Monitor cell never overwrites a stored value, so a return period or debt statistic the
+  Monitor leaves blank keeps an older value (C19, C20).
 
 **fill_variant_analytics.js**
 - It replaces existing entries (last month's holdings) for funds the workbook does not cover by

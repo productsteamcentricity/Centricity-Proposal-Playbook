@@ -47,6 +47,9 @@ if (!MON || !fs.existsSync(MON)) {
 
 // ---------- the monitor's own taxonomy, mirrored from index.html's SHEET_MAP ----------
 // Only the sub-category is needed here (the tie-break), so this is the third element alone.
+// The page's four REFRESH_ONLY_SHEETS (Debt Oriented34, the two Solution Oriented sheets, Hybrid) are
+// left out ON PURPOSE: they mix classes, and giving them a sub-category switches on the tier-3 pairing
+// below, which then invents a rename (SBI CPSE Bond Plus SDL Sep 2026 -> SBI CRISIL-IBX SDL June 2034).
 const SHEET_SUB = {
   'Large Cap Fund': 'Large Cap', 'Large & Mid Cap': 'Large & Mid Cap', 'Flexi Cap Fund': 'Flexi Cap',
   'Multi Cap Fund': 'Multi Cap', 'Focused Fund': 'Focused', 'Mid Cap Fund': 'Mid Cap',

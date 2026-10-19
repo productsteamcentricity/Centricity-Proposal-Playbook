@@ -86,7 +86,9 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 
 ## Headline state (update after every refresh; full detail in `docs/PROJECT_STATE.md`)
 
-Data as on **30-Sep-2026** (performance, analytics, SIF, risk matrix); PMS/AIF performance and
+Data as on **30-Sep-2026** (performance, analytics, SIF, risk matrix), except 215 MF/ETF funds on
+four Monitor sheets the parser skipped until 19-Oct-2026, still at 30-Jun-2026 until the September
+re-run is published (KNOWN_ISSUES C19/C20); PMS/AIF performance and
 Centricity Select **31-Aug-2026**; PMS/AIF look-through 31-Jul-2026; fund managers = the 30-Sep
 Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,682 ·
 Centricity Select 178 (178 in MASTER) · PMS 692 / AIF 12 / benchmarks 4 · RISK_MATRIX 1,088 ·

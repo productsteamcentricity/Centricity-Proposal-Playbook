@@ -36,7 +36,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 
 1. Ask the desk for the missing inputs: the PMS performance file (B1), the October Reckoner deck
    (B2), the final issue of the market deck (B3), analytics workbooks that include SIFs (B4), Fund
-   Manager Data (B5, C15) and PMS & AIF Analytics (B6).
+   Manager Data (B5, C15) and PMS & AIF Analytics (B6); and why four unmatured Debt ETFs are absent
+   from the Sep-2026 Monitor (C19).
 2. **Owner decision before the next MF cycle's rename `--apply`:** with dates now read correctly
    (A6), `rename_schemes.js` finds 8 renames in the Sep-2026 (and Aug-2026) Monitor that it used to
    miss: HDFC Retirement Savings Fund-Hybrid-Debt Plan → HDFC Retirement Fund-Hybrid-Debt Plan; four
@@ -44,11 +45,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    Allocation Passive FoF-Aggressive → Motilal Oswal Multi Asset Passive FoF. All 8 match on the exact
    inception date. The Motilal one looks suspicious (MASTER files it as Equity ETF, the Monitor lists
    it on its Hybrid sheet, and the name changes more than a rename usually does): confirm it with the
-   owner. None is applied yet. The new names sit on two Monitor sheets the page parser does not map
-   (`Solution Oriented,ETFs,FOFs` and `Hybrid`; `docs/INPUT_FILES.md`), so the bake refreshes these 8
-   records under neither name: they carry older figures, not September's, and applying the renames
-   changes their names (and store keys), not their figures (C19 is the figures problem). The list is
-   also in `docs/update-log/2026-09_Sep-2026.md` (Run 2, corrected 19-Oct-2026).
+   owner. None is applied yet. The new names sit on two of the four refresh-only Monitor sheets
+   (`Solution Oriented,ETFs,FOFs` and `Hybrid`; C19, D80), so the bake lists these 8 rows as `not in
+   MASTER` and leaves the old-name records with older figures. With the C19 parser fix, once a rename
+   is approved and applied, the next bake refreshes that record by exact name (its class stays as
+   MASTER has it: the refresh-only path never changes taxonomy). The list is also in
+   `docs/update-log/2026-09_Sep-2026.md` (Run 2, corrected 19-Oct-2026).
 3. A dry run that **exits 1 failed a gate**: stop and read the `GATE` lines. Exit 2 is a usage or
    input error (unknown flag, extra argument, bad `--as-on`, a duplicate input file, or a missing
    source in most tools); every tool except `verify_page.js` refuses an unknown flag or an extra
@@ -70,6 +72,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    after the owner has read the DROPPED list. PMS alias and Reckoner pins are edited in
    `tools/data/pins.json` only, with the owner (A18). Decide the Mosaic and Motilal GIFT City items
    with the desk (C4, C5).
+8. **Owner decision C20 before the C19 data re-run is published.** The C19 parser fix (code,
+   19-Oct-2026, this change) lets the bake refresh the 215 stale funds; the September re-run with it
+   is prepared but **not published**. It waits for the owner to decide how to treat returns quoted
+   for periods longer than a fund has existed, and values kept from blank Monitor cells (C20, C19).
+   Until then the live page still shows those funds' 30-Jun-2026 figures.
+9. The bake (step 2) has new lines to read every month (C19, D80): `refresh-only rows not merged`,
+   `WARN expected Monitor sheet missing or with no fund rows`, `CHECK MASTER MF/ETF funds on no sheet
+   of this Monitor` (Sep-2026: 19 rows, no WARN, 42), and a FAIL gate for fund rows on unrecognised
+   sheets. A new fund on a refresh-only sheet is added to MASTER by hand with the owner, never by the
+   bake. What to do with each line: `tools/README.md` §6.
 
 ## Summary
 
@@ -101,6 +113,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A24 | Shared libraries: latent parsing hazards | `tools/lib` | P2 | Partly fixed 16-Oct-2026 (PR #3) | — | `tools/lib/reck_parse.js:45-47`; `tools/lib/pptx.js:8-24` |
 | A25 | Invisible characters that must survive any edit | Tools | P2 | Partly fixed 19-Oct-2026 (PRs #7, #9–#11, #15) | — | `.gitattributes` |
 | A26 | One-off tools are not safe to re-run blindly | Tools | P3 | Closed 19-Oct-2026 (PR #11) | — | `tools/split_sif_add_mld.js`, `fold_duplicate_names.js`, `fold_index_funds.js` |
+| A27 | Rehearsal harness cannot compare page-code changes | Tools: rehearsal | P3 | Open | — | `tools/dev/rehearse.js:9`, `:21`, `:38-39` |
 | B1 | No PMS performance file transferred; PMS at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
 | B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-07_Jul-2026/` |
 | B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-09_Sep-2026/` |
@@ -123,10 +136,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C13 | Cosmetic UI inconsistencies kept for parity | UI | P3 | Closed 19-Oct-2026 (PR #12), frozen-pane classes kept | — | `site/index.html` Master Editor heading; tab `num` 6.1–6.9 |
 | C14 | Shared links drop funds renamed since the link was made | UI | P2 | Closed 19-Oct-2026 (PR #12) | — | `hashPick` in `site/index.html` |
 | C15 | Fund-manager roster overwritten by the Sep bake | Data | P2 | Open (desk) | **Affects** | MASTER `fund_mgr`; `tools/merge_fund_managers.js` |
-| C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: inception differs by 364 days | Data | P3 | Open (desk) | — | MASTER `inception`; Sep-2026 Monitor |
-| C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Open | — | `site/index.html:4968` |
-| C18 | Select popover ratios are never marked unreliable | UI | P3 | Open | — | `CentricitySelectPopover`, `site/index.html:5322-5338` |
-| C19 | 225 funds on four unmapped Monitor sheets show 30-Jun-2026 performance | Data | P1 | Open (fix in progress) | **Affects** | `SHEET_MAP`, `site/index.html:3162-3209`, `:3350` |
+| C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided with C20) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
+| C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Open | — | `site/index.html:5029` |
+| C18 | Select popover ratios are never marked unreliable | UI | P3 | Open | — | `CentricitySelectPopover`, `site/index.html:5383-5399` |
+| C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Code fixed 19-Oct-2026 (this change; PR to follow); Sep re-run prepared, awaiting the owner's C20 decision | **Affects** | `REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`, `:3397-3403`; `tools/bake_month.js:152-169`, `:212-220` |
+| C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision) | **Blocks** publishing the C19 re-run | MASTER returns; non-null merge `site/index.html:3414-3415` |
+| C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -841,6 +856,19 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - All three are already applied and are no-ops today. Run them only for the problem they fix
   (`docs/OPERATING_MANUAL.md` → Traps), dry run first.
 
+### A27. Rehearsal harness cannot compare page-code changes
+**P3 · Open · —**
+
+- **What and evidence:** `tools/dev/rehearse.js` seeds both the old and the new side from
+  `<new root>/site` (`:9`, `:21`, `:38-39`). `bake_month.js` and the other vm tools run the parsers
+  of the `index.html` they are given, so both sides run the **new** page parser, and a change to
+  page code (such as the C19 parser fix) shows as `IDENTICAL`.
+- **Impact:** a page-parser change cannot be proven behaviour-preserving with `npm run rehearse`.
+  The C19 change was checked by hand instead: the September chain run on two scratch copies, one
+  with `main`'s `index.html` (C19, *Verification*).
+- **Suggested fix:** an `--old-site <dir>` option that seeds the old side from the old checkout's
+  `site/`.
+
 ---
 
 ## B. Monthly-cycle gaps at handover
@@ -1077,23 +1105,33 @@ rule (checked 16-Oct-2026).
   named first.
 - **Fix:** In the next MF cycle, run `merge_fund_managers.js` after the bake (process step 9). It
   needs Fund Manager Data as on the same month-end (B5).
+- **Widened by the C19 fix (19-Oct-2026):** the bake now also writes `fund_mgr` for the 215 funds on
+  the refresh-only sheets. In the prepared September re-run 130 change: 120 shorten a roster to one
+  name already on it (in 37 of them not the first-listed name), and 10 name a different person. For
+  those 10 the Aug-2026 Fund Manager Data shows the previous managers' tenures ending 31-Jul or
+  31-Aug-2026 (e.g. Aditya Birla SL Aggressive Hybrid Omni FOF: Vinod Narayan Bhat → Kartikeya
+  Singh), so they are real updates. Step 9 still restores the full teams.
 
-### C16. JioBlackRock Nifty 8-13 yr G-Sec Index Fund: inception differs by 364 days
-**P3 · Open (desk) · —**
+### C16. JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception
+**P3 · Open (decided with C20) · —**
 
-After the A6 correction (PR #13), MASTER gives `JioBlackRock Nifty 8-13 yr G-Sec Index Fund-Reg(G)`
-an inception of 2025-08-18, while the 30-Sep-2026 Monitor says 2026-08-17 (checked 19-Oct-2026). It
-is one of only two Sep Monitor rows in MASTER whose inception differs (2,070 of 2,072 agree; the
-other is the A6 "Mutual Funds" leftover). A year apart is a source conflict, not a parsing error,
-and the Monitor's date is probably the Regular plan's launch, as for JioBlackRock's other schemes
-(the tier-3 note in `docs/OPERATING_MANUAL.md`) [inference]. With a 364-day gap,
-`rename_schemes.js` cannot match this fund by inception (nor could it with the one-day allowance that
-PR #14 removed). Ask the desk which date is right; change MASTER only through a tool or a reviewed PR.
+- **Corrected 19-Oct-2026 (financial-data review): not a source conflict.** MASTER gives
+  `JioBlackRock Nifty 8-13 yr G-Sec Index Fund-Reg(G)` an inception of 2025-08-18; the 30-Sep-2026
+  Monitor says 2026-08-17. The May–Jul-2026 Monitors list only the fund's `(G)-Direct Plan` row
+  (inception 2025-08-18); from Aug-2026 they list the `-Reg(G)` row (inception 2026-08-17). The
+  MASTER record was renamed from the Direct-plan name (its `prev_name`), so the Monitor's 2026-08-17
+  is right for the Regular record and MASTER's date is the Direct plan's launch. It is one of two Sep
+  Monitor rows in MASTER whose inception differs (2,070 of 2,072 agree; the other is the A6 "Mutual
+  Funds" leftover). It sits on `Debt Oriented34`, so no bake refreshed it (C19).
+- **After the C19 re-run:** the record gets the Regular inception, r1m and since-inception (−12.77%
+  over 44 days), but keeps r3m 3.476% and r6m 2.4055%: the Direct plan's June figures from before
+  the Regular plan existed, kept because a blank Monitor cell never overwrites a value. Clearing or
+  labelling them is the C20 decision. `rename_schemes.js` has nothing to rename here.
 
 ### C17. Risk-flag footnote overlaps a long Portfolio Matrix slide
 **P3 · Open · —**
 
-The C3 footnote on the Portfolio Matrix slide is placed at y 6.72 (`site/index.html:4968`). With
+The C3 footnote on the Portfolio Matrix slide is placed at y 6.72 (`site/index.html:5029`). With
 about 22 or more selected funds the matrix table reaches that height and the footnote overlaps it
 (QA, 19-Oct-2026; without a flagged fund the slide is unchanged). Suggested fix: move the footnote
 below the table's computed height, or shrink the table font when a flagged fund is present.
@@ -1102,34 +1140,112 @@ below the table's computed height, or shrink the table font when a flagged fund 
 **P3 · Open · —**
 
 The Centricity Select popover shows Sharpe, Sortino, Beta, Std Dev and Alpha from the
-`CENTRICITY_SELECT` entry (`CentricitySelectPopover`, `site/index.html:5322-5338`), not from
+`CENTRICITY_SELECT` entry (`CentricitySelectPopover`, `site/index.html:5383-5399`), not from
 RISK_MATRIX, and it has no dagger: a fund flagged under C3 shows plain numbers there (QA,
 19-Oct-2026). Suggested fix: look the fund up in RISK_MATRIX and add the same dagger and note when
 `H.riskFlagged` is true.
 
-### C19. 225 funds on four unmapped Monitor sheets show 30-Jun-2026 performance
-**P1 · Open (fix in progress) · Affects every MF cycle**
+### C19. 215 funds on four unmapped Monitor sheets carry pre-September performance
+**P1 · Code fixed 19-Oct-2026 (this change; PR to follow); September re-run prepared, awaiting the
+owner's C20 decision · Affects every MF cycle**
 
-- **What:** The Regular MF Monitor has four fund sheets that the page parser's `SHEET_MAP`
-  (`site/index.html:3162-3209`) does not list: `Debt Oriented34` (97 funds), `Solution
+- **Fixed (code, this change; D80):** `parseMfMonitor` treats the four sheets as **refresh-only**
+  (`REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`; row rule `:3397-3403`). A row there refreshes
+  an existing MASTER record by exact name, with the same fields as a mapped sheet, and never creates
+  a record or changes `asset_class`, `product_class`, `sub_category`, `name`, `prev_name` or the IRR
+  bands. A name also on a mapped sheet keeps the mapped sheet's figures, whatever the sheet order
+  (pre-pass `:3304-3329`); between refresh-only sheets the last row wins. Rows not in MASTER or on a
+  mapped sheet come back in `skipped` with a reason. `Debt Oriented34` is read debt-style (`:3215`:
+  YTM, maturity, duration; no m-cap split). The parser also returns `unclassified`, `emptySheets`,
+  `sheetRows` and `monitorNames` (`:3464-3480`), and its message adds `· N rows not merged` and
+  `· N rows on unrecognised sheets`. `bake_month.js` prints the not-merged list (`:152-158`), a WARN
+  per missing or empty expected sheet (`:159-160`) and a CHECK of MASTER MF/ETF funds on no sheet
+  (`:161-169`), and FAILs on any fund row on an unrecognised sheet, or on a page without this fix
+  (`:212-220`). The Section-7 upload uses the same parser. **Not live yet:** the page still shows the
+  data described under *Impact* until the September re-run is published.
+- **Verification (19-Oct-2026):**
+  - `npm test`: `tools/test/parser_refresh_only.test.js`, 18 synthetic checks; it fails on `main`'s
+    parser.
+  - Byte control on scratch copies, September chain (bake → `fill_variant_analytics` →
+    `rekey_sif_analytics` → `merge_expense_exitload`): `main`'s chain reproduces the live site byte for
+    byte, every block and sibling; the fixed chain changes exactly 215 MASTER records (same order,
+    7,672 records), and every other block, `DATA_DATES` and all five siblings are identical.
+  - Fields changed: aum / mtd / r1m / si 215 · r3m 214 · r6m 208 · r1y 198 (records carrying r1y
+    6,339 → 6,348) · r2y 168 · r3y 158 · r5y 80 · r10y 52 · fund_mgr 130 (C15) · ytm 87 ·
+    avg_maturity 87 · mod_duration 79 · mcap_large / mid / small 21 · mcap_other 105 · inception 2 ·
+    expense 1 (after step 7).
+  - The six Monitors dated 15-May to 30-Sep-2026 through the parser in a vm: only names on the four
+    sheets change; 0 taxonomy or IRR changes; 0 unclassified rows; 0 empty expected sheets. Rows not
+    merged per month: 7, 7, 8, 9, 15, 19.
+  - Sep not-merged list (19): 13 not in MASTER (8 pending renames, 5 new launches) and 6 also listed
+    on the mapped `Debt Oriented` sheet. Bake dry run: `GATE fund rows on unrecognised Monitor
+    sheets: PASS (0)`, no WARN, CHECK 42 (report only). `verify_page.js` counts unchanged; browser
+    load clean.
+- **What (the code before the fix):** the Regular MF Monitor has four fund sheets that `SHEET_MAP`
+  (`site/index.html:3162-3209`) does not list: `Debt Oriented34` (97 rows), `Solution
   Oriented,ETFs,FOFs` (87), `Solution Oriented - Childrens ` (12, trailing space) and `Hybrid` (50).
-  `parseMfMonitor` skips every row on them (`if (!map) continue;`), so `bake_month.js` never refreshes
-  those funds. `docs/INPUT_FILES.md` records that the rows "are not merged"; the consequence was not
-  measured until 19-Oct-2026.
-- **Impact (measured 19-Oct-2026 against the 30-Sep-2026 Monitor):** 233 of the 246 rows are MASTER
-  funds. **225 of them carry the 30-Jun-2026 Monitor's 1-month return**, 1 July's, 1 none, and only 6
-  September's. The control holds: on mapped sheets 1,880 of 1,906 MASTER funds equal September's
-  figure. MASTER classes: ETF / Debt ETF 97 (target-maturity index funds), Mutual Funds /
-  International 55, Mutual Fund / Hybrid Other 44, Mutual Fund / Solution Oriented 37. The page labels
-  all performance "30th September 2026", so these funds show three-month-old returns under a current
-  date in the app, the Excel and the deck. 13 rows on these sheets have no MASTER record.
+  `parseMfMonitor` skipped every row on them (`if (!map) continue;`, `main` `site/index.html:3350`),
+  so `bake_month.js` never refreshed those funds.
+- **Impact (measured 19-Oct-2026 against the 30-Sep-2026 Monitor, counts corrected by the
+  financial-data review):** the 246 rows are 234 distinct names. 221 are in MASTER; 6 of those are also
+  on the mapped `Debt Oriented` sheet and are refreshed there, so **215 funds are stale**: Debt ETF 95
+  (target-maturity index funds), International 51, Hybrid Other 44, Solution Oriented 25. 214 carry
+  the 30-Jun-2026 Monitor's values (one through its pre-rename Direct-plan row) and 1 July's (DSP
+  World Gold). The page labels all performance "30th September 2026", so these funds show
+  three-month-old returns under a current date in the app, the Excel and the deck. 13 names have no
+  MASTER record. (The first count, 225 of 233, counted rows, not funds.) Control: on mapped sheets
+  1,880 of 1,906 MASTER funds equal September's figure.
+- **Blank cells keep old values** (non-null merge, `:3414-3415`; mapped debt sheets already do this:
+  Sep-2026 kept 43 `mod_duration`, 13 `avg_maturity` and 1 `ytm`). After the re-run, 10
+  `mod_duration` values (7 Edelweiss and 3 Tata Debt ETFs), 2 `avg_maturity` values (DSP SDL Plus
+  G-Sec Jun 2028 and Sep 2027) and the C16 fund's r3m / r6m stay at pre-September values, and 7
+  records show `mod_duration` above `avg_maturity` (e.g. Tata Nifty G-Sec Dec 2026: Avg M 0.14, Mod D
+  0.44). They are not September figures; they are part of the C20 decision.
+- **Debt ETFs absent from the Sep Monitor** (in the bake's CHECK, kept as they are): 7 matured by
+  their name date (Jul / Sep 2026); 4 are absent though not matured: Baroda BNP Paribas NIFTY SDL
+  Dec 2026, Axis NBFC-HFC Jun 2027, Axis Fin Svcs Sep 2027, Bandhan 10:90 Gilt+SDL Dec 2029. Ask the
+  desk about the four.
 - **Why June:** the figures stopped moving after the 30-Jun-2026 data; from July the bakes ran the
   page's own parser through `bake_month.js` [inference from the dates; the earlier Python route is in
   the outgoing owner's export — `docs/handover/DATA_EXTRACTION_PROMPT.md`].
-- **Fix direction:** refresh the existing MASTER records on these sheets by exact name (performance,
-  AUM, expense and debt metrics as for any mapped sheet) without creating new records from them, so no
-  taxonomy is guessed; report the 13 unmatched rows. Then re-run the September chain (as Run 2). Needs
-  a financial-data review before it is published.
+- **Left to do:** publish the September re-run after the owner's C20 decision and record it in the
+  Sep-2026 update log as a new run; read the bake's new lines every month
+  (`docs/MONTHLY_UPDATE_PROCESS.md` B4).
+
+### C20. JioBlackRock Regular records show Direct-plan returns from before their launch
+**P1 · Open (owner decision) · Blocks publishing the C19 re-run**
+
+- **What:** 12 JioBlackRock `-Reg(G)` records on mapped sheets were renamed from Direct-plan names in
+  Aug-2026 (`prev_name` = the `(G)-Direct Plan` name). Their Regular plans launched in Aug-2026
+  (inception 2026-08-17 for 11 of them, 2026-08-27 for Short Duration), but they still carry the
+  Direct plan's r3m / r6m / r1y from before that launch, because a blank Monitor cell never overwrites
+  a value (non-null merge, `site/index.html:3414-3415`). Live today, e.g. JioBlackRock Liquid
+  Fund-Reg(G) r1y 6.458%, Overnight r1y 5.334%, Nifty Smallcap 250 r6m 13.969% (checked in the
+  embedded MASTER, 19-Oct-2026).
+- The bake also stores the Monitor's annualised since-inception return for funds about six weeks old
+  (JioBlackRock Large Cap si −45.35%).
+- The C16 G-Sec fund joins the same pattern with the C19 re-run, and the C19 blank-cell values (debt
+  stats kept from earlier months) raise the same question.
+- **Impact:** client-facing pages, the Excel and the deck quote a period return for a plan that did
+  not exist for that period, which conflicts with `CLAUDE.md` rule 6 (no fabricated data).
+- **Options for the owner:** clear every return period longer than the fund's life; or keep the
+  values, labelled. Decide before the C19 re-run is published.
+
+### C21. Taxonomy oddities on the Monitor's ETF and FoF sheets
+**P3 · Open · —**
+
+- `Mirae Asset Hang Seng TECH ETF` and `Nippon India ETF Hang Seng BeES` are filed in MASTER as Debt /
+  ETF / Debt ETF. Both are listed on the mapped `Debt Oriented` sheet (and on `Solution
+  Oriented,ETFs,FOFs`).
+- The mapped `Debt Oriented` sheet is really an FoF / ETF sheet, but `SHEET_MAP` files it as Debt /
+  ETF / Debt ETF (`site/index.html:3198`) and reads it debt-style (`:3211-3216`), so a new fund there
+  is created as a Debt ETF unless its name matches the international pattern (`INTL_RE`, `:3336`,
+  `:3409`).
+- 27 Hybrid Other / Solution Oriented records on the refresh-only sheets carry `ytm`,
+  `avg_maturity` and `mod_duration` (29 carry at least one) that no sheet refreshes, because those
+  sheets are not read debt-style. The values only age.
+- **Suggested fix:** reclassify the two ETFs and decide what to do with the 27 records' debt stats,
+  with the owner, through a reviewed data change.
 
 ---
 
