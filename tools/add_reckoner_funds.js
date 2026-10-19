@@ -2,24 +2,56 @@
 // not a refresh: merge_reckoner.js deliberately refuses to invent MASTER records, so anything it
 // reports under "DECK NAMES WITH NO MASTER MATCH" lands here.
 //
-//   node add_reckoner_funds.js "<Reckoner .pptx>" --pms "<PMS_Scheme_Performance.xlsx>" --html index.html [--apply]
+//   node tools/add_reckoner_funds.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--usd-inr 88] [--apply]
 //
 // Facts come from each product's own narrative slide; returns and ratios for the PMS entry come
-// from the PMS performance workbook. Expected IRR has no per-fund source anywhere in the pack, so
-// each band is taken from the fund's PEER CATEGORY in MASTER — asserted below and re-derived at
-// run time, so the run fails loudly if a peer group ever stops being unanimous.
+// from the PMS_PERFORMANCE block already baked into the page (run merge_pms_performance.js first).
+// Expected IRR has no per-fund source anywhere in the pack, so each band is taken from the fund's
+// PEER CATEGORY in MASTER — asserted below and re-derived at run time, so the run fails loudly if
+// a peer group ever stops being unanimous.
+//
+// Safety (KNOWN_ISSUES A20): the dry run exits 1 when any gate failed and --apply refuses on the
+// same condition. Before a hard-coded ADD slide number is used, that slide must name the fund
+// (its deckName or reckonerName), or the run refuses — a slide number copied from an older deck
+// would otherwise read another product's page. A GIFT City fund is (re)written to NEW_GIFT only
+// while THIS deck still lists it, and presence in NEW_GIFT is an exact name test. The page and
+// the June sibling are written together, after every gate passed. A fact-card AUM in USD mn is
+// converted at --usd-inr (default 88 INR per USD). --pms is accepted for old command lines but
+// ignored (deprecated).
 const fs = require('fs');
 const path = require('path');
 const B = require('./lib/blocklib');
 const N = require('./lib/reck_narrative');
 
+const USAGE = 'Usage: node tools/add_reckoner_funds.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--usd-inr 88] [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-const PMSX = flag('--pms');
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html' && argv[i - 1] !== '--pms');
-if (!SRC) { console.error('Usage: node add_reckoner_funds.js "<pptx>" --pms "<xlsx>" --html <p> [--apply]'); process.exit(2); }
+let APPLY = false, HTML = null, SRC = null, USDINR = 88, usdInrGiven = false;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--pms') {
+    // Deprecated (KNOWN_ISSUES A20/F2): it was parsed but never used. Still accepted, with its value
+    // if one follows, so old command lines keep working; never a usage error.
+    if (argv[i + 1] != null && !argv[i + 1].startsWith('--')) i++;
+    console.warn('note: --pms is deprecated and ignored — PMS figures come from the PMS_PERFORMANCE block in the page');
+  } else if (a === '--html' || a === '--usd-inr') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    if (a === '--html') HTML = v;
+    else {
+      USDINR = Number(v); usdInrGiven = true;
+      if (!isFinite(USDINR) || USDINR < 20 || USDINR > 500) usage('--usd-inr must be INR per USD, for example 88');
+    }
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else if (SRC === null) SRC = a;
+  else usage('unexpected extra argument: ' + a);
+}
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
+if (!SRC) usage();
+// USD mn -> INR crore: 1 mn USD = USDINR mn INR = USDINR / 10 crore.
+const CR_PER_USD_MN = USDINR / 10;
+console.log('USD/INR for a fact-card AUM in USD mn: ' + USDINR + (usdInrGiven ? ' (--usd-inr)' : ' (default; --usd-inr to change)'));
 
 // slide = the product's own page in the deck; peer = the MASTER group whose IRR band it inherits.
 const ADD = [
@@ -54,6 +86,8 @@ const ADD = [
     // group. The deck files this under DEBT AIF (SHORT TERM) alongside Northern Arc and Vivriti;
     // Vivriti Short Term Debt is the comparable short-duration strategy, and its 12-13% band also
     // matches this fund's own stated breakup (~3.5% fixed income + ~9.5% arbitrage = ~13%).
+    // Both trailing spaces are data (KNOWN_ISSUES A25): the MASTER name 'Vivriti Short Term Debt Fund '
+    // and the CENTRICITY_SELECT sheet 'DEBT AIF ' end in a space. Keep them byte-exact.
     peer: { names: ['Vivriti Short Term Debt Fund '] },
     select: { category: 'DEBT AIFs', sheet: 'DEBT AIF ', kind: 'aif' },
     exit_load: 'Nil',
@@ -70,13 +104,16 @@ const ADD = [
   },
 ];
 
-const MASTER = B.read(HTML, 'window.MASTER = ').value;
-const SELECT = B.read(HTML, 'window.CENTRICITY_SELECT = ').value;
-const ALIAS = B.read(HTML, 'window.PMS_PERF_ALIAS = ').value;
-const PERF = B.read(HTML, 'window.PMS_PERFORMANCE = ').value;
+const html = fs.readFileSync(HTML, 'utf8');
+const MASTER = B.locate(html, 'window.MASTER = ').value;
+const SELECT = B.locate(html, 'window.CENTRICITY_SELECT = ').value;
+const ALIAS = B.locate(html, 'window.PMS_PERF_ALIAS = ').value;
+const PERF = B.locate(html, 'window.PMS_PERFORMANCE = ').value;
 const byName = new Set(MASTER.map(r => r.name));
 
-// Every field a MASTER record carries, so a new one has the same shape as its peers.
+// Every field a MASTER record carries; a new record starts with all of them set to null. A PMS
+// addition ALSO carries the PMS block's extra keys (pe, sd*, sharpe*, sortino*, alpha*, beta*) and
+// `_pms_source`; the NEW_GIFT copy in the June sibling keeps only these fields.
 const FIELDS = ['name', 'asset_class', 'product_class', 'sub_category', 'irr_low', 'irr_high', 'aum',
   'r1m', 'r3m', 'r6m', 'r1y', 'r2y', 'r3y', 'r5y', 'r10y', 'si', 'expense', 'inception', 'fund_mgr',
   'exit_load', 'mcap_large', 'mcap_mid', 'mcap_small', 'mcap_other', 'ytm', 'avg_maturity',
@@ -99,6 +136,12 @@ function peerBand(spec) {
 
 const slides = N.slides(SRC);
 const pct = v => v == null ? '—' : (v * 100).toFixed(2) + '%';
+// Does a slide name this fund? Lower-cased, punctuation folded to spaces, whole words only.
+const normT = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const slideText = sl => ' ' + normT(sl.body.join(' ') + ' ' + sl.tables.map(t => t.map(r => r.join(' ')).join(' ')).join(' ')) + ' ';
+const names = spec => [spec.deckName, spec.reckonerName].filter(Boolean);
+const mentions = (sl, spec) => names(spec).some(n => slideText(sl).includes(' ' + normT(n) + ' '));
+const slidesNaming = spec => slides.filter(sl => mentions(sl, spec)).map(sl => sl.no);
 
 const newRecs = [], newSelect = {}, aliasAdds = {};
 let fail = false;
@@ -108,6 +151,14 @@ for (const spec of ADD) {
   if (byName.has(spec.name)) { console.log('   already in MASTER — skipping'); continue; }
 
   const sl = slides[spec.slide - 1];
+  if (!sl || !mentions(sl, spec)) {
+    const where = slidesNaming(spec);
+    console.error('   *** slide ' + spec.slide + (sl ? ' does not name ' : ' does not exist (deck has ' + slides.length + ') for ') +
+      names(spec).map(n => '"' + n + '"').join(' / ') + ' — refusing to read another product\'s page; update its slide in ADD' +
+      (where.length ? ' (named on slide ' + where.join(', ') + ')' : ' (no slide of this deck names it)'));
+    fail = true; continue;
+  }
+  console.log('   slide ' + spec.slide + ' names the fund: PASS');
   const about = N.about(sl);
   const details = N.details(sl);
   const fact = {};
@@ -156,7 +207,7 @@ for (const spec of ADD) {
     const m = String(raw).replace(/,/g, '').match(/([\d.]+)\s*(mn|m\b|cr|crore)?/i);
     if (m) {
       let v = parseFloat(m[1]);
-      if (/usd|us\$|\$/i.test(raw) && /mn|m\b/i.test(raw)) v = v * 8.8;   // USD mn -> INR Cr, ~88/USD
+      if (/usd|us\$|\$/i.test(raw) && /mn|m\b/i.test(raw)) v = v * CR_PER_USD_MN;   // USD mn -> INR Cr at --usd-inr
       if (isFinite(v)) { rec.aum = +v.toFixed(2); console.log('   AUM from the fact card: "' + raw + '" -> ' + rec.aum + ' Cr'); }
     }
   }
@@ -196,16 +247,23 @@ console.log('GATE alias pins to add: ' + (Object.keys(aliasAdds).length ? Object
 const SIBLING = path.join(path.dirname(HTML), 'Centricity_June_Refresh.js');
 // Every GIFT City fund this script is responsible for, whether it was added on this run or an
 // earlier one — so re-running repairs a sibling that has drifted instead of silently skipping.
-const giftNames = new Set(ADD.filter(a => a.product_class === 'GIFT City').map(a => a.name));
+// But only while THIS deck still lists the fund: a fund the deck dropped (Motilal Oswal
+// Alternative Investment, Sep-2026) is never written back into NEW_GIFT.
+const giftSpecs = ADD.filter(a => a.product_class === 'GIFT City');
+const giftNames = new Set(giftSpecs.filter(a => slidesNaming(a).length).map(a => a.name));
+for (const a of giftSpecs) if (!giftNames.has(a.name)) console.log('\nNEW_GIFT: "' + a.name + '" is not named anywhere in this deck — left out of NEW_GIFT handling (never re-added)');
 const giftRecs = MASTER.concat(newRecs).filter(r => giftNames.has(r.name));
+let sib = null, gift = null, toAdd = [];
 if (giftRecs.length) {
-  const s = fs.readFileSync(SIBLING, 'utf8');
-  const at = s.indexOf('var NEW_GIFT = [');
-  if (at < 0) { console.error('\n*** NEW_GIFT not found in ' + path.basename(SIBLING) + ' — a GIFT City add would be silently wiped'); fail = true; }
-  else {
-    const end = s.indexOf('}];', at);
-    if (end < 0) { console.error('\n*** could not find the end of NEW_GIFT'); fail = true; }
-    else console.log('\nGATE GIFT City records also written to ' + path.basename(SIBLING) +
+  try {
+    sib = fs.readFileSync(SIBLING, 'utf8');
+    gift = B.locate(sib, 'var NEW_GIFT = ').value;
+    if (!Array.isArray(gift)) throw new Error('NEW_GIFT is not an array');
+  } catch (e) { console.error('\n*** NEW_GIFT not readable in ' + path.basename(SIBLING) + ' (' + e.message + ') — a GIFT City add would be silently wiped'); fail = true; }
+  if (gift) {
+    const have = new Set(gift.map(r => r && r.name));                  // exact name, not a substring
+    toAdd = giftRecs.filter(r => !have.has(r.name));
+    console.log('\nGATE GIFT City records also written to ' + path.basename(SIBLING) +
       ' NEW_GIFT (it replaces the whole bucket at load): ' + giftRecs.map(r => r.name).join(', '));
   }
 }
@@ -213,26 +271,21 @@ if (giftRecs.length) {
 if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-const bytes = B.writeBlocks(HTML, [
+// Build both files in memory, then write them together.
+const page = B.spliceBlocks(html, [
   { prefix: 'window.MASTER = ', value: MASTER.concat(newRecs) },
   { prefix: 'window.CENTRICITY_SELECT = ', value: Object.assign({}, SELECT, newSelect) },
   { prefix: 'window.PMS_PERF_ALIAS = ', value: Object.assign({}, ALIAS, aliasAdds) },
 ]);
-console.log('\nWROTE ' + HTML + ' — ' + bytes + ' bytes');
-
+const outputs = [{ file: HTML, content: page }];
+if (toAdd.length) {
+  // NEW_GIFT holds plain MASTER records; drop the non-schema keys the sibling never carries
+  const plain = toAdd.map(r => { const o = {}; for (const f of FIELDS) o[f] = r[f]; return o; });
+  outputs.push({ file: SIBLING, content: B.spliceBlocks(sib, [{ prefix: 'var NEW_GIFT = ', value: gift.concat(plain) }]) });
+}
+B.writeFilesAtomic(outputs);
+console.log('\nWROTE ' + HTML + ' — ' + page.length + ' bytes');
 if (giftRecs.length) {
-  let s = fs.readFileSync(SIBLING, 'utf8');
-  const at = s.indexOf('var NEW_GIFT = [');
-  const end = s.indexOf('}];', at);
-  const already = giftRecs.filter(r => s.slice(at, end).includes('"name":"' + r.name + '"'));
-  const toAdd = giftRecs.filter(r => !already.includes(r));
-  if (toAdd.length) {
-    // NEW_GIFT holds plain MASTER records; drop the non-schema keys the sibling never carries
-    const plain = toAdd.map(r => { const o = {}; for (const f of FIELDS) o[f] = r[f]; return o; });
-    s = s.slice(0, end + 1) + ',' + plain.map(o => JSON.stringify(o)).join(',') + s.slice(end + 1);
-    fs.writeFileSync(SIBLING, s, 'utf8');
-    console.log('WROTE ' + SIBLING + ' — NEW_GIFT +' + toAdd.length);
-  } else {
-    console.log('NEW_GIFT already carries ' + already.map(r => r.name).join(', ') + ' — sibling unchanged');
-  }
+  if (toAdd.length) console.log('WROTE ' + SIBLING + ' — NEW_GIFT +' + toAdd.length);
+  else console.log('NEW_GIFT already carries ' + giftRecs.map(r => r.name).join(', ') + ' — sibling unchanged');
 }

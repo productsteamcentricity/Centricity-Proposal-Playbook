@@ -1,0 +1,62 @@
+{
+  "_about": [
+    "Hand-maintained pin maps shared by merge_pms_performance.js, pin_pms_alias.js, merge_reckoner.js and merge_aif_performance.js (KNOWN_ISSUES A18). Edit pins HERE, never in the tools. A wrong pin puts another manager's numbers on a client's fund: confirm every change with the owner (D61).",
+    "Every name is matched byte-for-byte against live data. Never trim, re-space or re-case a name. trailing_space lists, per section, the names (keys or targets) that end in a space ON PURPOSE because the live MASTER record does. Each of the four tools refuses to run if a section's names with an edge space differ from that list: a deliberate space was lost, or a stray one was added (KNOWN_ISSUES A25).",
+    "pms_alias: MASTER PMS fund name -> exact scheme key in the PMS_Scheme_Performance file (PMS_PERFORMANCE.pms). repin: merge_pms_performance.js points PMS_PERF_ALIAS at the key on every run and stops if the new file lacks it. pin: pin_pms_alias.js points PMS_PERF_ALIAS at the key and checks it against the PMS block on disk (run it straight after merge_pms_performance.js --apply). why: printed by pin_pms_alias.js. note: documentation only.",
+    "reckoner: Reckoner deck name -> MASTER name, used by merge_reckoner.js where normalisation cannot bridge the gap. reckoner_notes: documentation only.",
+    "aif_performance: the deck names merge_aif_performance.js pins. Each is looked up in reckoner, so the AIF grid and Centricity Select resolve a deck name the same way."
+  ],
+  "trailing_space": {
+    "pms_alias": ["Karma Capital Wealth Builder "],
+    "reckoner": ["Karma Capital Wealth Builder "]
+  },
+  "pms_alias": {
+    "ICICI Prudential Large Cap": {"key":"ICICI Prudential - Large Cap Portfolio","repin":true},
+    "ICICI Pru Contra Strategy": {"key":"ICICI Prudential - Contra Portfolio","repin":true},
+    "ICICI Prudential Value Strategy": {"key":"ICICI Prudential - Value Portfolio","repin":true},
+    "ICICI Pru PIPE Strategy": {"key":"ICICI Prudential - Pipe Portfolio","repin":true},
+    "Carnelian Shift Strategy": {"key":"Carnelian Capital - Shift Strategy","repin":true},
+    "Girik Multi Cap Growth Equity Strategy": {"key":"Girik Capital - Multi Cap Growth Equity Strategy","repin":true},
+    "Buoyant Capital- Opportunities Strategy": {"key":"Buoyant - Opportunities","repin":true},
+    "Aditya Birla ISOP": {"key":"Aditya Birla Sun Life (ABSL) - India Special Opportunities (ISOP)","repin":true},
+    "UNIFI Blended PMS": {"key":"Unifi Blended - Rangoli","repin":true},
+    "Neo Yield Enhancer": {"key":"Neo Yield Enhancer","repin":true,"note":"previously pinned null because the scheme was absent; it came back with the Jul-2026 file"},
+    "Abakkus Diversified Alpha Approach Portfolio": {"key":"Abakkus Diversified Alpha Approach","repin":true},
+    "Negen Capital- Special Situation & Tech Fund": {"key":"Negen Special Situations & Dynamic Allocation Strategy","pin":true,"why":"the Technology-era name is retired; the deck itself now calls it Special Situations & Dynamic Allocation","note":"deck index (slide 2): \"Negen Capital – Special Situations & Dynamic Allocation Fund\". The July file offers two Negen schemes; only one is the Special Situations mandate."},
+    "Karma Capital Wealth Builder ": {"key":"Karma - Wealth Builder","pin":true,"why":"distinct from Fractal Capital - Wealth Builder, which is a different manager","note":"KEY ENDS IN A SPACE on purpose: the MASTER record does. The Fractal false positive this pin used to block is \"Fractal Capital - Wealth Builder\"; \"Karma - Wealth Builder\" is the Karma house name, and the deck recommends it (slide 26)."},
+    "TCG Transformative Growth Portfolio": {"key":"TCG Transformative Growth Portfolio","pin":true,"why":"the file carries this name verbatim"},
+    "Emkay Golden Decade PMS": {"key":"Emkay Investments - Indias Golden Decade of Growth","repin":true,"pin":true,"why":"the only Emkay Golden Decade strategy in the file","note":"The vendor dropped the doubled apostrophe it used to write (\"India''s\" -> \"Indias\") from the Aug-2026 file (first seen in the 03-Sep issue). Same scheme, same manager; still the only Emkay Golden Decade strategy in the file, the other seven Emkay schemes are unrelated mandates. Shared by both tools (repin + pin), so they cannot disagree."},
+    "Motilal Oswal Founders Portfolio": {"key":"Motilal Oswal-Founders","pin":true,"why":"the only Founders strategy among the 10 Motilal Oswal schemes in the file"}
+  },
+  "reckoner": {
+    "ICICI Prudential Large cap": "ICICI Prudential Large Cap",
+    "Negen Capital- Sp. Situation & Dynamic All": "Negen Capital- Special Situation & Tech Fund",
+    "Karma Capital Wealth Builder": "Karma Capital Wealth Builder ",
+    "Motilal Oswal Founders Fund*": "Motilal Oswal Founders Fund",
+    "Alchemy Long Term Ventures Fund*": "Alchemy Long Term Ventures Fund",
+    "Vedartha India Opportunities Fund I": "Vedartha India Opportunities Fund – Series 1",
+    "HDFC Multi-Asset Fund(G)": "HDFC Multi-Asset Allocation Fund(G)",
+    "SBI Constant Maturity Fund-Reg(G)": "SBI Constant Maturity 10 Year Gilt Fund-Reg(G)",
+    "HDFC Low Ultra Short to Short Term Fund(G)": "HDFC Ultra Short to Short Term Fund(G)",
+    "Axis Treasury Ultra Short to Short Term Fund(G)": "Axis Ultra Short to Short Term Fund-Reg(G)",
+    "Alf Accurate Budding Beasts PMS": "AlfAccurate Budding Beasts PMS",
+    "Motilal Oswal Alternative Investment": "Motilal Oswal Alternative Investment (Inbound)"
+  },
+  "reckoner_notes": {
+    "Karma Capital Wealth Builder": "TARGET ENDS IN A SPACE on purpose: the MASTER record does.",
+    "Motilal Oswal Founders Fund*": "The asterisk marks a footnoted series in the deck. Also used by merge_aif_performance.js.",
+    "Alchemy Long Term Ventures Fund*": "The asterisk marks a footnoted series in the deck. Also used by merge_aif_performance.js.",
+    "Vedartha India Opportunities Fund I": "The target has an en dash (U+2013). Also used by merge_aif_performance.js.",
+    "HDFC Multi-Asset Fund(G)": "Both this target and the next were themselves renamed by SEBI in Aug-2026 and are now the prev_name of the live record, so the prev_name tier in merge_reckoner.js resolve() carries them. Left spelled as the deck writes them rather than re-pointed, so the pin still documents what the DECK says.",
+    "SBI Constant Maturity Fund-Reg(G)": "See HDFC Multi-Asset Fund(G).",
+    "HDFC Low Ultra Short to Short Term Fund(G)": "Sep-2026: the deck applied the SEBI \"Low Duration -> Ultra Short to Short Term\" rename ON TOP of the old name instead of replacing it (\"HDFC Low Duration\" -> \"HDFC Low Ultra Short to Short Term\"; \"Axis Treasury Advantage\" -> \"Axis Treasury Ultra Short to Short Term\"). No normalisation can bridge that, and each has a near-twin that is a DIFFERENT fund: the targets are sub_category \"Low Duration\", while HDFC/Axis \"Ultra Short Term Fund\" are \"Ultra Short Duration\". Both appear under the deck's own LOW DURATION FUNDS heading.",
+    "Axis Treasury Ultra Short to Short Term Fund(G)": "See HDFC Low Ultra Short to Short Term Fund(G).",
+    "Alf Accurate Budding Beasts PMS": "Added to the universe 20-Aug-2026 by add_reckoner_funds.js; MASTER uses the AMC's own one-word spelling.",
+    "Motilal Oswal Alternative Investment": "Added 20-Aug-2026 by add_reckoner_funds.js; the GIFT City record carries the (Inbound) suffix its peers use. The Sep-2026 deck dropped this fund (KNOWN_ISSUES A20)."
+  },
+  "aif_performance": [
+    "Motilal Oswal Founders Fund*",
+    "Alchemy Long Term Ventures Fund*",
+    "Vedartha India Opportunities Fund I"
+  ]
+}
