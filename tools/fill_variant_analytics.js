@@ -3,24 +3,42 @@
 // are identical across options — it is one portfolio — so the sibling row is a valid source.
 //
 // This runs index.html's own parseAnalytics into an EMPTY store to get exactly this month's
-// output keyed by this month's names, then fills any MASTER fund still missing an entry from a
-// plan-variant sibling. Nothing already present is overwritten.
+// output keyed by this month's names, then gives every eligible MASTER fund that this month's
+// workbook does not cover under its own name the entry of its plan-variant sibling. An entry the
+// fund already has is REPLACED: it is last month's holdings (the bake merges, it never deletes).
+// When several siblings rank equally best, the fund is listed as ambiguous and not filled.
 //
-//   node fill_variant_analytics.js --dir "<Month folder>" [--apply] [--html <p>]
+//   node tools/fill_variant_analytics.js --dir "<Month folder>" [--html site/index.html] [--apply]
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const XLSX = require('xlsx');
+const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/fill_variant_analytics.js --dir "<Month folder>" [--html site/index.html] [--apply]';
 const argv = process.argv.slice(2);
+const unknown = argv.filter(a => a.startsWith('--') && !['--dir', '--html', '--apply'].includes(a));
+if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-if (!DIR) { console.error('Usage: node fill_variant_analytics.js --dir "<Month folder>" [--apply] [--html <p>]'); process.exit(2); }
+if (!DIR) { console.error(USAGE); process.exit(2); }
 const AN = path.join(DIR, 'Analytics');
-const pick = re => path.join(AN, fs.readdirSync(AN).find(f => re.test(f)));
-const SRC = { equity: pick(/^Equity Analytics_/i), hybrid: pick(/^Hybrid Analytics_/i), debt: pick(/^Debt Analytics_/i) };
+if (!fs.existsSync(AN) || !fs.statSync(AN).isDirectory()) { console.error(`*** no Analytics folder in ${DIR}`); process.exit(2); }
+// Exactly one workbook per class: a duplicate download such as "… (1).xlsx" is refused (A17).
+const pick = (re, kind) => {
+  const hits = fs.readdirSync(AN).filter(f => re.test(f));
+  if (hits.length > 1) {
+    console.error(`*** ${hits.length} files match the ${kind} analytics workbook in ${AN} — keep exactly one:`);
+    hits.forEach(h => console.error(`      ${h}`));
+    process.exit(2);
+  }
+  const p = hits.length ? path.join(AN, hits[0]) : null;
+  if (!p || !fs.statSync(p).isFile()) { console.error(`*** missing the ${kind} analytics workbook in ${AN} (expected a file matching ${re})`); process.exit(2); }
+  return p;
+};
+const SRC = { equity: pick(/^Equity Analytics_/i, 'equity'), hybrid: pick(/^Hybrid Analytics_/i, 'hybrid'), debt: pick(/^Debt Analytics_/i, 'debt') };
 
 // ---- sandbox with the page's parsers ----
 const html = fs.readFileSync(HTML, 'utf8');
@@ -40,9 +58,14 @@ const sandbox = { console, JSON, Math, Object, Array, String, Number, Boolean, D
     createElement: () => ({ style: {}, appendChild() {}, setAttribute() {} }), addEventListener() {}, head: { appendChild() {} }, body: { appendChild() {} } } };
 sandbox.window = {}; sandbox.globalThis = sandbox; sandbox.window.document = sandbox.document;
 vm.createContext(sandbox);
+// The UI blocks stop at the first CDN library the sandbox does not load (expected). Any other
+// error means a data or parser block did not run: report it and fail the gate (A23).
+const CDN_GLOBAL = /^(React|ReactDOM|Chart|XLSX|PptxGenJS) is not defined$/;
+const blockErrors = [];
 for (const b of blocks) {
   if (b.src || /ReactDOM\.createRoot/.test(b.body)) continue;
-  try { vm.runInContext(b.body, sandbox, { timeout: 120000 }); } catch (e) { /* React blocks */ }
+  try { vm.runInContext(b.body, sandbox, { timeout: 120000 }); }
+  catch (e) { if (!CDN_GLOBAL.test(e.message)) { blockErrors.push(e.message); console.log(`  *** inline block error: ${e.message.slice(0, 160)}`); } }
 }
 const W = sandbox.window;
 const MASTER = W.MASTER;
@@ -98,11 +121,15 @@ function rank(n) {
     }
     const eligible = MASTER.filter(K.ok);
     const missing = eligible.filter(f => !Object.prototype.hasOwnProperty.call(monthOut, f.name));
-    const filled = [], stillMissing = [];
+    const filled = [], stillMissing = [], ambiguous = [];
     for (const f of missing) {
       const cands = byBase.get(planBase(f.name));
       if (!cands || !cands.length) { stillMissing.push(f.name); continue; }
-      const best = cands.slice().sort((a, b) => rank(a) - rank(b) || a.length - b.length)[0];
+      // The best-ranked sibling only; a tie for best is reported, never broken by guesswork (A17).
+      const sorted = cands.slice().sort((a, b) => rank(a) - rank(b));
+      const tied = sorted.filter(n => rank(n) === rank(sorted[0]));
+      if (tied.length > 1) { ambiguous.push(`${f.name}  <-  ${JSON.stringify(tied)}`); continue; }
+      const best = sorted[0];
       patch[K.store] = patch[K.store] || {};
       patch[K.store][f.name] = { from: best, entry: monthOut[best] };
       filled.push(`${f.name}  <-  ${best}`);
@@ -111,54 +138,43 @@ function rank(n) {
     console.log(`  filled from a plan-variant sibling: ${filled.length}`);
     filled.slice(0, 30).forEach(x => console.log(`    ${x}`));
     if (filled.length > 30) console.log(`    ... +${filled.length - 30} more`);
+    console.log(`  ambiguous (several equally ranked siblings — not filled, resolve by hand): ${ambiguous.length}`);
+    ambiguous.forEach(x => console.log(`    ? ${x}`));
     console.log(`  still no entry anywhere in the ${K.kind} workbook: ${stillMissing.length}`);
     stillMissing.slice(0, 10).forEach(x => console.log(`    ! ${x}`));
   }
 
-  // ---- apply ----
+  // ---- gates + apply ----
+  const fail = blockErrors.length > 0;
+  console.log(`\nGATE sandbox inline blocks: ${fail ? `*** FAIL (${blockErrors.length} error(s) other than a missing CDN library — see above)` : 'PASS'}`);
   const total = Object.values(patch).reduce((a, o) => a + Object.keys(o).length, 0);
   console.log(`\nTOTAL entries to add: ${total}`);
-  if (!APPLY) { console.log('[dry run] pass --apply to write index.html'); return; }
+  if (!APPLY) { console.log('[dry run] pass --apply to write index.html'); process.exit(fail ? 1 : 0); }
+  if (fail) { console.error('*** gate failed — refusing to write'); process.exit(1); }
   if (!total) { console.log('nothing to do'); return; }
 
-  let out = html;
-  const targets = [];
-  for (const store of Object.keys(patch)) {
+  // Splice order (and the log order) runs from the end of the file, as before.
+  const targets = Object.keys(patch).map(store => {
     const prefix = `window.${store} = `;
-    const i = out.indexOf(prefix);
-    if (i < 0) { console.error('*** not found: ' + prefix); process.exit(1); }
-    targets.push({ store, s: i + prefix.length });
-  }
-  targets.sort((a, b) => b.s - a.s);   // splice from the end so earlier offsets stay valid
+    const loc = B.locate(html, prefix);
+    return { store, prefix, s: loc.s, obj: loc.value };
+  }).sort((a, b) => b.s - a.s);
   for (const t of targets) {
-    const e = matchEnd(out, t.s);
-    const obj = JSON.parse(out.slice(t.s, e + 1));
     // Every name in the patch is a fund this month's workbook does NOT cover under its own name,
     // so whatever is currently stored for it is last month's holdings. Replacing it with a
     // same-scheme sibling row from THIS month is the whole point — an existing entry is the
     // stale case, not a reason to skip.
     let added = 0, replaced = 0;
     for (const [name, v] of Object.entries(patch[t.store])) {
-      if (Object.prototype.hasOwnProperty.call(obj, name)) replaced++; else added++;
-      obj[name] = v.entry;
+      if (Object.prototype.hasOwnProperty.call(t.obj, name)) replaced++; else added++;
+      t.obj[name] = v.entry;
     }
-    out = out.slice(0, t.s) + JSON.stringify(obj) + out.slice(e + 1);
-    console.log(`  ${t.store}: ${added} added + ${replaced} refreshed (were last month's) -> ${Object.keys(obj).length}`);
+    console.log(`  ${t.store}: ${added} added + ${replaced} refreshed (were last month's) -> ${Object.keys(t.obj).length}`);
   }
-  if (!out.trimEnd().endsWith('</html>')) { console.error('*** does not end with </html>'); process.exit(1); }
-  fs.writeFileSync(HTML, out, 'utf8');
+  let out;
+  try {
+    out = B.spliceBlocks(html, targets.map(t => ({ prefix: t.prefix, value: t.obj })));
+    B.writeFilesAtomic([{ file: HTML, content: out }]);
+  } catch (e) { console.error(`*** ${e.message} — nothing written`); process.exit(1); }
   console.log(`\nWROTE ${HTML} — ${out.length} bytes (was ${html.length})`);
 })();
-
-function matchEnd(str, start) {
-  const open = str[start], close = open === '{' ? '}' : ']';
-  let depth = 0, inStr = false, esc = false;
-  for (let k = start; k < str.length; k++) {
-    const ch = str[k];
-    if (inStr) { if (esc) esc = false; else if (ch === '\\') esc = true; else if (ch === '"') inStr = false; continue; }
-    if (ch === '"') { inStr = true; continue; }
-    if (ch === open) depth++;
-    else if (ch === close) { depth--; if (depth === 0) return k; }
-  }
-  throw new Error('unbalanced');
-}

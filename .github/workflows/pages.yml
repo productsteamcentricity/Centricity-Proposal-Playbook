@@ -41,7 +41,9 @@ jobs:
             test -s "site/$f" || { echo "::error::site/$f is missing or empty"; exit 1; }
           done
       - name: Unit tests (tools/test)
-        run: node tools/test/blocklib.test.js
+        run: |
+          npm ci --no-audit --no-fund
+          node tools/test/run.js
       - name: Parity gate (tools/verify_page.js)
         run: |
           set -o pipefail

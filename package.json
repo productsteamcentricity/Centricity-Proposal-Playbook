@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "node .claude/serve.js",
     "verify": "node tools/verify_page.js site",
-    "test": "node tools/test/blocklib.test.js",
+    "test": "node tools/test/run.js",
     "rehearse": "node tools/dev/rehearse.js"
   },
   "engines": {

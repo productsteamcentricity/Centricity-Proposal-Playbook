@@ -1,38 +1,65 @@
 // Monthly bake: run index.html's OWN parsers over this month's workbooks in a Node vm sandbox,
 // then write the resulting globals back into the embedded blocks. Reusing the page's parsers
-// means the baked data is identical to what the Section 7 uploader would produce.
+// means the baked analytics and MASTER data are identical to what the Section 7 uploader would
+// produce. DIRECT_PERF is the exception: it comes from the shared tool builder in
+// tools/lib/direct_perf.js (KNOWN_ISSUES A7), which rebuild_directperf.js also uses.
 //
 // The five sibling override files are deliberately NOT executed: they mutate MASTER at runtime
 // on every page load, so the baseline block must stay pre-sibling or their edits would be
 // baked in and then re-applied on top.
+//
+//   node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html site/index.html] [--apply]
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const XLSX = require('xlsx');
+const B = require('./lib/blocklib');
+const { buildDirectPerf } = require('./lib/direct_perf');
 
+const USAGE = 'Usage: node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html site/index.html] [--apply]';
 const argv = process.argv.slice(2);
+const unknown = argv.filter(a => a.startsWith('--') && !['--dir', '--as-on', '--as-on-analytics', '--html', '--apply'].includes(a));
+if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');            // month folder
 const ASON = flag('--as-on');         // e.g. "31st July 2026"
 const ASON_AN = flag('--as-on-analytics') || ASON;
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-if (!DIR || !ASON) { console.error('Usage: node bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html <p>] [--apply]'); process.exit(2); }
+if (!DIR || !ASON) { console.error(USAGE); process.exit(2); }
+// Both labels are pasted into DATA_DATES string literals: plain dates only (A9).
+for (const [label, flagName] of [[ASON, '--as-on'], [ASON_AN, '--as-on-analytics']]) {
+  try { B.checkAsOn(label, 'long'); } catch (e) { console.error('*** ' + e.message.replace(/^--as-on /, flagName + ' ')); process.exit(2); }
+}
 
+// One file per stem. A duplicate download such as "… (1).xlsx" must never be baked silently, and
+// a missing folder is an input error, not a crash (A17).
+function pickOne(dir, test, key) {
+  let names;
+  try { names = fs.readdirSync(dir); }
+  catch (e) { console.error(`*** cannot read the folder for "${key}": ${dir} (${e.code || e.message})`); process.exit(2); }
+  const hits = names.filter(test);
+  if (hits.length > 1) {
+    console.error(`*** ${hits.length} files match "${key}" in ${dir} — keep exactly one:`);
+    hits.forEach(h => console.error(`      ${h}`));
+    process.exit(2);
+  }
+  return hits.length ? path.join(dir, hits[0]) : '';
+}
+const AN = path.join(DIR, 'Analytics');
 const P = {
-  eq:   path.join(DIR, 'Analytics', fs.readdirSync(path.join(DIR, 'Analytics')).find(f => /^Equity Analytics_/i.test(f)) || ''),
-  hy:   path.join(DIR, 'Analytics', fs.readdirSync(path.join(DIR, 'Analytics')).find(f => /^Hybrid Analytics_/i.test(f)) || ''),
-  db:   path.join(DIR, 'Analytics', fs.readdirSync(path.join(DIR, 'Analytics')).find(f => /^Debt Analytics_/i.test(f)) || ''),
+  eq:   pickOne(AN, f => /^Equity Analytics_/i.test(f), 'eq'),
+  hy:   pickOne(AN, f => /^Hybrid Analytics_/i.test(f), 'hy'),
+  db:   pickOne(AN, f => /^Debt Analytics_/i.test(f), 'db'),
   // Regular monitor = anything but the Direct one. The file name drifts month to month
   // ("Daily MF monitor_30th June 2026", "Daily MF Monitor as on 31st August 2026"), so match
   // the stem and exclude "_Direct" rather than pinning a separator. Not \b: "_" is a word
   // character, so "monitor_30th" has no boundary after "monitor" (Sep-2026 silently missed it).
-  reg:  path.join(DIR, fs.readdirSync(DIR).find(f => /^Daily MF ?monitor(?![a-z])/i.test(f) && !/_Direct/i.test(f)) || ''),
-  dir:  path.join(DIR, fs.readdirSync(DIR).find(f => /^Daily MF Monitor_Direct/i.test(f)) || ''),
+  reg:  pickOne(DIR, f => /^Daily MF ?monitor(?![a-z])/i.test(f) && !/_Direct/i.test(f), 'reg'),
+  dir:  pickOne(DIR, f => /^Daily MF Monitor_Direct/i.test(f), 'dir'),
 };
 for (const [k, v] of Object.entries(P)) {
-  // An unmatched find() joins to the folder itself, which exists — so test for a FILE.
-  if (!v || !fs.existsSync(v) || !fs.statSync(v).isFile()) { console.error(`*** missing source for "${k}": ${v}`); process.exit(2); }
+  if (!v || !fs.existsSync(v) || !fs.statSync(v).isFile()) { console.error(`*** missing source for "${k}": ${v || 'no matching file in ' + (k === 'reg' || k === 'dir' ? DIR : AN)}`); process.exit(2); }
   console.log(`${k.padEnd(5)} <- ${path.basename(v)}`);
 }
 console.log('');
@@ -61,12 +88,20 @@ const sandbox = {
 };
 sandbox.window = {}; sandbox.globalThis = sandbox; sandbox.window.document = sandbox.document;
 vm.createContext(sandbox);
+// The UI blocks stop at the first use of a CDN library the sandbox does not load; that is expected.
+// Any OTHER error means a data or parser block did not run, so the bake would work on a partial
+// page: it is reported and fails the sandbox gate (A23).
+const CDN_GLOBAL = /^(React|ReactDOM|Chart|XLSX|PptxGenJS) is not defined$/;
+const blockErrors = [];
 let ran = 0, skipped = 0;
 for (const b of blocks) {
   if (b.src) { skipped++; continue; }                                  // CDN + the five siblings
   if (/ReactDOM\.createRoot/.test(b.body)) { skipped++; continue; }
   try { vm.runInContext(b.body, sandbox, { timeout: 120000 }); ran++; }
-  catch (e) { if (!/React is not defined/.test(e.message)) console.log(`  (block error, ignored) ${e.message.slice(0, 90)}`); skipped++; }
+  catch (e) {
+    skipped++;
+    if (!CDN_GLOBAL.test(e.message)) { blockErrors.push(e.message); console.log(`  *** inline block error: ${e.message.slice(0, 160)}`); }
+  }
 }
 const W = sandbox.window;
 console.log(`sandbox: ran ${ran} inline blocks, skipped ${skipped} (siblings + UI)\n`);
@@ -89,16 +124,17 @@ console.log('BEFORE:', JSON.stringify(before));
     console.log(`  parseAnalytics(${kind}): ${r.ok ? r.message : 'FAILED ' + r.error}`);
     if (!r.ok) process.exit(1);
   }
-  // parseAnalytics MERGES, so a scheme present in June but absent from the July workbook keeps
-  // its June holdings under a July label. Surface those explicitly, split by whether the MF
-  // analytics workbook is even supposed to cover them (PMS/AIF come from a separate file).
-  const julySchemes = schemeNames(P.eq);
+  // parseAnalytics MERGES, so a scheme present last month but absent from this month's workbook
+  // keeps last month's holdings under this month's label. Surface those explicitly, split by
+  // whether the MF analytics workbook is even supposed to cover them (PMS/AIF come from a
+  // separate file).
+  const monthSchemes = schemeNames(P.eq);
   const pcByName = new Map(W.MASTER.map(r => [r.name, r.product_class]));
-  const notInJuly = [...eqBefore].filter(k => !julySchemes.has(k));
-  const mfStale = notInJuly.filter(k => ['Mutual Fund', 'Index Fund', 'ETF'].includes(pcByName.get(k)));
-  const otherStale = notInJuly.filter(k => !mfStale.includes(k));
-  console.log(`  equity analytics: ${before.EQ} -> ${Object.keys(W.EQUITY_ANALYTICS).length}  (July file covered ${julySchemes.size} schemes)`);
-  console.log(`    not in the July workbook: ${notInJuly.length}  =  ${mfStale.length} MF/Index/ETF (STALE - still June holdings) + ${otherStale.length} PMS/AIF/other (expected; different source file)`);
+  const notInMonth = [...eqBefore].filter(k => !monthSchemes.has(k));
+  const mfStale = notInMonth.filter(k => ['Mutual Fund', 'Index Fund', 'ETF'].includes(pcByName.get(k)));
+  const otherStale = notInMonth.filter(k => !mfStale.includes(k));
+  console.log(`  equity analytics: ${before.EQ} -> ${Object.keys(W.EQUITY_ANALYTICS).length}  (this month's file covered ${monthSchemes.size} schemes)`);
+  console.log(`    not in this month's workbook: ${notInMonth.length}  =  ${mfStale.length} MF/Index/ETF (STALE - still last month's holdings) + ${otherStale.length} PMS/AIF/other (expected; different source file)`);
   if (mfStale.length) mfStale.slice(0, 12).forEach(n => console.log(`      ! ${n}`));
 
   // ---------- 2. MF Monitor — Regular ----------
@@ -109,9 +145,10 @@ console.log('BEFORE:', JSON.stringify(before));
   const added = W.MASTER.filter(r => !mBefore.has(r.name)).map(r => r.name);
   if (added.length) { console.log(`  NEW funds added to MASTER (${added.length}):`); added.forEach(n => console.log(`      + ${n}`)); }
 
-  // ---------- 3. MF Monitor — Direct -> DIRECT_PERF ----------
+  // ---------- 3. MF Monitor — Direct -> DIRECT_PERF (a new store, never merged) ----------
   const dpBefore = new Set(Object.keys(W.DIRECT_PERF || {}));
-  const rd = buildDirectPerf(P.dir, W);
+  const rd = buildDirectPerf(P.dir, W.MASTER);
+  W.DIRECT_PERF = rd.store;
   const dpAfter = new Set(Object.keys(W.DIRECT_PERF));
   const lostDp = [...dpBefore].filter(k => !dpAfter.has(k));
   console.log(`  DIRECT_PERF: ${before.DP} -> ${Object.keys(W.DIRECT_PERF).length}  (matched ${rd.matched}, unmatched ${rd.unmatched})`);
@@ -131,23 +168,32 @@ console.log('BEFORE:', JSON.stringify(before));
 
   // ---------- gates ----------
   let fail = false;
+  console.log(`\nGATE sandbox inline blocks: ${blockErrors.length ? `*** FAIL (${blockErrors.length} error(s) other than a missing CDN library — see above)` : 'PASS'}`);
+  if (blockErrors.length) fail = true;
   const names = W.MASTER.map(r => r.name);
   const dupes = names.filter((n, i) => names.indexOf(n) !== i);
-  console.log(`\nGATE duplicate names: ${dupes.length ? '*** FAIL ' + [...new Set(dupes)].slice(0, 5).join(' | ') : 'PASS (0)'}`);
+  console.log(`GATE duplicate names: ${dupes.length ? '*** FAIL ' + [...new Set(dupes)].slice(0, 5).join(' | ') : 'PASS (0)'}`);
   if (dupes.length) fail = true;
-  for (const [k, lo] of [['MASTER', before.MASTER], ['EQ', before.EQ], ['HY', before.HY], ['DB', before.DB], ['DP', 1000]]) {
-    if (after[k] < lo) { console.log(`GATE ${k} did not shrink: *** FAIL (${lo} -> ${after[k]})`); fail = true; }
+  let shrank = false;
+  for (const [k, lo] of [['MASTER', before.MASTER], ['EQ', before.EQ], ['HY', before.HY], ['DB', before.DB]]) {
+    if (after[k] < lo) { console.log(`GATE ${k} did not shrink: *** FAIL (${lo} -> ${after[k]})`); shrank = true; }
   }
-  if (!fail) console.log('GATE no block shrank: PASS');
+  // DIRECT_PERF is rebuilt from scratch each month, so it may move a little either way. Refuse a
+  // collapse relative to the current block (A17) — and an empty build — not a fixed floor.
+  if (after.DP < before.DP * 0.95 || !rd.matched) {
+    console.log(`GATE DP within 95% of the current block: *** FAIL (${before.DP} -> ${after.DP}; matched ${rd.matched} Direct rows)`);
+    shrank = true;
+  }
+  if (shrank) fail = true;
+  else console.log('GATE no block shrank: PASS');
   const withR1y = W.MASTER.filter(r => r.r1y != null).length;
   console.log(`GATE MASTER records carrying r1y: ${withR1y}`);
   console.log(`GATE DATA_DATES: ${JSON.stringify(W.DATA_DATES)}`);
 
-  if (!APPLY) { console.log('\n[dry run] pass --apply to write index.html'); return; }
+  if (!APPLY) { console.log('\n[dry run] pass --apply to write index.html'); process.exit(fail ? 1 : 0); }
   if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-  // ---------- write back ----------
-  let out = html;
+  // ---------- write back: every block and both dates in memory, then one atomic write ----------
   const writes = [
     ['window.DIRECT_PERF = ', W.DIRECT_PERF],
     ['window.MASTER = ', W.MASTER],
@@ -156,20 +202,14 @@ console.log('BEFORE:', JSON.stringify(before));
     ['window.DEBT_ANALYTICS = ', W.DEBT_ANALYTICS],
     ['window.MF_BENCHMARK_PERF = ', W.MF_BENCHMARK_PERF],
   ];
-  for (const [prefix, value] of writes) {
-    const i = out.indexOf(prefix);
-    if (i < 0) { console.error(`*** could not find "${prefix}"`); process.exit(1); }
-    const s = i + prefix.length;
-    const open = out[s];
-    if (open !== '{' && open !== '[') { console.error(`*** "${prefix}" is not followed by a literal (found ${JSON.stringify(out.slice(s, s + 20))})`); process.exit(1); }
-    const end = matchEnd(out, s);
-    out = out.slice(0, s) + JSON.stringify(value) + out.slice(end + 1);
-    console.log(`  wrote ${prefix.trim()} (${JSON.stringify(value).length} bytes)`);
-  }
-  out = out.replace(/(performance:\s*)"[^"]*"/, `$1"${ASON}"`)
-           .replace(/(analytics:\s*)"[^"]*"/, `$1"${ASON_AN}"`);
-  if (!out.trimEnd().endsWith('</html>')) { console.error('*** output does not end with </html>'); process.exit(1); }
-  fs.writeFileSync(HTML, out, 'utf8');
+  let out;
+  try {
+    out = B.spliceBlocks(html, writes.map(([prefix, value]) => ({ prefix, value })));
+    out = B.setDataDate(out, 'performance', ASON);
+    out = B.setDataDate(out, 'analytics', ASON_AN);
+    for (const [prefix, value] of writes) console.log(`  wrote ${prefix.trim()} (${JSON.stringify(value).length} bytes)`);
+    B.writeFilesAtomic([{ file: HTML, content: out }]);
+  } catch (e) { console.error(`*** ${e.message} — nothing written`); process.exit(1); }
   console.log(`\nWROTE ${HTML} — ${out.length} bytes (was ${html.length})`);
 })();
 
@@ -190,117 +230,4 @@ function schemeNames(src) {
   if (hdr < 0) return out;
   for (let r = hdr + 1; r <= rg.e.r; r++) { const v = cell(r, col); if (v) out.add(String(v).trim()); }
   return out;
-}
-
-// Scan forward from an opening brace/bracket to its match, respecting strings and escapes.
-function matchEnd(s, start) {
-  const open = s[start], close = open === '{' ? '}' : ']';
-  let depth = 0, inStr = false, esc = false;
-  for (let i = start; i < s.length; i++) {
-    const ch = s[i];
-    if (inStr) {
-      if (esc) esc = false;
-      else if (ch === '\\') esc = true;
-      else if (ch === '"') inStr = false;
-      continue;
-    }
-    if (ch === '"') { inStr = true; continue; }
-    if (ch === open) depth++;
-    else if (ch === close) { depth--; if (depth === 0) return i; }
-  }
-  throw new Error('unbalanced literal');
-}
-
-// Build DIRECT_PERF keyed by the REGULAR fund name, from the Direct monitor workbook.
-// Direct names read "X Fund(G)-Direct Plan"; MASTER reads "X Fund-Reg(G)". Both reduce to the
-// same plan-base, which is how the two plans are paired.
-function buildDirectPerf(src, W) {
-  const wb = XLSX.readFile(src, { cellDates: true });
-  const NUM = [['mtd', 'MTD'], ['r1m', '1 Month'], ['r3m', '3 Months'], ['r6m', '6 Months'],
-    ['r1y', '1 Year'], ['r2y', '2 Years'], ['r3y', '3 Years'], ['r5y', '5 Years'],
-    ['r10y', '10 Years'], ['si', 'SINCE INCEPTION']];
-  // Scales MUST match what parseMfMonitor writes onto MASTER, or the Regular/Direct toggle swaps
-  // a decimal for a percentage (a 39% m-cap slice rendering as 3935%). Percentage columns are
-  // divided by 100; AUM and the maturity figures are raw.  NOTE the exact header spellings —
-  // the Direct workbook says "YTM (%)", "Average Maturity Years", "Modified Duration Years" and
-  // carries the expense ratio in a column called "Ratio".
-  const PCT_COLS = [['mcap_large', 'Large Cap'], ['mcap_mid', 'Mid Cap'],
-    ['mcap_small', 'Small Cap'], ['mcap_other', 'Others'], ['expense', 'Ratio'],
-    ['ytm', 'YTM (%)']];
-  const RAW_COLS = [['aum', 'AUM (Cr.)'],
-    ['avg_maturity', 'Average Maturity Years'], ['mod_duration', 'Modified Duration Years']];
-  // "X Fund(G)-Direct Plan", "X Fund(G)-Direct Plan(Adjusted)" and "X Fund-Reg(G)" must all
-  // reduce to the same base. "(Adjusted)" marks a restated series, not a different scheme.
-  const NBSP = String.fromCharCode(160);
-  const base = s => {
-    let t = String(s || "").split(NBSP).join(" ").replace(/\s+/g, " ").trim().toLowerCase();
-    for (let k = 0; k < 5; k++) {
-      const prev = t;
-      t = t.replace(/\s*\(\s*adjusted\s*\)\s*$/i, "")
-           .replace(/\s*[-\u2013\u2014]?\s*direct\s*plan\s*$/i, "")
-           .replace(/\s*[-\u2013\u2014]\s*(dir|direct|reg|regular)\s*$/i, "")
-           .replace(/\s*\(\s*(?:g|growth|idcw|d|div|dividend)\s*\)\s*$/i, "")
-           .replace(/\s*[-\u2013\u2014]+\s*$/, "").trim();
-      if (t === prev) break;
-    }
-    return t;
-  };
-
-  const regByBase = new Map();
-  for (const f of W.MASTER) { const b = base(f.name); if (b && !regByBase.has(b)) regByBase.set(b, f.name); }
-
-  const pct = v => { if (v == null || v === '') return null; const n = typeof v === 'number' ? v : parseFloat(String(v).replace(/[,%\s]/g, '')); return isFinite(n) ? n / 100 : null; };
-  const num = v => { if (v == null || v === '') return null; const n = typeof v === 'number' ? v : parseFloat(String(v).replace(/[,\s]/g, '')); return isFinite(n) ? n : null; };
-  const cell = (ws, r, c) => { const x = ws[XLSX.utils.encode_cell({ r, c })]; return x ? x.v : null; };
-
-  const out = {}; let matched = 0, unmatched = 0; const sampleUnmatched = [];
-  for (const sn of wb.SheetNames) {
-    const ws = wb.Sheets[sn]; if (!ws || !ws['!ref']) continue;
-    const rg = XLSX.utils.decode_range(ws['!ref']);
-    let hdr = -1;
-    for (let r = rg.s.r; r <= Math.min(rg.s.r + 25, rg.e.r); r++) {
-      const v = cell(ws, r, 0);
-      if (v && String(v).trim().toLowerCase() === 'scheme name') { hdr = r; break; }
-    }
-    if (hdr < 0) continue;
-    const heads = [];
-    for (let c = rg.s.c; c <= rg.e.c; c++) { const v = cell(ws, hdr, c); heads.push(v != null ? String(v).trim() : ''); }
-    for (let r = hdr + 1; r <= rg.e.r; r++) {
-      const raw = cell(ws, r, 0);
-      if (!raw) continue;
-      const nm = String(raw).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
-      if (!nm || /^(average|benchmark|bench mark)$/i.test(nm)) continue;   // footer rows
-      if (!/direct/i.test(nm)) continue;                                    // only Direct rows
-      const reg = regByBase.get(base(nm));
-      if (!reg) { unmatched++; if (sampleUnmatched.length < 12) sampleUnmatched.push(nm); continue; }
-      const rec = out[reg] || (out[reg] = {});
-      for (const [k, h] of NUM) { const i = heads.indexOf(h); if (i >= 0) { const v = pct(cell(ws, r, i)); if (v != null) rec[k] = v; } }
-      // Only take the m-cap split on equity-style sheets and the debt stats on pure debt sheets,
-      // matching parseMfMonitor — hybrid sheets carry both column sets but are treated as equity
-      // there, and the two plans must agree.
-      const isEquityStyle = heads.indexOf('Large Cap') >= 0;
-      for (const [k, h] of PCT_COLS) {
-        if (/^mcap_/.test(k)) continue;                 // handled atomically below
-        if (k === 'ytm' && isEquityStyle) continue;
-        const i = heads.indexOf(h); if (i < 0) continue;
-        const v = pct(cell(ws, r, i)); if (v != null) rec[k] = v;
-      }
-      // The four m-cap buckets are one split: take them together, treating a blank as zero.
-      // Merging a partial Direct split onto the Regular one produced a set summing to 108%.
-      if (isEquityStyle) {
-        const q = [['mcap_large', 'Large Cap'], ['mcap_mid', 'Mid Cap'],
-                   ['mcap_small', 'Small Cap'], ['mcap_other', 'Others']]
-          .map(([k, h]) => { const i = heads.indexOf(h); return [k, i >= 0 ? pct(cell(ws, r, i)) : null]; });
-        if (q.some(([, v]) => v != null)) for (const [k, v] of q) rec[k] = (v == null ? 0 : v);
-      }
-      for (const [k, h] of RAW_COLS) {
-        if (/^(avg_maturity|mod_duration)$/.test(k) && isEquityStyle) continue;
-        const i = heads.indexOf(h); if (i < 0) continue;
-        const v = num(cell(ws, r, i)); if (v != null) rec[k] = v;
-      }
-      matched++;
-    }
-  }
-  W.DIRECT_PERF = out;
-  return { matched, unmatched, sampleUnmatched };
 }
