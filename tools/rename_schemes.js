@@ -10,22 +10,33 @@
 // A tie (same AMC, same inception, two schemes) is broken by the monitor sheet's own taxonomy
 // against the record's sub_category; anything still ambiguous is REPORTED, never guessed.
 //
-//   node rename_schemes.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]
+//   node tools/rename_schemes.js --monitor "<Daily MF Monitor ....xlsx>" [--html site/index.html] [--apply]
 //
 // Renames every store keyed by fund name: MASTER, EQUITY/HYBRID/DEBT_ANALYTICS, DIRECT_PERF,
-// RISK_MATRIX and CENTRICITY_SELECT. Re-running is a no-op (the old names are gone by then).
+// RISK_MATRIX and CENTRICITY_SELECT, plus the IRR map in Centricity_IRR_Offshore.js. Re-running
+// is a no-op (the old names are gone by then); only blocks that change are written, and the page
+// and the sibling are written together (validated first, then both).
+//
+// Merge policy (KNOWN_ISSUES A5): when an old name's live name already has an entry in a store,
+// the live-name entry wins and the stale old-name entry is DROPPED and reported. A record renamed
+// a second time keeps `prev_name` = its immediate old name (the page and the tools read it) and
+// gains `prev_names` = every earlier name, oldest first.
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
 const blocklib = require('./lib/blocklib.js');
+const { isoDay } = require('./lib/dates.js');
 
+const USAGE = 'Usage: node tools/rename_schemes.js --monitor "<Daily MF Monitor ....xlsx>" [--html site/index.html] [--apply]';
 const argv = process.argv.slice(2);
+const unknown = argv.filter(a => a.startsWith('--') && !['--monitor', '--html', '--apply'].includes(a));
+if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const MON = flag('--monitor');
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!MON || !fs.existsSync(MON)) {
-  console.error('Usage: node rename_schemes.js --monitor "<Daily MF Monitor ....xlsx>" [--html <p>] [--apply]');
+  console.error(USAGE);
   process.exit(2);
 }
 
@@ -73,7 +84,8 @@ for (const sn of wb.SheetNames) {
     if (low === 'average' || low.startsWith('benchmark')) break;
     const aum = cv(sh, r, 1); if (aum == null || aum === '' || isNaN(Number(aum))) continue;
     let inc = null;
-    if (ic >= 0) { const v = cv(sh, r, ic); if (v instanceof Date && !isNaN(v)) inc = v.toISOString().slice(0, 10); else if (v) inc = String(v).slice(0, 10); }
+    // The true calendar day of the cell (A6): toISOString() read it one day early east of UTC.
+    if (ic >= 0) { const v = cv(sh, r, ic); if (v instanceof Date && !isNaN(v)) inc = isoDay(v); else if (v) inc = String(v).slice(0, 10); }
     mon.push({ name: nm, sheet: sn, sub: SHEET_SUB[sn] || null, inception: inc });
   }
 }
@@ -83,7 +95,7 @@ console.log(`monitor        : ${path.basename(MON)}  (${mon.length} fund rows)`)
 // Drops plan suffixes and treats "&" / the word "and" as nothing, so "Large and Mid Cap",
 // "Large & Midcap" and "Large & Mid Cap" all collapse to the same key.
 const PLAN = /(\(g\)|\(idcw\)|\(d\)|\(growth\)|\(dividend\)|-reg\b|-dir\b|-direct plan|direct plan)/g;
-const norm = s => String(s || '').toLowerCase().replace(/ /g, ' ').replace(PLAN, ' ')
+const norm = s => String(s || '').toLowerCase().replace(/\u00A0/g, ' ').replace(PLAN, ' ')
   .replace(/&/g, ' ').replace(/\band\b/g, ' ').replace(/[^a-z0-9]+/g, '');
 
 // AMC = the leading brand words. Multi-word houses are listed; everything else is its first
@@ -92,13 +104,13 @@ const MULTI = ['aditya birla sl', 'bank of india', 'baroda bnp paribas', 'canara
   'invesco india', 'lic mf', 'mahindra manulife', 'mirae asset', 'nippon india', 'motilal oswal',
   'icici pru', 'the wealth company', 'bajaj finserv', '360 one', 'pgim india', 'whiteoak capital'];
 function amc(nameRaw) {
-  const s = String(nameRaw || '').toLowerCase().replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+  const s = String(nameRaw || '').toLowerCase().replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
   for (const m of MULTI) if (s.startsWith(m)) return m.replace(/[^a-z0-9]/g, '');
   return s.split(' ')[0].replace(/[^a-z0-9]/g, '');
 }
 
 // ---------- load the page's blocks ----------
-let html = fs.readFileSync(HTML, 'utf8');
+const html = fs.readFileSync(HTML, 'utf8');
 const master = blocklib.locate(html, 'window.MASTER = ').value;
 const MF = f => /Mutual Fund|ETF|Index Fund/i.test(f.product_class || '');
 const mfRecs = master.filter(MF);
@@ -113,6 +125,20 @@ for (const f of mfRecs) {
   if (!byInc.has(i)) byInc.set(i, []); byInc.get(i).push(f);
 }
 
+// A6 transition tolerance (added 19-Oct-2026). The Monitor's inception is now read as the true
+// calendar day (isoDay above), but most MASTER.inception values were baked one day early by the
+// page's parser on an IST machine: of the 2,139 Sep-2026 Monitor rows whose scheme is in MASTER,
+// 1,907 carry the day before and 231 the true day (16-Oct-2026). Until the corrected MASTER dates
+// are live, a MASTER date equal to the Monitor's OR exactly one day earlier is a match; the run
+// prints how many renames needed the one-day allowance. REMOVE this tolerance (dayBefore and its
+// use in tier 2, and the `tol` count) once the re-baked, corrected inception dates are live in
+// site/index.html.
+const dayBefore = iso => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+  if (!m) return null;
+  return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3] - 1)).toISOString().slice(0, 10);   // pure UTC arithmetic
+};
+
 // ---------- build the map ----------
 // A MASTER record still present in the monitor under its own name is never a rename target.
 const claimed = new Set(), seen = new Set();
@@ -125,13 +151,18 @@ for (const m of mon) {
   const nh = (byNorm.get(norm(m.name)) || []).filter(free);
   if (nh.length === 1) { renames.push({ from: nh[0].name, to: m.name, how: 'name', sub: nh[0].sub_category }); claimed.add(nh[0].name); continue; }
 
-  let cands = (byInc.get(m.inception) || []).filter(f => free(f) && amc(f.name) === amc(m.name));
+  const days = [m.inception, dayBefore(m.inception)].filter(Boolean);
+  let cands = [...new Set(days.flatMap(d => byInc.get(d) || []))].filter(f => free(f) && amc(f.name) === amc(m.name));
   if (cands.length > 1 && m.sub) {
     // Two schemes of one AMC launched the same day: the monitor sheet says which is which.
     const narrowed = cands.filter(f => f.sub_category === m.sub);
     if (narrowed.length === 1) cands = narrowed;
   }
-  if (cands.length === 1) { renames.push({ from: cands[0].name, to: m.name, how: 'inception', sub: cands[0].sub_category }); claimed.add(cands[0].name); }
+  if (cands.length === 1) {
+    const tol = String(cands[0].inception).slice(0, 10) !== m.inception;
+    renames.push({ from: cands[0].name, to: m.name, how: 'inception', sub: cands[0].sub_category, tol });
+    claimed.add(cands[0].name);
+  }
   else if (cands.length > 1) ambiguous.push({ to: m.name, inception: m.inception, sheet: m.sheet, from: cands.map(c => c.name) });
   else leftover.push(m);
 }
@@ -143,7 +174,7 @@ for (const m of mon) {
 // exactly one unmatched scheme in that category on each side, which settles it.
 // Deliberately strict: it fires only on 1-to-1, so a house launching a second fund in a category
 // it also renamed falls through to "new" rather than being paired off by guesswork.
-const cell = (a, s) => a + ' ' + s;
+const cell = (a, s) => a + '\u0000' + s;
 const freeOld = mfRecs.filter(f => !monNames.has(f.name) && !claimed.has(f.name));
 const oldByCell = new Map(), newByCell = new Map();
 for (const f of freeOld) { const k = cell(amc(f.name), f.sub_category); if (!oldByCell.has(k)) oldByCell.set(k, []); oldByCell.get(k).push(f); }
@@ -158,20 +189,31 @@ for (const [k, news] of newByCell) {
 }
 for (const m of leftover) if (!pairedByCell.has(m.name)) fresh.push(m);
 
-// Renames already applied in an earlier run are recoverable from `prev_name`, so a second run
-// still reaches anything the first one missed (a sibling added later, say) instead of finding
-// the old names gone and quietly doing nothing.
-const priorMap = new Map();
-for (const f of master) if (f.prev_name && f.prev_name !== f.name) priorMap.set(f.prev_name, f.name);
+// Renames already applied in an earlier run are recoverable from `prev_name` (and `prev_names`
+// after a second rename), so a second run still reaches anything the first one missed (a sibling
+// added later, say) instead of finding the old names gone and quietly doing nothing.
+const historyOf = f => [...new Set([...(Array.isArray(f.prev_names) ? f.prev_names : []), ...(f.prev_name ? [f.prev_name] : [])])]
+  .filter(h => h !== f.name);
+const priorMap = new Map(), priorClash = new Set();
+for (const f of master) for (const h of historyOf(f)) {
+  if (priorMap.has(h) && priorMap.get(h) !== f.name) priorClash.add(h);
+  priorMap.set(h, f.name);
+}
 if (priorMap.size) console.log(`already renamed: ${priorMap.size} (from prev_name — will be re-applied to the siblings)`);
 
-console.log(`renames        : ${renames.length}  (${renames.filter(r => r.how === 'name').length} by name, ${renames.filter(r => r.how === 'inception').length} by inception+AMC, ${renames.filter(r => r.how === 'category').length} by AMC+category 1-to-1)`);
+const incRenames = renames.filter(r => r.how === 'inception');
+console.log(`renames        : ${renames.length}  (${renames.filter(r => r.how === 'name').length} by name, ${incRenames.length} by inception+AMC, ${renames.filter(r => r.how === 'category').length} by AMC+category 1-to-1)`);
+console.log(`  inception+AMC matched via the one-day tolerance (MASTER = Monitor - 1 day, A6 transition): ${incRenames.filter(r => r.tol).length} of ${incRenames.length}`);
 console.log(`ambiguous      : ${ambiguous.length}`);
 console.log(`new to MASTER  : ${fresh.length}   (left for bake_month.js to add)\n`);
-for (const r of renames) console.log(`   ${r.from}   ->   ${r.to}      [${r.sub} · ${r.how}]`);
+for (const r of renames) console.log(`   ${r.from}   ->   ${r.to}      [${r.sub} · ${r.how}${r.tol ? ' (-1 day)' : ''}]`);
 if (ambiguous.length) {
   console.log('\n*** AMBIGUOUS — not renamed, resolve by hand: ***');
   for (const a of ambiguous) console.log(`   ${a.to}  [inc ${a.inception} · ${a.sheet}]  <-  ${JSON.stringify(a.from)}`);
+}
+if (priorClash.size) {
+  console.log('\n*** an earlier name is claimed by more than one MASTER record — not used for the stores, resolve by hand: ***');
+  for (const h of priorClash) console.log(`   ${h}  <-  ${JSON.stringify(master.filter(f => historyOf(f).includes(h)).map(f => f.name))}`);
 }
 
 // ---------- gates ----------
@@ -188,37 +230,85 @@ console.log(`GATE no collision with an existing MASTER name: PASS`);
 if (!renames.length && !priorMap.size) { console.log('\nnothing to rename.'); process.exit(0); }
 
 // ---------- apply ----------
-const map = new Map([...priorMap, ...renames.map(r => [r.from, r.to])]);
-let hits = { MASTER: 0 };
+// MASTER takes only this run's renames. `prev_name` keeps the pre-SEBI name resolvable: an
+// allocation sheet saved last month, or a hand-typed name off an older proposal, still lands on
+// the right instrument. H.buildFundIndex indexes it behind the live name, so a current name always
+// wins. A record renamed before keeps that history in `prev_names` (oldest first).
+const rmap = new Map(renames.map(r => [r.from, r.to]));
+const hits = { MASTER: 0 };
+let chained = 0;
 for (const f of master) {
-  const t = map.get(f.name);
-  // `prev_name` keeps the pre-SEBI name resolvable: an allocation sheet saved last month, or a
-  // hand-typed name off an older proposal, still lands on the right instrument. H.buildFundIndex
-  // indexes it behind the live name, so a current name always wins.
-  if (t) { f.prev_name = f.name; f.name = t; hits.MASTER++; }
+  const t = rmap.get(f.name);
+  if (!t) continue;
+  const hist = historyOf(f);
+  if (hist.length) { f.prev_names = [...hist, f.name]; chained++; }
+  f.prev_name = f.name; f.name = t; hits.MASTER++;
+}
+if (chained) console.log(`\nrenamed again (prev_names now carries the full history): ${chained}`);
+
+// The store map: every earlier name of a record -> its live name after this run, so an entry
+// still under a name from two renames ago lands on the live name, not on the middle one. A name
+// that is live in MASTER is never mapped away (a live name always wins over history).
+const live = new Set(master.map(f => f.name));
+const map = new Map();
+for (const [h, cur] of priorMap) {
+  if (priorClash.has(h)) continue;
+  const t = rmap.get(cur) || cur;
+  if (t !== h && !live.has(h)) map.set(h, t);
+}
+for (const [from, to] of rmap) if (!live.has(from)) map.set(from, to);
+
+// Recency of an old name for a live name: its position in the record's history (newest last).
+const histByLive = new Map(master.map(f => [f.name, historyOf(f)]));
+const recency = (t, k) => (histByLive.get(t) || []).lastIndexOf(k);
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const dropped = [];
+
+// Re-key one name-keyed store. An old-name key whose live name already has an entry is stale: the
+// live-name entry wins and the old one is dropped (and reported). If several old names of one
+// fund have entries and the live name has none, the most recent old name's entry moves and the
+// older ones are dropped.
+function rekey(label, store) {
+  const winner = new Map();
+  for (const k of Object.keys(store)) {
+    const t = map.get(k);
+    if (t === undefined || has(store, t)) continue;
+    const w = winner.get(t);
+    if (w === undefined || recency(t, k) > recency(t, w)) winner.set(t, k);
+  }
+  const out = {};
+  let n = 0, d = 0;
+  for (const k of Object.keys(store)) {
+    const t = map.get(k);
+    if (t === undefined) { out[k] = store[k]; continue; }
+    if (winner.get(t) === k) { out[t] = store[k]; n++; continue; }
+    dropped.push(`${label}  "${k}"  (live name "${t}" ${has(store, t) ? 'already has an entry' : 'took a more recent old name\'s entry'})`);
+    d++;
+  }
+  return { out, n, d };
 }
 
-const updates = [{ prefix: 'window.MASTER = ', value: master }];
+const updates = [];
+const unreadable = [];
 for (const prefix of ['window.EQUITY_ANALYTICS = ', 'window.HYBRID_ANALYTICS = ', 'window.DEBT_ANALYTICS = ',
                       'window.DIRECT_PERF = ', 'window.RISK_MATRIX = ', 'window.CENTRICITY_SELECT = ']) {
   let store;
-  try { store = blocklib.locate(html, prefix).value; } catch (e) { console.log(`   (skipped ${prefix.trim()} — ${e.message})`); continue; }
-  const label = prefix.replace('window.', '').replace(' = ', '');
-  let n = 0;
-  const out = {};
-  for (const k of Object.keys(store)) {
-    const t = map.get(k);
-    // A key the rename would overwrite is left alone: the newer entry wins and the stale one
-    // is dropped, which is what a merge means here.
-    if (t && !(t in store)) { out[t] = store[k]; n++; } else out[k] = store[k];
+  try { store = blocklib.locate(html, prefix).value; }
+  catch (e) {
+    console.log(`   (skipped ${prefix.trim()} — ${e.message})`);
+    unreadable.push(prefix.trim() + ': ' + e.message);           // missing counts too: its keys would not be renamed
+    continue;
   }
-  hits[label] = n;
-  updates.push({ prefix, value: out });
+  const label = prefix.replace('window.', '').replace(' = ', '');
+  const r = rekey(label, store);
+  hits[label] = r.n;
+  if (r.n || r.d) updates.push({ prefix, value: r.out });
 }
+if (hits.MASTER) updates.unshift({ prefix: 'window.MASTER = ', value: master });
 console.log('\nkeys renamed per store:', JSON.stringify(hits));
 
 const dupes = master.map(f => f.name).filter((n, i, a) => a.indexOf(n) !== i);
-console.log(`GATE duplicate MASTER names after rename: ${dupes.length ? 'FAIL ' + JSON.stringify(dupes.slice(0, 8)) : 'PASS (0)'}`);
+console.log(`GATE duplicate MASTER names after rename: ${dupes.length ? '*** FAIL ' + JSON.stringify(dupes.slice(0, 8)) : 'PASS (0)'}`);
 if (dupes.length) process.exit(1);
 
 // ---------- the siblings ----------
@@ -228,23 +318,36 @@ if (dupes.length) process.exit(1);
 const SIBLINGS = [
   { file: 'Centricity_IRR_Offshore.js', prefix: 'var IRR = ' },
 ];
-const sibWrites = [];
+const outputs = [];
 for (const s of SIBLINGS) {
   const p = path.join(path.dirname(HTML), s.file);
-  if (!fs.existsSync(p)) { console.log(`   (skipped ${s.file} — not found)`); continue; }
+  if (!fs.existsSync(p)) { console.log(`   (skipped ${s.file} — not found)`); unreadable.push(s.file + ': file not found'); continue; }
+  const text = fs.readFileSync(p, 'utf8');
   let store;
-  try { store = blocklib.read(p, s.prefix).value; } catch (e) { console.log(`   (skipped ${s.file} — ${e.message})`); continue; }
-  let n = 0;
-  const out = {};
-  for (const k of Object.keys(store)) {
-    const t = map.get(k);
-    if (t && !(t in store)) { out[t] = store[k]; n++; } else out[k] = store[k];
+  try { store = blocklib.locate(text, s.prefix).value; }
+  catch (e) {
+    console.log(`   (skipped ${s.file} — ${e.message})`);
+    unreadable.push(s.file + ': ' + e.message);
+    continue;
   }
-  console.log(`${s.file} :: ${s.prefix.trim()} — ${n} key(s) renamed of ${Object.keys(store).length}`);
-  sibWrites.push({ p, file: s.file, updates: [{ prefix: s.prefix, value: out }] });
+  const r = rekey(s.file, store);
+  console.log(`${s.file} :: ${s.prefix.trim()} — ${r.n} key(s) renamed of ${Object.keys(store).length}`);
+  if (r.n || r.d) outputs.push({ file: p, content: blocklib.spliceBlocks(text, [{ prefix: s.prefix, value: r.out }]) });
 }
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write ' + path.basename(HTML) + ' + siblings'); process.exit(0); }
-const size = blocklib.writeBlocks(HTML, updates);
-console.log(`\nwrote ${path.basename(HTML)} (${size} bytes)`);
-for (const w of sibWrites) console.log(`wrote ${w.file} (${blocklib.writeBlocks(w.p, w.updates)} bytes)`);
+console.log(`\nstale old-name keys dropped (the live name already has an entry): ${dropped.length}`);
+for (const x of dropped) console.log(`   - ${x}`);
+console.log(`GATE every name-keyed store readable: ${unreadable.length ? '*** FAIL ' + unreadable.join(' | ') : 'PASS'}`);
+if (unreadable.length) { console.error('\n*** a store could not be read — refusing to rename the others without it'); process.exit(1); }
+
+if (updates.length) outputs.unshift({ file: HTML, content: blocklib.spliceBlocks(html, updates) });
+const changed = outputs.map(o => path.basename(o.file));
+if (!APPLY) {
+  console.log(`\nfiles that would change: ${changed.length ? changed.join(', ') : 'none'}`);
+  console.log('[dry run] pass --apply to write ' + path.basename(HTML) + ' + siblings');
+  process.exit(0);
+}
+if (!outputs.length) { console.log('\nnothing changed — no file written'); process.exit(0); }
+blocklib.writeFilesAtomic(outputs);
+console.log('');
+for (const o of outputs) console.log(`wrote ${path.basename(o.file)} (${o.content.length} bytes)`);

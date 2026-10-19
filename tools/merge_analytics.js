@@ -3,7 +3,7 @@
 // Section 7 uploader would produce. Use this when only one class needs re-baking; bake_month.js
 // does all three plus the MF Monitor.
 //
-//   node merge_analytics.js --hybrid "<Hybrid Analytics_July 2026.xlsx>" --as-on "31st July 2026" [--apply]
+//   node tools/merge_analytics.js --hybrid "<Hybrid Analytics_July 2026.xlsx>" --as-on "31st July 2026" [--equity <xlsx>] [--debt <xlsx>] [--html site/index.html] [--apply]
 //
 // parseAnalytics MERGES: a scheme in last month's block but absent from this month's workbook
 // keeps its old holdings under the new date. The run reports exactly which ones those are, split
@@ -12,8 +12,12 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const XLSX = require('xlsx');
+const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/merge_analytics.js --hybrid "<xlsx>" --as-on "31st July 2026" [--equity <xlsx>] [--debt <xlsx>] [--html site/index.html] [--apply]';
 const argv = process.argv.slice(2);
+const unknown = argv.filter(a => a.startsWith('--') && !['--equity', '--hybrid', '--debt', '--as-on', '--html', '--apply'].includes(a));
+if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const ASON = flag('--as-on');
@@ -22,9 +26,11 @@ const KINDS = [['equity', 'EQUITY_ANALYTICS'], ['hybrid', 'HYBRID_ANALYTICS'], [
   .map(([k, g]) => ({ kind: k, global: g, src: flag('--' + k) }))
   .filter(x => x.src);
 if (!KINDS.length || !ASON) {
-  console.error('Usage: node merge_analytics.js --hybrid "<xlsx>" --as-on "31st July 2026" [--equity <xlsx>] [--debt <xlsx>] [--html <p>] [--apply]');
+  console.error(USAGE);
   process.exit(2);
 }
+// The label is pasted into the DATA_DATES string literal: a plain date only (A9).
+try { B.checkAsOn(ASON, 'long'); } catch (e) { console.error('*** ' + e.message); process.exit(2); }
 for (const k of KINDS) {
   if (!fs.existsSync(k.src)) { console.error('*** missing source: ' + k.src); process.exit(2); }
   console.log(k.kind.padEnd(7) + ' <- ' + path.basename(k.src));
@@ -54,11 +60,16 @@ const sandbox = {
 };
 sandbox.window = {}; sandbox.globalThis = sandbox; sandbox.window.document = sandbox.document;
 vm.createContext(sandbox);
+// UI blocks stop at the first CDN library the sandbox does not load (expected). Any other error
+// means a data or parser block did not run: report it and fail the gate (A23).
+const CDN_GLOBAL = /^(React|ReactDOM|Chart|XLSX|PptxGenJS) is not defined$/;
+const blockErrors = [];
 let ran = 0;
 for (const b of blocks) {
   if (b.src) continue;                                          // CDN + the five siblings
   if (/ReactDOM\.createRoot/.test(b.body)) continue;
-  try { vm.runInContext(b.body, sandbox, { timeout: 120000 }); ran++; } catch (e) { /* UI blocks need React */ }
+  try { vm.runInContext(b.body, sandbox, { timeout: 120000 }); ran++; }
+  catch (e) { if (!CDN_GLOBAL.test(e.message)) { blockErrors.push(e.message); console.log(`  *** inline block error: ${e.message.slice(0, 160)}`); } }
 }
 const W = sandbox.window;
 if (!W.REFRESH || !W.REFRESH.parseAnalytics) { console.error('*** window.REFRESH.parseAnalytics not available'); process.exit(1); }
@@ -88,6 +99,8 @@ const fileOf = p => ({ name: path.basename(p), arrayBuffer: async () => fs.readF
   const pcByName = new Map(W.MASTER.map(r => [r.name, r.product_class]));
   const writes = [];
   let fail = false;
+  console.log(`GATE sandbox inline blocks: ${blockErrors.length ? `*** FAIL (${blockErrors.length} error(s) other than a missing CDN library — see above)` : 'PASS'}`);
+  if (blockErrors.length) fail = true;
 
   for (const k of KINDS) {
     const store = W[k.global];
@@ -132,10 +145,12 @@ const fileOf = p => ({ name: path.basename(p), arrayBuffer: async () => fs.readF
   if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
   if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-  const B = require('./lib/blocklib');
-  B.writeBlocks(HTML, writes.map(([prefix, value]) => ({ prefix, value })));
-  let h = fs.readFileSync(HTML, 'utf8');
-  h = h.replace(/(analytics:\s*)"[^"]*"/, '$1"' + ASON + '"');
-  fs.writeFileSync(HTML, h, 'utf8');
+  // The blocks and the date label go into one string, then one atomic write (A8, A9).
+  let h;
+  try {
+    h = B.spliceBlocks(html, writes.map(([prefix, value]) => ({ prefix, value })));
+    h = B.setDataDate(h, 'analytics', ASON);
+    B.writeFilesAtomic([{ file: HTML, content: h }]);
+  } catch (e) { console.error(`*** ${e.message} — nothing written`); process.exit(1); }
   console.log('\nWROTE ' + HTML + ' — ' + h.length + ' bytes; DATA_DATES.analytics = "' + ASON + '"');
 })();
