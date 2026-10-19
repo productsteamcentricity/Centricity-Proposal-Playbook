@@ -8,10 +8,12 @@
 > - **Line numbers into `index.html`** (`L1031`, `L4192`, …) are historical and have drifted. The
 >   current map is in `docs/ARCHITECTURE.md` and `docs/PRD.md` §3.4. Find blocks with Grep; never
 >   Read the whole file.
-> - **Layout:** `site/` (the six deploy files, the unused `Centricity_Risk_Matrix.js`, `robots.txt`),
->   `tools/` (monthly tools and `build_risk_matrix.py`), `tools/lib/` (`blocklib.js`, `pptx.js`,
->   `reck_parse.js`, `reck_narrative.js`), `docs/`. Local only (gitignored): `monthly-updates/`
->   (source files), `backups/` (pre-refresh snapshots of the six deploy files, replacing the
+> - **Layout:** `site/` (the six deploy files and `robots.txt`; the unused `Centricity_Risk_Matrix.js`
+>   moved to `docs/archive/` on 19-Oct-2026, D78), `tools/` (monthly tools and
+>   `build_risk_matrix.py`), `tools/lib/` (`blocklib.js`, `dates.js`, `direct_perf.js`, `pptx.js`,
+>   `reck_parse.js`, `reck_narrative.js`), `tools/data/pins.json` (the PMS-alias, Reckoner and AIF
+>   pins; the look-through `PIN` map stays in `merge_pms_aif_analytics.js`), `docs/`. Local only
+>   (gitignored): `monthly-updates/` (source files), `backups/` (pre-refresh snapshots of the six deploy files, replacing the
 >   `index.html.bak_*` files that used to sit beside the page), `handover-archive/`. Run every
 >   command from the repo root. A bare tool or file name in the prose names the artefact, not its location.
 > - **Owner, repository and hosting facts** in this file are superseded by `docs/DEPLOYMENT.md` and
@@ -19,6 +21,9 @@
 > - **Edits made on 16-Oct-2026:** commands and file references were rewritten for the new layout,
 >   and owner/location facts that changed are marked "(updated 16-Oct-2026)". Other statements known
 >   to be stale are left as written and corrected in *Errata (16-Oct-2026)* at the end.
+> - **Tool and page fixes of 16–19-Oct-2026** (PRs #3–#15) made more statements stale; the pin advice
+>   is corrected in place "(updated 19-Oct-2026)", the rest in *Errata (19-Oct-2026)* at the end. Tool
+>   behaviour today: `tools/README.md`.
 
 # Centricity Proposal Playbook — working notes for Claude Code
 
@@ -1101,7 +1106,9 @@ verbatim — **this file is PMS-only and cannot update AIF**. AIF comes from the
   (`ICICI - Value Strategy` → `ICICI Prudential - Value Portfolio`). That silently broke 9 alias
   pins. `PMS_PERF_ALIAS` is **maintained by hand, never guessed** — a wrong pin puts another
   manager's numbers on a client's fund. The `REPIN` map at the top of `merge_pms_performance.js`
-  is where renames go; the gate is *MASTER PMS funds with performance must not fall*.
+  is where renames go; the gate is *MASTER PMS funds with performance must not fall*. (Updated
+  19-Oct-2026: the map moved to `tools/data/pins.json`, section `pms_alias`, entries marked `repin`;
+  edit it there, with the owner.)
 - **AUM units are decided per column, not per row.** The old ">10 lakh means rupees" rule turned a
   genuine 7-lakh-rupee scheme into 700,000 Cr. `const inRupees = Math.max(...aums) > 1e8`.
 - AUM values arrive as comma-formatted **strings** (`"20,41,79,00,000.00"`), so `parseFloat` after
@@ -1121,7 +1128,9 @@ apostrophe it used to write, `Emkay Investments - India''s Golden Decade of Grow
 (Negen, Karma, TCG, Motilal Oswal Founders) as well. The tell is
 `*** key not in PMS_PERFORMANCE.pms` in the dry run — never `--apply` past it. `merge_pms_performance.js`'s
 `REPIN` map and this `PINS` map both name the same scheme, so **when the vendor renames, both need
-the edit**; check they agree before assuming one is right.
+the edit**; check they agree before assuming one is right. (Updated 19-Oct-2026: both maps are now
+one file, `tools/data/pins.json` (`pms_alias`): an entry marked `repin` and `pin` serves both tools,
+so a rename is one edit there. `trailing_space` lists the names that end in a space on purpose.)
 
 Four pins are still `null` because the file genuinely has no counterpart: Burman Capital,
 Phillip Conservative Credit, Sundaram F.I.R.S.T. Debt, Julius Baer Premier Focused.
@@ -1174,7 +1183,8 @@ winning, and prints every prev_name hit under *RESOLVED VIA prev_name* so the br
 **A `PIN` target can itself have been renamed.** `HDFC Multi-Asset Allocation Fund(G)` and
 `SBI Constant Maturity 10 Year Gilt Fund-Reg(G)` are now the `prev_name` of the live records, and
 the `exact.has(PIN[name])` guard silently skipped both — a stale pin fails *closed*, so it reads as
-"no MASTER record" rather than erroring. The resolver follows a renamed pin target now.
+"no MASTER record" rather than erroring. The resolver follows a renamed pin target now. (Updated
+19-Oct-2026: `PIN` is now the `reckoner` section of `tools/data/pins.json`.)
 
 **Sep-2026 renamed the scheme ON TOP of the old name** instead of replacing it, stranding the old
 qualifier mid-name: `HDFC Low Duration` → `HDFC **Low** Ultra Short to Short Term`,
@@ -1353,3 +1363,18 @@ transferred. The original lines are left as written so the history stays readabl
 | 35 | CL:1190-1222. Open items numbered 1-6, 8, 9, 10, 13, 14, 11, 12, 7. | PRD §14 renumbers them: CL 11 → 3, 13 → 4, 14 → 5, 9 → 6, 10 → 7, 12 → 10, 7 → 11. CL 3 and 4 are dropped (row 9). For CL 2, the old README is archived at `docs/archive/README_original_2026-05.md`, and a new root `README.md` replaces it. The current list is `docs/KNOWN_ISSUES.md`. | PRD §14. |
 | 36 | CL:191, CL:278. The SIF split and the Index Fund fold are dated 21-Aug-2026. | Their commits are dated 25-Aug-2026 ("SIF splits by strategy…", "Index Fund becomes a sub-category…"). 21-Aug is probably when the change was made [inference]. | `git log`; PRD §1 changelog. |
 | 37 | PRD only. "`merge_*.js` (15 scripts)" (PRD §2); the tools "all default to `index.html` beside the script" (PRD §11, §13); Pages served from "`main` / `(root)`" (PRD §5). | There are 12 `merge_*.js` files and 25 Node tools in all, plus `build_risk_matrix.py`. 18 tools default `--html` to `site/index.html`, and 3 default their sibling file into `site/`. `merge_pms_performance.js`, `pin_pms_alias.js` and `merge_reckoner.js` have no default and need `--html site/index.html`. `verify_page.js` takes the folder (`site`). GitHub Actions builds Pages from `site/` (D63). This file makes the same "beside the script" claim at CL:607-608: `merge_direct_equity_returns.js` now defaults to `site/index.html`. | `tools/merge_direct_equity_returns.js:37` and the other tools' default-path lines; `.github/workflows/pages.yml`. |
+
+## Errata (19-Oct-2026)
+
+Statements above made stale by the tool and page fixes of 16–19-Oct-2026 (PRs #3–#15). They are left
+as written; the issue IDs are in `docs/KNOWN_ISSUES.md` and the decisions in `docs/DECISIONS.md`.
+
+| # | Statement above | Correct value (19-Oct-2026) | Evidence |
+|---|---|---|---|
+| 38 | *Two routes into `RISK_MATRIX`*: `build_risk_matrix.py` is "the authority". | The Node route (`merge_risk_matrix.js`) is the production route (D43); the Python route is guarded but not validated for production (A22). It writes only a `.js` outside `site/`, takes `--rf`, and has a `prev_name` tier. | `tools/build_risk_matrix.py:1-49`; `tools/README.md` §5. |
+| 39 | *Two routes*: "The `Data Flags` tab is not wired into the UI"; the 30-Sep file has "no Max-Drawdown-only flags any more"; open item 11. | The 30-Sep file has 28 "split … risk stats unreliable", 12 split notes for Max Drawdown only, 5 low correlation and 122 short-history flags. `merge_risk_matrix.js` now carries the first and third kinds as `fl` (28 `split`, 5 `lowcorr`, live since PR #13), and the Portfolio Matrix tab and slide mark them with a dagger and footnote (D74, C3). | `node tools/merge_risk_matrix.js … --as-on "30 Sep 2026"` dry run; `H.riskFlagged`. |
+| 40 | *Files: what to touch* and *Deploying*: `Centricity_Risk_Matrix.js` "survives only as `build_risk_matrix.py`'s output" and "is still tracked". | Moved unchanged to `docs/archive/Centricity_Risk_Matrix_2026-06-30.js`; no longer published (D78, R5). | PR #12 (`3a75afb`). |
+| 41 | *Layout* / *Index Fund*: "Rerun `node tools/fold_index_funds.js --apply` if a stray record ever reappears." | A stray "Index Fund" row in the embedded MASTER is still folded by `--apply`; one a sibling brings back at load is only reported, and must be fixed in that sibling (PRD §11.5). | `tools/fold_index_funds.js:10-13`, `:36-73`. |
+| 42 | *Scheme names are not stable*: the tool "stamps the old name on the record as `prev_name`"; identity is inception + AMC. | A record renamed again keeps `prev_name` and gains `prev_names` (full history), which `H.buildFundIndex` also indexes; stale old-name keys are dropped and listed (D79). Inception is compared on the exact calendar day: dates are read with `isoDay`, and MASTER inception dates were corrected +1 day on 19-Oct-2026 (D73). | `tools/rename_schemes.js:19-23`, `:128-130`. |
+| 43 | *The monthly bake* and *The monthly Reckoner*: "Every step is dry-run by default; read the gates before adding `--apply`" and "Gates refuse to write on a regression", with nothing on exit codes, how files are written or flag checking. | Every data tool exits 1 when a gate fails (the dry run too) and 2 on a usage error (unknown flag, stray word, missing value), writes atomically after all gates pass, and refuses unknown flags (D72). Exceptions: `verify_page.js` has no argument check (exit 1 on a hard failure only), and the Reckoner-cycle tools (`merge_pms_performance`, `merge_reckoner`, `add_reckoner_funds`, `merge_aif_performance`, `merge_pms_aif_analytics`) exit 1 with `ENOENT` on a missing input file. Still read every gate. | `tools/README.md` §1; a dry run of each tool with an unknown flag and with a missing file (19-Oct-2026). |
+| 44 | *Centricity Select*: "If those two lists mirror each other, stop", left to the operator. | The tool now refuses this itself, within one category (D71), as well as more than 5% dropped and an emptied category (waivable with `--accept-drops <n>`), and a dropped fund still listed under a deck heading `GRID` does not map (D76, never waived). | `tools/merge_reckoner.js:282-318`. |

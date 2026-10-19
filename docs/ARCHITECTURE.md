@@ -46,8 +46,8 @@ page. There is no server, database, build step, login or persistence.
 | 5 | L5085 | `Centricity_SIF_Refresh.js` | Replaces SIF rows with 30 (Equity SIF 16, Hybrid SIF 14); sets `DATA_DATES.sif`; registers `REFRESH.parseSif`. **After #4.** |
 
 Each is idempotent-guarded (`window.__JUNE_REFRESH_APPLIED` etc.). Baseline MASTER 7,672 →
-effective 7,682 after the siblings. `Centricity_Risk_Matrix.js` is **not loaded** (its content is
-baked inline at L5091); it is kept in `site/` for parity. Deploying `index.html` without the siblings
+effective 7,682 after the siblings. The risk matrix is baked inline (L5091 on 16-Oct-2026); the old
+unloaded `Centricity_Risk_Matrix.js` moved to `docs/archive/` on 19-Oct-2026 (D78). Deploying `index.html` without the siblings
 silently reverts data — the CI `verify` job refuses a deploy with a missing sibling.
 
 ## 3. Line map of `site/index.html` (re-derived 16-Oct-2026; drifts with every edit)
@@ -55,7 +55,7 @@ silently reverts data — the CI `verify` job refuses a deploy with a missing si
 | Lines | Block |
 |---|---|
 | L4–1223 | CSS (liquid-glass layer from ~L845) |
-| L1224–1228 | CDN scripts: React/ReactDOM 18.3.1 (unpkg), Chart.js 4.4.0, xlsx 0.18.5, pptxgenjs 3.12.0 (jsDelivr) — pinned, no SRI |
+| L1224–1228 | CDN scripts: React/ReactDOM 18.3.1 (unpkg), Chart.js 4.4.0 (`dist/chart.umd.js`), xlsx 0.18.5, pptxgenjs 3.12.0 (jsDelivr) — pinned, with SRI `integrity` and `crossorigin` since 19-Oct-2026 (D77) |
 | L1229–1231 | `CENTRICITY_LOGO`, `DIRECT_PERF` (1,689), `LOGO_PRESETS` |
 | L1232–1233 | siblings 1–2 |
 | L1238 / L1290 | `BENCHMARKS` (dead description map) / `RATIONALE` |
@@ -73,8 +73,8 @@ silently reverts data — the CI `verify` job refuses a deploy with a missing si
 | L5096–9096 | UI components; `App` L8651; `createRoot` L9096; file ends `</body></html>` (L9097) |
 
 Re-derive with `Grep -n` before citing. `blocklib.locate` uses the **first** occurrence of
-`window.X = `, so each baseline literal must stay ahead of the runtime re-assignments later in the
-file (MASTER is re-assigned by uploader/add-fund handlers at ~L3375, 3698, 3818, 8795, 8831).
+`window.X = ` and refuses a prefix with two literal assignments, so each baseline literal must stay
+ahead of the runtime re-assignments later in the file (MASTER is re-assigned by uploader/add-fund handlers at ~L3375, 3698, 3818, 8795, 8831).
 
 ## 4. Data model (summary — full detail in PRD §6)
 
@@ -107,7 +107,9 @@ All IRRs are pre-tax; no tax or fee computation (non-goal).
 ## 6. External dependencies
 
 - Runtime: the five pinned CDN scripts. Nothing else is fetched; fonts are system fonts (Cambria);
-  images are data URIs. The browser requests `/favicon.ico` (404 — no favicon; harmless).
+  images are data URIs. The page declares a data-URI favicon (`<link rel="icon" href="data:,">`) and a
+  `noindex, nofollow` robots meta since 19-Oct-2026 (D77); some browsers may still request
+  `/favicon.ico` (harmless, F3).
 - Tools: Node ≥ 18 (24.x used), `xlsx` 0.18.5 exactly (npm advisories accepted — trusted local
   inputs, must equal the in-page version). Optional: Python 3 + pandas/numpy/openpyxl/dateutil for
   `build_risk_matrix.py`; Microsoft PowerPoint (COM) for rendering market/closing slides.
@@ -120,4 +122,5 @@ All IRRs are pre-tax; no tax or fee computation (non-goal).
   the L1238 `BENCHMARKS` map, legacy `aggEquity`/`aggDebt`. `parseBonds` and `parseAnalytics` have no
   upload card (the rail shows three: MF Monitor, PMS/AIF holdings, SIF Monitor), but `parseAnalytics`
   is **not** dead: the tools run it offline, so never delete it (`KNOWN_ISSUES.md` C12).
-- `index.html` is a 12.8 MB single file; tools depend on its literal shapes (e.g. MASTER on its own line).
+- `index.html` is a 12.8 MB single file; tools depend on its literal shapes (each data block a
+  `window.X = ` literal found exactly once by `blocklib.locate`).

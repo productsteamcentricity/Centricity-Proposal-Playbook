@@ -18,6 +18,131 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-19 — Strict command lines finished; invisible characters (PR #15, fix/tools-cli-cleanup)
+
+Tool fix only: no file in `site/` changed.
+
+### Fixed
+- `tools/rename_schemes.js`, `bake_month.js`, `fill_variant_analytics.js`, `merge_analytics.js`,
+  `rebuild_directperf.js`, `rekey_sif_analytics.js` (`184939e`, merge `1e48781`): a stray word (an
+  unquoted `--as-on 30th September 2026` left `September 2026` behind) or a value flag with no value
+  now exits 2 with the usage line, like every other tool (D72).
+- The last two literal no-break spaces in tool regexes (`merge_fund_managers.js`,
+  `merge_pms_aif_analytics.js`) become `\u00A0` escapes; same behaviour (A25).
+- `merge_reckoner.js` no longer requires `fs`, which it never used (F2).
+
+## 2026-10-19 — Rename tool compares the exact inception day (PR #14, fix/rename-exact-inception)
+
+### Changed
+- `tools/rename_schemes.js` (`bc37922`, merge `cd6317c`): the one-day inception allowance used during
+  the A6 transition is removed; tier 2 compares the exact calendar day (D73). Since PR #13, 2,070 of
+  the 2,072 Sep-2026 Monitor rows in MASTER carry the exact inception; the exceptions are
+  `docs/KNOWN_ISSUES.md` C16 and one legacy "Mutual Funds" record. Sep dry run unchanged: 8 renames,
+  all on the exact day, not applied (owner decision pending).
+
+## 2026-10-19 — Sep-2026 data corrections (PR #13, data/2026-09-corrections)
+
+### Fixed
+- `site/index.html`, `site/Centricity_SIF_Refresh.js` (`874cebc`, merge `10cb44c`): the September
+  inputs re-applied with the hardened tools and the corrected page parser.
+  - MASTER `inception`: 1,851 records +1 day to the true date (Mutual Fund 1,689, Mutual Funds 12,
+    ETF 150); SIF sibling: 30 of 30 +1 day (`KNOWN_ISSUES.md` A6).
+  - RISK_MATRIX: 33 entries carry `fl` (28 `split`, 5 `lowcorr`), so the page marks their risk
+    statistics as unreliable (C3, D74).
+  - Everything else byte-identical; `verify_page.js` counts unchanged. Inputs, gates and hashes:
+    `docs/update-log/2026-09_Sep-2026.md`, Run 2.
+
+## 2026-10-19 — Page: correct workbook dates, mark unreliable risk stats, pin the CDN (PR #12, fix/page-dates-riskflags-sri)
+
+Page code only; no data block changed. Live files equal `site/` (SHA-256, 19-Oct-2026).
+
+### Fixed
+- `site/index.html`, `site/Centricity_SIF_Refresh.js` (`3a75afb`, merge `792692d`):
+  - A6: `parseMfMonitor` and the SIF sibling's `parseSif` read Excel dates with `isoDay`, so an
+    upload no longer stores inception a day early.
+  - C3: `H.riskFlagged(entry)` and `H.RISK_FLAG_NOTE` put a dagger and a footnote on flagged funds in
+    the Portfolio Matrix tab and its slide (D74).
+  - C14: a shared `#p=` link resolves old names, folds duplicates, and lists in a banner the names it
+    could not find and the ones it matched only to a similar name.
+  - A5: `H.buildFundIndex` also indexes `prev_names`.
+  - E4 comments; "Master Data Editor" heading; Live Output tabs numbered 6.1–6.9 (C13).
+
+### Security
+- R3: `integrity` (SHA-384) and `crossorigin="anonymous"` on the five CDN scripts; Chart.js 4.4.0
+  from `dist/chart.umd.js`. R2/F3: `noindex, nofollow` meta and a data-URI favicon (D77).
+
+### Removed
+- R5: the unused 30-Jun `site/Centricity_Risk_Matrix.js` moved to
+  `docs/archive/Centricity_Risk_Matrix_2026-06-30.js` (D78, supersedes D69). The deploy set is still
+  six files.
+
+## 2026-10-19 — Monthly tools hardened (PRs #7–#11)
+
+Tool fixes only: no file in `site/` changed. Every tool now follows one contract (D72): exit 0 when
+all gates pass, 1 when a gate failed (dry run too; `--apply` then writes nothing), 2 on a usage or
+input error (except a missing file in the six PMS/AIF/Reckoner tools, or a mistyped `--html` page in
+several others: Node's ENOENT stack trace, exit 1); unknown flags exit 2 (most tools also refuse an
+extra argument; the rest followed in PR #15); outputs are built in memory and written atomically
+through `tools/lib/blocklib.js`; MASTER is found with `B.locate`; usage strings read
+`node tools/<tool>.js`. Issue IDs are in `docs/KNOWN_ISSUES.md`.
+
+### Added
+- `tools/lib/dates.js` (`isoDay`, `isoDayFromSerial`; A6), `tools/lib/direct_perf.js` (the one
+  DIRECT_PERF builder; A7), `tools/data/pins.json` (the pins shared by `merge_pms_performance.js`,
+  `pin_pms_alias.js`, `merge_reckoner.js` and `merge_aif_performance.js`; A18, D75),
+  `tools/test/dates.test.js`; `tools/test/run.js` runs every `tools/test/*.test.js` (`npm test`), and
+  CI runs `npm ci` and the tests before the parity gate.
+
+### Changed
+- **PR #7, package A, MF chain** (`11464c2`, merge `0d4fca3`):
+  - `rename_schemes.js`: dates via `isoDay`; `prev_names` history; stale old-name keys dropped and
+    listed (A5, D79); only changed blocks written; a temporary one-day inception allowance (removed in
+    PR #14).
+  - `bake_month.js`, `rebuild_directperf.js`: shared DIRECT_PERF builder; relative gate (95% of the
+    current block).
+  - `fill_variant_analytics.js`, `merge_analytics.js`, `rekey_sif_analytics.js`: ties listed as
+    ambiguous; one file per stem; inline-script errors fail a gate; `--allow-shrink` (A17, A23).
+- **PR #8, package B, equity / expense / fund managers** (`e697efe`, merge `455a573`):
+  - `merge_direct_equity_returns.js`: per-tenor "lost" gate (fails above 5%), `--allow-coverage-drop`;
+    first row wins on a repeated ISIN or name (A10, A11).
+  - `merge_expense_exitload.js`: header by content and from the used range; sample fund optional;
+    Direct count changed-only (A12).
+  - `merge_de_universe.js`, `merge_fund_managers.js`: header found by exact names in the first 30
+    rows; fund-manager dates via `isoDay`; ambiguous `prev_name` / normalised names not written (A13,
+    A14).
+- **PR #9, package C, risk / SIF / Python** (`9658e8e`, merge `71ecbe2`):
+  - `merge_risk_matrix.js`: carries `fl` (`split` | `lowcorr`; Sep has 28 + 5; the 12
+    Max-Drawdown-only notes are not carried); exact plan-marker list; line-anchored date (C3, A15).
+  - `merge_sif_monitor.js`: `--as-on` required; date checked before the single write (A16).
+  - `build_risk_matrix.py`: argparse, `--rf`, output only outside `site/`, `prev_name` tier, data
+    guards (A22).
+- **PR #10, package D, PMS / AIF / Reckoner** (`807cbf1`, merge `79e9759`):
+  - Pins moved to `tools/data/pins.json`, read by `merge_pms_performance.js`, `pin_pms_alias.js`,
+    `merge_reckoner.js` and `merge_aif_performance.js`; trailing spaces checked (A18, A25).
+  - `merge_reckoner.js`: D71's gates and `--accept-drops <n>` kept, plus a fourth, never-waived gate:
+    a dropped entry still listed under a deck heading `GRID` does not map (D76).
+  - `merge_pms_aif_analytics.js`: still writes no date (D70); sheet found by header (`--sheet`);
+    stale look-through listed; page and June sibling written together.
+  - `merge_pms_performance.js`: strict `--as-on`; live "still pinned null" list; exit-load year digit
+    must stand alone.
+  - `merge_aif_performance.js`: layout gate with `--allow-layout-change` (A19).
+  - `add_reckoner_funds.js`: each `ADD` slide must name its fund; `--usd-inr`; `--pms` deprecated;
+    `NEW_GIFT` only while the deck lists the fund (A20).
+- **PR #11, package E, bonds / slides / one-offs** (`f55bac2`, merge `d260cdf`):
+  - `merge_bond_list.js`: PR #4's `--desk` / `--sheet` kept; blocklib atomic write with a re-read
+    gate; empty sheet refused; cross-desk overlap `CHECK` (report only); `irr_high` < 30%.
+  - `update_market_slides.js`, `update_closing_slides.js`: fixed 2001×1125 check; blocklib splice;
+    real before/after gates (A21).
+  - `split_sif_add_mld.js` (insert MLD only when missing), `fold_duplicate_names.js` (IRR sibling
+    required; risk-matrix file optional), `fold_index_funds.js` (reports sibling-borne "Index Fund"
+    rows) (A26).
+
+### Evidence
+- Every package was rehearsed with `--apply` on disposable copies of `site/`
+  (`tools/dev/rehearse.js`, old tools from a `main` worktree) and reviewed independently; outputs
+  were identical except for the intended changes (the 8 renames, `fl`, property order in
+  DIRECT_PERF). `node tools/verify_page.js site` unchanged after each merge.
+
 ## 2026-10-16 — Reckoner merge refuses join failures and mass drops (fix/reckoner-drop-gates)
 
 Tool fix only: no file in `site/` changed, and `node tools/verify_page.js site` prints the same output
@@ -77,6 +202,23 @@ as before.
     (Invictus 36 -> 14, all gates PASS). After, no `--desk` is refused; `--desk Invictus` takes
     `Invictus Bonds Options`; `--desk OneDigital` reproduces today's 14 OneDigital rows (two `irr_low`
     values differ only by float noise).
+
+## 2026-10-16 — Shared library, verifier, unit tests and rehearsal harness (PR #3, fix/foundation-blocklib-verify)
+
+Tool fix only: no file in `site/` changed.
+
+### Changed
+- `tools/lib/blocklib.js` (`32943e8`, merge `3f3e4b5`): `writeFileAtomic` (temp file + rename) and
+  `writeFilesAtomic` (check every output, then write); `locate` refuses a prefix with more than one
+  literal; `spliceBlocks` refuses duplicate or overlapping prefixes; new `checkAsOn`, `replaceOnce`
+  and `setDataDate` (`docs/KNOWN_ISSUES.md` A8, A9, A24).
+- `tools/verify_page.js`: hides only the five CDN globals' exact "is not defined" errors, defaults to
+  `site/`, and exits 1 on a hard failure (A23).
+
+### Added
+- `tools/test/blocklib.test.js` (28 checks) run by CI; `tools/dev/rehearse.js` and
+  `tools/dev/rehearsal_cases.js`, which run a tool chain with `--apply` on two disposable copies of
+  `site/` (old and new tools) and diff the results block by block (`docs/TESTING.md`).
 
 ## 2026-10-16 — First publish from the new repository
 

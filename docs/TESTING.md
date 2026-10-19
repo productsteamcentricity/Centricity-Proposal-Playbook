@@ -1,7 +1,9 @@
 # Testing and verification
 
-There is no unit-test suite; the project is verified at three levels. All three were run for the
-baseline on 16-Oct-2026 (results in [`REPLICATION_REPORT.md`](REPLICATION_REPORT.md)).
+The project is verified at four levels: parity counts (§1), tool regression — unit tests, dry-run
+comparison and the rehearsal harness (§2), browser checks (§3) and CI (§4). The first three were run
+for the baseline on 16-Oct-2026 (results in [`REPLICATION_REPORT.md`](REPLICATION_REPORT.md)); the
+unit tests and the rehearsal harness date from 16–19-Oct-2026 (PRs #3, #7).
 
 ## 1. Parity counts — `tools/verify_page.js` (seconds; run after every change)
 
@@ -36,20 +38,60 @@ script errors (excluding the CDN globals): 0
 ```
 
 **Hard failures** (also enforced by CI): `MISSING SIBLING`, duplicate names > 0, file not ending
-`</html>`, script errors > 0, Select keys in MASTER ≠ total. Every other count may legitimately move
-in a refresh, but each move must be explained in the update log. Caveat: the script exits 0 even on
-failed checks, and its error filter hides any `… is not defined` error (`KNOWN_ISSUES.md` A23), so
-read the output; CI parses it.
+`</html>`, script errors > 0, Select keys in MASTER ≠ total. On any of them the script prints
+`*** VERIFY FAILED` and exits 1 (since PR #3). Its error filter hides only the five CDN globals'
+exact "X is not defined" messages, so a typo's ReferenceError counts. Every other count may
+legitimately move in a refresh, but each move must be explained in the update log; the script
+compares no counts (`KNOWN_ISSUES.md` A23), so compare them with `PROJECT_STATE.md` yourself.
 
-## 2. Tool regression — dry-run comparison (minutes; run when tools change)
+## 2. Tool regression (run when tools change)
+
+### 2.1 Unit tests (seconds)
+
+```bash
+npm test                     # = node tools/test/run.js
+```
+
+Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today: `blocklib.test.js` (28 checks:
+locate, atomic writes, as-on labels, `setDataDate`, `replaceOnce`) and `dates.test.js` (10 checks:
+`isoDay`, `isoDayFromSerial`). CI runs `npm ci` and then the tests on every PR. Add a
+`<name>.test.js` file beside them for any new library function.
+
+### 2.2 Dry-run comparison (minutes)
 
 Every tool is dry-run by default, so the whole suite can be run safely against a month's inputs and
 its output compared before/after a code change. Used for the transfer: all 25 tool invocations
 produced identical output before and after the reorganisation. To repeat, run each command of
 `tools/README.md` §2 without `--apply` against `monthly-updates/2026-09_Sep-2026/`, save the outputs,
-make the change, re-run, diff. Re-running a month's own inputs on its baseline should report no
-changes (Sep-2026: 0 renames, 0 SIF values changed, risk matrix 1,088 → 1,088, 0 expense changes).
-Confirm afterwards that `git status` shows no modified files under `site/`.
+make the change, re-run, diff. The exit code is part of the result (0 pass, 1 gate failed, 2 usage;
+D72). Re-running a month's own inputs on its baseline should report no data changes (Sep-2026 on
+`main` `cd6317c`: risk matrix 1,088 → 1,088 with 28 + 5 flags unchanged; SIF 0 values changed;
+`rename_schemes` lists the 8 pending renames, which wait for the owner). Confirm afterwards that `git status` shows no modified
+files under `site/`.
+
+### 2.3 Rehearsal harness — old versus new tools with `--apply` (minutes; needs `monthly-updates/`)
+
+```bash
+git worktree add --detach C:/t/cpp-old main          # the OLD tools: a short path outside OneDrive
+npm run rehearse -- --old C:/t/cpp-old               # all cases
+npm run rehearse -- --old C:/t/cpp-old --case mf-chain-sep,slides --keep
+npm run rehearse -- --list                           # the cases (no --old needed)
+git worktree remove C:/t/cpp-old
+```
+
+`tools/dev/rehearse.js` copies the live `site/` twice into a new `rehearse-*` folder in the OS temp
+directory and runs each case's tool chain with `--apply` on both copies: one with the tools under
+`--old`, one with the tools of this checkout (or `--new <root>`). Both sides read the inputs from
+`<new root>/monthly-updates/`. It then compares the two results block by block (MASTER per field,
+each name-keyed store, `DATA_DATES`, the siblings, and any code outside the blocks) and prints
+`IDENTICAL` or the differences, plus each step's exit code and the files changed against live. It
+writes `report.json` and per-case `logs.json`; `--keep` keeps the two site copies. The real `site/`
+is never touched. The 12 cases are in `tools/dev/rehearsal_cases.js` (MF chain Sep and Aug,
+analytics one class, Direct rebuild, fund managers, Reckoner, alias pins, PMS/AIF look-through,
+`add_reckoner_funds`, Bond List, slides, one-off tools); a case can pass flags to one side only
+(`oldArgs` / `newArgs`). A change is behaviour-preserving when every case is `IDENTICAL`, or when
+every difference is the intended one, counted. The harness reports; it does not fail on a
+difference (exit 2 only for a missing `--old` or an unknown case).
 
 ## 3. Browser checks (10 minutes; after every refresh or UI change)
 
@@ -58,7 +100,7 @@ Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `nod
 
 | # | Check | Expected |
 |---|---|---|
-| 1 | Load | Console clean (only the browser's `favicon.ico` 404); header + logo; `Universe — N instruments.` with N = MASTER effective; footer "Performance as on … & Analytics as on …" = `DATA_DATES` |
+| 1 | Load | Console clean (no CDN integrity error; a `/favicon.ico` 404 can still appear despite the PR #12 data-URI icon and is harmless, F3); header + logo; `Universe — N instruments.` with N = MASTER effective; footer "Performance as on … & Analytics as on …" = `DATA_DATES` |
 | 2 | Rail and nav | Left rail collapses and reopens; nav links scroll each section to 84 px from the top |
 | 3 | Add funds | Build the 4-fund selection used in checks 4–8: `HDFC Large Cap Fund(G)`, `HDFC Ultra Short Term Fund-Reg(G)`, `ICICI Pru Arbitrage Fund(G)` (5% each on add) and `Abakkus All Cap PMS` (raised to its ₹50 L minimum = 10% of ₹5 Cr). Separately confirm a bond and a Direct Equity stock can be added. Select popover shows Sharpe/Sortino/Beta/Std Dev/Alpha + benchmark + rationale |
 | 4 | Allocate 100% | Status "✓ 100.00% allocated — downloads ready"; Section 4 "✓ Ready to export" |
@@ -95,6 +137,6 @@ for testing unless that view is the subject.
 
 ## 4. Continuous integration
 
-`.github/workflows/pages.yml` runs on every pull request, every push to `main` and every manual run: checks the six deploy files exist
-and parses `verify_page.js` output for the hard failures above. A failing `verify` job blocks
+`.github/workflows/pages.yml` runs on every pull request, every push to `main` and every manual run: checks the six deploy files exist,
+runs `npm ci` and the unit tests (§2.1), then parses `verify_page.js` output for the hard failures above. A failing `verify` job blocks
 publishing. It does not run the browser checks — those remain manual (Claude) per release.

@@ -27,10 +27,13 @@ Other folders:
 - `specs/` — build specifications: the analytics engine (`Equity_Debt_Analytics_Build_Prompt.md`,
   diverged from the code in places) and the sister **Portfolio Review** dashboard (a separate
   project; client names redacted).
-- `archive/` — superseded documents kept for reference (the original README, the applied
-  issuer-normalisation fix spec).
+- `archive/` — superseded files kept for reference (the original README, the applied
+  issuer-normalisation fix spec, and the unloaded 30-Jun-2026 `Centricity_Risk_Matrix.js`, moved out
+  of `site/` on 19-Oct-2026, D78).
 - `update-log/` — the record of every data refresh: inputs (name, as-on, SHA-256), steps, gate
   outcomes, count changes and reasons.
+- `handover/` — material for completing the handover, e.g. `DATA_EXTRACTION_PROMPT.md`, the prompt
+  the outgoing owner runs to export every remaining file and note from their machine.
 
 Conventions: exact dates (16-Oct-2026); code references as `path:line` (line numbers into
 `site/index.html` drift — re-derive with Grep); facts are verified against the code, and where a
