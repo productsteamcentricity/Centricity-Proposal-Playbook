@@ -1,41 +1,72 @@
 // MONTHLY: refresh the Portfolio Matrix tab (window.RISK_MATRIX) from the pre-computed
 // "Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx" workbook.
 //
-// This is the SECOND route into RISK_MATRIX. The first is build_risk_matrix.py, which derives
-// everything from the raw NAV Data workbook. Use the Python route when you can — it is the
-// authority and it also emits `c` (3Y CAGR) and RISK_MATRIX_BENCH_SD. This tool exists because
-// the desk machine has no Python installed, and because the risk-ratios workbook now ships the
-// full 1,088-fund universe rather than the sample it used to be.
+// There are two routes into RISK_MATRIX. This one ingests the vendor's pre-computed ratios and has
+// been the production route since the Aug-2026 data (DECISIONS D43). The other, build_risk_matrix.py,
+// derives everything from the raw NAV Data workbook and also emits `c` (3Y CAGR) and
+// RISK_MATRIX_BENCH_SD, but it is not yet validated for production (KNOWN_ISSUES A22). This tool
+// was written because the outgoing desk machine had no Python, and because the risk-ratios workbook
+// now ships the full 1,088-fund universe rather than the sample it used to be.
 //
 // What this tool CAN and CANNOT set:
 //   sets  -> be sd al so sh co ir dc rr   (every field the tab and the PPT slide actually render)
-//   keeps -> bm                            (benchmark is a per-category constant; carried forward)
+//   keeps -> bm                            (benchmark: the Data Flags sheet names it, else carried forward)
+//   adds  -> fl                            (source reliability flag, only on flagged funds; see below)
 //   drops -> c                             (3Y CAGR; absent from this workbook and read by nothing)
 //
 // `c` is deliberately NOT carried forward. It is unreferenced by any renderer (verified: the tab's
 // COLS and the export's MCOLS are the same nine keys), so keeping last month's CAGR under this
 // month's as-on date would be stale data wearing a fresh label for no benefit at all.
 //
-//   node merge_risk_matrix.js "<Fund Risk Ratios & 3Y Rolling ....xlsx>" --as-on "31 Aug 2026"
-//   ... add --apply to write. Dry run prints the join tiers and the gates; always read them.
+// `fl` (KNOWN_ISSUES C3) carries the Data Flags sheet's reliability warning onto the record:
+//   "split"   the sheet reports a NAV split that makes the RISK STATS unreliable
+//             ("split in NAV (3Y) — risk stats unreliable")
+//   "lowcorr" the sheet reports low correlation to the mapped benchmark (beta < 0.30), which makes
+//             the benchmark-relative ratios unreliable
+// A fund flagged for both gets "split". NOT carried: a split flagged only as "Max Drawdown
+// unreliable" (the page never shows Max Drawdown; Sep-2026 had 12 such funds) and short-history
+// flags ("<250 days"), whose funds already show "—" for the stats they lack. Unflagged records get no `fl` key at all, so a
+// month without flags writes byte-for-byte what the tool wrote before `fl` existed.
 //
-// Requires: npm install xlsx@0.18.5
+//   node tools/merge_risk_matrix.js "<Fund Risk Ratios & 3Y Rolling ....xlsx>" --as-on "31 Aug 2026" [--html site/index.html]
+//   ... add --apply to write. Dry run prints the join tiers and the gates; always read them.
+//   --as-on must be a plain short label ("31 Oct 2026"). Unknown flags are refused (exit 2).
+//
+// Requires: npm ci (xlsx 0.18.5)
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
 const blocklib = require('./lib/blocklib.js');
 
-const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const ASON = flag('--as-on');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-const SRC = argv.find(a => !a.startsWith('--') && argv[argv.indexOf(a) - 1] !== '--as-on' && argv[argv.indexOf(a) - 1] !== '--html');
-if (!SRC || !ASON) {
-  console.error('Usage: node merge_risk_matrix.js "<Fund Risk Ratios ....xlsx>" --as-on "31 Aug 2026" [--html <p>] [--apply]');
-  process.exit(2);
+const USAGE = 'Usage: node tools/merge_risk_matrix.js "<Fund Risk Ratios ....xlsx>" --as-on "31 Aug 2026" [--html site/index.html] [--apply]';
+const usage = msg => { if (msg) console.error('*** ' + msg); console.error(USAGE); process.exit(2); };
+
+// Strict CLI: one positional source, the value flags below, and --apply. Anything else is refused.
+const VALUE_FLAGS = ['--as-on', '--html'], BOOL_FLAGS = ['--apply'];
+const opts = {}, positional = [];
+{
+  const argv = process.argv.slice(2);
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (VALUE_FLAGS.includes(a)) {
+      if (i + 1 >= argv.length || argv[i + 1].startsWith('--')) usage(a + ' needs a value');
+      if (a in opts) usage(a + ' given twice');
+      opts[a] = argv[++i];
+    } else if (BOOL_FLAGS.includes(a)) opts[a] = true;
+    else if (a.startsWith('--')) usage('unknown flag ' + a);
+    else positional.push(a);
+  }
 }
+if (positional.length !== 1) usage(positional.length ? 'expected one source workbook, got ' + positional.length + ' positional arguments' : null);
+const APPLY = !!opts['--apply'];
+const HTML = opts['--html'] || path.join(__dirname, '..', 'site', 'index.html');
+const SRC = positional[0];
+if (!opts['--as-on']) usage('--as-on is required (e.g. --as-on "30 Sep 2026")');
+let ASON;
+// The label goes into a JavaScript string literal, so only a plain short date is accepted (A9).
+try { ASON = blocklib.checkAsOn(opts['--as-on'], 'short'); } catch (e) { usage(e.message); }
 if (!fs.existsSync(SRC)) { console.error('*** source not found: ' + SRC); process.exit(2); }
+if (!fs.existsSync(HTML)) usage('page not found: ' + HTML);
 
 // ---------- read the workbook ----------
 const wb = XLSX.readFile(SRC);
@@ -76,7 +107,7 @@ const rows = raw.slice(hRow + 1)
   .filter(r => r && r[0] != null && String(r[0]).trim() !== '' && String(r[0]).trim().length <= 120);
 console.log(`data rows : ${rows.length}`);
 
-// Benchmark per fund, where the Data Flags tab names it.
+// Benchmark and data flag per fund, where the Data Flags tab names them.
 const flagSheet = wb.SheetNames.find(s => /data\s*flags/i.test(s));
 const bmFromFlags = new Map(), flagOf = new Map();
 if (flagSheet) {
@@ -91,22 +122,36 @@ if (flagSheet) {
       if (ci.bm >= 0 && r[ci.bm]) bmFromFlags.set(n, String(r[ci.bm]).trim());
       if (ci.fl >= 0 && r[ci.fl]) flagOf.set(n, String(r[ci.fl]).trim());
     }
-  }
-}
+  } else console.log('WARN "Data Flags" sheet has no "Fund Name" header row: no flags or benchmarks read from it');
+} else console.log('WARN no "Data Flags" sheet: no reliability flags carried; benchmarks come from the existing block');
 console.log(`data flags: ${flagOf.size} fund(s) flagged`);
 
+// Reliability flag carried onto RISK_MATRIX as `fl` (C3). A split outranks low correlation; a split
+// that only affects Max Drawdown (not shown on the page) and a short-history flag are not carried.
+const reliability = text =>
+  /\bsplit\b[^;]*\brisk stats unreliable\b/i.test(text) ? 'split'
+    : (/\blow\s*correlation\b/i.test(text) ? 'lowcorr' : null);
+const mddOnly = [...flagOf.values()].filter(t => /\bsplit\b/i.test(t) && !reliability(t)).length;
+const relOf = new Map();
+for (const [n, t] of flagOf) { const r = reliability(t); if (r) relOf.set(n, r); }
+const relCount = k => [...relOf.values()].filter(v => v === k).length;
+console.log(`  reliability: split=${relCount('split')}  lowcorr=${relCount('lowcorr')}  (not carried: ${mddOnly} split affecting Max Drawdown only, which the page does not show; ${flagOf.size - relOf.size - mddOnly} other, e.g. short history)`);
+
 // ---------- join to MASTER ----------
-const MASTER = blocklib.read(HTML, 'window.MASTER = ').value;
-const OLD = blocklib.read(HTML, 'window.RISK_MATRIX = ').value;
+const PAGE = fs.readFileSync(HTML, 'utf8');
+const MASTER = blocklib.locate(PAGE, 'window.MASTER = ').value;
+const OLD = blocklib.locate(PAGE, 'window.RISK_MATRIX = ').value;
 const liveName = new Set(MASTER.map(f => f.name));
 const byPrev = new Map();
 for (const f of MASTER) if (f.prev_name && !byPrev.has(f.prev_name)) byPrev.set(f.prev_name, f.name);
 
-// Plan/option suffix whitelist ONLY — see CLAUDE.md. "(Inbound)", "(OneDigital)", "(Lock in)" and
-// friends distinguish genuinely different instruments and must survive.
+// Plan/option suffix whitelist ONLY (A15). The parenthetical markers stripped are exactly "(G)",
+// "(D)" (the Monitor's old dividend marker), "(Growth)", "(IDCW…)" and "(Dividend…)", e.g.
+// "(IDCW Payout)". Anything else — "(Debt)", "(Delhi)", "(Gujarat)", "(Inbound)", "(OneDigital)",
+// "(Lock in)" — distinguishes a genuinely different instrument and must survive.
 const baseName = s => String(s || '')
-  .replace(/ /g, ' ')
-  .replace(/\((?:G|IDCW|D|Growth|Dividend)(?:[^()]*)\)/gi, '')
+  .replace(/\u00a0/g, ' ')
+  .replace(/\((?:G|D|Growth|IDCW\b[^()]*|Dividend\b[^()]*)\)/gi, '')
   .replace(/-\s*(?:Reg|Dir|Direct)(?:ular)?\s*Plan\b/gi, '')
   .replace(/-\s*(?:Reg|Dir)\b/gi, '')
   .replace(/\bDirect\s*Plan\b/gi, '')
@@ -152,6 +197,9 @@ for (const r of rows) {
   // that has not changed, so the existing block is a safe carry-forward.
   const bm = bmFromFlags.get(nm) || (OLD[target] && OLD[target].bm) || null;
   if (bm) rec.bm = bm;
+  // Reliability flag, joined through the same workbook row (so the same tier) as the metrics.
+  const fl = relOf.get(nm);
+  if (fl) rec.fl = fl;
 
   if (NEW[target]) { collisions.push(nm + ' -> ' + target); continue; }
   NEW[target] = rec;
@@ -168,11 +216,32 @@ ambiguous.slice(0, 8).forEach(a => console.log('   ? ' + a));
 console.log(`collisions: ${collisions.length}${collisions.length ? '  ' + collisions.slice(0, 5).join(' | ') : ''}`);
 
 const oldVals = Object.values(OLD);
+const flCount = (vals, k) => vals.filter(v => v.fl === k).length;
 console.log(`\nRISK_MATRIX : ${Object.keys(OLD).length} -> ${Object.keys(NEW).length}`);
 console.log(`  with metrics (be): ${oldVals.filter(v => v.be != null).length} -> ${withMetrics}`);
 console.log(`  with rolling (rr): ${oldVals.filter(v => v.rr != null).length} -> ${withRolling}`);
 console.log(`  with benchmark   : ${oldVals.filter(v => v.bm).length} -> ${withBm}`);
+console.log(`  flagged split    : ${flCount(oldVals, 'split')} -> ${flCount(Object.values(NEW), 'split')}`);
+console.log(`  flagged lowcorr  : ${flCount(oldVals, 'lowcorr')} -> ${flCount(Object.values(NEW), 'lowcorr')}`);
 console.log(`  dropped 'c' (3Y CAGR, unread): ${oldVals.filter(v => v.c != null).length} -> 0`);
+// A reliability flag that did not reach a record: its fund has no row on the ratios sheet, or the
+// row was unmatched, ambiguous or a collision (each reported above).
+const flagLost = [...relOf.keys()].filter(n => !rows.some(r => String(r[0]).trim() === n) ||
+  unmatched.includes(n) || ambiguous.some(a => a.startsWith(n + '  -> ')) || collisions.some(c => c.startsWith(n + ' -> ')));
+console.log(`  reliability flags not carried (fund not joined): ${flagLost.length}${flagLost.length ? '  ' + flagLost.slice(0, 5).join(' | ') : ''}`);
+
+// ---------- build the new page in memory ----------
+// `riskMatrix` is NOT a key of the pretty-printed `window.DATA_DATES = {…}` object near the top of
+// the page — it is assigned on its own line just after the matrix block, which is why this is a
+// targeted line rewrite rather than a blocklib splice. (blocklib parses JSON; that object is
+// hand-formatted and would not round-trip.) The rewrite is anchored to the start of that line and
+// must match exactly once in the whole page (A9); the label was validated above, so it cannot
+// break out of the string literal.
+let html = blocklib.spliceBlocks(PAGE, [{ prefix: 'window.RISK_MATRIX = ', value: NEW }]);
+const DATE_RE = /^window\.DATA_DATES\.riskMatrix = (['"])([^'"\n]*)\1;/m;
+const dateHits = (html.match(new RegExp(DATE_RE.source, 'gm')) || []).length;
+const was = dateHits === 1 ? DATE_RE.exec(html)[2] : null;
+if (dateHits === 1) html = blocklib.replaceOnce(html, DATE_RE, `window.DATA_DATES.riskMatrix = '${ASON}';`, 'DATA_DATES.riskMatrix line');
 
 // ---------- gates ----------
 const notInMaster = Object.keys(NEW).filter(k => !liveName.has(k));
@@ -183,30 +252,20 @@ const gates = [
   ['fund count did not shrink', Object.keys(NEW).length >= Object.keys(OLD).length, ''],
   ['funds with metrics did not shrink', withMetrics >= oldVals.filter(v => v.be != null).length, ''],
   ['benchmark coverage complete', withBm === Object.keys(NEW).length, (Object.keys(NEW).length - withBm) + ' missing bm'],
+  ['DATA_DATES.riskMatrix line found exactly once', dateHits === 1, dateHits + ' matches'],
+  ['page still ends with </html>', html.trimEnd().endsWith('</html>'), ''],
 ];
 console.log('');
 let pass = true;
 for (const [label, ok, detail] of gates) {
-  console.log(`GATE ${label}: ${ok ? 'PASS' : 'FAIL'}${ok || !detail ? '' : '  ' + detail}`);
+  console.log(`GATE ${label}: ${ok ? 'PASS' : '*** FAIL'}${ok || !detail ? '' : '  ' + detail}`);
   if (!ok) pass = false;
 }
 if (!pass) { console.error('\n*** gates failed — not writing'); process.exit(1); }
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write ' + path.basename(HTML)); process.exit(0); }
+if (!APPLY) { console.log(`\n[dry run] DATA_DATES.riskMatrix would go "${was}" -> "${ASON}"; pass --apply to write ` + path.basename(HTML)); process.exit(0); }
 
-const len = blocklib.writeBlocks(HTML, [{ prefix: 'window.RISK_MATRIX = ', value: NEW }]);
-
-// `riskMatrix` is NOT a key of the pretty-printed `window.DATA_DATES = {…}` object near the top of
-// the page — it is assigned on its own line just after the matrix block, which is why this is a
-// targeted line rewrite rather than a blocklib splice. (blocklib parses JSON; that object is
-// hand-formatted and would not round-trip.)
-let html = fs.readFileSync(HTML, 'utf8');
-const RE = /(window\.DATA_DATES\.riskMatrix\s*=\s*)(['"])(.*?)\2\s*;/;
-const m = html.match(RE);
-if (!m) { console.error('*** window.DATA_DATES.riskMatrix assignment not found — matrix written, date NOT stamped'); process.exit(1); }
-const was = m[3];
-html = html.replace(RE, `$1'${ASON.replace(/'/g, "\\'")}';`);
-if (!html.trimEnd().endsWith('</html>')) { console.error('*** refusing to write: output does not end with </html>'); process.exit(1); }
-fs.writeFileSync(HTML, html, 'utf8');
+// One atomic write: the matrix and its date land together or not at all (A8).
+blocklib.writeFilesAtomic([{ file: HTML, content: html }]);
 console.log(`\nwrote ${path.basename(HTML)} (${html.length} bytes)`);
 console.log(`DATA_DATES.riskMatrix: "${was}" -> "${ASON}"`);
