@@ -21,9 +21,10 @@
 > - **Edits made on 16-Oct-2026:** commands and file references were rewritten for the new layout,
 >   and owner/location facts that changed are marked "(updated 16-Oct-2026)". Other statements known
 >   to be stale are left as written and corrected in *Errata (16-Oct-2026)* at the end.
-> - **Tool and page fixes of 16–19-Oct-2026** (PRs #3–#15) made more statements stale; the pin advice
->   is corrected in place "(updated 19-Oct-2026)", the rest in *Errata (19-Oct-2026)* at the end. Tool
->   behaviour today: `tools/README.md`.
+> - **Tool and page fixes of 16–19-Oct-2026** (PRs #3–#15, then the C19 parser change) made more
+>   statements stale; the pin advice and the Monitor sheet lists (refresh-only sheets, D80) are
+>   corrected in place "(updated / added 19-Oct-2026)", the rest in *Errata (19-Oct-2026)* at the end.
+>   Tool behaviour today: `tools/README.md`.
 
 # Centricity Proposal Playbook — working notes for Claude Code
 
@@ -314,7 +315,7 @@ Three places make it stick; miss any one and it half-reverts:
 
 | | |
 |---|---|
-| `SHEET_MAP['Index']` | `['Equity', 'Mutual Fund', 'Index Fund']` — a new fund off the Monitor's *Index* sheet must be filed like one off *Flexi Cap Fund*, or the next upload re-creates the old bucket |
+| `SHEET_MAP['Index']` | `['Equity', 'Mutual Fund', 'Index Fund']` — a new fund off the Monitor's *Index* sheet must be filed like one off *Flexi Cap Fund*, or the next upload re-creates the old bucket. (Updated 19-Oct-2026: a `SHEET_MAP` entry is also what lets a sheet *create* records; the four mixed-class sheets are refresh-only and must never be added here — *Data-hygiene traps*, D80.) |
 | `H.fofUnderlyingName` | its candidate pool matches index funds on **`sub_category`**; testing `product_class` would empty it of all 522 |
 | `PC_ORDER` | "Index Fund" removed |
 
@@ -405,6 +406,16 @@ mount. The lag has not been re-tested there, so keep verifying with Node or Grep
   Direct Equity and PMS sources) — normalise before matching or you get large numbers of fake
   adds and fake changes. Trailing spaces exist in live data (`"Kotak Optimus Fund (Moderate 50:50) "`).
 - Footer rows in MF Monitor sheets (`Average`, `BenchMark`, bare index names) must not parse as funds.
+- **Four Monitor fund sheets are refresh-only** (added 19-Oct-2026; `KNOWN_ISSUES.md` C19, D80).
+  `Debt Oriented34`, `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens ` (trailing space)
+  and `Hybrid` each mix several MASTER classes, so they sit in `REFRESH_ONLY_SHEETS`, not
+  `SHEET_MAP`: their rows refresh existing records by exact name and never create one or change a
+  class. Never add them to `SHEET_MAP` (record creation with one guessed taxonomy per sheet; the
+  pending renames would come back as duplicates) or to `rename_schemes.js` `SHEET_SUB` (tier 3 then
+  invents renames). Until 19-Oct-2026 the parser skipped them, so 215 funds kept 30-Jun-2026 figures
+  under the September label without any gate noticing (still live until the September re-run is
+  published). Now a fund sheet in neither list fails the bake, and a new fund on these sheets is
+  added by hand with the owner.
 - Exit-load text cells (`Nil`, `.`, `No Option`, `NA`) mean *missing*, not zero. Only a numeric
   `0.00%` run becomes the word "Nil".
 - Bond maturity dates have a recurring century typo (2030 stored as 1930) — parse the date from the
@@ -730,6 +741,12 @@ is tracked, so all six deploy files are on `main`, and `.gitignore` carries `*.b
 `bake_month.js` runs **index.html's own parsers** (`REFRESH.parseAnalytics`, `parseMfMonitor`) over
 the month's workbooks inside a Node `vm` sandbox, then writes the resulting globals back into the
 embedded blocks — so a bake produces exactly what the Section 7 uploader would.
+
+(Updated 19-Oct-2026.) `parseMfMonitor` knows two sheet lists, and only it holds them: `SHEET_MAP`
+sheets refresh and create records; the four `REFRESH_ONLY_SHEETS` only refresh existing ones (D80).
+The bake prints the refresh-only rows it did not merge, a `WARN` for each expected sheet that is
+missing or empty, and a `CHECK` of MASTER funds on no sheet, and it fails on any fund row on a sheet
+in neither list. What to do with each: `tools/README.md` §6.
 
 The full monthly order, as run for Aug-2026. **`rename_schemes.js` comes first** — see the next
 section for why. Every step is dry-run by default; read the gates before adding `--apply`.
@@ -1366,8 +1383,9 @@ transferred. The original lines are left as written so the history stays readabl
 
 ## Errata (19-Oct-2026)
 
-Statements above made stale by the tool and page fixes of 16–19-Oct-2026 (PRs #3–#15). They are left
-as written; the issue IDs are in `docs/KNOWN_ISSUES.md` and the decisions in `docs/DECISIONS.md`.
+Statements above made stale by the tool and page fixes of 16–19-Oct-2026 (PRs #3–#15 and the C19
+parser change). They are left as written; the issue IDs are in `docs/KNOWN_ISSUES.md` and the
+decisions in `docs/DECISIONS.md`.
 
 | # | Statement above | Correct value (19-Oct-2026) | Evidence |
 |---|---|---|---|
@@ -1378,3 +1396,4 @@ as written; the issue IDs are in `docs/KNOWN_ISSUES.md` and the decisions in `do
 | 42 | *Scheme names are not stable*: the tool "stamps the old name on the record as `prev_name`"; identity is inception + AMC. | A record renamed again keeps `prev_name` and gains `prev_names` (full history), which `H.buildFundIndex` also indexes; stale old-name keys are dropped and listed (D79). Inception is compared on the exact calendar day: dates are read with `isoDay`, and MASTER inception dates were corrected +1 day on 19-Oct-2026 (D73). | `tools/rename_schemes.js:19-23`, `:128-130`. |
 | 43 | *The monthly bake* and *The monthly Reckoner*: "Every step is dry-run by default; read the gates before adding `--apply`" and "Gates refuse to write on a regression", with nothing on exit codes, how files are written or flag checking. | Every data tool exits 1 when a gate fails (the dry run too) and 2 on a usage error (unknown flag, stray word, missing value), writes atomically after all gates pass, and refuses unknown flags (D72). Exceptions: `verify_page.js` has no argument check (exit 1 on a hard failure only), and the Reckoner-cycle tools (`merge_pms_performance`, `merge_reckoner`, `add_reckoner_funds`, `merge_aif_performance`, `merge_pms_aif_analytics`) exit 1 with `ENOENT` on a missing input file. Still read every gate. | `tools/README.md` §1; a dry run of each tool with an unknown flag and with a missing file (19-Oct-2026). |
 | 44 | *Centricity Select*: "If those two lists mirror each other, stop", left to the operator. | The tool now refuses this itself, within one category (D71), as well as more than 5% dropped and an emptied category (waivable with `--accept-drops <n>`), and a dropped fund still listed under a deck heading `GRID` does not map (D76, never waived). | `tools/merge_reckoner.js:282-318`. |
+| 45 | *Scheme names are not stable*: "a renamed scheme reads as a *new* fund: the bake appends a second record under the new name and leaves the old one carrying last month's returns." | True on `SHEET_MAP` sheets. On the four refresh-only sheets the bake appends nothing: it lists the new name as `not in MASTER`, and the old record keeps its figures until the rename is applied (C19, D80). | `site/index.html:3397-3403`; Sep-2026 bake dry run (the 8 pending renames). |

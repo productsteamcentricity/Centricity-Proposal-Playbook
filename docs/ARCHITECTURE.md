@@ -28,9 +28,9 @@ page. There is no server, database, build step, login or persistence.
 | Page shell, CSS, UI | `site/index.html` (compiled React 18, no JSX at runtime) | Layout, sections 1–6, Master Editor, rails | Edit the compiled `React.createElement` code directly, matching the style; never restyle during data work |
 | Reference data | inline `<script>` blocks defining `window.*` globals | Universe, analytics, Select, benchmarks, PMS performance, risk matrix | Changed only through `tools/` (blocklib) |
 | Load-time overrides ("siblings") | `site/Centricity_*.js` (5 files) | Patch the globals on every page load | The data they own must be edited **in them** (PRD §11.5) |
-| Business logic | `window.H` helpers in `index.html` (~L1446–2895) | KPIs, plan switch, look-through, credit buckets, overlap, tenure, liquidity, name resolution | Single predicates — never re-inline `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` |
-| In-browser parsers | `window.REFRESH` (~L3143–3839) + `REFRESH.parseSif` (SIF sibling) | Session-only uploads; **also reused by the tools** so a bake equals an upload | — |
-| Exports | `window.EXPORTS` (~L3840–5079) | `exportXlsx`, `exportPpt`, `exportTabSlide`, `exportMaster` | Client-side only |
+| Business logic | `window.H` helpers in `index.html` (~L1446–2906) | KPIs, plan switch, look-through, credit buckets, overlap, tenure, liquidity, name resolution | Single predicates — never re-inline `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` |
+| In-browser parsers | `window.REFRESH` (~L3154–3921) + `REFRESH.parseSif` (SIF sibling) | Session-only uploads; **also reused by the tools** so a bake equals an upload | The Monitor sheet lists (`SHEET_MAP`, `DEBT_STYLE_SHEETS`, `REFRESH_ONLY_SHEETS`) live here; `bake_month.js` reads what the parser reports, and `rename_schemes.js` keeps only a sub-category mirror of `SHEET_MAP` (`SHEET_SUB`) (D80) |
+| Exports | `window.EXPORTS` (~L3922–5163) | `exportXlsx`, `exportPpt`, `exportTabSlide`, `exportMaster` | Client-side only |
 | Monthly tools | `tools/*.js`, `tools/lib/*.js`, `tools/build_risk_matrix.py` | Turn source workbooks into new data blocks | Dry-run default; refuse rather than guess |
 | Verification | `tools/verify_page.js`, `.github/workflows/pages.yml` | Run the page's scripts in a vm and print the true in-browser state; gate publishing | — |
 | Preview | `.claude/serve.js` | Serve `site/` on 127.0.0.1:8080 | Never serve the repo root |
@@ -41,16 +41,16 @@ page. There is no server, database, build step, login or persistence.
 |---|---|---|---|
 | 1 | `<head>`, L1232 | `Centricity_ExtraSlides.js` | `EXTRA_SLIDES` (3 dividers, 6 market slides, disclaimer, thank-you; 2001×1125 images) |
 | 2 | L1233 | `Centricity_PMS_AIF_Terms.js` | `PMS_AIF_TERMS` (73: exit load + IRR band for new PMS/AIF) |
-| 3 | after `#root`, L5083 | `Centricity_June_Refresh.js` | Replaces the GIFT City bucket; re-assigns 12 PMS/AIF look-throughs |
-| 4 | L5084 | `Centricity_IRR_Offshore.js` | IRR bands for ~2,065 funds by exact name; 4 funds → Offshore Funds; RATIONALE/BENCHMARKS/LIQUIDITY entries. **After #3.** |
-| 5 | L5085 | `Centricity_SIF_Refresh.js` | Replaces SIF rows with 30 (Equity SIF 16, Hybrid SIF 14); sets `DATA_DATES.sif`; registers `REFRESH.parseSif`. **After #4.** |
+| 3 | after `#root`, L5167 | `Centricity_June_Refresh.js` | Replaces the GIFT City bucket; re-assigns 12 PMS/AIF look-throughs |
+| 4 | L5168 | `Centricity_IRR_Offshore.js` | IRR bands for ~2,065 funds by exact name; 4 funds → Offshore Funds; RATIONALE/BENCHMARKS/LIQUIDITY entries. **After #3.** |
+| 5 | L5169 | `Centricity_SIF_Refresh.js` | Replaces SIF rows with 30 (Equity SIF 16, Hybrid SIF 14); sets `DATA_DATES.sif`; registers `REFRESH.parseSif`. **After #4.** |
 
 Each is idempotent-guarded (`window.__JUNE_REFRESH_APPLIED` etc.). Baseline MASTER 7,672 →
-effective 7,682 after the siblings. The risk matrix is baked inline (L5091 on 16-Oct-2026); the old
+effective 7,682 after the siblings. The risk matrix is baked inline (L5175 on 19-Oct-2026); the old
 unloaded `Centricity_Risk_Matrix.js` moved to `docs/archive/` on 19-Oct-2026 (D78). Deploying `index.html` without the siblings
 silently reverts data — the CI `verify` job refuses a deploy with a missing sibling.
 
-## 3. Line map of `site/index.html` (re-derived 16-Oct-2026; drifts with every edit)
+## 3. Line map of `site/index.html` (re-derived 19-Oct-2026 with the C19 parser change; drifts with every edit)
 
 | Lines | Block |
 |---|---|
@@ -63,18 +63,18 @@ silently reverts data — the CI `verify` job refuses a deploy with a missing si
 | **L1434** | **`MASTER` — 7,672 baseline records** |
 | L1435–1440 | `EQUITY_ANALYTICS` 1,203 · `HYBRID_ANALYTICS` 264 · `DEBT_ANALYTICS` 511 · `BONDS`/`PMS_HOLDINGS` (empty) · `CENTRICITY_SELECT` 178 |
 | L1444 / L1448 | `MF_BENCHMARK_PERF` (47 sheets) / `DATA_DATES` |
-| L1446–2895 | `window.H` helpers (H created L1898/L1907; credit helpers ~L2144–2201) |
-| L2896–3142 | Config: risk profiles, strategies, live `BENCHMARKS` (L2926), `PMS_PERFORMANCE` (L2932), `PMS_PERF_ALIAS` (L2938) |
-| L3143–3839 | `window.REFRESH` parsers |
-| L3840–5079 | `window.EXPORTS` |
-| L5082 | `<div id="root">` |
-| L5083–5085 | siblings 3–5 |
-| L5091–5094 | `RISK_MATRIX` (1,088), `DATA_DATES.riskMatrix`, `RISK_MATRIX_BENCH_SD` |
-| L5096–9096 | UI components; `App` L8651; `createRoot` L9096; file ends `</body></html>` (L9097) |
+| L1446–2906 | `window.H` helpers (`window.H` exposed L1898; extensions from L1907; credit helpers ~L2144–2204) |
+| L2907–3153 | Config: risk profiles (L2909), strategies, live `BENCHMARKS` (L2937), `PMS_PERFORMANCE` (L2943), `PMS_PERF_ALIAS` (L2949) |
+| L3154–3921 | `window.REFRESH` parsers: `SHEET_MAP` L3162–3209, `DEBT_STYLE_SHEETS` L3211–3216, `REFRESH_ONLY_SHEETS` L3225–3227, `parseMfMonitor` L3289–3486, `parseMfMonitorDirect` L3494, `parseAnalytics` L3606; exposed L3919 |
+| L3922–5163 | `window.EXPORTS` (exposed L5161) |
+| L5166 | `<div id="root">` |
+| L5167–5169 | siblings 3–5 |
+| L5175–5178 | `RISK_MATRIX` (1,088), `DATA_DATES.riskMatrix` (L5177), `RISK_MATRIX_BENCH_SD` |
+| L5180–9211 | UI components; `App` L8737; `createRoot` L9211; file ends `</body></html>` (L9212) |
 
 Re-derive with `Grep -n` before citing. `blocklib.locate` uses the **first** occurrence of
 `window.X = ` and refuses a prefix with two literal assignments, so each baseline literal must stay
-ahead of the runtime re-assignments later in the file (MASTER is re-assigned by uploader/add-fund handlers at ~L3375, 3698, 3818, 8795, 8831).
+ahead of the runtime re-assignments later in the file (MASTER is re-assigned by uploader/add-fund handlers at ~L3446, 3780, 3900, 8904–8905, 8940–8941).
 
 ## 4. Data model (summary — full detail in PRD §6)
 

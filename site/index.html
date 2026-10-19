@@ -3212,7 +3212,18 @@ window.mfBenchmarkPerfFor = function(sub) {
     'Overnight Fund', 'Liquid', 'Ultra Short Duration', 'Low Duration', 'Money Market',
     'Short Duration', 'Banking and PSU Fund', 'Corporate Bond', 'Dynamic Bond', 'Floating Rate',
     'Short & Mid Term', 'Medium Duration', 'Medium to Long Duration', 'Long Duration',
-    'Credit Risk Fund', 'Gilt Fund with 10 year constan', 'Debt Oriented', 'Debt'
+    'Credit Risk Fund', 'Gilt Fund with 10 year constan', 'Debt Oriented', 'Debt', 'Debt Oriented34'
+  ]);
+
+  // Fund sheets that REFRESH existing MASTER records but never create one (KNOWN_ISSUES C19, D80).
+  // Each mixes several MASTER classes (target-maturity Debt ETFs; International, Solution Oriented and
+  // Hybrid Other funds), so no sheet-level taxonomy fits a new fund: a row whose name is not in MASTER
+  // is returned in `skipped`, never added. A fund also listed on a mapped sheet keeps that sheet's
+  // figures; between these sheets the last row wins, as on mapped sheets. Keys are exact sheet names
+  // (note the trailing space). Do not add them to SHEET_MAP (that switches on record creation) or to
+  // tools/rename_schemes.js SHEET_SUB (its tier-3 pairing would invent renames).
+  const REFRESH_ONLY_SHEETS = new Set([
+    'Debt Oriented34', 'Solution Oriented,ETFs,FOFs', 'Solution Oriented - Childrens ', 'Hybrid'
   ]);
 
   // Pull cell value (raw) at row r (0-indexed), col c (0-indexed) from a sheet object
@@ -3285,6 +3296,37 @@ window.mfBenchmarkPerfFor = function(sub) {
       const masterByName = {};
       (window.MASTER || []).forEach(f => masterByName[f.name] = f);
       window.MF_BENCHMARK_PERF = window.MF_BENCHMARK_PERF || {};
+      const skipped = [];        // refresh-only rows not merged: { sheet, name, reason }
+      const unclassified = {};   // fund rows on a sheet in neither SHEET_MAP nor REFRESH_ONLY_SHEETS
+      const sheetRows = {};      // fund rows per sheet
+      const monitorNames = [];   // every fund-row name, for the bake's "MASTER funds on no sheet" check
+
+      // Pre-pass: every fund name on a MAPPED sheet, so a refresh-only sheet never overrides a mapped
+      // sheet's row whatever the sheet order (C19). MUST mirror the main loop's row rules below: the
+      // header row, the BenchMark/Average end markers, the segregated/unclaimed/IEF filter and a
+      // numeric AUM in column B.
+      const onMappedSheet = new Set();
+      for (const sn of wb.SheetNames) {
+        const sheet = wb.Sheets[sn];
+        if (!SHEET_MAP[sn] || !sheet || !sheet['!ref']) continue;
+        const range = XLSX.utils.decode_range(sheet['!ref']);
+        let hr = -1;
+        for (let rr = range.s.r; rr <= Math.min(range.s.r + 25, range.e.r); rr++) {
+          const c0 = cellVal(sheet, rr, 0);
+          if (c0 && String(c0).trim().toLowerCase() === 'scheme name') { hr = rr; break; }
+        }
+        if (hr < 0) continue;
+        for (let r = hr + 1; r <= range.e.r; r++) {
+          const raw = cellVal(sheet, r, 0);
+          if (raw == null || raw === '') continue;
+          const nm = String(raw).trim(), low = nm.toLowerCase();
+          if (low.startsWith('benchmark') || low === 'average') break;
+          if (low.includes('segregated portfolio') || low.includes('unclaimed') || low.includes('investor education')) continue;
+          const aumRaw = cellVal(sheet, r, 1);
+          if (aumRaw == null || aumRaw === '' || isNaN(Number(aumRaw))) continue;
+          onMappedSheet.add(nm);
+        }
+      }
 
       // Return columns shared by fund rows and benchmark rows.
       const RET_COLS = [['mtd','MTD'],['r1m','1 Month'],['r3m','3 Months'],['r6m','6 Months'],
@@ -3347,10 +3389,18 @@ window.mfBenchmarkPerfFor = function(sub) {
           if (fundsDone) continue;  // gap rows between the fund list and the benchmark block
 
           // ----- Fund row -----
-          if (!map) continue;  // benchmark-only sheet: no fund taxonomy to merge into
           if (low.includes('segregated portfolio') || low.includes('unclaimed') || low.includes('investor education')) continue;
           const aumRaw = cellVal(sheet, r, 1);
           if (aumRaw == null || aumRaw === '' || isNaN(Number(aumRaw))) continue;  // funds must have a numeric AUM
+          sheetRows[sn] = (sheetRows[sn] || 0) + 1;
+          monitorNames.push(nm);
+          if (!map) {
+            // A sheet in neither list: counted, never merged (the bake refuses it; C19).
+            if (!REFRESH_ONLY_SHEETS.has(sn)) { unclassified[sn] = (unclassified[sn] || 0) + 1; continue; }
+            // Refresh-only sheet: update an existing record only, and never over a mapped sheet's row.
+            if (onMappedSheet.has(nm)) { skipped.push({ sheet: sn, name: nm, reason: 'listed on a mapped sheet' }); continue; }
+            if (!masterByName[nm]) { skipped.push({ sheet: sn, name: nm, reason: 'not in MASTER' }); continue; }
+          }
 
           let f = masterByName[nm];
           const isNew = !f;
@@ -3411,12 +3461,23 @@ window.mfBenchmarkPerfFor = function(sub) {
       }
       if (asOnStr && window.DATA_DATES) window.DATA_DATES.performance = asOnStr;
 
+      // Expected sheets (mapped or refresh-only) that are missing or gave no fund row: a renamed sheet,
+      // or a header moved out of reach, would otherwise go stale silently.
+      const emptySheets = Object.keys(SHEET_MAP).concat([...REFRESH_ONLY_SHEETS]).filter(s => !sheetRows[s]);
+      const nUncl = Object.values(unclassified).reduce((a, b) => a + b, 0);
+
       return {
         ok: true,
         updated: updated.length,
         newFunds: newFunds.length,
         asOn: asOnStr || new Date().toISOString().slice(0, 10),
-        message: `Updated ${updated.length} schemes${newFunds.length ? ` (+${newFunds.length} new)` : ''}${asOnStr ? ` · as on ${asOnStr}` : ''}.`
+        skipped,
+        unclassified,
+        emptySheets,
+        sheetRows,
+        monitorNames,
+        message: `Updated ${updated.length} schemes${newFunds.length ? ` (+${newFunds.length} new)` : ''}${asOnStr ? ` · as on ${asOnStr}` : ''}` +
+          `${skipped.length ? ` · ${skipped.length} rows not merged` : ''}${nUncl ? ` · ${nUncl} rows on unrecognised sheets` : ''}.`
       };
     } catch (err) {
       console.error('parseMfMonitor error', err);

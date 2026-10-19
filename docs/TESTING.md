@@ -52,10 +52,21 @@ compares no counts (`KNOWN_ISSUES.md` A23), so compare them with `PROJECT_STATE.
 npm test                     # = node tools/test/run.js
 ```
 
-Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today: `blocklib.test.js` (28 checks:
-locate, atomic writes, as-on labels, `setDataDate`, `replaceOnce`) and `dates.test.js` (10 checks:
-`isoDay`, `isoDayFromSerial`). CI runs `npm ci` and then the tests on every PR. Add a
-`<name>.test.js` file beside them for any new library function.
+Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
+
+- `blocklib.test.js` (28 checks: locate, atomic writes, as-on labels, `setDataDate`, `replaceOnce`);
+- `dates.test.js` (10 checks: `isoDay`, `isoDayFromSerial`);
+- `parser_refresh_only.test.js` (18 checks, added 19-Oct-2026 with the C19 change, D80). It tests
+  page code: it loads the `REFRESH` block of `site/index.html` in a vm and feeds `parseMfMonitor`
+  small synthetic workbooks (no monthly or client data). It covers a refresh-only row refreshing an
+  existing record without creating one or changing its class (an unmatched row is reported); a
+  mapped sheet winning even when it comes after the refresh-only sheet; a sheet in neither list
+  counted and never merged; missing or empty expected sheets listed; `Debt Oriented34` read
+  debt-style; and a mapped sheet still creating a new fund. It fails on `main`'s parser from before
+  the change.
+
+CI runs `npm ci` and then the tests on every PR. Add a `<name>.test.js` file beside them for any new
+library function or parser rule.
 
 ### 2.2 Dry-run comparison (minutes)
 
@@ -66,8 +77,10 @@ produced identical output before and after the reorganisation. To repeat, run ea
 make the change, re-run, diff. The exit code is part of the result (0 pass, 1 gate failed, 2 usage;
 D72). Re-running a month's own inputs on its baseline should report no data changes (Sep-2026 on
 `main` `cd6317c`: risk matrix 1,088 → 1,088 with 28 + 5 flags unchanged; SIF 0 values changed;
-`rename_schemes` lists the 8 pending renames, which wait for the owner). Confirm afterwards that `git status` shows no modified
-files under `site/`.
+`rename_schemes` lists the 8 pending renames, which wait for the owner). Exception until the C19
+September re-run is published: the bake on today's page refreshes 215 MASTER records (records
+carrying r1y 6,339 → 6,348; `KNOWN_ISSUES.md` C19). Confirm afterwards that `git status` shows no
+modified files under `site/`.
 
 ### 2.3 Rehearsal harness — old versus new tools with `--apply` (minutes; needs `monthly-updates/`)
 
@@ -93,6 +106,15 @@ analytics one class, Direct rebuild, fund managers, Reckoner, alias pins, PMS/AI
 every difference is the intended one, counted. The harness reports; it does not fail on a
 difference (exit 2 only for a missing `--old` or an unknown case).
 
+**Limit: page-code changes (`KNOWN_ISSUES.md` A27).** Both sides start from the new `site/`, and the
+vm tools run the parsers of the page they are given, so a change to `site/index.html` code shows as
+`IDENTICAL`. For a parser change, run the chain by hand with `--html` on two scratch copies of the
+six files, one holding `main`'s `index.html`, and compare the blocks. Done for C19 on 19-Oct-2026
+(September chain: bake → `fill_variant_analytics` → `rekey_sif_analytics` →
+`merge_expense_exitload`): `main`'s chain reproduced the live site byte for byte; the fixed chain
+changed exactly 215 MASTER records and left every other block, `DATA_DATES` and the five siblings
+identical.
+
 ## 3. Browser checks (10 minutes; after every refresh or UI change)
 
 Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `node .claude/serve.js`
@@ -110,7 +132,7 @@ Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `nod
 | 8 | Allocation Sheet | Download → Clear All → upload restores the same funds and % ("Loaded 4 instrument(s) — 100.00% allocated") |
 | 9 | Live Output tabs | All 9 render; "⬇ Download slide" works per tab (Performance Sheet = 4 slides, others 1) |
 | 10 | Credit rating | Debt Analytics doughnut sums to 100%, colours fixed per bucket (`H.CREDIT_COLORS`), same colours in the PPT |
-| 11 | MF Monitor upload | Section 7 card accepts the current monitor: "Updated N schemes · as on …" (session only) |
+| 11 | MF Monitor upload | Section 7 card accepts the current monitor: "Updated N schemes · as on …" (session only); since the C19 change it may add "· N rows not merged" (the Sep-2026 Monitor gives 19 in the bake) and must never add "· N rows on unrecognised sheets" |
 
 ### How to drive exports without downloading files (in-page JavaScript)
 

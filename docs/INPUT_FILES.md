@@ -132,18 +132,23 @@ exceptions are noted under their files:
     The other columns include `Latest NAV(Rs)`, `YTM (%)`, `Average Maturity Years`,
     `Modified Duration Years` and rating buckets.
   - A fund row needs a numeric AUM in column B. The fund list ends at `Average` or `BenchMark`. Index
-    rows below `BenchMark` are kept as category benchmarks (`site/index.html:3314-3324`).
-  - Five sheets are not in the parser's `SHEET_MAP` (`site/index.html:3151`): `Home`,
-    `Debt Oriented34`, `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens ` (with a
-    trailing space) and `Hybrid`. Their fund rows are not merged.
+    rows below `BenchMark` are kept as category benchmarks (`site/index.html:3377-3387`).
+  - Five sheets are not in the parser's `SHEET_MAP` (`site/index.html:3162-3209`): `Home` (no data)
+    and four **refresh-only** fund sheets (`REFRESH_ONLY_SHEETS`, `:3225-3227`; D80):
+    `Debt Oriented34` (read debt-style), `Solution Oriented,ETFs,FOFs`,
+    `Solution Oriented - Childrens ` (with a trailing space) and `Hybrid`. Each mixes several MASTER
+    classes. Their rows refresh existing MASTER records by exact name and never create one; a name
+    also on a mapped sheet keeps the mapped sheet's figures; `bake_month.js` lists the rest as not
+    merged (Sep-2026: 246 rows, 19 not merged). Until the C19 fix (19-Oct-2026) these rows were
+    skipped (`KNOWN_ISSUES.md` C19). A fund sheet in neither list fails the bake.
 - **Units:** returns, `Large/Mid/Small Cap`, `Others`, `Ratio` (expense) and `YTM (%)` are percent
-  and are always divided by 100 (`site/index.html:3216-3229`). AUM is in ₹ crore. Maturity and
+  and are always divided by 100 (`site/index.html:3236-3251`). AUM is in ₹ crore. Maturity and
   duration are in years. Both stay as they are.
 - **As-on:** two places. The A3 banner sits on every data sheet. The B12 date sits on the debt-style
   sheets. They usually agree. In April A3 read 17-May against a B12 of 30-Apr, and in May A3 read
   01-Jun against 31-May. **Use the B12 date to choose the data month.** `bake_month.js` takes the
   date as `--as-on`. The browser uploader uses the picker first, then the file name, then the in-file
-  date (`site/index.html:3377`).
+  date (`site/index.html:3448-3462`).
 - **Size:** 2,079 (Apr) to 2,161 (Sep) fund rows.
 - **Traps:** the soft-hyphen name defeats a typed path (`rename_schemes.js:43` checks it with
   `fs.existsSync`). An earlier `\bmonitor\b` regex silently missed the underscore names (comment at
@@ -180,13 +185,13 @@ exceptions are noted under their files:
   - Sep: `<Class> Analytics_30th September 2026`.
 - **Layout:** one sheet. The header is normally row 1. The June equity file had a ` >>Portfolio`
   banner in rows 1–3 and its header on row 4. The parser looks for `Scheme Name` in rows 1–25,
-  columns A–D (`site/index.html:3539`). All three classes share one 24-column header:
+  columns A–D (`site/index.html:3621-3634`). All three classes share one 24-column header:
   `Scheme Name | Company Name | In/Out | Holding(%) | Market Value(Rs.in Crores) | Shares | Price |
   Instrument YTM (%) | Sector | Asset | Asset Type | Rating | Rating Agency | Rate Basket | ISIN |
   Issuer Name | Coupon Rate | Maturity Date | SEBI MCAP Type | Holding(%) | Market Value(Rs.in Crores) |
   Shares | Price | Instrument YTM (%)`.
 - **Columns used:** `Scheme Name`, `Company Name`, `In/Out`, the **first** `Holding(%)`, `Sector`,
-  `Asset`, `Rating` and `SEBI MCAP Type` (`site/index.html:3560-3562`). Rows marked `Out` are
+  `Asset`, `Rating` and `SEBI MCAP Type` (`site/index.html:3641-3644`). Rows marked `Out` are
   skipped. The second block (columns T–X) is ignored.
 - **Telling the classes apart:** the header is identical, so use the `Asset` mix and the scheme count.
   Sep-2026: equity 1,130 schemes with 95% `Equity` rows; hybrid 243 schemes, 68% `Equity` and 20%

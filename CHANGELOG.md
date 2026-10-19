@@ -18,6 +18,41 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-19 — Monitor parser refreshes the four unmapped sheets (C19 code fix; PR to follow)
+
+Page code and tools; no data block changed, so the live figures are as before. The September re-run
+that uses this fix (215 MASTER records refreshed) is prepared and **not published**: it waits for the
+owner's decision on `docs/KNOWN_ISSUES.md` C20.
+
+### Fixed
+- `site/index.html` `parseMfMonitor` (C19, D80): new `REFRESH_ONLY_SHEETS` (`Debt Oriented34`,
+  `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens `, `Hybrid`). Their rows refresh
+  existing MASTER records by exact name and never create a record or change taxonomy, name,
+  `prev_name` or IRR bands; a name also on a mapped sheet keeps the mapped figures; unmatched rows
+  are returned in `skipped`. `Debt Oriented34` is read debt-style. The parser also returns
+  `unclassified`, `emptySheets`, `sheetRows` and `monitorNames`, and its message adds
+  `· N rows not merged` / `· N rows on unrecognised sheets`. The Section-7 upload shares the parser.
+
+### Added
+- `tools/bake_month.js`: the `refresh-only rows not merged` list, a `WARN` per missing or empty
+  expected sheet, `CHECK MASTER MF/ETF funds on no sheet of this Monitor` (Sep-2026: 42, report
+  only), and `GATE fund rows on unrecognised Monitor sheets`, which also fails on a page without this
+  fix.
+- `tools/test/parser_refresh_only.test.js`: 18 synthetic checks on the page parser (they fail on
+  `main`'s parser); `npm test` now runs 3 files.
+
+### Changed
+- `tools/rename_schemes.js`: comment only. The four sheets stay out of `SHEET_SUB` on purpose (tier 3
+  would invent a rename).
+- Docs: KNOWN_ISSUES C19 restated in distinct funds (215, not 225) with the verification; C15
+  widened; C16 rewritten (not a source conflict); new C20 (owner decision), C21, A27; D80.
+
+Verification (19-Oct-2026): byte control of the September chain on scratch copies (`main`'s chain
+reproduces the live site byte for byte; the fixed chain changes exactly 215 MASTER records and
+nothing else), the six Monitors of 15-May to 30-Sep-2026 through the parser (0 taxonomy or IRR
+changes, 0 unclassified rows), `npm test` 3 of 3, `verify_page.js` counts unchanged, browser load
+clean. Detail: `docs/KNOWN_ISSUES.md` C19.
+
 ## 2026-10-19 — Strict command lines finished; invisible characters (PR #15, fix/tools-cli-cleanup)
 
 Tool fix only: no file in `site/` changed.

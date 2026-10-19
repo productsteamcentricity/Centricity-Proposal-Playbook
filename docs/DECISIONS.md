@@ -111,6 +111,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D77 | 19-Oct-2026 | CDN scripts carry SRI; page asks not to be indexed; inline favicon | Deploy | Active |
 | D78 | 19-Oct-2026 | The unused `Centricity_Risk_Matrix.js` moves to `docs/archive/` | Deploy | Active |
 | D79 | 19-Oct-2026 | Rename history kept in `prev_names`; stale old-name keys dropped | Data model | Active |
+| D80 | 19-Oct-2026 | Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake | Tooling | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -341,7 +342,7 @@ and the entry says so. "—" means no date is recorded.
   and count lines never fail a run and must still be read. `verify_page.js` follows the same rule
   (exit 1 on a hard failure); it has no flags and reads its first argument as the folder.
   `npm test` runs `tools/test/*.test.js` in CI.
-- **Source:** `tools/lib/blocklib.js:60-82`, `:115-151`; e.g. `tools/bake_month.js:20-38`, `:198-217`;
+- **Source:** `tools/lib/blocklib.js:60-82`, `:115-151`; e.g. `tools/bake_month.js:20-38`, `:225-244`;
   `tools/verify_page.js:88-94`; `.github/workflows/pages.yml` (unit-test step).
 
 ### D73 · Workbook dates are calendar days (`isoDay`); inception corrected
@@ -461,6 +462,38 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** Each run lists about 15 dropped keys that the bake re-creates under old workbook
   names; harmless. No MASTER record carries `prev_names` yet (none renamed twice).
 - **Source:** `tools/rename_schemes.js:19-23`, `:221-277`; `H.buildFundIndex` in `site/index.html`.
+
+### D80 · Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake
+`Active` · 19-Oct-2026 (this change; PR to follow) · **verified in code**
+- **Context:** Four Regular MF Monitor fund sheets (`Debt Oriented34`, `Solution Oriented,ETFs,FOFs`,
+  `Solution Oriented - Childrens `, `Hybrid`) were in no parser list, so their rows were skipped and
+  215 MASTER funds kept 30-Jun-2026 figures under the 30-Sep label (`KNOWN_ISSUES.md` C19). Each
+  sheet mixes MASTER classes (Debt ETF, International, Hybrid Other, Solution Oriented).
+- **Decision:** A second list in the page parser, `REFRESH_ONLY_SHEETS`. A row there refreshes an
+  existing MASTER record by exact name (same fields as a mapped sheet; `Debt Oriented34` read
+  debt-style) and never creates a record or changes taxonomy, name, `prev_name` or IRR bands. A name
+  also on a mapped sheet keeps the mapped sheet's figures (a pre-pass, so sheet order does not
+  matter); unmatched rows are returned in `skipped`. The parser alone owns both sheet lists and
+  reports `unclassified`, `emptySheets`, `sheetRows` and `monitorNames`; `bake_month.js` keeps no
+  copy, prints what it reports, and FAILs on any fund row on a sheet in neither list, or on a page
+  that does not report it.
+- **Rationale:** `SHEET_MAP` entries would switch on record creation with one guessed taxonomy per
+  sheet, and the 8 pending renames, whose new names sit on these sheets, would be created as
+  duplicates. One parser serves the bake and the Section-7 upload, so both behave the same (D42). A
+  new or renamed fund sheet is a mapping failure that must stop the run, not a silent skip (as in
+  D76); the gate raised no false alarm on the six Monitors of 15-May to 30-Sep-2026.
+- **Alternatives / supersedes:** `SHEET_MAP` entries (record creation, guessed taxonomy); a taxonomy
+  guessed per row from the name; a second copy of the lists in `bake_month.js` (two lists to drift);
+  the sheets in `rename_schemes.js` `SHEET_SUB` (its tier-3 pairing then invents the rename SBI CPSE
+  Bond Plus SDL Sep 2026 → SBI CRISIL-IBX SDL June 2034); a WARN instead of a FAIL.
+- **Consequences:** A new fund or a pending rename on these sheets is listed as not merged; a new
+  fund is added to MASTER by hand with the owner, and a renamed record refreshes once the rename is
+  applied. Blank cells keep old values here as on mapped sheets (C19, C20). The Section-7 upload
+  message adds `· N rows not merged`. A desk adding or renaming a fund sheet stops the bake until the
+  sheet is classified in `site/index.html`.
+- **Source:** `site/index.html:3211-3227`, `:3304-3329`, `:3395-3403`, `:3464-3480`;
+  `tools/bake_month.js:152-169`, `:212-220`; `tools/rename_schemes.js:50-52`;
+  `tools/test/parser_refresh_only.test.js`.
 
 ---
 

@@ -149,6 +149,24 @@ console.log('BEFORE:', JSON.stringify(before));
   if (!r1.ok) process.exit(1);
   const added = W.MASTER.filter(r => !mBefore.has(r.name)).map(r => r.name);
   if (added.length) { console.log(`  NEW funds added to MASTER (${added.length}):`); added.forEach(n => console.log(`      + ${n}`)); }
+  // The parser alone knows which sheets are mapped and which only refresh (KNOWN_ISSUES C19, D80);
+  // this tool reads what it reports and never keeps a second copy of the sheet lists.
+  const skippedRows = Array.isArray(r1.skipped) ? r1.skipped : [];
+  if (skippedRows.length) {
+    console.log(`  refresh-only rows not merged (${skippedRows.length}) — a new fund or a pending rename is added to MASTER by hand, never from these sheets:`);
+    skippedRows.forEach(s => console.log(`      ~ [${s.sheet.trim()}] ${s.name}   (${s.reason})`));
+  }
+  (Array.isArray(r1.emptySheets) ? r1.emptySheets : []).forEach(s =>
+    console.log(`  WARN expected Monitor sheet missing or with no fund rows: "${s}" — renamed by the desk, or its header moved?`));
+  // Funds in MASTER that this Monitor does not list at all keep last month's figures (C19's symptom).
+  if (Array.isArray(r1.monitorNames)) {
+    const onMonitor = new Set(r1.monitorNames);
+    const MF_CLASSES = new Set(['Mutual Fund', 'Mutual Funds', 'ETF', 'Index Fund']);
+    const notListed = W.MASTER.filter(r => MF_CLASSES.has(r.product_class) && !onMonitor.has(r.name));
+    console.log(`  CHECK MASTER MF/ETF funds on no sheet of this Monitor (kept as they are): ${notListed.length}`);
+    notListed.slice(0, 12).forEach(r => console.log(`      - ${r.name}   [${r.product_class} / ${r.sub_category}]`));
+    if (notListed.length > 12) console.log(`      ... +${notListed.length - 12} more`);
+  }
 
   // ---------- 3. MF Monitor — Direct -> DIRECT_PERF (a new store, never merged) ----------
   const dpBefore = new Set(Object.keys(W.DIRECT_PERF || {}));
@@ -191,6 +209,15 @@ console.log('BEFORE:', JSON.stringify(before));
   }
   if (shrank) fail = true;
   else console.log('GATE no block shrank: PASS');
+  // A fund sheet the parser does not recognise is skipped whole; four went unnoticed from July to
+  // October 2026 (C19). A page without the C19 fix reports nothing, which must not read as a pass.
+  const uncl = r1.unclassified;
+  const unclKnown = uncl && typeof uncl === 'object' && !Array.isArray(uncl);
+  const unclRows = unclKnown ? Object.values(uncl).reduce((a, b) => a + b, 0) : 0;
+  console.log(`GATE fund rows on unrecognised Monitor sheets: ${!unclKnown
+    ? '*** FAIL (this index.html predates the C19 parser fix and does not report them)'
+    : unclRows ? `*** FAIL ${Object.entries(uncl).map(([s, n]) => `"${s}": ${n}`).join(', ')} — add each sheet to SHEET_MAP or REFRESH_ONLY_SHEETS in site/index.html` : 'PASS (0)'}`);
+  if (!unclKnown || unclRows) fail = true;
   const withR1y = W.MASTER.filter(r => r.r1y != null).length;
   console.log(`GATE MASTER records carrying r1y: ${withR1y}`);
   console.log(`GATE DATA_DATES: ${JSON.stringify(W.DATA_DATES)}`);
