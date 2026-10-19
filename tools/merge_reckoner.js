@@ -20,7 +20,6 @@
 // Retained funds keep their rationale, risk ratios and details. New PMS/AIF/Unlisted/Gift entries
 // take their rationale and details from their own narrative slide. New MF entries have no source
 // for either — the deck's MF pages are performance grids only — so they are listed at the end.
-const fs = require('fs');
 const B = require('./lib/blocklib');
 const R = require('./lib/reck_parse');
 const N = require('./lib/reck_narrative');
