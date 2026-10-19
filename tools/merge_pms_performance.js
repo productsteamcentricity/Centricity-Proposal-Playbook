@@ -1,53 +1,56 @@
 // MONTHLY: rebuild window.PMS_PERFORMANCE.pms from PMS_Scheme_Performance_<Month Year>.xlsx.
 // aif + benchmarks are carried forward verbatim — this file is PMS-only.
 //
+//   node tools/merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "31st October 2026" --html site/index.html [--apply]
+//
+// The dry run exits 1 when any gate failed, and --apply refuses on the same condition. --as-on must
+// be a plain label ("31st October 2026"); it is written to DATA_DATES.pms and nowhere else.
+//
 // The July-2026 file arrived under a wholesale vendor rename ("ICICI - Value Strategy" became
 // "ICICI Prudential - Value Portfolio" and so on), which silently broke 9 of the 16 alias pins.
-// REPIN below re-points them by hand; the runbook is explicit that this map is maintained, not
-// guessed, because a wrong pin puts another manager's numbers on a client's fund.
+// The `repin` entries of tools/data/pins.json re-point them by hand (the same file holds the
+// pin_pms_alias.js pins, so a pin both tools share cannot drift apart). The map is maintained,
+// not guessed, because a wrong pin puts another manager's numbers on a client's fund.
 const fs = require('fs');
-const path = require('path');
 const XLSX = require('xlsx');
 const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "31st October 2026" --html site/index.html [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const ASON = flag('--as-on'), HTML = flag('--html');
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--as-on' && argv[i - 1] !== '--html');
-if (!SRC || !ASON || !HTML) { console.error('Usage: node pms_final.js "<xlsx>" --as-on "..." --html <p> [--apply]'); process.exit(2); }
+let APPLY = false, ASON = null, HTML = null, SRC = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--as-on' || a === '--html') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    if (a === '--as-on') ASON = v; else HTML = v;
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else if (SRC === null) SRC = a;
+  else usage('unexpected extra argument: ' + a);
+}
+if (!SRC || !ASON || !HTML) usage();
+try { B.checkAsOn(ASON, 'long'); } catch (e) { usage('*** ' + e.message); }
 
+// Pin maps: tools/data/pins.json, shared with pin_pms_alias.js, merge_reckoner.js and
+// merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing
+// space that went missing, or a stray one, stops the run (A25).
+function loadPins() {
+  const P = require('./data/pins.json');
+  const names = { pms_alias: Object.entries(P.pms_alias).flatMap(([k, e]) => [k, e.key]), reckoner: Object.entries(P.reckoner).flat() };
+  for (const sec of Object.keys(names)) {
+    const got = [...new Set(names[sec].filter(s => s !== s.trim()))].sort(), want = (P.trailing_space[sec] || []).slice().sort();
+    if (JSON.stringify(got) !== JSON.stringify(want)) {
+      console.error('*** tools/data/pins.json ' + sec + ': names with an edge space are ' + JSON.stringify(got) + ', trailing_space expects ' +
+        JSON.stringify(want) + ' — a deliberate space was lost or a stray one added (KNOWN_ISSUES A25)');
+      process.exit(1);
+    }
+  }
+  return P;
+}
 // MASTER PMS fund name -> exact scheme key in THIS month's file.
-const REPIN = {
-  'ICICI Prudential Large Cap':              'ICICI Prudential - Large Cap Portfolio',
-  'ICICI Pru Contra Strategy':               'ICICI Prudential - Contra Portfolio',
-  'ICICI Prudential Value Strategy':         'ICICI Prudential - Value Portfolio',
-  'ICICI Pru PIPE Strategy':                 'ICICI Prudential - Pipe Portfolio',
-  'Carnelian Shift Strategy':                'Carnelian Capital - Shift Strategy',
-  'Girik Multi Cap Growth Equity Strategy':  'Girik Capital - Multi Cap Growth Equity Strategy',
-  'Buoyant Capital- Opportunities Strategy': 'Buoyant - Opportunities',
-  'Aditya Birla ISOP':                       'Aditya Birla Sun Life (ABSL) - India Special Opportunities (ISOP)',
-  'UNIFI Blended PMS':                       'Unifi Blended - Rangoli',
-  // previously pinned null because the scheme was absent; it is back this month
-  'Neo Yield Enhancer':                      'Neo Yield Enhancer',
-  'Abakkus Diversified Alpha Approach Portfolio': 'Abakkus Diversified Alpha Approach',
-  // The 03-Sep file drops the doubled apostrophe the vendor used to write ("India''s" -> "Indias").
-  // Same scheme, same manager — only the punctuation moved.
-  'Emkay Golden Decade PMS':                 'Emkay Investments - Indias Golden Decade of Growth',
-};
-// Left as null deliberately — see the report at the end of the run.
-const STILL_NULL_NOTES = {
-  'Negen Capital- Special Situation & Tech Fund':
-    'file offers "Negen Special Situations & Dynamic Allocation Strategy" — the strategy name changed from Technology to Dynamic Allocation, which may be a mandate change rather than a rename',
-  'Karma Capital Wealth Builder': 'file offers "Karma - Wealth Builder" — looks right, but this pin was set to null specifically to block a Fractal Capital false positive',
-  'Emkay Golden Decade PMS': 'file offers "Emkay Investments - India\'\'s Golden Decade of Growth" (note the doubled apostrophe in the source)',
-  'Motilal Oswal Founders Portfolio': 'no clear counterpart in this file',
-  'Burman Capital Management PMS': 'no clear counterpart in this file',
-  'TCG Transformative Growth Portfolio': 'no clear counterpart in this file',
-  'Phillip Conservative Credit Portfolio': 'no clear counterpart in this file',
-  'Sundaram F.I.R.S.T. Debt PMS': 'no clear counterpart in this file',
-  'Julius Baer Premier Focused Portfolio': 'no clear counterpart in this file',
-};
+const REPIN = Object.fromEntries(Object.entries(loadPins().pms_alias).filter(([, e]) => e.repin).map(([m, e]) => [m, e.key]));
 
 const MISSING = /^(|-|--|na|n\.?a\.?|#n\/a|undis\.?|nil\.?)$/i;
 const raw = v => (v == null ? '' : String(v).trim());
@@ -75,10 +78,13 @@ function mergeExitLoad(a, b, c) {
   }
   return seg.join(', ') + ', Nil thereafter';
 }
+// The year digit must stand alone: not part of a longer number ("12 months: 1%" used to read as
+// "year 1: 2%") and not the decimals of a rate ("0.25%" used to read as "year 2: 5%"). Text where
+// the digit stands alone ("1 Year: 3%", "Year 1 - 3%", "1yr:3%") parses exactly as before.
 function parseExitLoadText(txt) {
   const t = raw(txt);
   if (!t || MISSING.test(t)) return null;
-  const get = yr => { const m = t.match(new RegExp(yr + '\\s*(?:year|yr)?\\s*[:\\-]?\\s*([0-9]+(?:\\.[0-9]+)?)\\s*%?', 'i')); return m ? parseFloat(m[1]) : null; };
+  const get = yr => { const m = t.match(new RegExp('(?<![0-9.])' + yr + '(?![0-9])\\s*(?:year|yr)?\\s*[:\\-]?\\s*([0-9]+(?:\\.[0-9]+)?)\\s*%?', 'i')); return m ? parseFloat(m[1]) : null; };
   const a = get('1'), b = get('2'), c = get('3');
   return (a == null && b == null && c == null) ? null : mergeExitLoad(a, b, c);
 }
@@ -144,14 +150,15 @@ if (dupeNames.length) {
   dupeNames.forEach(d => console.log('   ' + d));
 }
 
-const cur = B.read(HTML, 'window.PMS_PERFORMANCE = ').value;
-const alias = B.read(HTML, 'window.PMS_PERF_ALIAS = ').value;
-const master = B.read(HTML, 'window.MASTER = ').value;
+const html = fs.readFileSync(HTML, 'utf8');
+const cur = B.locate(html, 'window.PMS_PERFORMANCE = ').value;
+const alias = B.locate(html, 'window.PMS_PERF_ALIAS = ').value;
+const master = B.locate(html, 'window.MASTER = ').value;
 const nextAlias = Object.assign({}, alias);
 let repinned = 0;
 for (const [m, k] of Object.entries(REPIN)) {
   if (!(m in alias)) { console.error(`*** REPIN target not in the alias map: "${m}"`); process.exit(1); }
-  if (!pms[k]) { console.error(`*** REPIN key not in this file: "${k}"`); process.exit(1); }
+  if (!pms[k]) { console.error(`*** REPIN key not in this file: "${k}"  (edit pms_alias in tools/data/pins.json with the owner)`); process.exit(1); }
   nextAlias[m] = k; repinned++;
 }
 
@@ -162,8 +169,8 @@ console.log(`alias pins re-pointed: ${repinned}`);
 const pmsFunds = master.filter(r => r.product_class === 'PMS');
 const before = pmsFunds.filter(f => alias[f.name] && cur.pms[alias[f.name]]).length;
 const after = pmsFunds.filter(f => nextAlias[f.name] && pms[nextAlias[f.name]]).length;
-console.log(`\nGATE MASTER PMS funds with performance: ${before} -> ${after} (of ${pmsFunds.length})`);
 let fail = after < before;
+console.log(`\nGATE MASTER PMS funds with performance: ${before} -> ${after} (of ${pmsFunds.length}): ${fail ? '*** FAIL fewer funds would have performance' : 'PASS'}`);
 const bad = [];
 for (const [k, v] of Object.entries(pms)) {
   for (const f of ['r1m','r3m','r6m','r1y','r2y','r3y','r5y','si','sd1y','sd3y','alpha1y','alpha3y'])
@@ -174,21 +181,37 @@ console.log(`GATE values in range: ${bad.length ? '*** ' + bad.slice(0, 4).join(
 if (bad.length) fail = true;
 console.log(`GATE aif untouched: ${Object.keys(cur.aif).length} | benchmarks untouched: ${Object.keys(cur.benchmarks).length}`);
 
+// Build the page in memory now, so a DATA_DATES problem shows in the dry run, not half-way
+// through a write. setDataDate touches only the `pms` key inside window.DATA_DATES.
+let out = null;
+try {
+  out = B.spliceBlocks(html, [
+    { prefix: 'window.PMS_PERFORMANCE = ', value: { pms, aif: cur.aif, benchmarks: cur.benchmarks } },
+    { prefix: 'window.PMS_PERF_ALIAS = ', value: nextAlias },
+  ]);
+  out = B.setDataDate(out, 'pms', ASON);
+  console.log(`GATE DATA_DATES.pms set to "${ASON}": PASS`);
+} catch (e) { console.log('GATE DATA_DATES.pms set: *** FAIL ' + e.message); fail = true; }
+
 console.log('\nre-pointed pins now resolve to:');
 for (const [m, k] of Object.entries(REPIN)) {
   const v = pms[k];
   console.log(`   ${m.padEnd(46)} 1Y ${v.r1y != null ? (v.r1y * 100).toFixed(2) + '%' : '—'}  AUM ${v.aum != null ? v.aum.toLocaleString('en-IN') + ' Cr' : '—'}`);
 }
-console.log('\nstill pinned null — confirm before I pin these:');
-for (const [m, why] of Object.entries(STILL_NULL_NOTES)) console.log(`   ${m}\n      ${why}`);
+// Read from the alias map as it will be written, so the list can never go stale (KNOWN_ISSUES A18).
+// The "file offers" names are hints for the owner, never applied: a null pin changes only by hand.
+const words = s => String(s).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 4 &&
+  !['portfolio', 'fund', 'capital', 'strategy', 'management', 'advisors', 'investments', 'approach', 'scheme', 'plan'].includes(w));
+const stillNull = Object.keys(nextAlias).filter(m => nextAlias[m] === null);
+console.log('\nstill pinned null (' + stillNull.length + ', from PMS_PERF_ALIAS) — confirm with the owner before pinning any of these:');
+for (const m of stillNull) {
+  const w = words(m), need = Math.min(2, w.length);
+  const offers = Object.keys(pms).map(k => [k, words(k).filter(x => w.includes(x)).length])
+    .filter(([, n]) => need && n >= need).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => '"' + k + '"');
+  console.log(`   ${m}\n      ${offers.length ? 'file offers ' + offers.join(', ') : 'no clear counterpart in this file'}`);
+}
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(0); }
+if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
-B.writeBlocks(HTML, [
-  { prefix: 'window.PMS_PERFORMANCE = ', value: { pms, aif: cur.aif, benchmarks: cur.benchmarks } },
-  { prefix: 'window.PMS_PERF_ALIAS = ', value: nextAlias },
-]);
-let h = fs.readFileSync(HTML, 'utf8');
-h = h.replace(/(pms:\s*)"[^"]*"/, `$1"${ASON}"`);
-fs.writeFileSync(HTML, h, 'utf8');
-console.log(`\nWROTE ${HTML} — ${h.length} bytes; DATA_DATES.pms = "${ASON}"`);
+B.writeFilesAtomic([{ file: HTML, content: out }]);
+console.log(`\nWROTE ${HTML} — ${out.length} bytes; DATA_DATES.pms = "${ASON}"`);

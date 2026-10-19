@@ -1,14 +1,20 @@
 // MONTHLY: PMS / AIF equity look-through from "PMS & AIF Analytics <Month Year>.xlsx".
 //
-//   node merge_pms_aif_analytics.js "<xlsx>" --as-on "31st July 2026" [--html <p>] [--apply]
+//   node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "31st July 2026" [--html site/index.html] [--sheet <name>] [--apply]
+//
+// --as-on is the workbook's own as-on date. It is printed for the update log and written nowhere:
+// DATA_DATES.analytics belongs to the MF analytics, and the page has no PMS/AIF look-through label
+// (KNOWN_ISSUES A3, D70). The dry run exits 1 when any gate failed, and --apply refuses on the
+// same condition. The holdings sheet is
+// the one whose header carries the columns below (not simply the first sheet); --sheet picks one
+// when several qualify. The merge is additive: schemes the store or the sibling carries but the
+// workbook does not are listed as stale, never deleted. index.html and the sibling are written
+// together, after every gate passed.
 //
 // The workbook is one row per holding: Product Category | Scheme Name | Company Name |
 // Corrected Name | Holding(%) | Sector | ISIN | SEBI Mcap. `Corrected Name` is the normalised
 // security name and is what the store keys on; `Holding(%)` is a FRACTION (each scheme sums to
 // ~1.0), so everything is scaled by 100 to reach the store's percent scale.
-//
-// --as-on is the workbook's own as-on date. It is printed for the update log and written nowhere:
-// DATA_DATES.analytics belongs to the MF analytics, and the page has no PMS/AIF look-through label.
 //
 // THE ENTRY MUST BE WRITTEN TWICE. Centricity_June_Refresh.js carries its own `EQ` object of 12
 // PMS/AIF look-through records from the May-2026 file and re-assigns them on EVERY page load:
@@ -20,13 +26,24 @@ const path = require('path');
 const XLSX = require('xlsx');
 const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "31st July 2026" [--html site/index.html] [--sheet <name>] [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const ASON = flag('--as-on');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html' && argv[i - 1] !== '--as-on');
-if (!SRC || !ASON) { console.error('Usage: node merge_pms_aif_analytics.js "<xlsx>" --as-on "31st July 2026" [--html <p>] [--apply]'); process.exit(2); }
+let APPLY = false, ASON = null, HTML = null, SHEET = null, SRC = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--as-on' || a === '--html' || a === '--sheet') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    if (a === '--as-on') ASON = v; else if (a === '--html') HTML = v; else SHEET = v;
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else if (SRC === null) SRC = a;
+  else usage('unexpected extra argument: ' + a);
+}
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
+if (!SRC || !ASON) usage();
+try { B.checkAsOn(ASON, 'long'); } catch (e) { usage('*** ' + e.message); }
 
 // Workbook scheme name -> MASTER name. Maintained by hand: a wrong pin puts one manager's
 // holdings on another manager's fund. `Product Category` disambiguates the two Buoyant records
@@ -55,10 +72,23 @@ const r2 = n => Math.round(n * 100) / 100;
 
 // ---------- read ----------
 const wb = XLSX.readFile(SRC);
-const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: null });
 const C = { cat: 'Product Category', scheme: 'Scheme Name', name: 'Corrected Name',
   pct: 'Holding(%)', sector: 'Sector', mcap: 'SEBI Mcap' };
-for (const h of Object.values(C)) if (!(h in rows[0])) { console.error('*** column missing: "' + h + '" — layout changed, aborting'); process.exit(1); }
+// The holdings sheet is found by its header, not its position.
+const missingCols = r => Object.values(C).filter(h => !(r.length && h in r[0]));
+const sheets = (SHEET ? [SHEET] : wb.SheetNames).map(name => {
+  if (!wb.Sheets[name]) { console.error('*** no sheet named "' + name + '" (sheets: ' + wb.SheetNames.join(' | ') + ')'); process.exit(1); }
+  const r = XLSX.utils.sheet_to_json(wb.Sheets[name], { defval: null });
+  return { name, rows: r, missing: missingCols(r) };
+});
+const hits = sheets.filter(x => !x.missing.length);
+if (!hits.length) {
+  sheets.forEach(x => console.error('*** sheet "' + x.name + '": ' + (x.rows.length ? 'column missing: ' + x.missing.map(h => '"' + h + '"').join(', ') : 'empty')));
+  console.error('*** no sheet carries the look-through header — layout changed, aborting'); process.exit(1);
+}
+if (hits.length > 1) { console.error('*** ' + hits.length + ' sheets carry the look-through header (' + hits.map(x => '"' + x.name + '"').join(', ') + ') — refusing to guess; pick one with --sheet'); process.exit(1); }
+const rows = hits[0].rows;
+if (hits[0].name !== wb.SheetNames[0]) console.log('look-through sheet found as "' + hits[0].name + '" (not the first sheet)');
 
 const bySch = new Map();
 for (const r of rows) {
@@ -70,8 +100,9 @@ for (const r of rows) {
 console.log('source: ' + path.basename(SRC) + '   rows ' + rows.length + '   schemes ' + bySch.size + '\n');
 
 // ---------- resolve + build ----------
-const MASTER = B.read(HTML, 'window.MASTER = ').value;
-const EQ0 = B.read(HTML, 'window.EQUITY_ANALYTICS = ').value;
+const html = fs.readFileSync(HTML, 'utf8');
+const MASTER = B.locate(html, 'window.MASTER = ').value;
+const EQ0 = B.locate(html, 'window.EQUITY_ANALYTICS = ').value;
 const byName = new Map(MASTER.map(r => [r.name, r]));
 const MCAP_KEYS = ['Large', 'Mid', 'Small', 'Others'];
 
@@ -122,14 +153,24 @@ if (unmapped.length) {
 
 // ---------- the sibling that would revert this ----------
 const SIB = path.join(path.dirname(HTML), 'Centricity_June_Refresh.js');
-let sibEQ = null, sibOverlap = [];
-try { sibEQ = B.read(SIB, 'var EQ = ').value; } catch (e) { console.error('\n*** could not read EQ from ' + path.basename(SIB) + ': ' + e.message); fail = true; }
+let sibEQ = null, sibOverlap = [], sibText = null;
+try { sibText = fs.readFileSync(SIB, 'utf8'); sibEQ = B.locate(sibText, 'var EQ = ').value; } catch (e) { console.error('\n*** could not read EQ from ' + path.basename(SIB) + ': ' + e.message); fail = true; }
 if (sibEQ) {
   sibOverlap = Object.keys(built).filter(k => k in sibEQ);
   console.log('\n' + path.basename(SIB) + ' re-assigns ' + Object.keys(sibEQ).length +
     ' PMS/AIF entries on every page load; ' + sibOverlap.length + ' of them are refreshed here:');
   sibOverlap.forEach(k => console.log('   ~ ' + k));
 }
+
+// ---------- look-through this workbook no longer carries ----------
+// The merge is additive, so these keep their older holdings. Reported, never deleted: ask the desk
+// whether each scheme left the look-through or was renamed.
+const staleStore = MASTER.filter(r => (r.product_class === 'PMS' || r.product_class === 'AIF') && EQ0[r.name] && !built[r.name]).map(r => r.name);
+const staleSib = sibEQ ? Object.keys(sibEQ).filter(k => !built[k]) : [];
+console.log('\nstale look-through (not in this workbook, kept as it is): ' + staleStore.length + ' in EQUITY_ANALYTICS, ' +
+  staleSib.length + ' in ' + path.basename(SIB) + ' EQ');
+staleStore.forEach(k => console.log('   - ' + k + (staleSib.includes(k) ? '   (also in the sibling EQ)' : '')));
+staleSib.filter(k => !staleStore.includes(k)).forEach(k => console.log('   - ' + k + '   (sibling EQ only)'));
 
 // ---------- gates ----------
 console.log('\n---------------- gates ----------------');
@@ -151,26 +192,30 @@ const next = Object.assign({}, EQ0, built);
 const pmsAif = MASTER.filter(r => r.product_class === 'PMS' || r.product_class === 'AIF');
 const before = pmsAif.filter(r => EQ0[r.name]).length;
 const after = pmsAif.filter(r => next[r.name]).length;
-console.log('GATE MASTER PMS/AIF with look-through: ' + before + ' -> ' + after + ' (of ' + pmsAif.length + ')');
+console.log('GATE MASTER PMS/AIF with look-through: ' + before + ' -> ' + after + ' (of ' + pmsAif.length + '): ' +
+  (after < before ? '*** FAIL fewer funds would have a look-through' : 'PASS'));
 if (after < before) fail = true;
 console.log('GATE EQUITY_ANALYTICS ' + Object.keys(EQ0).length + ' -> ' + Object.keys(next).length);
 
 // --as-on is the look-through's own date. It is NOT written into DATA_DATES.analytics: that label is
 // the as-on date of the MF Equity/Hybrid/Debt analytics (footer, analytics tabs, Excel and deck),
 // set by bake_month.js, and this tool used to overwrite it (KNOWN_ISSUES A3, D70).
-const mfAsOn = (fs.readFileSync(HTML, 'utf8').match(/analytics:\s*"([^"]*)"/) || [])[1];
+const mfAsOn = (html.match(/analytics:\s*"([^"]*)"/) || [])[1];
 console.log('\nlook-through as on ' + ASON + ' — record it in the update log (no page label carries it)');
 console.log('DATA_DATES.analytics stays "' + mfAsOn + '" (the MF analytics date; this tool never changes it)');
+
+// Build both outputs in memory, so index.html and the sibling are written together or not at all.
+const page = B.spliceBlocks(html, [{ prefix: 'window.EQUITY_ANALYTICS = ', value: next }]);
+let sibOut = null;
+if (sibOverlap.length && sibText) {
+  const nextSib = Object.assign({}, sibEQ);
+  for (const k of sibOverlap) nextSib[k] = built[k];
+  sibOut = B.spliceBlocks(sibText, [{ prefix: 'var EQ = ', value: nextSib }]);
+}
 
 if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 
-const bytes = B.writeBlocks(HTML, [{ prefix: 'window.EQUITY_ANALYTICS = ', value: next }]);
-console.log('\nWROTE ' + HTML + ' — ' + bytes + ' bytes; EQUITY_ANALYTICS only, DATA_DATES.analytics untouched');
-
-if (sibOverlap.length) {
-  const nextSib = Object.assign({}, sibEQ);
-  for (const k of sibOverlap) nextSib[k] = built[k];
-  B.writeBlocks(SIB, [{ prefix: 'var EQ = ', value: nextSib }]);
-  console.log('WROTE ' + SIB + ' — EQ refreshed for ' + sibOverlap.length + ' scheme' + (sibOverlap.length === 1 ? '' : 's'));
-}
+B.writeFilesAtomic([{ file: HTML, content: page }].concat(sibOut ? [{ file: SIB, content: sibOut }] : []));
+console.log('\nWROTE ' + HTML + ' — ' + page.length + ' bytes; EQUITY_ANALYTICS only, DATA_DATES.analytics untouched');
+if (sibOut) console.log('WROTE ' + SIB + ' — EQ refreshed for ' + sibOverlap.length + ' scheme' + (sibOverlap.length === 1 ? '' : 's'));

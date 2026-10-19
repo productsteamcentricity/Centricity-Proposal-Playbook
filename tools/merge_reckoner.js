@@ -8,7 +8,9 @@
 // holds a deck name that matched nothing, (2) more than 5% of the current list drops, or (3) a
 // category is emptied. --accept-drops <n> waives (2) and (3) once the owner has read the DROPPED
 // list, and only if this run drops exactly n; (1) is never waived — pin the name (PIN), add the
-// fund (add_reckoner_funds.js) or record it in NO_MASTER_NOTE, then re-run.
+// fund (add_reckoner_funds.js) or record it in NO_MASTER_NOTE, then re-run. A fourth gate, also
+// never waived, refuses a dropped entry that the deck still lists under a heading GRID does not map
+// (a renamed heading such as "Focused Fund" for "Focused Funds"): map the heading, then re-run.
 //
 // Membership comes from the deck. The dashboard's own category structure is preserved: a deck
 // heading maps to an existing `sheet`/`category` pair, and headings the dashboard has no Select
@@ -23,14 +25,40 @@ const B = require('./lib/blocklib');
 const R = require('./lib/reck_parse');
 const N = require('./lib/reck_narrative');
 
+const USAGE = 'Usage: node tools/merge_reckoner.js "<pptx>" --html site/index.html [--accept-drops <n>] [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const HTML = flag('--html');
-const ACCEPT = argv.includes('--accept-drops') ? flag('--accept-drops') : null;
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html' && argv[i - 1] !== '--accept-drops');
-if (!SRC || !HTML) { console.error('Usage: node tools/merge_reckoner.js "<pptx>" --html site/index.html [--accept-drops <n>] [--apply]'); process.exit(2); }
-if (ACCEPT !== null && !/^\d+$/.test(ACCEPT || '')) { console.error('*** --accept-drops takes the number of dropped funds the owner reviewed'); process.exit(2); }
+let APPLY = false, HTML = null, ACCEPT = null, SRC = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--html' || a === '--accept-drops') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    if (a === '--html') HTML = v; else ACCEPT = v;
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else if (SRC === null) SRC = a;
+  else usage('unexpected extra argument: ' + a);
+}
+if (!SRC || !HTML) usage();
+if (ACCEPT !== null && !/^\d+$/.test(ACCEPT)) usage('*** --accept-drops takes the number of dropped funds the owner reviewed');
+
+// Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, pin_pms_alias.js and
+// merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing
+// space that went missing, or a stray one, stops the run (A25).
+function loadPins() {
+  const P = require('./data/pins.json');
+  const names = { pms_alias: Object.entries(P.pms_alias).flatMap(([k, e]) => [k, e.key]), reckoner: Object.entries(P.reckoner).flat() };
+  for (const sec of Object.keys(names)) {
+    const got = [...new Set(names[sec].filter(s => s !== s.trim()))].sort(), want = (P.trailing_space[sec] || []).slice().sort();
+    if (JSON.stringify(got) !== JSON.stringify(want)) {
+      console.error('*** tools/data/pins.json ' + sec + ': names with an edge space are ' + JSON.stringify(got) + ', trailing_space expects ' +
+        JSON.stringify(want) + ' — a deliberate space was lost or a stray one added (KNOWN_ISSUES A25)');
+      process.exit(1);
+    }
+  }
+  return P;
+}
 
 // ---------- deck heading -> dashboard bucket ----------
 const GRID = {
@@ -74,6 +102,12 @@ const SMART_BETA = /(momentum|low\s*vol|value\s*20|alpha\s*50|equal\s*weight|qua
 
 // Products that live on their own narrative slide instead of a performance grid; taken from the
 // deck's own index pages (slides 2-4). Names here are MASTER names.
+//
+// TRAILING SPACES ARE DATA (KNOWN_ISSUES A25) — keep them byte-exact, never trim:
+//   sheet keys 'DEBT AIF ' and 'Unlisted Equity ' match the `sheet` of the live CENTRICITY_SELECT
+//   entries; 'Vivriti Short Term Debt Fund ', 'InCred Credit Opportunities Fund III ',
+//   '360 0ne Early-Stage Fund Series I ', 'Campus Fund III ' and 'ValueQuest S.C.A.L.E. Fund II '
+//   are MASTER names that end in a space.
 const NARRATIVE = {
   'Income Plus Arbitrage': { cat: 'INCOME PLUS ARBITRAGE', kind: 'mf', names: [
     'HDFC Income Plus Arbitrage Active FOF-Reg(G)', 'Bandhan Income Plus Arbitrage Active FOF-Reg(G)',
@@ -98,33 +132,10 @@ const NARRATIVE = {
     'Mirae Asset Global Asset Allocation Fund (Outbound)', 'Ashoka Whiteoak Emerging Fund (Outbound)',
     'DSP Global Equity Fund (Outbound)', 'Alchemy India Long Term Fund (Inbound)'] },
 };
-// Deck name -> MASTER name, where normalisation cannot bridge the gap on its own.
-const PIN = {
-  'ICICI Prudential Large cap':                 'ICICI Prudential Large Cap',
-  'Negen Capital- Sp. Situation & Dynamic All': 'Negen Capital- Special Situation & Tech Fund',
-  'Karma Capital Wealth Builder':               'Karma Capital Wealth Builder ',
-  'Motilal Oswal Founders Fund*':               'Motilal Oswal Founders Fund',
-  'Alchemy Long Term Ventures Fund*':           'Alchemy Long Term Ventures Fund',
-  'Vedartha India Opportunities Fund I':        'Vedartha India Opportunities Fund – Series 1',
-  // Both targets were themselves renamed by SEBI in Aug-2026 and are now the `prev_name` of the
-  // live record, so the prev_name tier in resolve() carries them. Left spelled as the deck writes
-  // them rather than re-pointed, so the pin still documents what the DECK says.
-  'HDFC Multi-Asset Fund(G)':                   'HDFC Multi-Asset Allocation Fund(G)',
-  'SBI Constant Maturity Fund-Reg(G)':          'SBI Constant Maturity 10 Year Gilt Fund-Reg(G)',
-  // Sep-2026: the deck applied the SEBI "Low Duration -> Ultra Short to Short Term" rename ON TOP
-  // of the old name instead of replacing it, leaving the old qualifier stranded in the middle
-  // ("HDFC Low Duration" -> "HDFC Low Ultra Short to Short Term"; "Axis Treasury Advantage" ->
-  // "Axis Treasury Ultra Short to Short Term"). No normalisation can bridge that, and each has a
-  // near-twin that is a DIFFERENT fund: the targets below are sub_category "Low Duration", while
-  // HDFC/Axis "Ultra Short Term Fund" are "Ultra Short Duration". Both appear under the deck's own
-  // LOW DURATION FUNDS heading.
-  'HDFC Low Ultra Short to Short Term Fund(G)':     'HDFC Ultra Short to Short Term Fund(G)',
-  'Axis Treasury Ultra Short to Short Term Fund(G)':'Axis Ultra Short to Short Term Fund-Reg(G)',
-  // added to the universe 20-Aug-2026 by add_reckoner_funds.js; MASTER uses the AMC's own
-  // one-word spelling, and the GIFT City record carries the (Inbound) suffix its peers use
-  'Alf Accurate Budding Beasts PMS':             'AlfAccurate Budding Beasts PMS',
-  'Motilal Oswal Alternative Investment':        'Motilal Oswal Alternative Investment (Inbound)',
-};
+// Deck name -> MASTER name, where normalisation cannot bridge the gap on its own. Maintained in
+// tools/data/pins.json (section `reckoner`, with the reason for each pin in `reckoner_notes`);
+// merge_aif_performance.js reads three of the same pins from there.
+const PIN = loadPins().reckoner;
 // In the deck but with no MASTER instrument to hang the badge on. Adding one is a universe
 // change — run add_reckoner_funds.js, do not let this script invent records.
 const NO_MASTER_NOTE = {};
@@ -185,13 +196,14 @@ const note = (k, v) => { if (!skipped.has(k)) skipped.set(k, []); skipped.get(k)
 // drop gates). A deck name the owner has recorded in NO_MASTER_NOTE (exact key, so a short or empty
 // key cannot exempt everything) is a known gap, not a join failure.
 const missed = [];
+const unmapped = [];   // { h, name } for every deck row under a heading GRID does not map
 const miss = (name, cats) => { if (!Object.prototype.hasOwnProperty.call(NO_MASTER_NOTE, name)) missed.push({ name: name, cats: cats }); };
 
 for (const r of rows) {
   const h = r.heading || '';
   if (OUT_OF_SCOPE.includes(h)) { note(h, r.name); continue; }
   const g = GRID[h];
-  if (!g) { note('(unmapped) ' + h, r.name); continue; }
+  if (!g) { note('(unmapped) ' + h, r.name); unmapped.push({ h, name: r.name }); continue; }
   const m = resolve(r.name);
   if (!m) {
     miss(r.name, g[0] === '@SECTORAL_SPLIT' ? ['SECTORAL FUNDS', 'THEMATIC FUNDS']
@@ -286,7 +298,23 @@ console.log('GATE drops within ' + DROP_LIMIT + ' (5% of ' + n0 + '): ' + droppe
 console.log('GATE no Select category emptied: ' + (!lostCats.length ? 'PASS'
   : (accepted ? 'ACCEPTED (--accept-drops ' + ACCEPT + ') — ' : '*** FAIL — ') + lostCats.join(' | ')));
 if (ACCEPT !== null && !accepted) console.log('*** --accept-drops ' + ACCEPT + ' does not match the ' + dropped.length + ' funds this run drops — re-read the DROPPED list');
-const fail = badKeys.length > 0 || mirror.length > 0 || (ACCEPT !== null && !accepted) ||
+// (4) A dropped entry the deck still lists under a heading GRID does not map (a renamed heading such
+// as "Focused Fund" for "Focused Funds") is a mapping failure, not an editorial drop. Rows under an
+// unmapped heading never reach resolve(), so gate (1) cannot see them. Same normalised name
+// (ignoring spaces), or 80% of the normalised words shared, counts as the same fund. Never waived.
+const squash = t => norm(t).replace(/ /g, '');
+const words = t => new Set(norm(t).split(' ').filter(w => w.length > 1));
+const share = (x, y) => { const X = words(x), Y = words(y), i = [...X].filter(w => Y.has(w)).length; return i / ((X.size + Y.size - i) || 1); };
+const underUnmapped = [];
+for (const k of Object.keys(S0)) {
+  if (next.has(k)) continue;
+  for (const u of unmapped) if (squash(k) === squash(u.name) || share(k, u.name) >= 0.8) underUnmapped.push(k + '  <->  "' + u.h + '": ' + u.name);
+}
+console.log('GATE no DROPPED entry still listed under an unmapped deck heading: ' + (underUnmapped.length
+  ? '*** FAIL ' + underUnmapped.length + ' — map the heading in GRID (--accept-drops does not waive this)'
+  : 'PASS'));
+underUnmapped.forEach(p => console.log('     - ' + p));
+const fail = badKeys.length > 0 || mirror.length > 0 || underUnmapped.length > 0 || (ACCEPT !== null && !accepted) ||
   (!accepted && (dropped.length > DROP_LIMIT || lostCats.length > 0));
 
 if (viaPrev.length) {

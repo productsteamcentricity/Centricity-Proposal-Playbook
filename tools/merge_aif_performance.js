@@ -1,6 +1,13 @@
 // MONTHLY: rebuild PMS_PERFORMANCE.aif + .benchmarks from the Reckoner deck.
 //
-//   node merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html <p>] [--apply]
+//   node tools/merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--allow-layout-change] [--apply]
+//
+// The dry run exits 1 when any gate failed, and --apply refuses on the same condition. A deck
+// layout change fails a gate instead of printing a note (KNOWN_ISSUES A19): the AIF grid's
+// market-allocation sub-header not in its last four columns, no PMS – EQUITY grid with a 2Y
+// column, or a benchmark count that differs from the stored block. --allow-layout-change accepts
+// the layout after the slides were checked by hand; the stored benchmark block is then carried
+// forward unchanged, as the tool always did.
 //
 // AIF had no recurring source and sat frozen at May 2026, but the deck's
 // "AIF PERFORMANCE (CAT III) – LISTED EQUITY" slide is exactly one: Strategy | Inception Date |
@@ -10,24 +17,54 @@
 // The AIF grid has no 2Y column, so the benchmark block is taken from the PMS – EQUITY grid
 // instead: it carries all four indices WITH 2Y, on the same as-on date, and its 1M/3M/6M/1Y/3Y/5Y
 // values match the AIF grid's to the rounding the deck prints.
-const fs = require('fs');
 const path = require('path');
 const B = require('./lib/blocklib');
 const PPT = require('./lib/pptx');
 
+const USAGE = 'Usage: node tools/merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--allow-layout-change] [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
-const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html');
-if (!SRC) { console.error('Usage: node merge_aif_performance.js "<pptx>" [--html <p>] [--apply]'); process.exit(2); }
+let APPLY = false, ALLOW_LAYOUT = false, HTML = null, SRC = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--allow-layout-change') ALLOW_LAYOUT = true;
+  else if (a === '--html') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    HTML = v;
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else if (SRC === null) SRC = a;
+  else usage('unexpected extra argument: ' + a);
+}
+HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
+if (!SRC) usage();
 
-// Deck strategy name -> MASTER AIF name. The asterisk marks a footnoted series in the deck.
-const PIN = {
-  'Motilal Oswal Founders Fund*':       'Motilal Oswal Founders Fund',
-  'Alchemy Long Term Ventures Fund*':   'Alchemy Long Term Ventures Fund',
-  'Vedartha India Opportunities Fund I':'Vedartha India Opportunities Fund – Series 1',
-};
+// Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, pin_pms_alias.js and
+// merge_reckoner.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing space that
+// went missing, or a stray one, stops the run (A25).
+function loadPins() {
+  const P = require('./data/pins.json');
+  const names = { pms_alias: Object.entries(P.pms_alias).flatMap(([k, e]) => [k, e.key]), reckoner: Object.entries(P.reckoner).flat() };
+  for (const sec of Object.keys(names)) {
+    const got = [...new Set(names[sec].filter(s => s !== s.trim()))].sort(), want = (P.trailing_space[sec] || []).slice().sort();
+    if (JSON.stringify(got) !== JSON.stringify(want)) {
+      console.error('*** tools/data/pins.json ' + sec + ': names with an edge space are ' + JSON.stringify(got) + ', trailing_space expects ' +
+        JSON.stringify(want) + ' — a deliberate space was lost or a stray one added (KNOWN_ISSUES A25)');
+      process.exit(1);
+    }
+  }
+  return P;
+}
+// Deck strategy name -> MASTER AIF name: the deck names listed under aif_performance, each resolved
+// through the reckoner pins, so this grid and Centricity Select join a deck name the same way.
+// (The asterisk marks a footnoted series in the deck.)
+const PINS = loadPins();
+const PIN = {};
+for (const k of PINS.aif_performance) {
+  if (typeof PINS.reckoner[k] !== 'string') { console.error('*** tools/data/pins.json: aif_performance lists "' + k + '", which has no reckoner pin'); process.exit(1); }
+  PIN[k] = PINS.reckoner[k];
+}
 const BENCH_RE = /^(NIFTY 50 - TRI|Nifty Midcap 150 - TRI|Nifty Smallcap 250 - TRI|BSE 500 ?- ?TRI)$/i;
 const BENCH_KEY = { 'nifty 50 - tri': 'NIFTY 50 - TRI', 'nifty midcap 150 - tri': 'Nifty Midcap 150 - TRI',
   'nifty smallcap 250 - tri': 'Nifty Smallcap 250 - TRI', 'bse 500 - tri': 'BSE 500 - TRI', 'bse 500- tri': 'BSE 500 - TRI' };
@@ -71,7 +108,7 @@ for (let n = 1; n <= 200; n++) {
   }
 }
 if (!aifRows) { console.error('*** no "AIF PERFORMANCE" grid found — deck layout changed'); process.exit(1); }
-console.log('AIF grid: slide ' + aifSlide + '   benchmark grid: slide ' + (benchSlide || '(none — 2Y will be dropped)'));
+console.log('AIF grid: slide ' + aifSlide + '   benchmark grid: slide ' + (benchSlide || '(none — the stored benchmark block would be carried forward)'));
 
 // column index by header label, tolerating the deck's spacing ("1 M" vs "1M")
 function cols(rows) {
@@ -88,7 +125,11 @@ for (const k of ['inception', 'aum', 'r1m', 'r1y', 'si']) {
 const width = Math.max(...aifRows.map(r => r.length));
 const MC = { large: width - 4, mid: width - 3, small: width - 2, other: width - 1 };
 const sub = (aifRows[1] || []).map(clean);
-if (!/^Large$/i.test(sub[MC.large] || '')) console.log('  (note: market-allocation sub-header not where expected — mcap may be off)');
+const layoutIssues = [];
+if (!/^Large$/i.test(sub[MC.large] || '')) {
+  console.log('  (note: market-allocation sub-header not where expected — mcap may be off)');
+  layoutIssues.push('market-allocation sub-header not in the last four columns, so the m-cap split may be read from the wrong cells');
+}
 
 // ---------- build ----------
 const cur = B.read(HTML, 'window.PMS_PERFORMANCE = ').value;
@@ -137,9 +178,12 @@ if (benchRows) {
     next[key] = b;
   }
   if (Object.keys(next).length === Object.keys(cur.benchmarks).length) benchmarks = next;
-  else { console.log('  benchmark count differs (' + Object.keys(next).length + ' found vs ' +
-    Object.keys(cur.benchmarks).length + ' stored) — carrying the stored block forward'); }
-}
+  else {
+    console.log('  benchmark count differs (' + Object.keys(next).length + ' found vs ' +
+      Object.keys(cur.benchmarks).length + ' stored) — carrying the stored block forward');
+    layoutIssues.push('benchmark count differs (' + Object.keys(next).length + ' found vs ' + Object.keys(cur.benchmarks).length + ' stored)');
+  }
+} else layoutIssues.push('no PMS – EQUITY grid with a 2Y column, so the benchmarks cannot be refreshed');
 
 // ---------- report ----------
 const p2 = v => v == null ? '—' : (v * 100).toFixed(1) + '%';
@@ -175,10 +219,14 @@ if (bad.length) fail = true;
 if (short.length) console.log('  note — the deck leaves a market-allocation bucket blank, so these do not reach 100%: ' + short.join(' | '));
 const before = MASTER.filter(r => r.product_class === 'AIF' && cur.aif[r.name]).length;
 const after = MASTER.filter(r => r.product_class === 'AIF' && aif[r.name]).length;
-console.log('GATE MASTER AIF funds with performance: ' + before + ' -> ' + after);
+console.log('GATE MASTER AIF funds with performance: ' + before + ' -> ' + after + ': ' + (after < before ? '*** FAIL fewer funds would have performance' : 'PASS'));
 if (after < before) fail = true;
 console.log('GATE pms carried forward untouched: ' + Object.keys(cur.pms).length);
-console.log('GATE benchmarks: ' + Object.keys(benchmarks).length + (benchmarks === cur.benchmarks ? ' (unchanged)' : ' (refreshed, incl. 2Y)'));
+console.log('GATE benchmarks: ' + Object.keys(benchmarks).length + (benchmarks === cur.benchmarks ? ' (unchanged)' :
+  ' (refreshed, incl. 2Y; SI set to null for every benchmark, because the deck prints "-" there)'));
+console.log('GATE deck layout as expected: ' + (layoutIssues.length ? '*** FAIL ' + layoutIssues.join(' | ') +
+  (ALLOW_LAYOUT ? ' (overridden by --allow-layout-change)' : ' (--allow-layout-change overrides, after checking the slides by hand)') : 'PASS'));
+if (layoutIssues.length && !ALLOW_LAYOUT) fail = true;
 
 if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }

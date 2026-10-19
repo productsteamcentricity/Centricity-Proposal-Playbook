@@ -1,38 +1,55 @@
-// Re-point PMS_PERF_ALIAS entries that the August Reckoner and the July PMS file jointly resolve.
-// Each pin below is corroborated by two sources: the deck names the strategy Centricity actually
-// recommends, and the performance file carries exactly one scheme matching that strategy.
-//   node pin_pms_alias.js --html <index.html> [--apply]
+// Re-point the PMS_PERF_ALIAS entries marked `pin` in tools/data/pins.json (pms_alias). Each pin
+// was corroborated by two sources when it was set: the Reckoner deck names the strategy Centricity
+// actually recommends, and the PMS performance file carries exactly one scheme matching it. The
+// tool checks each key against the PMS block ON DISK, so run it straight after
+// merge_pms_performance.js --apply.
+//
+//   node tools/pin_pms_alias.js --html site/index.html [--apply]
+//
+// The dry run exits 1 when any check failed, and --apply refuses on the same condition.
+const fs = require('fs');
 const B = require('./lib/blocklib');
 
+const USAGE = 'Usage: node tools/pin_pms_alias.js --html site/index.html [--apply]';
+const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
-const APPLY = argv.includes('--apply');
-const HTML = flag('--html');
-if (!HTML) { console.error('Usage: node pin_pms_alias.js --html <index.html> [--apply]'); process.exit(2); }
+let APPLY = false, HTML = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--apply') APPLY = true;
+  else if (a === '--html') {
+    const v = argv[++i];
+    if (v == null || v.startsWith('--')) usage(a + ' needs a value');
+    HTML = v;
+  } else if (a.startsWith('--')) usage('unknown flag: ' + a);
+  else usage('unexpected argument: ' + a);
+}
+if (!HTML) usage();
 
-const PINS = {
-  // deck index (slide 2): "Negen Capital – Special Situations & Dynamic Allocation Fund".
-  // The July file offers two Negen schemes; only one is the Special Situations mandate.
-  'Negen Capital- Special Situation & Tech Fund': ['Negen Special Situations & Dynamic Allocation Strategy',
-    'the Technology-era name is retired; the deck itself now calls it Special Situations & Dynamic Allocation'],
-  // The Fractal false positive this pin used to block is "Fractal Capital - Wealth Builder";
-  // "Karma - Wealth Builder" is the Karma house name, and the deck recommends it (slide 26).
-  'Karma Capital Wealth Builder ': ['Karma - Wealth Builder',
-    'distinct from Fractal Capital - Wealth Builder, which is a different manager'],
-  'TCG Transformative Growth Portfolio': ['TCG Transformative Growth Portfolio',
-    'the file carries this name verbatim'],
-  // The vendor dropped the doubled apostrophe it used to write ("India''s" -> "Indias") with the
-  // Aug-2026 file; merge_pms_performance.js's REPIN carries the same spelling. Still the only
-  // Emkay Golden Decade strategy in the file — the other seven Emkay schemes are unrelated mandates.
-  'Emkay Golden Decade PMS': ['Emkay Investments - Indias Golden Decade of Growth',
-    'the only Emkay Golden Decade strategy in the file'],
-  'Motilal Oswal Founders Portfolio': ['Motilal Oswal-Founders',
-    'the only Founders strategy among the 10 Motilal Oswal schemes in the file'],
-};
+// Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, merge_reckoner.js and
+// merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing
+// space that went missing, or a stray one, stops the run (A25). The pms_alias key
+// 'Karma Capital Wealth Builder ' ends in a space because the MASTER record does.
+function loadPins() {
+  const P = require('./data/pins.json');
+  const names = { pms_alias: Object.entries(P.pms_alias).flatMap(([k, e]) => [k, e.key]), reckoner: Object.entries(P.reckoner).flat() };
+  for (const sec of Object.keys(names)) {
+    const got = [...new Set(names[sec].filter(s => s !== s.trim()))].sort(), want = (P.trailing_space[sec] || []).slice().sort();
+    if (JSON.stringify(got) !== JSON.stringify(want)) {
+      console.error('*** tools/data/pins.json ' + sec + ': names with an edge space are ' + JSON.stringify(got) + ', trailing_space expects ' +
+        JSON.stringify(want) + ' — a deliberate space was lost or a stray one added (KNOWN_ISSUES A25)');
+      process.exit(1);
+    }
+  }
+  return P;
+}
+// MASTER PMS fund name -> [exact PMS_PERFORMANCE.pms key, why it is right]
+const PINS = Object.fromEntries(Object.entries(loadPins().pms_alias).filter(([, e]) => e.pin).map(([m, e]) => [m, [e.key, e.why]]));
 
-const alias = B.read(HTML, 'window.PMS_PERF_ALIAS = ').value;
-const perf = B.read(HTML, 'window.PMS_PERFORMANCE = ').value;
-const master = B.read(HTML, 'window.MASTER = ').value;
+const html = fs.readFileSync(HTML, 'utf8');
+const alias = B.locate(html, 'window.PMS_PERF_ALIAS = ').value;
+const perf = B.locate(html, 'window.PMS_PERFORMANCE = ').value;
+const master = B.locate(html, 'window.MASTER = ').value;
 const next = Object.assign({}, alias);
 
 let fail = false;
@@ -50,14 +67,17 @@ for (const m of Object.keys(PINS)) {
   next[m] = key;
 }
 
+const pinFail = fail;
 const pmsFunds = master.filter(r => r.product_class === 'PMS');
 const before = pmsFunds.filter(f => alias[f.name] && perf.pms[alias[f.name]]).length;
 const after = pmsFunds.filter(f => next[f.name] && perf.pms[next[f.name]]).length;
-console.log('\nGATE MASTER PMS funds with performance: ' + before + ' -> ' + after + ' (of ' + pmsFunds.length + ')');
+console.log('\nGATE MASTER PMS funds with performance: ' + before + ' -> ' + after + ' (of ' + pmsFunds.length + '): ' +
+  (after < before ? '*** FAIL fewer funds would have performance' : 'PASS'));
 console.log('GATE still pinned null: ' + Object.keys(next).filter(k => next[k] === null).join(' | '));
 if (after < before) fail = true;
+console.log('GATE every pin resolves against the PMS block on disk: ' + (pinFail ? '*** FAIL (see the *** lines above)' : 'PASS'));
 
-if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(0); }
+if (!APPLY) { console.log('\n[dry run] pass --apply to write'); process.exit(fail ? 1 : 0); }
 if (fail) { console.error('\n*** gate failed — refusing to write'); process.exit(1); }
 const bytes = B.writeBlocks(HTML, [{ prefix: 'window.PMS_PERF_ALIAS = ', value: next }]);
 console.log('\nWROTE ' + HTML + ' — ' + bytes + ' bytes');
