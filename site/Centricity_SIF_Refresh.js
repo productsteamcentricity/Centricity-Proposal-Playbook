@@ -1,7 +1,7 @@
 // ============================================================================
 //  Centricity_SIF_Refresh.js   —   SIF (Specialised Investment Funds) refresh
-//  Universe : "SIF Master List_June 2026.xlsx" (Products team).
-//  Perf     : "SIF Monitor_31st August 2026.xlsx", baked in by merge_sif_monitor.js.
+//  Universe : the Products team's SIF Master List (row set, AMC prefixes, IRR bands).
+//  Perf     : the monthly SIF Monitor, baked in by tools/merge_sif_monitor.js (as on: DATA_DATES.sif below).
 //
 //  Runs AFTER Centricity_IRR_Offshore.js, so it wins last. It:
 //   (1) Removes ALL pre-existing product_class==="SIF" rows, AND removes SIF
@@ -10,11 +10,11 @@
 //       matched precisely by the Excel scheme names. GIFT City long/short &
 //       absolute-return funds and stocks (Sapphire Foods, Optimus Finance) are
 //       NOT SIFs and are left untouched.
-//   (2) Adds the 29 rows below — every SIF now sits ONLY under Equity/Hybrid SIF.
+//   (2) Adds the SIF rows below — every SIF now sits ONLY under Equity/Hybrid SIF.
 //       Expected-return range -> irr_low/irr_high; exit load -> exit_load.
 //       Actual returns (r1m/r3m/r6m/si/aum/inception) are BAKED IN as on the
 //       date in DATA_DATES.sif — re-bake each month with:
-//         node merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --apply
+//         node tools/merge_sif_monitor.js "<SIF Monitor_<date>.xlsx>" --as-on "<date>" --apply
 //   (3) Registers REFRESH.parseSif, which backs the Section 7 "SIF Monitor"
 //       card — the same parser merge_sif_monitor.js runs, so an upload and a
 //       bake of one file produce identical data. Users can upload a monitor as
@@ -36,7 +36,7 @@
       .replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim(); }
 
     if (window.MASTER && Array.isArray(window.MASTER)) {
-      // Build the removal key-set from the 28 Excel scheme names (raw + display).
+      // Build the removal key-set from the SIF rows' scheme names (raw + display).
       var _sifKeys = {};
       SIF.forEach(function (r) { [r.sif_raw, r.name].forEach(function (k) { var n = _normSif(k); if (n) _sifKeys[n] = 1; }); });
 
@@ -104,6 +104,11 @@
         function norm(s) { return _normSif(s); }
         function fmtAsOnLite(d) { var M = ['January','February','March','April','May','June','July','August','September','October','November','December']; var day = d.getDate(), j = day % 10, k = day % 100; var s = (j === 1 && k !== 11) ? 'st' : (j === 2 && k !== 12) ? 'nd' : (j === 3 && k !== 13) ? 'rd' : 'th'; return day + s + ' ' + M[d.getMonth()] + ' ' + d.getFullYear(); }
         function parseDateLite(x) { if (x instanceof Date) return isNaN(x) ? null : x; var d = new Date(x); if (!isNaN(d)) return d; var m = String(x).match(/(\d{1,2})(?:st|nd|rd|th)?[\s_.-]+([A-Za-z]{3,9})[\s_.-]+(\d{4})/); if (m) { var MON = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 }; var mo = MON[m[2].slice(0,3).toLowerCase()]; if (mo != null) { var dd = new Date(+m[3], mo, +m[1]); if (!isNaN(dd)) return dd; } } return null; }
+
+        // A parsed date -> 'YYYY-MM-DD' by local calendar day. A SheetJS date cell arrives a few seconds
+        // before local midnight of the PREVIOUS day east of UTC, so toISOString() read one day early
+        // in IST. Same rule as tools/lib/dates.js isoDay and the page's parseMfMonitor (KNOWN_ISSUES A6).
+        function isoDayLite(d) { var t = new Date(d.getTime() + 12 * 3600 * 1000); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
 
         var sifRecs = (window.MASTER || []).filter(function (f) { return /SIF$/.test(f.product_class || ''); });
         if (!sifRecs.length) throw new Error('No SIF rows in dataset to update');
@@ -215,7 +220,7 @@
             });
             if (metaMap.inception != null) {
               var iv = cv(sheet, r, metaMap.inception), id = parseDateLite(iv);
-              if (id) { rec.inception = id.toISOString().slice(0, 10); got = true; updatedFields++; }
+              if (id) { rec.inception = isoDayLite(id); got = true; updatedFields++; }
             }
             if (metaMap.exit_load != null) {
               var ev = cv(sheet, r, metaMap.exit_load);
