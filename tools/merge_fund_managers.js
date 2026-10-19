@@ -109,7 +109,7 @@ console.log(`roster too stale      : ${stale}  (left on the Monitor's value)\n`)
 // ---------- join ----------
 const html = fs.readFileSync(HTML, 'utf8');
 const master = blocklib.locate(html, 'window.MASTER = ').value;
-const norm = s => String(s || '').toLowerCase().replace(/ /g, ' ').replace(/[^a-z0-9]+/g, '');
+const norm = s => String(s || '').toLowerCase().replace(/\u00A0/g, ' ').replace(/[^a-z0-9]+/g, '');
 // Live names first, then prev_name (survives the SEBI rename either way) where no live name has it.
 // A prev_name shared by two records, or a normalised name shared by two records, is ambiguous:
 // a roster scheme that reaches it is reported and left alone, never credited to the first record.

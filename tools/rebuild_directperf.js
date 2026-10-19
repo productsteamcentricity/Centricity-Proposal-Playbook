@@ -16,6 +16,11 @@ const USAGE = 'Usage: node tools/rebuild_directperf.js "<Direct monitor.xlsx>" [
 const argv = process.argv.slice(2);
 const unknown = argv.filter(a => a.startsWith('--') && !['--html', '--apply'].includes(a));
 if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
+// A value flag needs a value, and a word that belongs to no flag is a mistake, not something to ignore.
+const VALUED = ['--html'];
+for (const f of VALUED) { const i = argv.indexOf(f); if (i >= 0 && (argv[i + 1] == null || argv[i + 1].startsWith('--'))) { console.error(`${f} needs a value\n${USAGE}`); process.exit(2); } }
+const stray = argv.filter((a, i) => !a.startsWith('--') && !VALUED.includes(argv[i - 1])).slice(1);
+if (stray.length) { console.error(`unexpected argument(s): ${stray.join(' ')}\n${USAGE}`); process.exit(2); }
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const APPLY = argv.includes('--apply');
 const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html');

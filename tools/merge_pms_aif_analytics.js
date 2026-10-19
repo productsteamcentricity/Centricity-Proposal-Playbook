@@ -67,7 +67,7 @@ const NO_MASTER_NOTE = {
   'AlfAccurate India Equity Fund Scheme 1': 'no PMS or AIF record of this name in MASTER',
 };
 
-const clean = s => String(s == null ? '' : s).replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+const clean = s => String(s == null ? '' : s).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();
 const r2 = n => Math.round(n * 100) / 100;
 
 // ---------- read ----------
