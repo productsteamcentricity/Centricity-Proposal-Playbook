@@ -136,10 +136,11 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C14 | Shared links drop funds renamed since the link was made | UI | P2 | Closed 19-Oct-2026 (PR #12) | — | `hashPick` in `site/index.html` |
 | C15 | Fund-manager roster overwritten by the Sep bake | Data | P2 | Open (desk) | **Affects** | MASTER `fund_mgr`; `tools/merge_fund_managers.js` |
 | C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided with C20) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
-| C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Open | — | `site/index.html:5029` |
+| C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Closed 21-Oct-2026 (PR #21) | — | `NOTE_Y`, `mk` in the matrix slide, `site/index.html` |
 | C18 | Select popover ratios are never marked unreliable | UI | P3 | Open | — | `CentricitySelectPopover`, `site/index.html:5383-5399` |
 | C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`, `:3397-3403`; `tools/bake_month.js:152-169`, `:212-220` |
 | C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3414-3415` |
+| C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Open | — | matrix slide `rowH:0.24*mk`, `site/index.html` |
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
@@ -1133,7 +1134,18 @@ rule (checked 16-Oct-2026).
   decision. `rename_schemes.js` has nothing to rename here.
 
 ### C17. Risk-flag footnote overlaps a long Portfolio Matrix slide
-**P3 · Open · —**
+**P3 · Closed 21-Oct-2026 (PR #21) · —**
+
+- **Fixed:** when a selected fund is flagged, the slide estimates the table height (header, average
+  row and one row per fund; a name wraps in the 3.0" column at about 0.5 em a character) and shrinks
+  row height, fonts and cell margins by one factor `mk` (steps of 0.02, floor 0.6) until the table
+  ends above the footnote at `NOTE_Y` 6.72. Without a flagged fund `mk` is 1 and the slide is byte
+  for byte as before (checked: 25 funds unflagged and 10 funds flagged give the same `slide1.xml`
+  as `main`). Measured in PowerPoint (rendered row heights, through COM), with a simulated
+  `RISK_MATRIX[name].fl = 'split'`: 25 funds including the three longest names, `main` table
+  bottom 7.87" (footnote overlapped by 1.15"), now 6.64" (`mk` 0.82, fonts 7.4 / 6.6 pt); 22 funds
+  6.65"; 35 funds 6.51" (`mk` 0.62). The unflagged overflow is C22. The text below is the state
+  before the fix.
 
 The C3 footnote on the Portfolio Matrix slide is placed at y 6.72 (`site/index.html:5029`). With
 about 22 or more selected funds the matrix table reaches that height and the footnote overlaps it
@@ -1261,6 +1273,19 @@ waiting for this decision and held the G-Sec record instead)
   sheets are not read debt-style. The values only age.
 - **Suggested fix:** reclassify the two ETFs and decide what to do with the 27 records' debt stats,
   with the owner, through a reviewed data change.
+
+### C22. A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide
+**P3 · Open · —**
+
+- The matrix table starts at y 1.0 with rows of 0.24" (taller when a name wraps). With no flagged
+  fund, about 24 or more selected funds reach the notes at y 7.02 ("Portfolio Average …", "Risk
+  data as on …"), and more run off the 7.5" slide: 25 funds including three long names end at
+  7.87" when rendered in PowerPoint (21-Oct-2026). The C17 fix shrinks the table only when a fund is
+  flagged, so this case is unchanged on purpose (parity). The Performance Sheet slide uses the same
+  fixed 0.24" rows from y 1.0 [inference].
+- **Suggested fix:** apply the C17 fit (`mk`) to every matrix slide with the notes' y as the limit,
+  or continue a long table on a second slide; decide with the owner, since it changes slides that
+  have no flag.
 
 ---
 
