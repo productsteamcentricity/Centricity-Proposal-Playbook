@@ -30,11 +30,13 @@ tests re-checked the same day with the C19 parser change (refresh-only Monitor s
    - **1** — a gate failed. This holds for the dry run too, and `--apply` then writes nothing.
      **A dry run that exits 1 means stop and read the gates;**
    - **2** — a usage or input error: an unknown flag, an extra argument, a missing value, a bad
-     `--as-on` label, two files competing for one input, or (for most tools) a missing input file.
+     `--as-on` label, two files competing for one input, a missing input file or folder, or a
+     missing `--html` page (or `--sibling` / `--js` file).
 
-   A missing input in the Reckoner-cycle tools, and a missing `--html` page in most tools, instead
-   crash with a Node `Error: ENOENT` stack trace and exit 1. An exit 1 with no `GATE` lines is a
-   path error (a typo or an invisible character), not a gate.
+   Every tool checks its input paths before it reads anything, so a typo or an invisible character
+   in a path prints `*** source not found: …` or `*** page not found: …` and the usage line, and
+   exits 2 (since 21-Oct-2026, PR #19; before that, a missing input in the Reckoner-cycle tools and
+   a missing `--html` page in several others crashed with `ENOENT` and exited 1).
 
    Gate lines read `GATE <name>: PASS` or `GATE <name>: *** FAIL …` (a few print `***` and a reason
    without the word FAIL). Lines marked `CHECK` or `WARN`, and gates that only print counts, never
@@ -92,8 +94,8 @@ tests re-checked the same day with the C19 parser change (refresh-only Monitor s
    unknown flag, an extra positional argument and a value flag given no value (exit 2), so a typo
    such as `--aply` can no longer turn into a silent dry run. PR #15 added the last two checks to
    `rename_schemes`, `bake_month`, `fill_variant_analytics`, `merge_analytics`, `rebuild_directperf`
-   and `rekey_sif_analytics`. `verify_page.js` takes one optional folder and checks nothing else
-   (`--bogus` is read as a folder: `ENOENT`, exit 1). An exit 2 prints the usage text
+   and `rekey_sif_analytics`. `verify_page.js` takes one optional folder and checks only that it
+   holds an `index.html` (`--bogus` is read as a folder: `*** page not found`, exit 2). An exit 2 prints the usage text
    (`node tools/<tool>.js …`) or a `***` reason. `merge_analytics` and `merge_expense_exitload`
    need only one of their workbook flags, whatever their usage line suggests.
 10. **To rehearse an `--apply` without touching `site/`,** copy the six deploy files to a scratch
@@ -285,7 +287,7 @@ Some inputs have no tool and are edited by hand, each through a PR:
 |---|---|---|---|---|
 | `verify_page.js` | `<dir>/index.html` (default `site/`) and the five local `<script src>` siblings, in document order, in a vm. It skips the CDN scripts. | Nothing. | Rule 6 in §1. Exit 1 on a hard failure. | `node tools/verify_page.js site` or `npm run verify` |
 | `.claude/serve.js` (not in `tools/`) | `site/` only, on 127.0.0.1 only. | Nothing. | The browser checks in `docs/TESTING.md`. | `npm run serve` (http://127.0.0.1:8080/) |
-| `tools/test/run.js` | Every `tools/test/*.test.js` (today `blocklib.test.js`, 28 checks; `dates.test.js`, 10; `parser_refresh_only.test.js`, 18, on the page's own `REFRESH` block with synthetic workbooks). | Nothing. | `PASS`/`FAIL` per file; exit 1 if any fails. CI runs it after `npm ci`. | `npm test` |
+| `tools/test/run.js` | Every `tools/test/*.test.js` (today `blocklib.test.js`, 28 checks; `dates.test.js`, 10; `parser_refresh_only.test.js`, 18, on the page's own `REFRESH` block with synthetic workbooks; `tool_inputs.test.js`, 43, every tool with a missing source and a bad `--html`). | Nothing. | `PASS`/`FAIL` per file; exit 1 if any fails. CI runs it after `npm ci`. | `npm test` |
 | `tools/dev/rehearse.js` | `tools/dev/rehearsal_cases.js` (12 cases), the inputs in `monthly-updates/`, and two tool trees. | Disposable copies of `site/` in the OS temp folder, plus `report.json`. Never the real `site/`. | Old-versus-new differences, block by block (see `docs/TESTING.md` §2). | `npm run rehearse -- --old <old repo root> [--new <root>] [--case a,b] [--list] [--keep]` |
 
 ### Libraries (`tools/lib/`) and data (`tools/data/`)

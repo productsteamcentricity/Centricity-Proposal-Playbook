@@ -48,7 +48,7 @@ for (let i = 0; i < argv.length; i++) {
 }
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !fs.existsSync(SRC)) usage(SRC ? '*** workbook not found: ' + SRC : null);
-if (!fs.existsSync(HTML)) { console.error('*** index.html not found: ' + HTML); process.exit(2); }
+if (!fs.existsSync(HTML)) usage('*** index.html not found: ' + HTML);
 
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const clean = s => String(s == null ? '' : s).replace(/\u00A0/g, ' ').replace(/\s+/g, ' ').trim();

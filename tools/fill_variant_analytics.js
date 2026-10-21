@@ -29,8 +29,9 @@ const APPLY = argv.includes('--apply');
 const DIR = flag('--dir');
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!DIR) { console.error(USAGE); process.exit(2); }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 const AN = path.join(DIR, 'Analytics');
-if (!fs.existsSync(AN) || !fs.statSync(AN).isDirectory()) { console.error(`*** no Analytics folder in ${DIR}`); process.exit(2); }
+if (!fs.existsSync(AN) || !fs.statSync(AN).isDirectory()) { console.error(`*** no Analytics folder in ${DIR}`); console.error(USAGE); process.exit(2); }
 // Exactly one workbook per class: a duplicate download such as "… (1).xlsx" is refused (A17).
 const pick = (re, kind) => {
   const hits = fs.readdirSync(AN).filter(f => re.test(f));

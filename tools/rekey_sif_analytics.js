@@ -35,6 +35,7 @@ const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : nul
 const APPLY = argv.includes('--apply');
 const ALLOW_SHRINK = argv.includes('--allow-shrink');
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 const DIR = path.dirname(HTML);
 
 // ---------- the analytics blocks, straight from the file (baseline, pre-sibling) ----------

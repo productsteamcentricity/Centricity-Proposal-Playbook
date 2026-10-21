@@ -174,10 +174,8 @@ are accepted ("31st October 2026"; "31 Oct 2026" for the risk matrix), anything 
 **Reading a dry run (D72).** Exit 0: every gate passed; still read the whole output (`CHECK`, `WARN`
 and count lines never fail a run). **Exit 1: a gate failed — stop and read the `GATE` lines; never
 `--apply`** (it would refuse anyway). Exit 2: a usage or input error (unknown flag, bad label, a
-missing value, two files for one input; a missing input file in most tools) — fix the command or the
-folder. Exception: the Reckoner-cycle tools (steps 12, 14, 14a, 15, 16) crash with `ENOENT` and
-exit 1 on a missing file, so a dry run that exits 1 with no `GATE` line means check the path.
-Override flags are owner decisions, never Claude's: `--accept-drops <n>` (step 14),
+missing value, two files for one input, a missing input file or `--html` page) — fix the command or
+the folder. Override flags are owner decisions, never Claude's: `--accept-drops <n>` (step 14),
 `--allow-coverage-drop` (step 6), `--allow-shrink` (step 4), `--allow-layout-change` (step 15).
 `merge_pms_performance.js` (step 12) has no override.
 

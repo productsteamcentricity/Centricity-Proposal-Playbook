@@ -53,8 +53,8 @@ The workspace lives in a OneDrive-synced folder. This works, with two precaution
 | Symptom | Cause / fix |
 |---|---|
 | `Cannot find module 'xlsx'` | run `npm ci` in the repo root |
-| A tool exits 2 (usually with `Usage:`; a bad `--as-on` in `bake_month`/`merge_analytics` prints only a `***` line) | a required argument is missing, a flag is misspelt or unknown, an `--as-on` label is not a plain date, or the input path contains an invisible character (e.g. the May-2026 soft hyphen) — fix the command or rename the file |
-| A dry run exits 1 | a gate failed: read the `GATE … *** FAIL` lines; nothing was written (`tools/README.md` §1). With no `GATE` lines and an `Error: ENOENT` stack trace, an input or `--html` path does not exist (a typo or an invisible character): fix the path |
+| A tool exits 2 (usually with `Usage:`; a bad `--as-on` in `bake_month`/`merge_analytics` prints only a `***` line) | a required argument is missing, a flag is misspelt or unknown, an `--as-on` label is not a plain date, or an input or `--html` path does not exist (`*** source not found` / `*** page not found`: a typo, or an invisible character such as the May-2026 soft hyphen) — fix the command or rename the file |
+| A dry run exits 1 | a gate failed: read the `GATE … *** FAIL` lines; nothing was written (`tools/README.md` §1) |
 | Preview shows "Not found: /index.html" | `site/index.html` is missing or an online-only OneDrive placeholder; restore it (`git status`, "Always keep on this device"). The server always serves the `site/` folder next to `.claude/`, whatever the current folder |
 | Page blank, console "React is not defined" | no internet / CDN blocked |
 | `verify_page.js` reports 0 script errors but the browser console shows an error | it runs the page in a Node vm without a DOM or the CDN libraries, so browser-only errors do not show there — always load the page in the browser too (`KNOWN_ISSUES.md` A23) |

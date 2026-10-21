@@ -32,6 +32,8 @@ const ASON = flag('--as-on');         // e.g. "31st July 2026"
 const ASON_AN = flag('--as-on-analytics') || ASON;
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!DIR || !ASON) { console.error(USAGE); process.exit(2); }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
+if (!fs.existsSync(DIR) || !fs.statSync(DIR).isDirectory()) { console.error('*** month folder not found: ' + DIR); console.error(USAGE); process.exit(2); }
 // Both labels are pasted into DATA_DATES string literals: plain dates only (A9).
 for (const [label, flagName] of [[ASON, '--as-on'], [ASON_AN, '--as-on-analytics']]) {
   try { B.checkAsOn(label, 'long'); } catch (e) { console.error('*** ' + e.message.replace(/^--as-on /, flagName + ' ')); process.exit(2); }

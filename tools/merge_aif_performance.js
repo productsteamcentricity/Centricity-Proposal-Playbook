@@ -17,6 +17,7 @@
 // The AIF grid has no 2Y column, so the benchmark block is taken from the PMS – EQUITY grid
 // instead: it carries all four indices WITH 2Y, on the same as-on date, and its 1M/3M/6M/1Y/3Y/5Y
 // values match the AIF grid's to the rounding the deck prints.
+const fs = require('fs');
 const path = require('path');
 const B = require('./lib/blocklib');
 const PPT = require('./lib/pptx');
@@ -39,6 +40,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC) usage();
+if (!fs.existsSync(SRC)) usage('*** source not found: ' + SRC);
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 
 // Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, pin_pms_alias.js and
 // merge_reckoner.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing space that

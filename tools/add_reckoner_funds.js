@@ -49,6 +49,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC) usage();
+if (!fs.existsSync(SRC)) usage('*** source not found: ' + SRC);
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 // USD mn -> INR crore: 1 mn USD = USDINR mn INR = USDINR / 10 crore.
 const CR_PER_USD_MN = USDINR / 10;
 console.log('USD/INR for a fact-card AUM in USD mn: ' + USDINR + (usdInrGiven ? ' (--usd-inr)' : ' (default; --usd-inr to change)'));
