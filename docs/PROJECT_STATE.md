@@ -186,10 +186,10 @@ Five independent fixes, one PR each; none changes a data block.
 2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
    (S&P 500 Top 50 ETF FoF 1M 24.79%, NYSE FANG+ ETF FoF 1M 16.21%) before a client deck uses them.
 3. Owner: confirm or reject the 8 renames (above).
-3b. Owner: decide how the headline expected return treats instruments with no IRR band, such as
+3a. Owner: decide how the headline expected return treats instruments with no IRR band, such as
    Direct Equity (`KNOWN_ISSUES.md` C24; today they count as 0% in the tile, Future Value and the
    deck, but are left out of the Section 4 table).
-3a. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
+3b. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
    it 100 times too large). Owner: whether a long matrix slide without a flagged fund should also
    shrink to fit (C22).
 4. September-2026 catch-up, when the "October 2026" Reckoner is released (the last was applied on
