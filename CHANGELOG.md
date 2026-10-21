@@ -18,6 +18,27 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-21 — Atomic writes ride out a OneDrive lock (PR #20, fix/atomic-rename-retry)
+
+Tool library fix only: no file in `site/` changed.
+
+### Fixed
+- `tools/lib/blocklib.js` `writeFileAtomic` (KNOWN_ISSUES R6): a rename of the temp file that fails
+  with `EPERM`, `EBUSY` or `EACCES` (OneDrive or an antivirus scan holding the target) is retried
+  six times after 100, 200, 400, 800, 1,600 and 3,200 ms, with one `(rename of … blocked …)` line on
+  stderr per retry; any other error, or the last failure, is thrown as before. The temp file is now
+  also removed when the temp write itself fails (it was left behind).
+
+### Added
+- `tools/test/blocklib.test.js`: 6 cases with a simulated `fs.renameSync` / `writeFileSync`
+  (recovery after EPERM, EBUSY and EACCES; the pauses are waited; giving up leaves the target and no
+  temp file; EXDEV is not retried; a failed temp write is cleaned up). 34 checks; 5 of the new ones
+  fail on `main`.
+
+Verification (21-Oct-2026): a real lock (PowerShell holding `index.html` with no sharing for 1.5 s)
+gives `EPERM`; the write succeeds after four retries in 1.6 s with no temp file left; `main`'s
+`blocklib` throws after 18 ms. `npm test` 4 of 4; `verify_page.js` counts unchanged.
+
 ## 2026-10-21 — A missing input or `--html` path exits 2 in every tool (PR #19, fix/missing-input-exit-2)
 
 Tool fix only: no file in `site/` changed.

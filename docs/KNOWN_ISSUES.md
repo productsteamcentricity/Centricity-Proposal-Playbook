@@ -58,7 +58,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    never fail a run (A2, closed). Override flags (`--accept-drops`, `--allow-coverage-drop`,
    `--allow-shrink`, `--allow-layout-change`) are owner decisions.
 4. Start from a clean git tree, snapshot the six deploy files into `backups/`, and keep OneDrive from
-   syncing mid-run (R6). Writes are atomic now (A8), but a multi-file write is not one transaction.
+   syncing mid-run (R6). Writes are atomic now (A8) and a rename blocked by a sync is retried for
+   about 6 s (PR #20), but a multi-file write is not one transaction.
 5. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
    ambiguous sheet (A1, closed).
 6. If a PMS & AIF Analytics file arrives, record the look-through as-on the tool prints in the update
@@ -145,7 +146,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
 | R4 | `xlsx` 0.18.5 has two high-severity advisories | Security | P2 | Accepted | — | `package.json`; `site/index.html:1227` |
 | R5 | Stale `Centricity_Risk_Matrix.js` is published | Hosting | P3 | Closed 19-Oct-2026 (PR #12, D78) | — | `docs/archive/Centricity_Risk_Matrix_2026-06-30.js` |
-| R6 | The git repository lives inside OneDrive | Repo | P2 | Open (owner decision) | **Affects** | repo root |
+| R6 | The git repository lives inside OneDrive | Repo | P2 | Open (owner decision); blocked rename retried since 21-Oct-2026 (PR #20) | **Affects** | repo root |
 | R7 | Old site still live alongside the new one | Hosting | P2 | Open (outgoing owner) | — | old Pages site |
 | E1 | Operating manual keeps stale statements as history | Docs | P3 | Accepted | — | `docs/OPERATING_MANUAL.md` → Errata |
 | E2 | PRD contains wrong tool and hosting facts | Docs | P3 | Open | — | `docs/PRD.md` §2, §5, §11, §13, §14 |
@@ -399,7 +400,9 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   (PRs #7–#11); no tool calls `fs.writeFileSync` on a site file. `build_risk_matrix.py` writes a temp
   file and renames it. **Left as is:** a two-file write is two renames, not one transaction; tools
   make no backup (the process does, `docs/MONTHLY_UPDATE_PROCESS.md` B3); `tools/lib/reck_parse.js`
-  run as a command still writes its argument directly (A24). The evidence below is the code before
+  run as a command still writes its argument directly (A24). Since 21-Oct-2026 (PR #20) a rename
+  blocked by a OneDrive sync is retried for up to 6.3 s, and the temp file is also removed when the
+  temp write itself fails (R6). The evidence below is the code before
   the fix.
 
 - **What:** Every tool overwrites files in place with `fs.writeFileSync`: no temporary file and
@@ -1363,9 +1366,16 @@ regenerate it outside `site/`.
   `merge_risk_matrix.js --apply` failed after its gates with `EPERM` on the rename of its temp file,
   because OneDrive was syncing `index.html`. The atomic write (A8) left the page untouched and the
   retry wrote (`docs/update-log/2026-09_Sep-2026.md`, Run 2).
+- **Mitigated 21-Oct-2026 (PR #20):** `writeFileAtomic` retries a rename that fails with `EPERM`,
+  `EBUSY` or `EACCES` six times, after 100, 200, 400, 800, 1,600 and 3,200 ms (6.3 s in all), printing
+  one `(rename of … blocked …)` line per retry, and removes its temp file on any failure. Checked
+  with a real lock: a process holding `index.html` open without sharing for 1.5 s gives `EPERM`;
+  the write succeeds after four retries (`main` before the change threw after 18 ms). A sync that
+  holds the file longer still fails the write, leaving the target untouched. The folder itself stays
+  in OneDrive (owner decision below).
 - **Workaround:** Set the folder to "Always keep on this device"; pause OneDrive sync during tool runs
-  and git operations; verify with Node on the real Windows path. On `EPERM` during a write, check the
-  file is unchanged and re-run the step. GitHub (`origin`) is the real backup.
+  and git operations; verify with Node on the real Windows path. If a write still fails with `EPERM`
+  after its retries, check the file is unchanged and re-run the step. GitHub (`origin`) is the real backup.
 - **Suggested fix (owner decision):** Move the clone outside OneDrive and keep only the
   `monthly-updates/` inputs there.
 
