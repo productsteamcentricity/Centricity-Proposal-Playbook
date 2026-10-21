@@ -5388,8 +5388,11 @@ function CentricitySelectPopover({ fund, info, onClose }) {
   // For MF (incl. Hybrid, Debt, Commodities): show risk-reward ratio tiles.
   // For PMS / AIF / SIF / Unlisted / Gift City: show key-value details (target return,
   // minimum investment, fund structure, etc.) extracted from the Reckoner.
-  let body;
+  let body, riskFlag = false;
   if (kind === 'mf') {
+    // The ratios come from CENTRICITY_SELECT, but the source's reliability flag sits on the fund's
+    // RISK_MATRIX entry (C3, C18): a flagged fund gets the same dagger and note as the Portfolio Matrix.
+    riskFlag = H.riskFlagged((window.RISK_MATRIX || {})[fund.name]);
     const metrics = [
       { lbl: 'Sharpe',  val: fmtNum(info.sharpe) },
       { lbl: 'Sortino', val: fmtNum(info.sortino) },
@@ -5407,6 +5410,7 @@ function CentricitySelectPopover({ fund, info, onClose }) {
       info.benchmark && /*#__PURE__*/React.createElement("div", { key: 'bm', className: "cs-benchmark" },
         "Benchmark: ", /*#__PURE__*/React.createElement("b", null, info.benchmark)
       ),
+      riskFlag && /*#__PURE__*/React.createElement("div", { key: 'rf', className: "cs-benchmark", style: { fontStyle: "italic" } }, H.RISK_FLAG_NOTE),
     ];
   } else {
     // Non-MF: render details as label/value grid
@@ -5430,7 +5434,7 @@ function CentricitySelectPopover({ fund, info, onClose }) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "cs-popover-head"
   }, /*#__PURE__*/React.createElement("span", { className: "cs-pill" }, "★ Centricity Select"),
-     /*#__PURE__*/React.createElement("h3", null, fund.name),
+     /*#__PURE__*/React.createElement("h3", null, fund.name + (riskFlag ? " \u2020" : "")),
      /*#__PURE__*/React.createElement("button", { className: "close", onClick: onClose }, "✕")
   ), /*#__PURE__*/React.createElement("div", {
     className: "cs-popover-body"
