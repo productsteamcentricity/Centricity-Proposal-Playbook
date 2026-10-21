@@ -18,6 +18,30 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-21 — Rehearsal harness compares page-code changes (PR #23, fix/a27-rehearse-old-site)
+
+Developer tool only: no file in `site/` changed.
+
+### Added
+- `tools/dev/rehearse.js --old-site <dir>` (KNOWN_ISSUES A27): seeds the old side from another site
+  folder, normally the old checkout's `site/`, so a parser change in `site/index.html` can be
+  rehearsed. Without `--old`, this checkout's tools run on both sides. With `--old-site` the harness
+  prints a data verdict (`OLD and NEW data: IDENTICAL` / `DIFFER`) that ignores the page code the
+  two seeds already differ in, and counts "files changed" against each side's own seed. An
+  `--old-site` folder without the deploy files exits 2.
+
+### Fixed
+- A rehearsal step that cannot start (for example a long Windows path) now logs `*** spawn failed`
+  with the reason instead of a bare `exit=null`.
+
+### Changed
+- Docs: `docs/TESTING.md` §2.3, `tools/README.md` (rule 10, tool table), KNOWN_ISSUES A27 closed;
+  PROJECT_STATE (release rows, the five small fixes, next steps for C22 and C23).
+
+Verification (21-Oct-2026): `--old-site` = `main` before C17/C18 (a page-code-only change) on
+`direct-perf`, `analytics-one-class` and `mf-chain-sep`: data IDENTICAL on all three. C19 re-run with
+`--old` and `--old-site` at `6dc08ef` and `--new` at `8e187ae`: MASTER differs in 223 records and nothing else (the 215 of the C19 check plus the 8 pending renames the case applies first). Usage errors exit 2.
+
 ## 2026-10-21 — Select popover marks a flagged fund's ratios (PR #22, fix/c18-select-popover-dagger)
 
 Page code only (Section 3 · Pick Funds, the Centricity Select popover); no data block changed.

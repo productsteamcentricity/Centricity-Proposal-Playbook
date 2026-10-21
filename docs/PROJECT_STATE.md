@@ -1,7 +1,8 @@
 # Project state
 
-_Last updated: 21-Oct-2026 — September Run 3 (PR #18) publishes 30-Sep-2026 figures for the 214
-funds the parser skipped (C19), on the owner's approval; one JioBlackRock record stays held for C20._
+_Last updated: 21-Oct-2026 — five small fixes merged (PRs #19–#23: tool exit codes, OneDrive rename
+retry, C17, C18, A27), after September Run 3 (PR #18) published 30-Sep-2026 figures for the 214
+funds the parser skipped (C19); one JioBlackRock record stays held for C20._
 
 ## Summary
 
@@ -79,6 +80,12 @@ counts above unchanged. Financial-data review: all 214 records recomputed from t
 field checks, 0 mismatches); Regular 1M at or below Direct on 212 of 212 pairs. Detail:
 `docs/update-log/2026-09_Sep-2026.md`, Run 3.
 
+Small fixes of 21-Oct-2026 (PRs #19–#23): `verify_page` output identical to the block above after
+each PR, exit 0; `npm test` 4 of 4 (blocklib 34, dates 10, parser_refresh_only 18, tool_inputs
+43). Browser: page load console clean; the Portfolio Matrix slide with 25 funds and a simulated flag
+rendered in PowerPoint (table ends 0.08" above the footnote); the Select popover dagger and note for
+a real and a simulated flag (`KNOWN_ISSUES.md` C17, C18).
+
 ## Release
 
 | Item | Value |
@@ -87,8 +94,8 @@ field checks, 0 mismatches); Regular 1M at or below Direct on 212 of 212 pairs. 
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #17 → `8e187ae` (19-Oct-2026, C19 parser fix; verify + publish succeeded). This change, PR #18, publishes the Sep-2026 Run 3 data |
-| Live status | 19-Oct-2026: the deploy files on the live site equal `main` `8e187ae` (SHA-256); `Centricity_Risk_Matrix.js` returns 404 (archived, D78). The post-merge check for PR #18 is recorded in its PR thread and in the next update of this file |
+| Latest merge | PR #22 → `fb9cbd6` (21-Oct-2026), the last merge that changed `site/`; Actions run 39555759202 (verify + publish) succeeded. PR #18 → `f37fa01` published Sep-2026 Run 3. PR #23 (A27) changes no file in `site/` |
+| Live status | 21-Oct-2026: the six deploy files and `robots.txt` on the live site equal `main` `fb9cbd6` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -120,12 +127,13 @@ field checks, 0 mismatches); Regular 1M at or below Direct on 212 of 212 pairs. 
 | #15 | `1e48781` | strict CLI finished (a stray word or a value flag without a value exits 2 in the six MF-chain tools too); last literal no-break spaces escaped; unused `fs` dropped from `merge_reckoner.js` | A25, F2, D72 |
 | #16 | `6dc08ef` | docs: the post-handover fixes recorded; the export prompt | — |
 | #17 | `8e187ae` | page parser: four refresh-only Monitor sheets; `bake_month.js` not-merged list, WARN, CHECK and unrecognised-sheet gate; parser unit test | C19 (code), D80 |
-| #18 (this change) | — | Sep-2026 Run 3: 214 funds move from 30-Jun to 30-Sep-2026 figures; JioBlackRock G-Sec held; owner decision on blank cells recorded | C19 (data), D81 |
+| #18 | `f37fa01` | Sep-2026 Run 3: 214 funds move from 30-Jun to 30-Sep-2026 figures; JioBlackRock G-Sec held; owner decision on blank cells recorded | C19 (data), D81 |
 
 Status of every inherited item: `docs/KNOWN_ISSUES.md`. Partly fixed and still open there: A7 (page
 Direct uploader is a separate parser), A14, A19, A20, A22, A23, A24, A25 (only the stale
 `.gitattributes` NUL comment is left), F2 (only the misnamed `clen` in `tools/lib/pptx.js:9`), F3,
-plus new C16–C18, C20, C21 and A27. C19 is fixed (code #17, data #18).
+plus new C16, C20 and C21, and C22 and C23 (21-Oct-2026). C19 is fixed (code #17, data #18); C17, C18 and
+A27 were closed on 21-Oct-2026 (PRs #21–#23).
 
 ## Small fixes of 21-Oct-2026 (P3 leftovers)
 
@@ -136,7 +144,8 @@ Five independent fixes, one PR each; none changes a data block.
 | #19 | `699978b` | every tool exits 2 on a missing source or `--html` path (no more `ENOENT` crashes); `tools/test/tool_inputs.test.js` | D72 |
 | #20 | `0cb7e95` | `writeFileAtomic` retries a rename blocked by OneDrive (`EPERM`/`EBUSY`/`EACCES`, 6.3 s) and always removes its temp file | R6 (mitigated), A8, D72 |
 | #21 | `75538de` | Portfolio Matrix slide: with a flagged fund the table shrinks to end above the † footnote (25 funds: 6.64" vs 7.87"); new C22 for the unflagged overflow | C17, C22 |
-| #22 | — | Centricity Select popover: dagger and note for a C3-flagged fund; new C23 (Select Alpha scale) | C18, C23 |
+| #22 | `fb9cbd6` | Centricity Select popover: dagger and note for a C3-flagged fund; new C23 (Select Alpha scale) | C18, C23 |
+| #23 | — | `tools/dev/rehearse.js --old-site <dir>`: rehearse a page-code change (old side seeded from another `site/`), with a data verdict | A27 |
 
 ## In progress / blockers
 
@@ -170,11 +179,15 @@ Five independent fixes, one PR each; none changes a data block.
 2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
    (S&P 500 Top 50 ETF FoF 1M 24.79%, NYSE FANG+ ETF FoF 1M 16.21%) before a client deck uses them.
 3. Owner: confirm or reject the 8 renames (above).
+3a. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
+   it 100 times too large). Owner: whether a long matrix slide without a flagged fund should also
+   shrink to fit (C22).
 4. September-2026 catch-up, when the "October 2026" Reckoner is released (the last was applied on
    28-Sep): drop the Reckoner deck, `PMS_Scheme_Performance` as on 30-Sep, `Fund Manager Data` as on
    30-Sep and the latest `PMS & AIF Analytics` into `00_INBOX`, then `/monthly-update September 2026`.
 5. October-2026 MF cycle (data as on 31-Oct), around 13th–17th November: `/monthly-update October 2026`.
 6. Owner decisions pending (no urgency): branch protection on `main`; whether to keep the repo public
    long-term; retirement of the old site; whether to move the git folder out of OneDrive
-   (`KNOWN_ISSUES.md` R6 — a OneDrive sync blocked one write on 19-Oct-2026).
+   (`KNOWN_ISSUES.md` R6 — a OneDrive sync blocked one write on 19-Oct-2026; since PR #20 a blocked
+   rename is retried for 6.3 s).
 7. Improvement backlog (only on request): the partly fixed and open items in `KNOWN_ISSUES.md`.

@@ -4,7 +4,8 @@ This is the single register of confirmed defects, risks and gaps that the owner 
 team, GitHub account `productsteamcentricity`) inherited at handover on 16-Oct-2026. **Apart from C2
 (the stale README, replaced by the transfer's docs), none of them was fixed during the transfer.** Fix
 each one as its own task on a `fix/…` branch (D68), never inside a data refresh. The tool, page and
-data fixes of 16–19-Oct-2026 (PRs #3–#15) closed or narrowed most A, C, R, E and F items; each item's
+data fixes of 16–19-Oct-2026 (PRs #3–#15) and the small fixes of 21-Oct-2026 (PRs #19–#23)
+closed or narrowed most A, C, R, E and F items; each item's
 status and section say which PR and what is left.
 
 **How to use this file**
@@ -112,7 +113,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A24 | Shared libraries: latent parsing hazards | `tools/lib` | P2 | Partly fixed 16-Oct-2026 (PR #3) | — | `tools/lib/reck_parse.js:45-47`; `tools/lib/pptx.js:8-24` |
 | A25 | Invisible characters that must survive any edit | Tools | P2 | Partly fixed 19-Oct-2026 (PRs #7, #9–#11, #15) | — | `.gitattributes` |
 | A26 | One-off tools are not safe to re-run blindly | Tools | P3 | Closed 19-Oct-2026 (PR #11) | — | `tools/split_sif_add_mld.js`, `fold_duplicate_names.js`, `fold_index_funds.js` |
-| A27 | Rehearsal harness cannot compare page-code changes | Tools: rehearsal | P3 | Open | — | `tools/dev/rehearse.js:9`, `:21`, `:38-39` |
+| A27 | Rehearsal harness cannot compare page-code changes | Tools: rehearsal | P3 | Closed 21-Oct-2026 (PR #23) | — | `tools/dev/rehearse.js` `--old-site` |
 | B1 | No PMS performance file transferred; PMS at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
 | B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-07_Jul-2026/` |
 | B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-09_Sep-2026/` |
@@ -860,7 +861,16 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   (`docs/OPERATING_MANUAL.md` → Traps), dry run first.
 
 ### A27. Rehearsal harness cannot compare page-code changes
-**P3 · Open · —**
+**P3 · Closed 21-Oct-2026 (PR #23) · —**
+
+- **Fixed:** `--old-site <dir>` seeds the old side from another site folder (normally the old
+  checkout's `site/`); without `--old`, this checkout's tools run on both sides. Because the two
+  outputs then always differ in the seeded page code, the harness prints a data verdict (`OLD and
+  NEW data: IDENTICAL` / `DIFFER`): blocks and `DATA_DATES` compared, page code outside the blocks
+  required to equal each side's seed, siblings required unwritten or equal. A step that cannot start
+  now logs `*** spawn failed` instead of a bare `exit=null`. Checked (21-Oct-2026): a page-code-only change (C17/C18) gives data IDENTICAL on three cases;
+  the C19 parser change gives MASTER only, 223 records (the 215 plus the 8 pending renames the case
+  applies first; `docs/TESTING.md` §2.3). The evidence below is the state before the fix.
 
 - **What and evidence:** `tools/dev/rehearse.js` seeds both the old and the new side from
   `<new root>/site` (`:9`, `:21`, `:38-39`). `bake_month.js` and the other vm tools run the parsers
