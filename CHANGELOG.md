@@ -18,6 +18,26 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-21 — Risk-flag footnote no longer overlaps a long matrix slide (PR #21, fix/c17-matrix-footnote)
+
+Page code only (the Portfolio Matrix PowerPoint slide); no data block changed.
+
+### Fixed
+- `site/index.html`, Portfolio Matrix slide (KNOWN_ISSUES C17): with a flagged fund, rows, fonts and
+  cell margins shrink by one factor until the estimated table (long names wrap) ends above the †
+  footnote at y 6.72. With about 22 or more funds the table used to run over the footnote. Without
+  a flagged fund nothing changes.
+
+### Changed
+- KNOWN_ISSUES: C17 closed; new C22 (a long matrix slide without a flagged fund still runs past its
+  notes and the slide; unchanged on purpose).
+
+Verification (21-Oct-2026): the slide exported in the browser with a simulated
+`RISK_MATRIX[name].fl = 'split'`, then opened in PowerPoint and measured through COM. 25 funds: table
+bottom 7.87" on `main` (footnote at 6.72" overlapped), 6.64" now; 22 funds 6.65"; 35 funds 6.51".
+25 funds unflagged and 10 funds flagged: `slide1.xml` identical to `main`. Console clean;
+`npm test` 4 of 4; `verify_page.js` counts unchanged.
+
 ## 2026-10-21 — Atomic writes ride out a OneDrive lock (PR #20, fix/atomic-rename-retry)
 
 Tool library fix only: no file in `site/` changed.
