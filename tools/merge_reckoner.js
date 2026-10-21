@@ -20,6 +20,7 @@
 // Retained funds keep their rationale, risk ratios and details. New PMS/AIF/Unlisted/Gift entries
 // take their rationale and details from their own narrative slide. New MF entries have no source
 // for either — the deck's MF pages are performance grids only — so they are listed at the end.
+const fs = require('fs');
 const B = require('./lib/blocklib');
 const R = require('./lib/reck_parse');
 const N = require('./lib/reck_narrative');
@@ -41,6 +42,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 if (!SRC || !HTML) usage();
 if (ACCEPT !== null && !/^\d+$/.test(ACCEPT)) usage('*** --accept-drops takes the number of dropped funds the owner reviewed');
+if (!fs.existsSync(SRC)) usage('*** source not found: ' + SRC);
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 
 // Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, pin_pms_alias.js and
 // merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing

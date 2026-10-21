@@ -65,7 +65,7 @@ if (!opts['--as-on']) usage('--as-on is required (e.g. --as-on "30 Sep 2026")');
 let ASON;
 // The label goes into a JavaScript string literal, so only a plain short date is accepted (A9).
 try { ASON = blocklib.checkAsOn(opts['--as-on'], 'short'); } catch (e) { usage(e.message); }
-if (!fs.existsSync(SRC)) { console.error('*** source not found: ' + SRC); process.exit(2); }
+if (!fs.existsSync(SRC)) usage('source not found: ' + SRC);
 if (!fs.existsSync(HTML)) usage('page not found: ' + HTML);
 
 // ---------- read the workbook ----------

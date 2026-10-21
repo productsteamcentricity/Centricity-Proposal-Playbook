@@ -44,6 +44,7 @@ if (!MON || !fs.existsSync(MON)) {
   console.error(USAGE);
   process.exit(2);
 }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 
 // ---------- the monitor's own taxonomy, mirrored from index.html's SHEET_MAP ----------
 // Only the sub-category is needed here (the tie-break), so this is the third element alone.

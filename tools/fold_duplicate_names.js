@@ -53,6 +53,7 @@ if (!MON || !fs.existsSync(MON)) {
   console.error(USAGE);
   process.exit(2);
 }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 
 // ---------- the pairs ----------
 // Maintained BY HAND, never derived. A near-miss between two scheme names is not evidence that

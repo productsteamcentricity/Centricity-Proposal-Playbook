@@ -52,12 +52,9 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    MASTER has it: the refresh-only path never changes taxonomy). The list is also in
    `docs/update-log/2026-09_Sep-2026.md` (Run 2, corrected 19-Oct-2026).
 3. A dry run that **exits 1 failed a gate**: stop and read the `GATE` lines. Exit 2 is a usage or
-   input error (unknown flag, extra argument, bad `--as-on`, a duplicate input file, or a missing
-   source in most tools); every tool except `verify_page.js` refuses an unknown flag or an extra
-   argument (PR #15). Exception: a missing source in `merge_pms_performance`,
-   `merge_pms_aif_analytics`, `merge_reckoner`, `merge_aif_performance` or `add_reckoner_funds`, or a
-   wrong `--html` path in several tools, crashes with `ENOENT` (exit 1, a stack trace and no `GATE`
-   lines): an input error, not a gate. Exit 0 still needs a read: count, `CHECK` and `WARN` lines
+   input error (unknown flag, extra argument, bad `--as-on`, a duplicate input file, a missing source
+   or a wrong `--html` path; the last two in every tool since PR #19); every tool except
+   `verify_page.js` refuses an unknown flag or an extra argument (PR #15). Exit 0 still needs a read: count, `CHECK` and `WARN` lines
    never fail a run (A2, closed). Override flags (`--accept-drops`, `--allow-coverage-drop`,
    `--allow-shrink`, `--allow-layout-change`) are owner decisions.
 4. Start from a clean git tree, snapshot the six deploy files into `backups/`, and keep OneDrive from

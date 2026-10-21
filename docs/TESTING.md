@@ -64,6 +64,10 @@ Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
   counted and never merged; missing or empty expected sheets listed; `Debt Oriented34` read
   debt-style; and a mapped sheet still creating a new fund. It fails on `main`'s parser from before
   the change.
+- `tool_inputs.test.js` (43 checks, added 21-Oct-2026, D72). Runs every tool at the top of `tools/`
+  (dry run, no workbooks) with a source path that does not exist and with an `--html` page that does
+  not exist: each must exit 2 with its usage line and no stack trace. A tool added without a case
+  fails the test.
 
 CI runs `npm ci` and then the tests on every PR. Add a `<name>.test.js` file beside them for any new
 library function or parser rule.

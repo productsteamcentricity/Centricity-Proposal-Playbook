@@ -32,6 +32,8 @@ for (let i = 0; i < argv.length; i++) {
 }
 if (!SRC || !ASON || !HTML) usage();
 try { B.checkAsOn(ASON, 'long'); } catch (e) { usage('*** ' + e.message); }
+if (!fs.existsSync(SRC)) usage('*** source not found: ' + SRC);
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 
 // Pin maps: tools/data/pins.json, shared with pin_pms_alias.js, merge_reckoner.js and
 // merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing

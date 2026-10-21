@@ -317,16 +317,16 @@ and the entry says so. "—" means no date is recorded.
   `:316-317`, `:343-348`.
 
 ### D72 · One contract for every tool: exit codes, gates before writes, atomic writes, strict CLI
-`Active` · 19-Oct-2026 (PR #3 `32943e8`; PRs #7–#11; PR #15 `184939e`) · **verified in code**
+`Active` · 19-Oct-2026 (PR #3 `32943e8`; PRs #7–#11; PR #15 `184939e`; PR #19, 21-Oct-2026) · **verified in code**
 - **Context:** Eight tools exited 0 from a dry run with a failed gate, every tool overwrote files in
   place, several wrote two files (or one file twice) one after the other, and unknown flags were
   ignored, so a typo such as `--aply` became a silent dry run (`KNOWN_ISSUES.md` A2, A8, F2). D61
   publishes automatically, so exit codes and partial writes matter.
 - **Decision:** Every tool: (1) exits **0** when every gate passed, **1** when a gate failed (dry
   run or `--apply`; `--apply` then writes nothing), **2** on a usage or input error (unknown flag,
-  stray word, value flag with no value, bad `--as-on`, missing or duplicate input file; exception: a
-  missing file in the six PMS/AIF/Reckoner tools, or a mistyped `--html` page in several others,
-  still crashes with Node's ENOENT stack trace and exits 1); (2) prints each gate as PASS or `***`
+  stray word, value flag with no value, bad `--as-on`, missing or duplicate input file, missing
+  `--html` page: every tool checks its paths before reading, since PR #19 of 21-Oct-2026, which
+  removed the last `ENOENT` crashes); (2) prints each gate as PASS or `***`
   (normally `GATE <name>: PASS | *** FAIL …`; a few print `***` and a reason, and
   `fold_duplicate_names.js` omits the `GATE` prefix) and decides before any write; (3) builds
   every output in memory and writes once through `tools/lib/blocklib.js` (`writeFileAtomic`: temp file + rename;

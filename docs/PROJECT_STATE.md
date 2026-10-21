@@ -122,6 +122,14 @@ Direct uploader is a separate parser), A14, A19, A20, A22, A23, A24, A25 (only t
 `.gitattributes` NUL comment is left), F2 (only the misnamed `clen` in `tools/lib/pptx.js:9`), F3,
 plus new C16–C18, C20, C21 and A27, and C19 (code fixed, data not yet re-run).
 
+## Small fixes of 21-Oct-2026 (P3 leftovers)
+
+Five independent fixes, one PR each; none changes a data block.
+
+| PR | Merge | What | Issues / decisions |
+|---|---|---|---|
+| #19 | — | every tool exits 2 on a missing source or `--html` path (no more `ENOENT` crashes); `tools/test/tool_inputs.test.js` | D72 |
+
 ## In progress / blockers
 
 - **C19 (P1) — code fixed, data not yet published.** 215 funds on the four Monitor sheets the parser

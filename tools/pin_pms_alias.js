@@ -25,6 +25,7 @@ for (let i = 0; i < argv.length; i++) {
   else usage('unexpected argument: ' + a);
 }
 if (!HTML) usage();
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 
 // Pin maps: tools/data/pins.json, shared with merge_pms_performance.js, merge_reckoner.js and
 // merge_aif_performance.js (KNOWN_ISSUES A18). Its names are byte-exact; a deliberate trailing

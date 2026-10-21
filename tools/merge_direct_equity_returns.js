@@ -54,7 +54,7 @@ HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 
 if (!SRC) usage();
 for (const [label, p] of [['returns workbook', SRC], ['index.html', HTML]]) {
-  if (!fs.existsSync(p)) { console.error(`*** ${label} not found: ${p}`); process.exit(2); }
+  if (!fs.existsSync(p)) usage(`*** ${label} not found: ${p}`);
 }
 console.log(`returns workbook: ${SRC}`);
 console.log(`target          : ${HTML}\n`);

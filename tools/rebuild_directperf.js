@@ -26,6 +26,7 @@ const APPLY = argv.includes('--apply');
 const SRC = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--html');
 const HTML = flag('--html') || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !fs.existsSync(SRC)) { console.error(USAGE); process.exit(2); }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 
 const html = fs.readFileSync(HTML, 'utf8');
 // Both blocks must be found exactly once and parse, or nothing is read, built or written (A7).

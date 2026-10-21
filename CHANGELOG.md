@@ -18,6 +18,38 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-21 — A missing input or `--html` path exits 2 in every tool (PR #19, fix/missing-input-exit-2)
+
+Tool fix only: no file in `site/` changed.
+
+### Fixed
+- The last `ENOENT` crashes (D72). `merge_pms_performance`, `merge_pms_aif_analytics`,
+  `merge_reckoner`, `merge_aif_performance` and `add_reckoner_funds` crashed with a stack trace and
+  exit 1 on a missing source; `bake_month`, `fill_variant_analytics`, `fold_duplicate_names`,
+  `rename_schemes`, `rebuild_directperf`, `pin_pms_alias`, `rekey_sif_analytics` and
+  `merge_analytics` did the same on a wrong `--html`. Each now checks its paths before reading and
+  exits 2 with `*** source not found` / `*** page not found` and its usage line, so exit 1 means only
+  a failed gate. Also `update_closing_slides` (missing `--dir`: exit 1 → 2), `bake_month` (missing
+  `--dir`: one clear line instead of the per-file folder error) and `verify_page` (a folder with no
+  `index.html`: exit 2 instead of a crash). `merge_direct_equity_returns`, `merge_risk_matrix`,
+  `merge_bond_list`, `merge_analytics` and `fill_variant_analytics` now print the usage line with
+  their existing exit-2 messages.
+
+### Added
+- `tools/test/tool_inputs.test.js`: every tool at the top of `tools/` with a missing source and a bad
+  `--html` (43 cases) must exit 2 with a usage line and no stack trace; a new tool without a case
+  fails the test. `npm test` now runs 4 files.
+
+### Changed
+- Docs: D72, `tools/README.md` §1 items 3 and 9, `docs/MONTHLY_UPDATE_PROCESS.md`,
+  `docs/DEVELOPMENT_SETUP.md`, `docs/OPERATING_MANUAL.md` erratum 43, KNOWN_ISSUES "Before the next
+  refresh" item 3: the ENOENT exception is gone.
+
+Verification (21-Oct-2026): 43 of 43 input cases exit 2 (23 of 43 on `main`); real dry runs of 14
+changed tools on the Sep-2026 inputs (bake, rename, analytics, risk matrix, DE returns, Reckoner
+deck) print the same output and exit code as `main`'s tools; `npm test` 4 of 4; `verify_page.js`
+counts unchanged.
+
 ## 2026-10-19 — Monitor parser refreshes the four unmapped sheets (C19 code fix; PR to follow)
 
 Page code and tools; no data block changed, so the live figures are as before. The September re-run

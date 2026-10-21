@@ -44,6 +44,8 @@ for (let i = 0; i < argv.length; i++) {
 HTML = HTML || path.join(__dirname, '..', 'site', 'index.html');
 if (!SRC || !ASON) usage();
 try { B.checkAsOn(ASON, 'long'); } catch (e) { usage('*** ' + e.message); }
+if (!fs.existsSync(SRC)) usage('*** source not found: ' + SRC);
+if (!fs.existsSync(HTML)) usage('*** page not found: ' + HTML);
 
 // Workbook scheme name -> MASTER name. Maintained by hand: a wrong pin puts one manager's
 // holdings on another manager's fund. `Product Category` disambiguates the two Buoyant records

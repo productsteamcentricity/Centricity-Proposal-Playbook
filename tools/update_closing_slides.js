@@ -37,6 +37,7 @@ for (let i = 0; i < argv.length; i++) {
 const DIR = opt['--dir'];
 const SIB = opt['--sibling'] || path.join(__dirname, '..', 'site', 'Centricity_ExtraSlides.js');
 if (!DIR) usage();
+if (!fs.existsSync(DIR) || !fs.statSync(DIR).isDirectory()) usage('*** render folder not found: ' + DIR);
 if (!fs.existsSync(SIB)) usage('*** sibling not found: ' + SIB);
 const PREFIX = 'window.EXTRA_SLIDES = ';
 

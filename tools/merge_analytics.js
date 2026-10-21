@@ -37,9 +37,10 @@ if (!KINDS.length || !ASON) {
 // The label is pasted into the DATA_DATES string literal: a plain date only (A9).
 try { B.checkAsOn(ASON, 'long'); } catch (e) { console.error('*** ' + e.message); process.exit(2); }
 for (const k of KINDS) {
-  if (!fs.existsSync(k.src)) { console.error('*** missing source: ' + k.src); process.exit(2); }
+  if (!fs.existsSync(k.src)) { console.error('*** missing source: ' + k.src); console.error(USAGE); process.exit(2); }
   console.log(k.kind.padEnd(7) + ' <- ' + path.basename(k.src));
 }
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error(USAGE); process.exit(2); }
 
 // ---------- sandbox: run the baseline data + helpers + parsers, not the UI or the siblings ----------
 const html = fs.readFileSync(HTML, 'utf8');

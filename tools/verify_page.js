@@ -3,12 +3,14 @@
 //   node tools/verify_page.js [site]     (default: the site/ folder next to tools/)
 // Exits 1 when a hard check fails: a missing sibling, duplicate MASTER names, an index.html that
 // does not end with </html>, a script error, or a Centricity Select key missing from MASTER.
+// Exits 2 when the folder has no index.html.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
 const DIR = process.argv[2] || path.join(__dirname, '..', 'site');
 const HTML = path.join(DIR, 'index.html');
+if (!fs.existsSync(HTML)) { console.error('*** page not found: ' + HTML); console.error('Usage: node tools/verify_page.js [site folder]'); process.exit(2); }
 const html = fs.readFileSync(HTML, 'utf8');
 
 const noop = () => {};
