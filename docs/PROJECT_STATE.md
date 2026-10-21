@@ -86,6 +86,13 @@ each PR, exit 0; `npm test` 4 of 4 (blocklib 34, dates 10, parser_refresh_only 1
 rendered in PowerPoint (table ends 0.08" above the footnote); the Select popover dagger and note for
 a real and a simulated flag (`KNOWN_ISSUES.md` C17, C18).
 
+Live acceptance check, 21-Oct-2026, on the live URL (`main` `1523bbc`, then `882160c`; no `site/`
+change between): all seven areas PASS — parity and SHA-256 of all seven live files; page load (SRI,
+console clean, footer dates); the core flow across classes incl. a refresh-only Debt ETF, an
+International FoF, a PMS, a bond and Direct Equity; Excel (13 sheets), PowerPoint (28 and 30 slides,
+logo on each) and the Allocation Sheet round trip; all 9 Live Output tabs; data spot checks; the
+shared-link banner. No regression. Inherited quirks it surfaced are logged as C24–C27.
+
 ## Release
 
 | Item | Value |
@@ -179,6 +186,9 @@ Five independent fixes, one PR each; none changes a data block.
 2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
    (S&P 500 Top 50 ETF FoF 1M 24.79%, NYSE FANG+ ETF FoF 1M 16.21%) before a client deck uses them.
 3. Owner: confirm or reject the 8 renames (above).
+3b. Owner: decide how the headline expected return treats instruments with no IRR band, such as
+   Direct Equity (`KNOWN_ISSUES.md` C24; today they count as 0% in the tile, Future Value and the
+   deck, but are left out of the Section 4 table).
 3a. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
    it 100 times too large). Owner: whether a long matrix slide without a flagged fund should also
    shrink to fit (C22).

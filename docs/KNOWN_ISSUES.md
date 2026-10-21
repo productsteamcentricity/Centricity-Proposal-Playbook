@@ -144,6 +144,10 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
 | C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Open | — | matrix slide `rowH:0.24*mk`, `site/index.html` |
 | C23 | Select popover Alpha shown 100 times too large [inference] | UI/data | P2 | Open (desk: confirm the unit) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
+| C24 | Headline weighted IRR counts instruments with no IRR band as 0% | UI/data | P2 | Open (owner decision) | — | `computeKPIs`, `site/index.html:1609-1626` |
+| C25 | Debt Analytics fund picker and its hint disagree | UI | P3 | Open | — | Debt Analytics picker |
+| C26 | Centricity Select popover gaps (empty HDFC FoF entry; PMS popover dates differ) | Data | P3 | Open (desk) | — | `CENTRICITY_SELECT` |
+| C27 | BHARAT Bond FoF Apr-2030: Direct figures equal Regular | Data | P3 | Open (desk) | — | `DIRECT_PERF` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -1320,6 +1324,43 @@ waiting for this decision and held the G-Sec record instead)
 - **Suggested fix:** confirm with the desk what unit and period the source alpha has (percent, and
   monthly or annual), then either show it as stored with `%` or convert it once in the data; never
   auto-detect the scale (CLAUDE.md rule 4).
+
+### C24. Headline weighted IRR counts instruments with no IRR band as 0%
+**P2 · Open (owner decision) · —**
+
+- **What:** `computeKPIs` (`site/index.html:1609-1626`) weights every selected instrument by its IRR
+  band, using `(irr_low || 0)` and `(irr_high || 0)`, and divides by the total allocation. An
+  instrument with no band (Direct Equity, for example) therefore counts as 0% and pulls the result
+  down. The Section 4 table's GRAND TOTAL leaves such instruments out. Found by the live acceptance
+  check on 21-Oct-2026: with a Direct Equity stock in a 7-instrument proposal, the Section 1 tile and
+  the Live Output GRAND TOTAL showed 9.51–11.13% while Section 4 showed 10.57–12.37%.
+- **Impact:** client-facing. The tile feeds Future Value and the PowerPoint's "Expected Pre-Tax
+  Return". The code is the same at `handover-baseline`, so this is inherited, not a regression.
+- **Decision needed (owner):** exclude instruments without a band from the weighting (and say so on
+  the slide), or give them an expected return. Then make every table use the same rule.
+
+### C25. Debt Analytics fund picker and its hint disagree
+**P3 · Open · —**
+
+In the live acceptance check (21-Oct-2026) the Debt Analytics picker showed "2 of 2 included" with
+HDFC Income Plus Arbitrage FoF ticked, while the hint below it said that fund is not included (no
+holdings); BHARAT Bond FoF Apr-2030 was missing from the picker. Analytics view only; not exported
+as such. Investigate the picker's inclusion rule against `H.hasDbHoldings`.
+
+### C26. Centricity Select popover gaps
+**P3 · Open (desk / data) · —**
+
+From the same check: the popover for HDFC Income Plus Arbitrage Active FoF (a Select fund) shows "—"
+for every ratio and the rationale (its `CENTRICITY_SELECT` entry has none); the Abakkus All Cap PMS
+popover (1Y 13.33%, 3Y 18.33%, AUM about 7,541 Cr) disagrees with its fund row (8.42%, 12.68%,
+7,768.91 Cr) because the two come from sources of different dates (B1, B2). Both refresh with the next
+Reckoner deck and PMS file; fill the rationale gap with the desk.
+
+### C27. BHARAT Bond FoF Apr-2030: Direct figures equal Regular
+**P3 · Open (desk) · —**
+
+`DIRECT_PERF` holds the same returns and the same 0.04% expense for the Direct plan as MASTER has for
+the Regular plan (live check, 21-Oct-2026). Possibly true for this fund; ask the desk to confirm.
 
 ---
 
