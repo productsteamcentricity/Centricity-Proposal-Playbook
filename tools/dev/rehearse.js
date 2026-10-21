@@ -3,22 +3,34 @@
 // Nothing under the real site/ is touched. Use it to prove a tool change is behaviour-preserving
 // (or that its only effect is the intended one).
 //
-//   node tools/dev/rehearse.js --old <old repo root> [--new <new repo root>] [--case a,b] [--list] [--keep]
+//   node tools/dev/rehearse.js --old <old repo root> [--old-site <dir>] [--new <new repo root>] [--case a,b] [--list] [--keep]
+//   node tools/dev/rehearse.js --old-site <dir> [...]      (old side = these tools on another site/)
 //
 // The old root is usually a worktree of main:  git worktree add --detach <short path> main
-// Both sides start from <new root>/site and read inputs from <new root>/monthly-updates.
+// Both sides start from <new root>/site and read inputs from <new root>/monthly-updates, unless
+// --old-site seeds the old side from another site folder (e.g. <old root>/site): that compares a
+// page-code change, since the vm tools run the parsers of the page they are given (KNOWN_ISSUES A27).
+// Without --old, --old-site runs this checkout's tools on both sides.
 const fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process'), vm = require('vm');
 const CASES = require('./rehearsal_cases');
 
 const argv = process.argv.slice(2);
 const flag = n => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : null; };
 const NEW = path.resolve(flag('--new') || path.join(__dirname, '..', '..'));
-const OLD = flag('--old') && path.resolve(flag('--old'));
+const OLD_SITE = flag('--old-site') && path.resolve(flag('--old-site'));
+const OLD = flag('--old') ? path.resolve(flag('--old')) : OLD_SITE ? NEW : null;
 if (argv.includes('--list')) { for (const c of CASES) console.log(c.name.padEnd(26) + c.desc); process.exit(0); }
-if (!OLD) { console.error('Usage: node tools/dev/rehearse.js --old <old repo root> [--new <root>] [--case a,b] [--list] [--keep]'); process.exit(2); }
+const USAGE = 'Usage: node tools/dev/rehearse.js --old <old repo root> [--old-site <dir>] [--new <root>] [--case a,b] [--list] [--keep]' +
+  '  (--old-site alone: this checkout\'s tools on both sides, the old side seeded from <dir>)';
+if (!OLD) { console.error(USAGE); process.exit(2); }
 const pick = flag('--case') ? flag('--case').split(',') : CASES.map(c => c.name);
 const MU = path.join(NEW, 'monthly-updates');
 const SITE_FILES = fs.readdirSync(path.join(NEW, 'site')).filter(f => !f.startsWith('.'));
+const SEED = { old: OLD_SITE || path.join(NEW, 'site'), new: path.join(NEW, 'site') };
+if (OLD_SITE) {
+  const missing = SITE_FILES.filter(f => !fs.existsSync(path.join(OLD_SITE, f)));
+  if (missing.length) { console.error('*** --old-site ' + OLD_SITE + ' lacks: ' + missing.join(', ')); console.error(USAGE); process.exit(2); }
+}
 const PREFIXES = ['MASTER', 'EQUITY_ANALYTICS', 'HYBRID_ANALYTICS', 'DEBT_ANALYTICS', 'DIRECT_PERF', 'CENTRICITY_SELECT',
   'MF_BENCHMARK_PERF', 'PMS_PERFORMANCE', 'PMS_PERF_ALIAS', 'RISK_MATRIX'].map(k => 'window.' + k + ' = ');
 const B = require(path.join(NEW, 'tools', 'lib', 'blocklib'));
@@ -36,7 +48,7 @@ function fill(a, ctx) { return a.replace(/\{(\w+)\}/g, (m, k) => (k in ctx ? ctx
 
 function runSide(root, c, label, work) {
   const site = path.join(work, label, 'site'); fs.mkdirSync(site, { recursive: true });
-  for (const f of SITE_FILES) fs.copyFileSync(path.join(NEW, 'site', f), path.join(site, f));
+  for (const f of SITE_FILES) fs.copyFileSync(path.join(SEED[label], f), path.join(site, f));
   const slides = path.join(work, label, 'slides'); decodeSlides(site, slides);
   const ctx = { SITE: site, HTML: path.join(site, 'index.html'), MU, SLIDES: slides };
   const log = [];
@@ -45,7 +57,7 @@ function runSide(root, c, label, work) {
     if (st.apply !== false) args.push('--apply');
     const r = cp.spawnSync(process.execPath, [path.join(root, 'tools', st.tool), ...args],
       { cwd: NEW, encoding: 'utf8', env: { ...process.env, NODE_PATH: path.join(NEW, 'node_modules') }, maxBuffer: 1 << 28 });
-    log.push({ tool: st.tool, exit: r.status, out: (r.stdout || '') + (r.stderr || '') });
+    log.push({ tool: st.tool, exit: r.status, out: (r.stdout || '') + (r.stderr || '') + (r.error ? '\n*** spawn failed: ' + r.error.message : '') });
     if (r.status !== 0) break;
   }
   return { site, log };
@@ -71,6 +83,29 @@ function storeDiff(a, b) {
   return { onlyInA: ka.filter(k => !(k in b)).length, onlyInB: kb.filter(k => !(k in a)).length, changedKeys: changed };
 }
 
+// index.html with every data block emptied and DATA_DATES removed: the page code a tool must not change.
+function codeOf(html) {
+  let r = html;
+  for (const p of PREFIXES) { try { const l = B.locate(r, p); r = r.slice(0, l.s) + '{}' + r.slice(l.e + 1); } catch (e) { /* reported by compareSites */ } }
+  return r.replace(/window\.DATA_DATES = \{[\s\S]*?\};/, '').replace(/window\.DATA_DATES\.riskMatrix = [^\n]*/, '');
+}
+
+// With --old-site the two sides start from different files, so OLD vs NEW differs in code by design.
+// The data verdict ignores exactly that: index.html may differ outside its blocks and dates only if
+// each side's code is still its seed's code, and a sibling may differ only if neither side wrote it.
+function dataVerdict(oldVsNew, oldSite, newSite) {
+  const left = [];
+  for (const it of oldVsNew) {
+    const out = side => fs.readFileSync(path.join(side === 'old' ? oldSite : newSite, it.file), 'utf8');
+    const seed = side => fs.readFileSync(path.join(SEED[side], it.file), 'utf8');
+    if (it.file === 'index.html') {
+      const sameCode = codeOf(out('old')) === codeOf(seed('old')) && codeOf(out('new')) === codeOf(seed('new'));
+      if (Object.keys(it.blocks).length || it.dataDates || (it.otherCodeDiffers && !sameCode)) left.push(it);
+    } else if (out('old') !== seed('old') || out('new') !== seed('new')) left.push(it);
+  }
+  return left;
+}
+
 function compareSites(dirA, dirB) {
   const out = [];
   for (const f of SITE_FILES) {
@@ -87,10 +122,7 @@ function compareSites(dirA, dirB) {
       const dd = s => (s.match(/window\.DATA_DATES = \{[\s\S]*?\};/) || [''])[0] + ((s.match(/window\.DATA_DATES\.riskMatrix = [^\n]*/) || [''])[0]);
       if (dd(a) !== dd(b)) item.dataDates = { a: dd(a).replace(/\s+/g, ' ').slice(0, 400), b: dd(b).replace(/\s+/g, ' ').slice(0, 400) };
       // anything outside the known blocks and dates?
-      let ra = a, rb = b;
-      for (const p of PREFIXES) { try { const la = B.locate(ra, p), lb = B.locate(rb, p); ra = ra.slice(0, la.s) + '{}' + ra.slice(la.e + 1); rb = rb.slice(0, lb.s) + '{}' + rb.slice(lb.e + 1); } catch (e) { /* reported above */ } }
-      const strip = s => s.replace(/window\.DATA_DATES = \{[\s\S]*?\};/, '').replace(/window\.DATA_DATES\.riskMatrix = [^\n]*/, '');
-      if (strip(ra) !== strip(rb)) item.otherCodeDiffers = true;
+      if (codeOf(a) !== codeOf(b)) item.otherCodeDiffers = true;
     }
     out.push(item);
   }
@@ -108,17 +140,20 @@ for (const name of pick) {
   const r = {
     case: name, desc: c.desc,
     exits: { old: o.log.map(l => `${l.tool}=${l.exit}`).join(' '), new: n.log.map(l => `${l.tool}=${l.exit}`).join(' ') },
-    oldVsBaseline: compareSites(base, o.site).map(x => x.file),
+    oldVsBaseline: compareSites(SEED.old, o.site).map(x => x.file),
     newVsBaseline: compareSites(base, n.site).map(x => x.file),
     oldVsNew: compareSites(o.site, n.site),
   };
   r.identical = r.oldVsNew.length === 0;
+  if (OLD_SITE) { r.dataDiffers = dataVerdict(r.oldVsNew, o.site, n.site); r.dataIdentical = r.dataDiffers.length === 0; }
   report.push(r);
   fs.writeFileSync(path.join(caseDir, 'logs.json'), JSON.stringify({ old: o.log, new: n.log }, null, 1));
   console.log(`\n=== ${name} — ${c.desc}`);
   console.log(`  exits  old: ${r.exits.old}\n         new: ${r.exits.new}`);
-  console.log(`  files changed vs live  old: [${r.oldVsBaseline.join(', ')}]  new: [${r.newVsBaseline.join(', ')}]`);
-  console.log(r.identical ? '  OLD and NEW outputs: IDENTICAL' : '  OLD and NEW outputs DIFFER:\n' + JSON.stringify(r.oldVsNew, null, 1).replace(/^/gm, '    '));
+  console.log(`  files changed vs ${OLD_SITE ? 'own seed' : 'live'}  old: [${r.oldVsBaseline.join(', ')}]  new: [${r.newVsBaseline.join(', ')}]`);
+  if (OLD_SITE && r.dataIdentical) console.log('  OLD and NEW data: IDENTICAL' + (r.identical ? '' : ' (the files differ only in the page code the two seeds already differ in)'));
+  else if (OLD_SITE) console.log('  OLD and NEW data DIFFER:\n' + JSON.stringify(r.dataDiffers, null, 1).replace(/^/gm, '    '));
+  else console.log(r.identical ? '  OLD and NEW outputs: IDENTICAL' : '  OLD and NEW outputs DIFFER:\n' + JSON.stringify(r.oldVsNew, null, 1).replace(/^/gm, '    '));
   console.log(`  logs: ${path.join(caseDir, 'logs.json')}`);
 }
 fs.writeFileSync(path.join(work, 'report.json'), JSON.stringify(report, null, 1));

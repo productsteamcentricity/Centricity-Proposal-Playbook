@@ -94,6 +94,8 @@ git worktree add --detach C:/t/cpp-old main          # the OLD tools: a short pa
 npm run rehearse -- --old C:/t/cpp-old               # all cases
 npm run rehearse -- --old C:/t/cpp-old --case mf-chain-sep,slides --keep
 npm run rehearse -- --list                           # the cases (no --old needed)
+npm run rehearse -- --old-site C:/t/cpp-old/site     # page-code change: this checkout's tools, old page on the old side
+npm run rehearse -- --old C:/t/cpp-old --old-site C:/t/cpp-old/site   # tools and page both old on the old side
 git worktree remove C:/t/cpp-old
 ```
 
@@ -109,16 +111,29 @@ analytics one class, Direct rebuild, fund managers, Reckoner, alias pins, PMS/AI
 `add_reckoner_funds`, Bond List, slides, one-off tools); a case can pass flags to one side only
 (`oldArgs` / `newArgs`). A change is behaviour-preserving when every case is `IDENTICAL`, or when
 every difference is the intended one, counted. The harness reports; it does not fail on a
-difference (exit 2 only for a missing `--old` or an unknown case).
+difference (exit 2 only for a missing `--old` / `--old-site`, an `--old-site` folder without the
+deploy files, or an unknown case). A step that cannot start prints `*** spawn failed` in its log
+(on Windows, keep the roots on short paths).
 
-**Limit: page-code changes (`KNOWN_ISSUES.md` A27).** Both sides start from the new `site/`, and the
-vm tools run the parsers of the page they are given, so a change to `site/index.html` code shows as
-`IDENTICAL`. For a parser change, run the chain by hand with `--html` on two scratch copies of the
-six files, one holding `main`'s `index.html`, and compare the blocks. Done for C19 on 19-Oct-2026
-(September chain: bake → `fill_variant_analytics` → `rekey_sif_analytics` →
-`merge_expense_exitload`): `main`'s chain reproduced the live site byte for byte; the fixed chain
-changed exactly 215 MASTER records and left every other block, `DATA_DATES` and the five siblings
-identical.
+**Page-code changes: `--old-site <dir>` (`KNOWN_ISSUES.md` A27, since 21-Oct-2026).** Without it
+both sides start from the new `site/`, and the vm tools (`bake_month`, `merge_analytics`,
+`fill_variant_analytics` and others) run the parsers of the page they are given, so a change to
+`site/index.html` code would show as `IDENTICAL`. `--old-site` seeds the old side from another site
+folder, normally the old checkout's `site/`; with no `--old`, this checkout's tools run on both
+sides, so only the page differs. The two outputs then always differ in the page code the seeds
+already differ in, so the harness prints a data verdict instead: `OLD and NEW data: IDENTICAL` when
+every block and `DATA_DATES` match, each side's code outside the blocks is still its seed's, and no
+sibling was written differently; otherwise `OLD and NEW data DIFFER` with the block counts. "Files
+changed" are then counted against each side's own seed. The seeds should hold the same data (for
+example `main` and a branch that changes only page code); seeds whose data already differs show that
+difference too, in every block a chain does not rewrite.
+
+Checked on 21-Oct-2026: `--old-site` = `main` before C17/C18 (page code only) on `direct-perf`,
+`analytics-one-class` and `mf-chain-sep`: data IDENTICAL on all three. The C19 parser change
+re-run: `--old` and `--old-site` = `6dc08ef` (before C19), `--new` = `8e187ae` (with it), case
+`mf-chain-sep`: data DIFFER in MASTER only, 223 records (aum, returns, `fund_mgr` …); every other block, `DATA_DATES` and the siblings agree. That is the 215 records of the 19-Oct-2026 check plus the 8 pending renames: the case applies `rename_schemes --apply` first on both sides, and only the C19 bake then refreshes the renamed records (11 rows not merged instead of 19). On 19-Oct-2026 the same check was done by hand: `main`'s chain reproduced
+the live site byte for byte; the fixed chain changed exactly 215 MASTER records and left every
+other block, `DATA_DATES` and the five siblings identical.
 
 ## 3. Browser checks (10 minutes; after every refresh or UI change)
 

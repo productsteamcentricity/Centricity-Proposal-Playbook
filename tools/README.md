@@ -102,8 +102,9 @@ tests re-checked the same day with the C19 parser change (refresh-only Monitor s
     folder and pass `--html <scratch>/index.html`. The tools find the siblings beside it. Three
     tools take a different flag: `merge_sif_monitor.js` (`--sibling`), `update_market_slides.js`
     (`--js`) and `update_closing_slides.js` (`--sibling`). To compare a tool change old against
-    new on whole chains, use `npm run rehearse` (`docs/TESTING.md` §2). It cannot compare a change
-    to page code: both sides start from the new `site/` (`docs/KNOWN_ISSUES.md` A27).
+    new on whole chains, use `npm run rehearse` (`docs/TESTING.md` §2). For a change to page code
+    (a parser in `site/index.html`), add `--old-site <old checkout>/site` so the old side starts
+    from the old page (`docs/KNOWN_ISSUES.md` A27, closed).
 
 ---
 
@@ -288,7 +289,7 @@ Some inputs have no tool and are edited by hand, each through a PR:
 | `verify_page.js` | `<dir>/index.html` (default `site/`) and the five local `<script src>` siblings, in document order, in a vm. It skips the CDN scripts. | Nothing. | Rule 6 in §1. Exit 1 on a hard failure. | `node tools/verify_page.js site` or `npm run verify` |
 | `.claude/serve.js` (not in `tools/`) | `site/` only, on 127.0.0.1 only. | Nothing. | The browser checks in `docs/TESTING.md`. | `npm run serve` (http://127.0.0.1:8080/) |
 | `tools/test/run.js` | Every `tools/test/*.test.js` (today `blocklib.test.js`, 34 checks; `dates.test.js`, 10; `parser_refresh_only.test.js`, 18, on the page's own `REFRESH` block with synthetic workbooks; `tool_inputs.test.js`, 43, every tool with a missing source and a bad `--html`). | Nothing. | `PASS`/`FAIL` per file; exit 1 if any fails. CI runs it after `npm ci`. | `npm test` |
-| `tools/dev/rehearse.js` | `tools/dev/rehearsal_cases.js` (12 cases), the inputs in `monthly-updates/`, and two tool trees. | Disposable copies of `site/` in the OS temp folder, plus `report.json`. Never the real `site/`. | Old-versus-new differences, block by block (see `docs/TESTING.md` §2). | `npm run rehearse -- --old <old repo root> [--new <root>] [--case a,b] [--list] [--keep]` |
+| `tools/dev/rehearse.js` | `tools/dev/rehearsal_cases.js` (12 cases), the inputs in `monthly-updates/`, and two tool trees. | Disposable copies of `site/` in the OS temp folder, plus `report.json`. Never the real `site/`. | Old-versus-new differences, block by block; with `--old-site`, a data verdict that ignores the seeded page-code difference (see `docs/TESTING.md` §2). | `npm run rehearse -- --old <old repo root> [--old-site <dir>] [--new <root>] [--case a,b] [--list] [--keep]`; `--old-site <dir>` alone runs this checkout's tools on both sides |
 
 ### Libraries (`tools/lib/`) and data (`tools/data/`)
 
