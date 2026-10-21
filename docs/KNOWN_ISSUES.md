@@ -137,11 +137,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C15 | Fund-manager roster overwritten by the Sep bake | Data | P2 | Open (desk) | **Affects** | MASTER `fund_mgr`; `tools/merge_fund_managers.js` |
 | C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided with C20) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
 | C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Closed 21-Oct-2026 (PR #21) | — | `NOTE_Y`, `mk` in the matrix slide, `site/index.html` |
-| C18 | Select popover ratios are never marked unreliable | UI | P3 | Open | — | `CentricitySelectPopover`, `site/index.html:5383-5399` |
+| C18 | Select popover ratios are never marked unreliable | UI | P3 | Closed 21-Oct-2026 (PR #22) | — | `CentricitySelectPopover`, `site/index.html` |
 | C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`, `:3397-3403`; `tools/bake_month.js:152-169`, `:212-220` |
 | C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3414-3415` |
-| C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Open | — | matrix slide `rowH:0.24*mk`, `site/index.html` |
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
+| C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Open | — | matrix slide `rowH:0.24*mk`, `site/index.html` |
+| C23 | Select popover Alpha shown 100 times too large [inference] | UI/data | P2 | Open (desk: confirm the unit) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -1153,7 +1154,15 @@ about 22 or more selected funds the matrix table reaches that height and the foo
 below the table's computed height, or shrink the table font when a flagged fund is present.
 
 ### C18. Select popover ratios are never marked unreliable
-**P3 · Open · —**
+**P3 · Closed 21-Oct-2026 (PR #22) · —**
+
+- **Fixed:** for an MF fund the popover looks up `RISK_MATRIX[fund.name]`; when `H.riskFlagged` is
+  true it adds the dagger after the fund name in the header and `H.RISK_FLAG_NOTE` (italic) under
+  the ratio tiles. The ratios themselves still come from `CENTRICITY_SELECT`. Checked in the browser
+  (21-Oct-2026): the one flagged Select fund in the data (ICICI Pru Nifty 100 Low Volatility 30 ETF)
+  shows both; HDFC Large Cap Fund(G) with a simulated `fl = 'split'` shows both, and neither once
+  the flag is removed; ICICI Pru Large Cap Fund(G), unflagged, shows neither. The text below is the
+  state before the fix.
 
 The Centricity Select popover shows Sharpe, Sortino, Beta, Std Dev and Alpha from the
 `CENTRICITY_SELECT` entry (`CentricitySelectPopover`, `site/index.html:5383-5399`), not from
@@ -1286,6 +1295,21 @@ waiting for this decision and held the G-Sec record instead)
 - **Suggested fix:** apply the C17 fit (`mk`) to every matrix slide with the notes' y as the limit,
   or continue a long table on a second slide; decide with the owner, since it changes slides that
   have no flag.
+
+### C23. Select popover Alpha shown 100 times too large [inference]
+**P2 · Open (desk: confirm the unit) · —**
+
+- The popover formats `CENTRICITY_SELECT[].alpha` with `fmtPctRaw` (value × 100, then `%`). The
+  stored values look like percentages already: 37 entries range from -0.447 to 1.2644, so the
+  popover shows ICICI Pru Large Cap Fund(G) at 25.18% (stored 0.2518), Nippon India Large Cap
+  Fund(G) at 37.40% and one fund at 126.44%. For the same funds RISK_MATRIX's Jensen alpha (`al`,
+  percent) is 1.47 and 1.05. Sharpe and Beta in the two stores agree in scale (0.30 vs 0.41; 0.92 vs
+  0.90). Seen 21-Oct-2026 while fixing C18.
+- Alpha is used only in this popover (internal UI); no export reads it. No tool writes it: the
+  Reckoner merge keeps a retained fund's risk ratios (`tools/merge_reckoner.js`).
+- **Suggested fix:** confirm with the desk what unit and period the source alpha has (percent, and
+  monthly or annual), then either show it as stored with `%` or convert it once in the data; never
+  auto-detect the scale (CLAUDE.md rule 4).
 
 ---
 
