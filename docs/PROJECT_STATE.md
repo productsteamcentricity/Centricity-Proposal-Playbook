@@ -1,7 +1,7 @@
 # Project state
 
-_Last updated: 19-Oct-2026 — C19 parser fix (refresh-only Monitor sheets) in this change, PR to
-follow; the September re-run that uses it is prepared and waits for the owner's C20 decision._
+_Last updated: 21-Oct-2026 — September Run 3 (PR #18) publishes 30-Sep-2026 figures for the 214
+funds the parser skipped (C19), on the owner's approval; one JioBlackRock record stays held for C20._
 
 ## Summary
 
@@ -9,10 +9,11 @@ The dashboard has been transferred from the outgoing owner to the Centricity Pro
 (GitHub `productsteamcentricity`) and publishes from the new repository. Since the transfer, the
 monthly tools and the page code were hardened (16–19-Oct-2026) and the September data was
 re-applied once to correct inception dates and carry the source's risk-reliability flags; parity
-counts are unchanged. A P1 data gap was found on 19-Oct-2026: 215 funds on four Monitor sheets the
-parser skipped still show 30-Jun-2026 figures under the September label (`KNOWN_ISSUES.md` C19). The
-code fix is in this change; publishing the refreshed September data waits for an owner decision
-(C20). The next run is the **September-2026 Reckoner catch-up**
+counts are unchanged. A P1 data gap found on 19-Oct-2026 — 215 funds on four Monitor sheets the
+parser skipped showed 30-Jun-2026 figures under the September label (`KNOWN_ISSUES.md` C19) — is
+fixed: the parser in PR #17, the data in PR #18 (Sep-2026 Run 3, approved by the owner on
+21-Oct-2026). One record (the JioBlackRock G-Sec fund) is held at its earlier values until the
+owner decides C20. The next run is the **September-2026 Reckoner catch-up**
 (`/monthly-update September 2026`) when the desk releases the "October 2026" Reckoner deck (data as
 on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 2026`) in mid-November.
 
@@ -20,7 +21,7 @@ on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 
 
 | Domain | As on | Next due |
 |---|---|---|
-| MF performance (Regular + Direct), MF benchmarks | 30-Sep-2026, **except the Regular figures of 215 funds** on the four refresh-only Monitor sheets: 214 at 30-Jun-2026, 1 at 31-Jul-2026 (C19; fix prepared, not published) | Sep re-run after the C20 decision; then the Oct-2026 MF cycle |
+| MF performance (Regular + Direct), MF benchmarks | 30-Sep-2026 (the 214 refresh-only-sheet funds since Run 3, PR #18). Exceptions: the JioBlackRock G-Sec fund, held at earlier values for C20; 12 Debt ETF durations / maturities kept from earlier months where the Monitor cell is blank (D81); funds absent from the Monitor (bake CHECK, 42) | Oct-2026 MF cycle |
 | Equity / Hybrid / Debt analytics | 30-Sep-2026 (SIF look-through from Aug) | Oct-2026 MF cycle |
 | Listed Direct Equity universe + returns | 30-Sep-2026 | Oct-2026 MF cycle |
 | Expense ratio, exit load | Sep-2026 | Oct-2026 MF cycle |
@@ -40,8 +41,8 @@ Run 2.
 
 ## Latest verification
 
-`node tools/verify_page.js site` on 19-Oct-2026 at `main` `1e48781`, and again on the working tree
-with the C19 change (on `main` `6dc08ef`): identical, unchanged from the handover figures, exits 0:
+`node tools/verify_page.js site` on 21-Oct-2026 on this change (PR #18, Sep Run 3), as on 19-Oct-2026
+at `main` `1e48781`, `6dc08ef` and `8e187ae`: identical, unchanged from the handover figures, exits 0:
 
 ```
 MASTER effective          7682
@@ -70,10 +71,13 @@ parser_refresh_only 18). RISK_MATRIX entries with `fl`: 33. Browser checks of th
 (19-Oct-2026): `H.riskFlagged` marks 33 of 1,088 entries; console clean (update log, Run 2); page
 load with the C19 change clean. Full browser check list last run on 16-Oct-2026 (all 11 pass).
 
-C19 change, Sep-2026 bake dry run on the working tree: `Updated 2127 schemes · as on 30th September
-2026 · 19 rows not merged`; `GATE fund rows on unrecognised Monitor sheets: PASS (0)`; no WARN;
-`CHECK MASTER MF/ETF funds on no sheet of this Monitor` 42; MASTER records carrying r1y 6,348 (6,339
-live). The byte control and six-month check are in `KNOWN_ISSUES.md` C19.
+Sep-2026 Run 3 (PR #18): `Updated 2127 schemes · as on 30th September 2026 · 19 rows not merged`;
+`GATE fund rows on unrecognised Monitor sheets: PASS (0)`; no WARN; `CHECK MASTER MF/ETF funds on no
+sheet of this Monitor` 42; MASTER records carrying r1y 6,339 → 6,348. Exactly 214 MASTER records
+change; every other block, `DATA_DATES` and the five siblings are byte-identical; `verify_page`
+counts above unchanged. Financial-data review: all 214 records recomputed from the Monitor (3,758
+field checks, 0 mismatches); Regular 1M at or below Direct on 212 of 212 pairs. Detail:
+`docs/update-log/2026-09_Sep-2026.md`, Run 3.
 
 ## Release
 
@@ -83,8 +87,8 @@ live). The byte control and six-month check are in `KNOWN_ISSUES.md` C19.
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #16 → `6dc08ef` (19-Oct-2026, docs only). Last merge that changed `site/`: PR #15 → `1e48781`; Actions run 39217928070 (verify + publish) succeeded |
-| Live status | 19-Oct-2026: the six deploy files and `robots.txt` on the live site equal `main` `1e48781` (SHA-256; PR #16 changed no file in `site/`); `Centricity_Risk_Matrix.js` returns 404 (archived, D78). The C19 change is not merged or live |
+| Latest merge | PR #17 → `8e187ae` (19-Oct-2026, C19 parser fix; verify + publish succeeded). This change, PR #18, publishes the Sep-2026 Run 3 data |
+| Live status | 19-Oct-2026: the deploy files on the live site equal `main` `8e187ae` (SHA-256); `Centricity_Risk_Matrix.js` returns 404 (archived, D78). The post-merge check for PR #18 is recorded in its PR thread and in the next update of this file |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -115,12 +119,13 @@ live). The byte control and six-month check are in `KNOWN_ISSUES.md` C19.
 | #14 | `cd6317c` | `rename_schemes.js` compares the exact inception day | A6, D73 |
 | #15 | `1e48781` | strict CLI finished (a stray word or a value flag without a value exits 2 in the six MF-chain tools too); last literal no-break spaces escaped; unused `fs` dropped from `merge_reckoner.js` | A25, F2, D72 |
 | #16 | `6dc08ef` | docs: the post-handover fixes recorded; the export prompt | — |
-| this change (PR to follow) | — | page parser: four refresh-only Monitor sheets; `bake_month.js` not-merged list, WARN, CHECK and unrecognised-sheet gate; parser unit test | C19 (code), D80 |
+| #17 | `8e187ae` | page parser: four refresh-only Monitor sheets; `bake_month.js` not-merged list, WARN, CHECK and unrecognised-sheet gate; parser unit test | C19 (code), D80 |
+| #18 (this change) | — | Sep-2026 Run 3: 214 funds move from 30-Jun to 30-Sep-2026 figures; JioBlackRock G-Sec held; owner decision on blank cells recorded | C19 (data), D81 |
 
 Status of every inherited item: `docs/KNOWN_ISSUES.md`. Partly fixed and still open there: A7 (page
 Direct uploader is a separate parser), A14, A19, A20, A22, A23, A24, A25 (only the stale
 `.gitattributes` NUL comment is left), F2 (only the misnamed `clen` in `tools/lib/pptx.js:9`), F3,
-plus new C16–C18, C20, C21 and A27, and C19 (code fixed, data not yet re-run).
+plus new C16–C18, C20, C21 and A27. C19 is fixed (code #17, data #18).
 
 ## Small fixes of 21-Oct-2026 (P3 leftovers)
 
@@ -132,16 +137,12 @@ Five independent fixes, one PR each; none changes a data block.
 
 ## In progress / blockers
 
-- **C19 (P1) — code fixed, data not yet published.** 215 funds on the four Monitor sheets the parser
-  skipped (`Debt Oriented34`, `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens `,
-  `Hybrid`) show 30-Jun-2026 figures (one July's) under the 30-Sep label. The parser fix (refresh-only
-  sheets, D80) is in this change, PR to follow. The September re-run with it (bake →
-  `fill_variant_analytics` → `rekey_sif_analytics` → `merge_expense_exitload`; exactly 215 MASTER
-  records change) is prepared and **waits for the owner's C20 decision**; it is not published.
-- **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records (and, after the re-run, the
-  C16 G-Sec fund) carry the Direct plan's returns from before their Aug-2026 launch, and blank Monitor
-  cells keep older debt stats (C19). Options: clear return periods longer than the fund's life, or
-  keep them labelled. This blocks publishing the C19 re-run.
+- **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
+  returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
+  earlier values (Run 3) so it does not mix the Regular inception with the Direct plan's figures.
+  Options: clear return periods longer than the fund's life, or keep them labelled. The owner
+  published Run 3 without waiting for this (21-Oct-2026) and kept blank-cell values under the existing
+  rule (D81).
 - **Owner decision pending — 8 renames.** `rename_schemes.js` (reading the Monitor's true dates)
   finds 8 renames in the Sep and Aug Monitors that it used to miss: HDFC Retirement Savings →
   Retirement (Hybrid-Debt Plan); four Kotak overseas FoFs, Omni → Active; two Axis FoFs, Active →
@@ -161,9 +162,10 @@ Five independent fixes, one PR each; none changes a data block.
 
 ## Next steps (in order)
 
-1. Merge the C19 code change (branch → PR → `verify` → merge; page code only, no data block).
-2. Owner: decide C20, then apply and publish the September re-run (C19) and record it in the Sep-2026
-   update log as a new run.
+1. Owner: decide C20 (13 JioBlackRock Regular records); then release the held G-Sec record and apply
+   the decision to all 13 in one reviewed change.
+2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
+   (S&P 500 Top 50 ETF FoF 1M 24.79%, NYSE FANG+ ETF FoF 1M 16.21%) before a client deck uses them.
 3. Owner: confirm or reject the 8 renames (above).
 4. September-2026 catch-up, when the "October 2026" Reckoner is released (the last was applied on
    28-Sep): drop the Reckoner deck, `PMS_Scheme_Performance` as on 30-Sep, `Fund Manager Data` as on

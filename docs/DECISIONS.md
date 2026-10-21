@@ -112,6 +112,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D78 | 19-Oct-2026 | The unused `Centricity_Risk_Matrix.js` moves to `docs/archive/` | Deploy | Active |
 | D79 | 19-Oct-2026 | Rename history kept in `prev_names`; stale old-name keys dropped | Data model | Active |
 | D80 | 19-Oct-2026 | Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake | Tooling | Active |
+| D81 | 21-Oct-2026 | Publish the C19 re-run; keep values from blank Monitor cells; hold the C20 G-Sec record | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -464,7 +465,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `tools/rename_schemes.js:19-23`, `:221-277`; `H.buildFundIndex` in `site/index.html`.
 
 ### D80 · Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake
-`Active` · 19-Oct-2026 (this change; PR to follow) · **verified in code**
+`Active` · 19-Oct-2026 (PR #17) · **verified in code**
 - **Context:** Four Regular MF Monitor fund sheets (`Debt Oriented34`, `Solution Oriented,ETFs,FOFs`,
   `Solution Oriented - Childrens `, `Hybrid`) were in no parser list, so their rows were skipped and
   215 MASTER funds kept 30-Jun-2026 figures under the 30-Sep label (`KNOWN_ISSUES.md` C19). Each
@@ -494,6 +495,30 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `site/index.html:3211-3227`, `:3304-3329`, `:3395-3403`, `:3464-3480`;
   `tools/bake_month.js:152-169`, `:212-220`; `tools/rename_schemes.js:50-52`;
   `tools/test/parser_refresh_only.test.js`.
+
+### D81 · Publish the C19 re-run now; keep values from blank Monitor cells; hold the C20 G-Sec record
+`Active` · 21-Oct-2026 (PR #18) · **owner decision**
+- **Context:** Sep-2026 Run 3 gives the 215 funds the parser had skipped their September figures
+  (`KNOWN_ISSUES.md` C19). Two things in it were the owner's call: 12 Debt ETF durations / maturities
+  stay at earlier values because the Monitor cell is blank (the parser's non-null merge, the same rule
+  on every sheet; 7 records then show duration above maturity), and the JioBlackRock Nifty 8-13 yr
+  G-Sec record, refreshed alone, would pair the Regular plan's inception with the Direct plan's
+  pre-launch 3- and 6-month returns (C16, C20). The architect review had ruled that the D61 monthly
+  auto-publish does not cover this correction.
+- **Decision (owner, 21-Oct-2026):** publish Run 3 now. Keep the 12 blank-cell values as they are
+  (existing rule). Keep the G-Sec record held at its live values until C20 is decided.
+- **Rationale:** 214 funds had shown three-month-old figures under the current date; the fix was
+  recomputed independently from the Monitor (3,758 field checks, 0 mismatches). Changing the merge
+  rule for one release would make these records behave unlike every mapped-sheet record; the C20
+  question applies to 13 records and is better answered once for all of them.
+- **Alternatives / supersedes:** wait for the C20 decision before publishing; clear the blank-cell
+  values; publish the G-Sec record refreshed with its r3m / r6m cleared by hand.
+- **Consequences:** C19 closed; C20 open with one record held (released in the change that applies
+  the C20 decision). The non-null merge stays the rule: a blank Monitor cell never clears a stored
+  value, so the update log names any kept values that matter.
+- **Source:** `docs/update-log/2026-09_Sep-2026.md` (Run 3);
+  `monthly-updates/2026-09_Sep-2026/_review/run3_2026-10-19/5_hold_c20.txt` (local only);
+  `site/index.html` non-null merge in `parseMfMonitor`.
 
 ---
 
