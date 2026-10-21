@@ -55,6 +55,57 @@ t('writeFilesAtomic validates every output before writing any', () => {
   expectThrow(() => B.writeFilesAtomic([{ file: g, content: 'B2' }, { file: f, content: 'cut' }]), /does not end with/);
   if (fs.readFileSync(g, 'utf8') !== 'B') throw new Error('wrote the first file anyway');
 });
+
+// A OneDrive sync can block the rename for a moment (KNOWN_ISSUES R6). fs.renameSync / writeFileSync
+// are replaced for one call to simulate it; the console note of each retry is silenced.
+const fsErr = code => Object.assign(new Error(code + ': simulated'), { code });
+function withFs(name, fake, fn) {
+  const real = fs[name], realErr = console.error;
+  fs[name] = fake(real); console.error = () => {};
+  try { return fn(); } finally { fs[name] = real; console.error = realErr; }
+}
+const failFirst = (codes, calls) => real => (a, b) => { calls.push(a); if (calls.length <= codes.length) throw fsErr(codes[calls.length - 1]); return real(a, b); };
+const onlyTarget = () => { const left = fs.readdirSync(dir).filter(n => n.endsWith('.tmp')); if (left.length) throw new Error('temp file left: ' + left); };
+t('writeFileAtomic retries a rename blocked by EPERM, then writes', () => {
+  const f = path.join(dir, 'r.html'); fs.writeFileSync(f, 'old</html>');
+  const calls = [];
+  withFs('renameSync', failFirst(['EPERM', 'EPERM'], calls), () => B.writeFileAtomic(f, 'new</html>', [1, 1, 1]));
+  if (calls.length !== 3 || fs.readFileSync(f, 'utf8') !== 'new</html>') throw new Error(calls.length + ' attempts, content ' + fs.readFileSync(f, 'utf8'));
+  onlyTarget();
+});
+t('writeFileAtomic retries EBUSY and EACCES too', () => {
+  const f = path.join(dir, 'r.html'); const calls = [];
+  withFs('renameSync', failFirst(['EBUSY', 'EACCES'], calls), () => B.writeFileAtomic(f, 'v2</html>', [1, 1, 1]));
+  if (calls.length !== 3 || fs.readFileSync(f, 'utf8') !== 'v2</html>') throw new Error('not written after retries');
+  onlyTarget();
+});
+t('writeFileAtomic waits between retries (doubling pauses)', () => {
+  const f = path.join(dir, 'r.html'); const calls = []; const t0 = Date.now();
+  withFs('renameSync', failFirst(['EPERM', 'EPERM'], calls), () => B.writeFileAtomic(f, 'v3</html>', [40, 80, 160]));
+  const ms = Date.now() - t0;
+  if (ms < 115) throw new Error('waited only ' + ms + ' ms for 40 + 80');
+});
+t('writeFileAtomic gives up after the last retry: throws, target unchanged, no temp file', () => {
+  const f = path.join(dir, 'r.html'); fs.writeFileSync(f, 'keep</html>'); const calls = [];
+  expectThrow(() => withFs('renameSync', failFirst(Array(9).fill('EPERM'), calls), () => B.writeFileAtomic(f, 'lost</html>', [1, 1, 1])), /EPERM/);
+  if (calls.length !== 4) throw new Error(calls.length + ' attempts, expected 1 + 3 retries');
+  if (fs.readFileSync(f, 'utf8') !== 'keep</html>') throw new Error('target changed');
+  onlyTarget();
+});
+t('writeFileAtomic does not retry other errors (EXDEV) and removes the temp file', () => {
+  const f = path.join(dir, 'r.html'); const calls = [];
+  expectThrow(() => withFs('renameSync', failFirst(['EXDEV'], calls), () => B.writeFileAtomic(f, 'x</html>', [1, 1, 1])), /EXDEV/);
+  if (calls.length !== 1) throw new Error(calls.length + ' attempts');
+  if (fs.readFileSync(f, 'utf8') !== 'keep</html>') throw new Error('target changed');
+  onlyTarget();
+});
+t('writeFileAtomic removes a half-written temp file when the write itself fails', () => {
+  const f = path.join(dir, 'r.html');
+  const halfWrite = real => (p, c) => { real(p, String(c).slice(0, 3)); throw fsErr('ENOSPC'); };
+  expectThrow(() => withFs('writeFileSync', halfWrite, () => B.writeFileAtomic(f, 'full</html>')), /ENOSPC/);
+  if (fs.readFileSync(f, 'utf8') !== 'keep</html>') throw new Error('target changed');
+  onlyTarget();
+});
 fs.rmSync(dir, { recursive: true });
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -330,7 +330,7 @@ and the entry says so. "—" means no date is recorded.
   removed the last `ENOENT` crashes); (2) prints each gate as PASS or `***`
   (normally `GATE <name>: PASS | *** FAIL …`; a few print `***` and a reason, and
   `fold_duplicate_names.js` omits the `GATE` prefix) and decides before any write; (3) builds
-  every output in memory and writes once through `tools/lib/blocklib.js` (`writeFileAtomic`: temp file + rename;
+  every output in memory and writes once through `tools/lib/blocklib.js` (`writeFileAtomic`: temp file + rename, the rename retried for up to 6.3 s on `EPERM`/`EBUSY`/`EACCES`, PR #20;
   `writeFilesAtomic`: check every output, then write); (4) finds blocks with `B.locate`, which
   refuses a second literal; (5) takes dates only as plain labels (`checkAsOn`) set through
   `setDataDate` / `replaceOnce`. Overrides are explicit flags reserved for the owner's decision

@@ -3,7 +3,8 @@
 // cannot end the scan early.
 //
 // Also the shared write/label helpers every tool uses (KNOWN_ISSUES A8, A9, A24):
-//   writeFileAtomic   temp file + rename, so a crash or sync clash never leaves a half-written file
+//   writeFileAtomic   temp file + rename, so a crash or sync clash never leaves a half-written file;
+//                     a rename blocked by a OneDrive sync (EPERM/EBUSY/EACCES) is retried (R6)
 //   writeFilesAtomic  validate every output first, then write them one after another
 //   checkAsOn         strict as-on label validation (no quotes, backslashes or `$` reach a literal)
 //   replaceOnce       replace exactly one regex match, or throw
@@ -55,13 +56,36 @@ function locate(html, prefix) {
 
 function read(file, prefix) { return locate(fs.readFileSync(file, 'utf8'), prefix); }
 
+// OneDrive (or an antivirus scan) can hold the target open for a moment while it syncs, and the
+// rename then fails with EPERM, EBUSY or EACCES (KNOWN_ISSUES R6). Those are retried after a short,
+// doubling pause, 6.3 s in all; any other error, or the last failure, is thrown.
+const RENAME_RETRY_CODES = new Set(['EPERM', 'EBUSY', 'EACCES']);
+const RENAME_WAITS_MS = [100, 200, 400, 800, 1600, 3200];
+const sleepSync = ms => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+function renameWithRetry(from, to, waits) {
+  for (let attempt = 0; ; attempt++) {
+    try { fs.renameSync(from, to); return attempt; }
+    catch (e) {
+      if (!RENAME_RETRY_CODES.has(e.code) || attempt >= waits.length) throw e;
+      console.error(`  (rename of ${path.basename(to)} blocked: ${e.code}; retry ${attempt + 1} of ${waits.length} in ${waits[attempt]} ms; OneDrive sync? KNOWN_ISSUES R6)`);
+      sleepSync(waits[attempt]);
+    }
+  }
+}
+
 // Write through a temp file in the same folder, then rename over the target. The temp name ends
 // in .tmp, which .gitignore excludes, and lives beside the target so the rename never crosses a volume.
-function writeFileAtomic(file, content) {
+// The temp file is removed whenever the write or the rename fails. `waitsMs` is for tests only.
+function writeFileAtomic(file, content, waitsMs = RENAME_WAITS_MS) {
   const tmp = path.join(path.dirname(file), '.' + path.basename(file) + '.' + process.pid + '.tmp');
-  fs.writeFileSync(tmp, content, 'utf8');
-  try { fs.renameSync(tmp, file); }
-  catch (e) { try { fs.unlinkSync(tmp); } catch (_) { /* ignore */ } throw e; }
+  try {
+    fs.writeFileSync(tmp, content, 'utf8');
+    renameWithRetry(tmp, file, waitsMs);
+  } catch (e) {
+    try { fs.unlinkSync(tmp); } catch (_) { /* never created, or already gone */ }
+    throw e;
+  }
   return content.length;
 }
 

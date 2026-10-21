@@ -54,7 +54,8 @@ npm test                     # = node tools/test/run.js
 
 Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
 
-- `blocklib.test.js` (28 checks: locate, atomic writes, as-on labels, `setDataDate`, `replaceOnce`);
+- `blocklib.test.js` (34 checks: locate, atomic writes, the rename retry on `EPERM`/`EBUSY`/`EACCES`
+  with a simulated `fs.renameSync` (R6), temp-file clean-up, as-on labels, `setDataDate`, `replaceOnce`);
 - `dates.test.js` (10 checks: `isoDay`, `isoDayFromSerial`);
 - `parser_refresh_only.test.js` (18 checks, added 19-Oct-2026 with the C19 change, D80). It tests
   page code: it loads the `REFRESH` block of `site/index.html` in a vm and feeds `parseMfMonitor`
