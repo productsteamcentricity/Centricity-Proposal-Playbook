@@ -18,11 +18,31 @@ Dates are commit dates in IST.
 
 ---
 
-## 2026-10-19 — Monitor parser refreshes the four unmapped sheets (C19 code fix; PR to follow)
+## 2026-10-21 — Sep-2026 Run 3: September figures for the 214 skipped funds (PR #18, data/2026-09-c19-refresh)
 
-Page code and tools; no data block changed, so the live figures are as before. The September re-run
-that uses this fix (215 MASTER records refreshed) is prepared and **not published**: it waits for the
-owner's decision on `docs/KNOWN_ISSUES.md` C20.
+Published on the owner's approval (D81). MASTER only; every other block, `DATA_DATES` and the five
+siblings are byte-identical. Record: `docs/update-log/2026-09_Sep-2026.md`, Run 3.
+
+### Fixed
+- 214 MASTER funds on the four refresh-only Monitor sheets move from 30-Jun-2026 (one fund: 31-Jul)
+  to 30-Sep-2026 figures: Debt ETF 94, International 51, Hybrid Other 44, Solution Oriented 25,
+  including the four Income Plus Arbitrage FoFs in Centricity Select (`docs/KNOWN_ISSUES.md` C19).
+- `fund_mgr` from the Monitor on 129 of them (10 are new managers after the old one's tenure ended);
+  DSP World Gold inception +1 day; Quantum Multi Asset Active FoF expense 0.51% → 0.50%.
+
+### Not changed
+- JioBlackRock Nifty 8-13 yr G-Sec Index Fund held at its earlier values until the owner decides C20.
+- 12 Debt ETF durations / maturities kept where the Monitor cell is blank (existing rule; D81).
+
+### Verification
+- Bake → `fill_variant_analytics` → `rekey_sif_analytics` → `merge_expense_exitload`, every gate PASS;
+  `verify_page` counts unchanged. Financial-data review: 3,758 field checks against the Monitor, 0
+  mismatches.
+
+## 2026-10-19 — Monitor parser refreshes the four unmapped sheets (C19 code fix; PR #17)
+
+Page code and tools; no data block changed. The September re-run that uses this fix was published on
+21-Oct-2026 (PR #18, entry above).
 
 ### Fixed
 - `site/index.html` `parseMfMonitor` (C19, D80): new `REFRESH_ONLY_SHEETS` (`Debt Oriented34`,
