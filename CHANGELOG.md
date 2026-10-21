@@ -18,6 +18,24 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-21 — Select popover marks a flagged fund's ratios (PR #22, fix/c18-select-popover-dagger)
+
+Page code only (Section 3 · Pick Funds, the Centricity Select popover); no data block changed.
+
+### Fixed
+- `site/index.html` `CentricitySelectPopover` (KNOWN_ISSUES C18): for an MF fund whose RISK_MATRIX
+  entry carries the source's reliability flag (`H.riskFlagged`, C3), the popover adds the dagger
+  after the fund name and the same note as the Portfolio Matrix under the ratio tiles.
+
+### Changed
+- KNOWN_ISSUES: C18 closed; new C23 (the popover's Alpha looks 100 times too large; unit to confirm
+  with the desk); the C22 summary row moved below C21.
+
+Verification (21-Oct-2026), in the browser: the one flagged Select fund in the data (ICICI Pru Nifty
+100 Low Volatility 30 ETF) shows the dagger and note; HDFC Large Cap Fund(G) with a simulated
+`fl = 'split'` shows both, and neither once the flag is removed; an unflagged fund shows neither.
+Console clean; `npm test` 4 of 4; `verify_page.js` counts unchanged.
+
 ## 2026-10-21 — Risk-flag footnote no longer overlaps a long matrix slide (PR #21, fix/c17-matrix-footnote)
 
 Page code only (the Portfolio Matrix PowerPoint slide); no data block changed.
