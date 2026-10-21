@@ -191,7 +191,13 @@ From the transcripts, memory notes and your own context, add a section **"Knowle
    Motilal Oswal Asset Allocation Passive FoF-Aggressive → Motilal Oswal Multi Asset Passive FoF.
 8. Any inception date you set by hand, and why JioBlackRock Nifty 8-13 yr G-Sec Index Fund shows
    18-Aug-2025 in the dashboard while the Monitor says 17-Aug-2026.
-9. Anything else you believe the new owner will need to run, audit or rebuild this dashboard.
+9. How the funds on four MF Monitor sheets were refreshed up to the 30-Jun-2026 data: `Debt
+   Oriented34`, `Solution Oriented,ETFs,FOFs`, `Solution Oriented - Childrens ` and `Hybrid`. The page's
+   own parser skips these sheets, yet MASTER carries their June figures. Find the script or manual
+   step that did it (for example a Python preprocessing script with its own sheet map) and include it.
+10. Centricity Select ratios: in which unit the Reckoner deck's Alpha is entered (percent or decimal),
+    and whether Sharpe, Sortino, Beta and Std Dev were ever converted by hand.
+11. Anything else you believe the new owner will need to run, audit or rebuild this dashboard.
 
 ## Step 5 — Final report to me
 
