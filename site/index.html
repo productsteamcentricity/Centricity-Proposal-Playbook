@@ -1945,6 +1945,29 @@ window.linkIdcwToGrowth();
   H.isFallbackReturn = function(fund, key) {
     return (fund[key] == null || isNaN(fund[key])) && fund.irr_low != null && fund.irr_high != null;
   };
+  // Is the 1Y/3Y/5Y figure shown an expected return rather than a published one (D82)? True for the
+  // fallback above; for a record with no return series of its own (desk bonds, FDs and AIF/PMS peers
+  // carry their yield or band mid-point as r1y = r3y = r5y: tools/merge_bond_list.js,
+  // tools/add_reckoner_funds.js); and for a PMS/AIF horizon its performance source leaves blank, where
+  // the stored mid-point stays (applyPmsPerformance, D55). Tested on the stored MASTER record, so a
+  // Direct-plan figure or a user's own return override (entry.r3yOv ...) is never marked.
+  let _xrIndex = null, _xrSrc = null;
+  H.isExpectedReturn = function(fund, key, entry) {
+    if (!fund) return false;
+    if (entry && entry[key + 'Ov'] != null) return false;
+    if (H.isFallbackReturn(fund, key)) return true;
+    if (key !== 'r1y' && key !== 'r3y' && key !== 'r5y') return false;
+    const M = window.MASTER || [];
+    if (_xrSrc !== M || _xrIndex.size !== M.length) { _xrIndex = new Map(); M.forEach(r => _xrIndex.set(r.name, r)); _xrSrc = M; }
+    const r = _xrIndex.get(fund.name);
+    if (!r || r[key] == null || fund[key] !== r[key]) return false;
+    if (r.r1y === r.r3y && r.r3y === r.r5y && r.r1m == null && r.r3m == null && r.r6m == null &&
+        r.r2y == null && r.si == null) return true;
+    const P = window.PMS_PERFORMANCE || {};
+    const src = r._pms_source && (r.product_class === 'PMS' ? P.pms : r.product_class === 'AIF' ? P.aif : null);
+    const p = src ? src[r._pms_source] : null;
+    return !!(p && p[key] == null);
+  };
 
   // ===== Minimum investment limits (regulatory / product floor) =====
   // Returns required minimum in ₹ Cr for a given fund:
@@ -4230,15 +4253,18 @@ window.mfBenchmarkPerfFor = function(sub) {
   const COL = {
     black: "000000", gold: "BD9568", tan: "DBC8B2",
     greyM: "BFBFBF", greyL: "D9D9D9", bgYellow: "FFF8E1",
-    brown: "5C3E17", red: "931621", white: "FFFFFF", greenN: "2E7D32"
+    brown: "5C3E17", red: "931621", white: "FFFFFF", greenN: "2E7D32",
+    ink: "333333", note: "555555", card: "FAF7F2", cardLine: "E1DBD0", navy: "1F2A38"
   };
-  // Default chart options for PPT charts — always show data labels, descending sort already done in data prep
+  // Default chart options for PPT charts — always show data labels, descending sort already done in data prep.
+  // The value axis is hidden: every bar carries its own label, and the axis had no % unit.
   const PPT_CHART_OPTS = {
     barDir: "bar", showLegend: false, showValue: true,
     dataLabelFontSize: 9, dataLabelFontFace: "Cambria",
     dataLabelFormatCode: '0.00"%"',
     catAxisLabelFontFace: "Cambria", catAxisLabelFontSize: 9,
     valAxisLabelFontFace: "Cambria", valAxisLabelFontSize: 9,
+    valAxisHidden: true,
     chartColors: ["BD9568"],
     catAxisLineColor: "D9D9D9", valAxisLineColor: "D9D9D9",
     valGridLine: { style: "none" }, catGridLine: { style: "none" },
@@ -4256,21 +4282,326 @@ window.mfBenchmarkPerfFor = function(sub) {
     slide.addImage(Object.assign({ data: logoData }, box || LOGO_HEADER));
   }
 
+  // ===== Presentation design system (D82) =====
+  // Every native slide is laid out from these measures, so tables, charts, cards and notes share one
+  // frame and never reach the footer: the black header band (0–0.90) with its gold strip, a content
+  // frame from DS.TOP down to the top of the slide's footer block, and a footer zone above the gold
+  // rule at 7.40 holding the notes (left), the "as on" stamp (right) and the page number.
+  const DS = {
+    W: 13.333, H: 7.5,
+    X: 0.25, R: 13.083,           // content edges: a 0.25" gutter, the title's visible left edge
+    TOP: 1.08,                    // first content y under the header band and gold strip (ends 0.93)
+    FOOT: 7.34,                   // bottom of the footer zone; the gold rule starts at 7.40
+    STAMP_H: 0.26,                // the stamp / page-number line
+    GAP: 0.14,                    // vertical space between blocks
+    LINE: 1.2,                    // PowerPoint single line = 1.2 x the font size (measured, Cambria)
+    STAMP_W: 3.7, PNUM_W: 0.45,
+    TITLE_W: 11.0,                // title box; the logo starts at 11.21
+    pt: { title: 22, titleMin: 16, h2: 13, note: 8.5, stamp: 10, pnum: 9 },
+    CELL_M: [0.04, 0.07, 0.04, 0.07],   // table cell margins, inches [top, right, bottom, left]
+    BORDER: { type: "solid", pt: 0.5, color: "BFBFBF" }
+  };
+  DS.CW = DS.R - DS.X;
+  const lineH = pt => DS.LINE * pt / 72;
+
+  // Text measurer. One fixed table of Cambria advance widths (em, measured in the browser at 100px)
+  // serves the browser and the Node tests alike, so layout never depends on which fonts a machine
+  // has. Calibrated against PowerPoint's own wrapping: 197 of 200 test cells gave the same line count.
+  const TXT = (function () {
+    let CH = '';
+    for (let i = 32; i < 127; i++) CH += String.fromCharCode(i);
+    CH += String.fromCharCode(8212, 8211, 8377, 8224, 8226, 8217, 8220, 8221);
+    const RW = [0.22,0.29,0.39,0.62,0.51,0.89,0.69,0.24,0.38,0.38,0.43,0.55,0.21,0.33,0.21,0.49,0.55,0.55,0.55,0.55,0.55,0.55,0.55,0.55,0.55,0.55,0.26,0.26,0.55,0.55,0.55,0.42,0.89,0.62,0.61,0.56,0.66,0.58,0.54,0.61,0.69,0.32,0.31,0.63,0.54,0.82,0.68,0.65,0.57,0.65,0.62,0.5,0.59,0.65,0.6,0.92,0.57,0.57,0.54,0.35,0.49,0.35,0.55,0.37,0.28,0.49,0.55,0.44,0.55,0.49,0.3,0.49,0.55,0.28,0.27,0.52,0.27,0.83,0.56,0.53,0.56,0.55,0.41,0.43,0.34,0.55,0.5,0.77,0.48,0.5,0.45,0.39,0.32,0.39,0.71,1,0.5,0.52,0.52,0.44,0.22,0.38,0.38];
+    const BW = [0.22,0.33,0.42,0.62,0.54,0.98,0.74,0.25,0.41,0.41,0.45,0.59,0.23,0.34,0.23,0.51,0.59,0.59,0.59,0.59,0.59,0.59,0.59,0.59,0.59,0.59,0.28,0.28,0.59,0.59,0.59,0.45,0.92,0.65,0.65,0.57,0.7,0.58,0.55,0.65,0.72,0.35,0.34,0.68,0.55,0.85,0.68,0.7,0.61,0.7,0.66,0.51,0.64,0.68,0.63,0.96,0.62,0.6,0.57,0.37,0.51,0.37,0.59,0.37,0.28,0.54,0.59,0.47,0.6,0.53,0.33,0.52,0.6,0.31,0.3,0.59,0.31,0.89,0.6,0.57,0.6,0.59,0.46,0.46,0.37,0.6,0.53,0.8,0.53,0.53,0.48,0.39,0.32,0.39,0.59,1,0.5,0.55,0.52,0.44,0.23,0.4,0.4];
+    const IDX = new Map();
+    for (let i = 0; i < CH.length; i++) IDX.set(CH.charAt(i), i);
+    const SLACK = 0.97;   // measure a hair wide: PowerPoint only grows a row, so err on the tall side
+    function width(s, pt, bold) {   // inches
+      s = String(s == null ? '' : s);
+      const tb = bold ? BW : RW;
+      let em = 0;
+      for (let k = 0; k < s.length; k++) { const j = IDX.get(s.charAt(k)); em += j != null ? tb[j] : (bold ? 0.6 : 0.55); }
+      return em * pt / 72;
+    }
+    // Lines PowerPoint needs for `s` in a box `w` inches wide: greedy wrap at spaces, a word longer
+    // than the line broken by characters, an explicit newline starting a new line.
+    const memo = new Map();
+    function lines(s, w, pt, bold) {
+      const key = pt + '|' + (bold ? 1 : 0) + '|' + w.toFixed(3) + '|' + s;
+      let v = memo.get(key);
+      if (v == null) { if (memo.size > 50000) memo.clear(); v = countLines(s, w, pt, bold); memo.set(key, v); }
+      return v;
+    }
+    function countLines(s, w, pt, bold) {
+      w = w * SLACK;
+      const sp = width(' ', pt, bold);
+      let n = 0;
+      String(s == null ? '' : s).split('\n').forEach(para => {
+        const words = para.split(/ +/).filter(x => x.length);
+        if (!words.length) { n++; return; }
+        let cur = 0, ln = 1;
+        for (const word of words) {
+          let ww = width(word, pt, bold);
+          if (ww > w) {
+            let rest = word;
+            if (cur > 0) { ln++; cur = 0; }
+            while (width(rest, pt, bold) > w) {
+              let cut = rest.length;
+              while (cut > 1 && width(rest.slice(0, cut), pt, bold) > w) cut--;
+              rest = rest.slice(cut); ln++;
+            }
+            cur = width(rest, pt, bold);
+            continue;
+          }
+          if (cur === 0) cur = ww;
+          else if (cur + sp + ww <= w) cur += sp + ww;
+          else { ln++; cur = ww; }
+        }
+        n += ln;
+      });
+      return n;
+    }
+    const longestWord = (s, pt, bold) => String(s == null ? '' : s).split(/[ \n]+/).reduce((m, x) => Math.max(m, width(x, pt, bold)), 0);
+    return { width, lines, longestWord, SLACK };
+  })();
+
+  // Header band, gold strip, title (sized to fit beside the logo), logo, footer rule and page number.
   function applyMaster(slide, title, logoData) {
     // Black header
     slide.addShape("rect", {x:0, y:0, w:13.333, h:0.90, fill:{color:COL.black}, line:{color:COL.black}});
     // Gold strip
     slide.addShape("rect", {x:0, y:0.88, w:13.333, h:0.05, fill:{color:COL.gold}, line:{color:COL.gold}});
-    // Title
-    slide.addText(title.toUpperCase(), {x:0.15, y:0.15, w:11.0, h:0.69, fontFace:"Cambria", fontSize:22, bold:true, color:COL.white});
+    // Title — shrinks a point at a time (never below 16pt) when it would run under the logo
+    const t = String(title).toUpperCase();
+    let tpt = DS.pt.title;
+    while (tpt > DS.pt.titleMin && TXT.width(t, tpt, true) / TXT.SLACK > DS.TITLE_W - 0.2) tpt--;
+    slide.addText(t, {x:0.15, y:0.15, w:DS.TITLE_W, h:0.69, fontFace:"Cambria", fontSize:tpt, bold:true, color:COL.white});
     // Logo
     stampLogo(slide, logoData);
-    // Footer — gold separator line only (no confidentiality text per spec)
+    // Footer — gold separator line (no confidentiality text per spec) and the slide number
     slide.addShape("rect", {x:0, y:7.40, w:13.333, h:0.04, fill:{color:COL.gold}, line:{color:COL.gold}});
+    slide.slideNumber = { x: DS.R - DS.PNUM_W, y: DS.FOOT - DS.STAMP_H, w: DS.PNUM_W, h: DS.STAMP_H,
+      fontFace: "Cambria", fontSize: DS.pt.pnum, color: COL.note, align: "right", valign: "bottom", margin: 0 };
+  }
+
+  // Footer block: notes (paragraphs of runs, wrapped to the space left of the stamp) sit on the footer
+  // line and grow upwards; the "as on" stamp sits at the right. Returns the lowest y content may reach.
+  function footerBlock(notes, stamp) {
+    const pt = DS.pt.note;
+    const right = DS.R - DS.PNUM_W - (stamp ? DS.STAMP_W : 0) - 0.15;
+    const w = right - DS.X;
+    const paras = (notes || []).filter(Boolean).map(n => Array.isArray(n) ? n : [{ text: String(n) }]);
+    let n = 0;
+    paras.forEach(p => { n += TXT.lines(p.map(r => r.text).join(''), w, pt, p.some(r => r.options && r.options.bold)); });
+    const h = n * lineH(pt);
+    const top = Math.min(DS.FOOT - h, DS.FOOT - DS.STAMP_H);
+    return { paras, w, h, pt, stamp, bottom: top - DS.GAP };
+  }
+  function drawFooter(slide, fb) {
+    if (fb.stamp) slide.addText(fb.stamp, { x: DS.R - DS.PNUM_W - DS.STAMP_W, y: DS.FOOT - DS.STAMP_H, w: DS.STAMP_W, h: DS.STAMP_H,
+      fontFace: "Cambria", fontSize: DS.pt.stamp, italic: true, color: COL.note, align: "right", valign: "bottom", margin: 0 });
+    if (!fb.paras.length) return;
+    const runs = [];
+    fb.paras.forEach((p, i) => p.forEach((r, j) => {
+      const opt = Object.assign({ fontFace: "Cambria", fontSize: fb.pt, color: COL.note }, r.options || {});
+      if (j === p.length - 1 && i < fb.paras.length - 1) opt.breakLine = true;
+      runs.push({ text: r.text, options: opt });
+    }));
+    slide.addText(runs, { x: DS.X, y: DS.FOOT - fb.h, w: fb.w, h: fb.h, fontFace: "Cambria", fontSize: fb.pt,
+      color: COL.note, valign: "bottom", margin: 0 });
+  }
+  // Gold section heading (e.g. "Top Sectors"); with `right`, an italic caption at the right end.
+  function sectionTitle(slide, text, x, y, w, right) {
+    slide.addText(text, { x, y, w, h: 0.32, fontFace: "Cambria", fontSize: DS.pt.h2, bold: true, color: COL.gold, margin: 0, valign: "middle" });
+    if (right) slide.addText(right, { x, y, w, h: 0.32, fontFace: "Cambria", fontSize: DS.pt.stamp, italic: true, color: COL.note, margin: 0, align: "right", valign: "middle" });
+  }
+
+  // ===== Table engine =====
+  // Cells are pptxgenjs cells; `cell._wrap` lets a header cell wrap at word breaks even in a numeric
+  // column. A body row is { cells, level, label } — level 0..n-1 marks group headings (asset class,
+  // product class, sub-category), a level of `leaf` marks an instrument row.
+  const cellMargin = o => (Array.isArray(o.margin) ? o.margin : DS.CELL_M);
+  function gridOf(rows) {          // start column of every cell, honouring rowspan / colspan
+    const occ = [], out = [];
+    rows.forEach((row, r) => {
+      occ[r] = occ[r] || {};
+      let c = 0;
+      out[r] = row.map(cell => {
+        while (occ[r][c]) c++;
+        const o = cell.options || {}, cs = o.colspan || 1, rs = o.rowspan || 1;
+        for (let i = 0; i < rs; i++) { occ[r + i] = occ[r + i] || {}; for (let j = 0; j < cs; j++) occ[r + i][c + j] = true; }
+        const at = { cell, c, cs, rs };
+        c += cs;
+        return at;
+      });
+    });
+    return out;
+  }
+  function cellNeed(cell) {        // single-line width the cell asks for
+    const o = cell.options || {}, m = cellMargin(o);
+    const t = cell._wrap ? TXT.longestWord(cell.text, o.fontSize, o.bold) : TXT.width(cell.text, o.fontSize, o.bold);
+    return t / TXT.SLACK + m[1] + m[3] + 0.02;
+  }
+  function rowHeights(rows, colW) {
+    const g = gridOf(rows);
+    const h = rows.map(() => 0), spans = [];
+    g.forEach((row, r) => row.forEach(at => {
+      const o = at.cell.options || {}, m = cellMargin(o);
+      let w = 0; for (let j = 0; j < at.cs; j++) w += colW[at.c + j] || 0;
+      const need = m[0] + m[2] + TXT.lines(at.cell.text, w - m[1] - m[3], o.fontSize, o.bold) * lineH(o.fontSize);
+      if (at.rs === 1) h[r] = Math.max(h[r], need); else spans.push({ r, rs: at.rs, need });
+    }));
+    spans.forEach(sp => {
+      let sum = 0; for (let i = 0; i < sp.rs; i++) sum += h[sp.r + i];
+      if (sp.need > sum) h[sp.r + sp.rs - 1] += sp.need - sum;
+    });
+    return h.map(x => Math.round(x * 1000) / 1000);
+  }
+  // Column widths for `cols` = [{ wrap, min, prefer }]. A column that may not wrap (numbers) gets the
+  // width of its longest cell — and, when it fits, all such columns share the widest one's width so
+  // figures line up in even columns. A wrapping column starts at its minimum, or for a name column
+  // (`prefer`) at the width that keeps its names on one line, up to `prefer` inches. The remaining
+  // width then goes in steps to the wrapping column that buys the most table height per inch
+  // (looking ahead to its next line break); what is still left first evens out the number columns,
+  // then widens every column in proportion. Returns null when the columns cannot fit at their minimum.
+  const sum = a => a.reduce((x, y) => x + y, 0);
+  function columnWidths(cols, rows, width) {
+    const g = gridOf(rows);
+    const need = cols.map(c => c.min || 0.3);
+    g.forEach(row => row.forEach(at => { if (at.cs === 1) need[at.c] = Math.max(need[at.c], cellNeed(at.cell)); }));
+    const fixedIdx = cols.map((c, i) => c.wrap ? -1 : i).filter(i => i >= 0);
+    const wrapIdx = cols.map((c, i) => c.wrap ? i : -1).filter(i => i >= 0);
+    const lo = cols.map((c, i) => c.wrap ? Math.min(c.min || 0.6, need[i]) : need[i]);
+    let w = cols.map((c, i) => c.wrap && c.prefer ? Math.max(lo[i], Math.min(need[i], c.prefer)) : lo[i]);
+    if (sum(w) > width) w = lo.slice();
+    if (fixedIdx.length > 1) {
+      const u = Math.max(...fixedIdx.map(i => need[i]));
+      const t = w.slice(); fixedIdx.forEach(i => { t[i] = u; });
+      if (sum(t) <= width) w = t;
+    }
+    let rest = width - sum(w);
+    if (rest < -0.001) return null;
+    // Heights per column and row, so trying a width for one column re-measures only that column.
+    // (Cells spanning columns or rows — headings, context rows — are left out of this search; the
+    // final row heights always come from rowHeights.)
+    const nR = rows.length;
+    const single = cols.map(() => []);
+    g.forEach((row, r) => row.forEach(at => { if (at.cs === 1 && at.rs === 1) single[at.c].push({ r, cell: at.cell }); }));
+    const colH = (c, wd) => {
+      const a = new Array(nR).fill(0);
+      single[c].forEach(x => { const o = x.cell.options || {}, mg = cellMargin(o);
+        a[x.r] = Math.max(a[x.r], mg[0] + mg[2] + TXT.lines(x.cell.text, wd - mg[1] - mg[3], o.fontSize, o.bold) * lineH(o.fontSize)); });
+      return a;
+    };
+    const Hc = cols.map((c, i) => colH(i, w[i]));
+    const totalWith = (i, hi) => {
+      let t = 0;
+      for (let r = 0; r < nR; r++) { let mx = 0; for (let c = 0; c < cols.length; c++) { const v = c === i ? hi[r] : Hc[c][r]; if (v > mx) mx = v; } t += mx; }
+      return t;
+    };
+    let cur = totalWith(-1, null);
+    while (rest > 0.02 && wrapIdx.length) {
+      let best = -1, bestRatio = 0, bestD = 0, bestH = cur, bestCol = null;
+      for (const i of wrapIdx) {
+        const maxD = Math.min(rest, need[i] - w[i], 4);
+        for (let k = 1; k * 0.05 < maxD + 0.05; k++) {
+          const d = Math.min(k * 0.05, maxD);
+          const hi = colH(i, w[i] + d);
+          const th = totalWith(i, hi);
+          if (th < cur - 0.0005) { const ratio = (cur - th) / d; if (ratio > bestRatio) { bestRatio = ratio; best = i; bestD = d; bestH = th; bestCol = hi; } break; }
+          if (d >= maxD) break;
+        }
+      }
+      if (best < 0) break;
+      w[best] += bestD; rest -= bestD; cur = bestH; Hc[best] = bestCol;
+    }
+    // even out the number columns: raise the narrowest towards the widest
+    if (rest > 0.001 && fixedIdx.length > 1) {
+      const top = Math.max(...fixedIdx.map(i => w[i]));
+      while (rest > 0.001) {
+        const low = Math.min(...fixedIdx.map(i => w[i]));
+        if (low >= top - 0.001) break;
+        const at = fixedIdx.filter(i => w[i] < low + 0.001);
+        const next = Math.min(top, ...fixedIdx.filter(i => w[i] >= low + 0.001).map(i => w[i]));
+        const step = Math.min(next - low, rest / at.length);
+        at.forEach(i => { w[i] += step; }); rest -= step * at.length;
+      }
+    }
+    if (rest > 0.001) { const s = sum(w); for (let i = 0; i < w.length; i++) w[i] += rest * w[i] / s; }
+    return w.map(x => Math.round(x * 1000) / 1000);
+  }
+  // planTable: the largest font in spec.sizes at which the whole table fits spec.avail on one
+  // slide; otherwise pages at spec.pagePt. spec.build(pt) returns { header, body, sticky } — header
+  // rows repeat on every page and sticky rows (totals) close every page. A page never ends on a group
+  // heading; a group continued from the previous page is named in a context row (spec.context).
+  // Rows, columns and totals are never dropped.
+  function planTable(spec) {
+    const flat = b => [...b.header, ...b.body.map(x => x.cells), ...b.sticky];
+    for (const pt of spec.sizes) {
+      const b = spec.build(pt);
+      const colW = columnWidths(spec.cols, flat(b), spec.width);
+      if (!colW) continue;
+      const h = rowHeights(flat(b), colW);
+      const tot = h.reduce((a, c) => a + c, 0);
+      if (tot <= spec.avail + 0.001) return { pt, colW, pages: [{ rows: flat(b), heights: h, height: tot }] };
+    }
+    const pt = spec.pagePt;
+    const b = spec.build(pt);
+    let colW = columnWidths(spec.cols, flat(b), spec.width);
+    if (!colW) colW = spec.cols.map(() => spec.width / spec.cols.length);
+    const hH = rowHeights(b.header, colW), hS = rowHeights(b.sticky, colW);
+    const bodyH = rowHeights(b.body.map(x => x.cells), colW);
+    const fixed = hH.reduce((a, c) => a + c, 0) + hS.reduce((a, c) => a + c, 0);
+    const leaf = spec.leaf;
+    const paginate = avail => {
+      const pages = [];
+      let cur = [], used = fixed;
+      const groups = [];                       // current heading at each level
+      b.body.forEach((row, i) => {
+        // a heading keeps the rows down to its first instrument on the same page
+        let need = bodyH[i];
+        for (let j = i; j < b.body.length - 1 && b.body[j].level < leaf; j++) need += bodyH[j + 1];
+        if (cur.length && used + need > avail + 0.001) {
+          pages.push(cur); cur = []; used = fixed;
+          const ctx = groups.slice(0, Math.min(row.level, groups.length)).filter(Boolean);
+          if (ctx.length && spec.context) {
+            const cr = spec.context(ctx, pt);
+            cur.push({ cells: cr, ctx: true }); used += rowHeights([cr], colW)[0];
+          }
+        }
+        if (row.level < leaf) { groups[row.level] = row.label; groups.length = row.level + 1; }
+        cur.push(row); used += bodyH[i];
+      });
+      if (cur.length) pages.push(cur);
+      return pages;
+    };
+    // as many pages as the space needs, with the rows spread evenly across them
+    let pages = paginate(spec.avail);
+    const nP = pages.length;
+    for (let a = fixed + sum(bodyH) / nP; nP > 1 && spec.balance !== false && a < spec.avail; a += 0.1) {
+      const p = paginate(a);
+      if (p.length <= nP) { pages = p; break; }
+    }
+    if (!pages.length) pages.push([]);
+    return { pt, colW, pages: pages.map(pg => {
+      const rows = [...b.header, ...pg.map(x => x.cells), ...b.sticky];
+      const heights = rowHeights(rows, colW);
+      return { rows, heights, height: heights.reduce((a, c) => a + c, 0) };
+    }) };
+  }
+  // Draws a planned page. Every cell is given the margin the engine measured with — pptxgenjs would
+  // otherwise apply its own default (0.1" / 0.05") and the rows would come out taller than planned.
+  function drawTable(slide, page, colW, x, y) {
+    const rows = page.rows.map(r => r.map(c => {
+      const o = c.options || {};
+      return Array.isArray(o.margin) ? c : { text: c.text, options: Object.assign({}, o, { margin: DS.CELL_M }) };
+    }));
+    slide.addTable(rows, { x, y, w: colW.reduce((a, b) => a + b, 0), colW, rowH: page.heights, border: DS.BORDER, autoPage: false });
   }
 
   function applyDividerMaster(slide) {
-    // Off-canvas oval + donut + vertical gold line + bottom black bar (no text inside)
+    // Off-canvas oval + donut + vertical gold line + bottom black bar (no text inside). The shapes that
+    // run past the slide edge are the divider's intended full-bleed decoration, as on the image dividers.
     slide.addShape("ellipse", {x:-1.35, y:0.45, w:6.31, h:6.31, fill:{color:COL.gold}, line:{color:COL.gold}});
     slide.addShape("ellipse", {x:-1.63, y:-1.56, w:4.46, h:4.46, fill:{color:COL.tan}, line:{color:COL.tan}});
     slide.addShape("ellipse", {x:-0.63, y:-0.56, w:2.46, h:2.46, fill:{color:COL.white}, line:{color:COL.white}});
@@ -4291,13 +4622,15 @@ window.mfBenchmarkPerfFor = function(sub) {
     const pptx = new PptxGenJS();
     pptx.defineLayout({ name:"LAYOUT_WIDE", width:13.333, height:7.5 });
     pptx.layout = "LAYOUT_WIDE";
-    // For single-tab exports, count slides so we can emit a friendly placeholder when the chosen
-    // tab has no content (e.g. Overlap with <2 eligible funds). The full-deck path is untouched.
+    // Every slide is counted and numbered here: the layout log below names slides by this number, and
+    // a single-tab export with no content emits a friendly placeholder (e.g. Overlap with <2 funds).
     let _slideCount = 0;
-    if (only) {
-      const _origAddSlide = pptx.addSlide.bind(pptx);
-      pptx.addSlide = function() { _slideCount++; return _origAddSlide.apply(pptx, arguments); };
-    }
+    const _origAddSlide = pptx.addSlide.bind(pptx);
+    pptx.addSlide = function() { const sl = _origAddSlide.apply(pptx, arguments); sl.__no = ++_slideCount; return sl; };
+    // Layout log: every placed content block with the lowest y it may reach. A block outside the
+    // content frame is a layout bug — logged as a console warning and kept in window.__PPTX_LAYOUT.
+    const LAYOUT = [];
+    const place = (sl, kind, x, y, w, h, limit) => LAYOUT.push({ slide: sl.__no, kind, x, y, w, h, limit: limit == null ? DS.FOOT : limit });
     // Amount unit follows the dashboard Cr/Lakhs toggle. corpus + all derived allocation amounts
     // are stored internally in Cr; for Lakhs we multiply by 100. Fund AUM (a fund attribute) stays
     // in ₹ Cr per brand standard and is intentionally NOT converted here.
@@ -4306,6 +4639,13 @@ window.mfBenchmarkPerfFor = function(sub) {
     const uParen = inLakhs ? 'L.' : 'Cr.';  // header label "Amount (Cr.)" / "Amount (L.)"
     const dAmt = cr => (inLakhs ? cr * 100 : cr).toFixed(2);  // Cr → display amount string (2 dp)
     const logoData = await loadLogoData();
+    const DD = window.DATA_DATES || {};
+    // `*` after a 1Y/3Y/5Y figure that is an expected return, not a published one (H.isExpectedReturn).
+    const entryOf = {};
+    selected.forEach(sl => { if (!entryOf[sl.fund.name]) entryOf[sl.fund.name] = sl; });
+    let starUsed = false;
+    const star = (f, k) => { if (H.isExpectedReturn && H.isExpectedReturn(f, k, entryOf[f.name])) { starUsed = true; return "*"; } return ""; };
+    const STAR_NOTE = "* No return is published for this period: the figure is the expected return held in the data (the IRR band mid-point, or the yield or rate of a bond or FD), not past performance. Weighted rows include these figures.";
     // Uploaded extra slides (Market Update deck, section dividers, Thank You) embedded as
     // full-bleed images in Centricity_ExtraSlides.js. imgSlide adds one as a full slide;
     // titledDivider is the native fallback if the sibling file isn't loaded.
@@ -4319,6 +4659,16 @@ window.mfBenchmarkPerfFor = function(sub) {
       stampLogo(s, logoData, logoBox);
     };
     const titledDivider = (title) => { const s = pptx.addSlide(); applyDividerMaster(s); stampLogo(s, logoData); s.addText(title, { x: 5.1, y: 2.65, w: 7.5, h: 0.9, fontFace: "Cambria", fontSize: 50, bold: true, color: COL.black }); };
+    // A native content slide: master, then the footer; returns the slide and its content bottom.
+    const contentSlide = (title, notes, stamp) => {
+      const s = pptx.addSlide();
+      applyMaster(s, title, logoData);
+      const fb = footerBlock(notes, stamp);
+      drawFooter(s, fb);
+      if (fb.paras.length) place(s, "notes", DS.X, DS.FOOT - fb.h, fb.w, fb.h, DS.FOOT);
+      return { s, bottom: fb.bottom };
+    };
+    const pageTitle = (t, i, n) => n > 1 ? `${t} (${i + 1}/${n})` : t;
 
     // -- Slide 1: Cover --
     if (!only) {
@@ -4342,12 +4692,11 @@ window.mfBenchmarkPerfFor = function(sub) {
     //   1. Pointers anchored to the LEFT CORNER (x = 0.25)
     //   2. Asset Allocation table BELOW the pointers (not alongside)
     if (!only) {
-      const s = pptx.addSlide();
-      applyMaster(s, "Portfolio Construct and Requirements", logoData);
+      const { s, bottom } = contentSlide("Portfolio Construct and Requirements", ["Disclaimer: Returns indicative, see final slide."]);
 
       // Section title
       s.addText("Portfolio Construct Thesis", {
-        x: 0.25, y: 1.05, w: 12.85, h: 0.4,
+        x: DS.X, y: DS.TOP, w: DS.CW, h: 0.4, margin: 0,
         fontFace: "Cambria", fontSize: 16, bold: true, italic: true, color: COL.gold
       });
 
@@ -4365,14 +4714,14 @@ window.mfBenchmarkPerfFor = function(sub) {
         options: { bullet: { code: "25CF" }, fontFace: "Cambria", fontSize: 13, color: COL.black, paraSpaceAfter: 4 }
       }));
       s.addText(bulletParas, {
-        x: 0.25, y: 1.5, w: 12.85, h: 2.4,
+        x: DS.X, y: DS.TOP + 0.45, w: DS.CW, h: 2.4,
         fontFace: "Cambria", fontSize: 13, color: COL.black, valign: "top"
       });
 
       // Asset Allocation table — placed BELOW the pointers
       const tableTopY = 4.05;
       s.addText("Asset Allocation Summary", {
-        x: 0.25, y: tableTopY, w: 12.85, h: 0.35,
+        x: DS.X, y: tableTopY, w: DS.CW, h: 0.35, margin: 0,
         fontFace: "Cambria", fontSize: 14, bold: true, italic: true, color: COL.gold
       });
 
@@ -4384,7 +4733,11 @@ window.mfBenchmarkPerfFor = function(sub) {
         acAgg[ac].pcs[pc] = (acAgg[ac].pcs[pc]||0) + sel.pct;
       }
       const acs = Object.keys(acAgg).sort((a,b)=>H.acIdx(a)-H.acIdx(b));
-      const cellOpts = {fontFace:"Cambria", fontSize:11, color:COL.black, align:"center", valign:"middle"};
+      // 11pt rows of 0.34"; with many product classes the rows tighten, then the text steps down to 9pt
+      const nRows = 2 + Math.max(...acs.map(a => Object.keys(acAgg[a].pcs).length), 1);
+      const aAvail = bottom - (tableTopY + 0.45);
+      const aPt = [11, 10, 9].find(p => nRows * (0.08 + lineH(p)) <= aAvail) || 9;
+      const cellOpts = {fontFace:"Cambria", fontSize:aPt, color:COL.black, align:"center", valign:"middle", margin:[0.04, 0.07, 0.04, 0.07]};
       const rows = [];
       // Row 1: Asset Class names
       rows.push(acs.map(a => ({
@@ -4411,24 +4764,20 @@ window.mfBenchmarkPerfFor = function(sub) {
         }
         rows.push(r);
       }
-      const colW = acs.length > 0 ? Array(acs.length).fill(12.85 / acs.length) : [12.85];
+      const colW = acs.length > 0 ? Array(acs.length).fill(DS.CW / acs.length) : [DS.CW];
+      const aH = rowHeights(rows, colW).map(h => Math.max(Math.min(0.34, aAvail / nRows), h));
       s.addTable(rows, {
-        x: 0.25, y: tableTopY + 0.45, w: 12.85,
-        colW, rowH: 0.34,
-        border: {type: "solid", pt: 0.5, color: "BFBFBF"}
+        x: DS.X, y: tableTopY + 0.45, w: DS.CW,
+        colW, rowH: aH, border: DS.BORDER
       });
-
-      s.addText("Disclaimer: Returns indicative, see final slide.", {
-        x: 0.25, y: 6.85, w: 12.85, h: 0.3,
-        fontFace: "Cambria", fontSize: 9, italic: true, color: "555555"
-      });
+      place(s, "table", DS.X, tableTopY + 0.45, DS.CW, aH.reduce((a, b) => a + b, 0), bottom);
     }
 
     // -- Slide: Net Asset Allocation (equity vs debt by allocated amount) --
     if (!only || only === 'netalloc') {
       const na = H.netAllocation(selected, corpus);
-      const s = pptx.addSlide();
-      applyMaster(s, "Net Asset Allocation", logoData);
+      const { s, bottom } = contentSlide("Net Asset Allocation",
+        ["Hybrid funds are split into equity and debt using their analytics equity holding. Commodity (Gold/Silver) is neither equity nor debt and is shown separately."]);
       const totalNZ = na.total > 0 ? na.total : 1;
       const eqP = na.equity / totalNZ * 100, dtP = na.debt / totalNZ * 100, coP = na.commodity / totalNZ * 100;
       // Summary cards
@@ -4471,14 +4820,16 @@ window.mfBenchmarkPerfFor = function(sub) {
       bd.forEach(r => { if (r[1] > 0.0001) rowsBk.push([cell(r[0], "left"), cell(dAmt(r[1]), "right"), cell((r[1] / totalNZ * 100).toFixed(2) + "%", "right")]); });
       const totOpt = al => ({ fontFace: "Cambria", fontSize: 11, bold: true, color: COL.black, fill: { color: COL.tan }, align: al, valign: "middle" });
       rowsBk.push([{ text: "TOTAL", options: totOpt("left") }, { text: dAmt(na.total), options: totOpt("right") }, { text: "100.00%", options: totOpt("right") }]);
-      s.addTable(rowsBk, { x: 0.4, y: 3.8, w: 12.5, colW: [7.5, 2.5, 2.5], border: { type: "solid", pt: 0.5, color: "BFBFBF" }, rowH: 0.34 });
-      s.addText("Hybrid funds are split into equity and debt using their analytics equity holding. Commodity (Gold/Silver) is neither equity nor debt and is shown separately.",
-        { x: 0.4, y: 6.95, w: 12.5, h: 0.3, fontFace: "Cambria", fontSize: 9, italic: true, color: "555555" });
+      const bkW = [7.5, 2.5, 2.5], bkH = rowHeights(rowsBk, bkW).map(h => Math.max(0.34, h));
+      s.addTable(rowsBk, { x: 0.4, y: 3.8, w: 12.5, colW: bkW, border: DS.BORDER, rowH: bkH });
+      place(s, "table", 0.4, 3.8, 12.5, bkH.reduce((a, b) => a + b, 0), bottom);
     }
 
-    // -- Rationale slides — SINGLE COMPONENT per slide (per spec).
-    // Splits across multiple slides only when content overflows, but each slide is
-    // ONE rich-text `addText()` call (no separate boxes per heading or per row).
+    // -- Rationale slides — one card per sub-category in a two-column grid, in asset-class order, each
+    // card tagged with its asset class. The rationale text is shown exactly as held in
+    // window.RATIONALE; its "Provides the investor with …" sentence starts a second paragraph with that
+    // lead-in in bold. The largest text size at which every card fits one slide is used; otherwise the
+    // cards continue on further slides.
     if (!only || only === 'rationale') {
       const subMap = {};
       for (const sel of selected) {
@@ -4486,80 +4837,80 @@ window.mfBenchmarkPerfFor = function(sub) {
         subMap[ac] = subMap[ac] || new Set();
         subMap[ac].add(sc);
       }
-      // Flatten into grouped order: [{ac, scs}]
-      const groups = [];
+      const cards = [];
       for (const ac of Object.keys(subMap).sort((a,b)=>H.acIdx(a)-H.acIdx(b))) {
-        groups.push({ ac, scs: [...subMap[ac]] });
+        for (const sc of subMap[ac]) cards.push({ ac, sc });
       }
-
-      // Build a single sequence of paragraphs (AC heading + one paragraph per SC).
-      // Then page-break by total estimated lines (≈ 24 lines per slide at 11pt).
-      // The whole sequence is rendered with ONE addText() call per page.
-      const paras = [];   // each entry is one paragraph object array
-      for (const g of groups) {
-        // AC heading paragraph (gold, bold, slightly larger)
-        paras.push([{
-          text: g.ac.toUpperCase(),
-          options: { bold: true, fontFace: "Cambria", fontSize: 14, color: COL.gold, paraSpaceBefore: 8, paraSpaceAfter: 4 }
-        }]);
-        for (const sc of g.scs) {
-          const desc = window.RATIONALE[sc] || "—";
-          paras.push([
-            { text: sc + " — ", options: { bold: true, fontFace: "Cambria", fontSize: 11, color: COL.black, bullet: { code: "25CF" } } },
-            { text: desc,        options: {            fontFace: "Cambria", fontSize: 11, color: "333333" } }
-          ]);
-        }
-      }
-
-      // Page-break — each rationale paragraph averages ~2 lines + an AC heading is 1 line.
-      // 25 lines per slide is comfortable; bullets count as their visible lines.
-      const LINES_PER_SLIDE = 26;
-      const estLines = (para) => {
-        const txt = para.map(p => p.text).join("");
-        return Math.max(1, Math.ceil(txt.length / 110));
+      const LEAD = "Provides the investor with";
+      const split = desc => {
+        const i = desc.indexOf(LEAD);
+        return i > 0 ? [desc.slice(0, i).trim(), desc.slice(i)] : [desc];
       };
-      const pages = [];
-      let curr = []; let lines = 0;
-      for (const p of paras) {
-        const l = estLines(p);
-        if (lines + l > LINES_PER_SLIDE && curr.length > 0) {
-          pages.push(curr);
-          curr = []; lines = 0;
+      const GUT = 0.25, cardW = (DS.CW - GUT) / 2, PAD = 0.12, ACC = 0.06;
+      const textW = cardW - ACC - 2 * PAD;
+      const PARA = 4 / 72, TAG = 8.5;                         // 4pt before each body paragraph; tag size
+      const cardH = (c, pt) => {
+        const paras = split(window.RATIONALE[c.sc] || "—");
+        let h = 2 * 0.1 + lineH(TAG) + TXT.lines(c.sc, textW, pt + 1.5, true) * lineH(pt + 1.5);
+        paras.forEach((p, k) => { h += PARA + TXT.lines(p, textW, pt, k === 1) * lineH(pt); });
+        return h;
+      };
+      const RGAP = 0.16;
+      const layoutAt = pt => {               // rows of up to two cards
+        const items = [];
+        for (let i = 0; i < cards.length; i += 2) {
+          const pair = cards.slice(i, i + 2);
+          items.push({ cards: pair, h: Math.max(...pair.map(c => cardH(c, pt))) });
         }
-        curr.push(p);
-        lines += l;
-      }
-      if (curr.length) pages.push(curr);
-
-      pages.forEach((page, idx) => {
-        const s = pptx.addSlide();
-        const title = pages.length > 1
-          ? `Investment Options Rationale (${idx+1}/${pages.length})`
-          : "Investment Options Rationale";
-        applyMaster(s, title, logoData);
-
-        // Flatten paragraphs into a single rich-text array
-        const richText = [];
-        page.forEach((para, pi) => {
-          para.forEach((run, ri) => {
-            // Mark the first run of each paragraph with break flag so each paragraph is a new line
-            const opt = Object.assign({}, run.options);
-            if (ri === 0 && pi > 0) opt.breakLine = true;
-            richText.push({ text: run.text, options: opt });
-          });
+        return items;
+      };
+      const fb0 = footerBlock([], null);
+      const avail = fb0.bottom - DS.TOP;
+      const total = items => items.reduce((a, it, i) => a + it.h + (i ? RGAP : 0), 0);
+      let pt = null, items = null;
+      for (const p of [12, 11.5, 11, 10.5]) { const it = layoutAt(p); if (total(it) <= avail) { pt = p; items = it; break; } }
+      let pages;
+      if (pt) pages = [items];
+      else {
+        pt = 10.5; items = layoutAt(pt); pages = []; let cur = [], used = 0;
+        items.forEach(it => {
+          const add = (cur.length ? RGAP : 0) + it.h;
+          if (cur.length && used + add > avail) { pages.push(cur); cur = []; used = 0; }
+          used += (cur.length ? RGAP : 0) + it.h; cur.push(it);
         });
-
-        // ONE single addText call holds the entire rationale block — exactly one component on the slide.
-        s.addText(richText, {
-          x: 0.25, y: 1.05, w: 12.85, h: 6.0,
-          fontFace: "Cambria", color: COL.black, valign: "top",
-          fill: { color: "FFFFFF" }, line: { color: "E1DBD0", width: 0.75 },
-          margin: 12
+        if (cur.length) pages.push(cur);
+      }
+      pages.forEach((page, idx) => {
+        const { s, bottom } = contentSlide(pageTitle("Investment Options Rationale", idx, pages.length));
+        let y = DS.TOP;
+        page.forEach((it, i) => {
+          if (i) y += RGAP;
+          it.cards.forEach((c, k) => {
+            const sc = c.sc;
+            const x = DS.X + k * (cardW + GUT);
+            s.addShape("rect", { x, y, w: cardW, h: it.h, fill: { color: COL.card }, line: { color: COL.cardLine, width: 0.75 } });
+            s.addShape("rect", { x, y, w: ACC, h: it.h, fill: { color: COL.gold }, line: { color: COL.gold } });
+            const paras = split(window.RATIONALE[sc] || "—");
+            const runs = [{ text: c.ac.toUpperCase(), options: { fontFace: "Cambria", fontSize: TAG, bold: true, color: COL.gold, breakLine: true } },
+              { text: sc, options: { fontFace: "Cambria", fontSize: pt + 1.5, bold: true, color: COL.black, breakLine: true } }];
+            paras.forEach((p, n) => {
+              const last = n === paras.length - 1;
+              if (n === 1) {
+                runs.push({ text: LEAD, options: { fontFace: "Cambria", fontSize: pt, bold: true, color: COL.black, paraSpaceBefore: 4 } });
+                runs.push({ text: p.slice(LEAD.length), options: { fontFace: "Cambria", fontSize: pt, color: COL.ink, breakLine: !last } });
+              } else {
+                runs.push({ text: p, options: { fontFace: "Cambria", fontSize: pt, color: COL.ink, paraSpaceBefore: 4, breakLine: !last } });
+              }
+            });
+            s.addText(runs, { x: x + ACC + PAD, y: y + 0.1, w: textW, h: it.h - 0.2, margin: 0, valign: "top", fontFace: "Cambria" });
+            place(s, "card", x, y, cardW, it.h, bottom);
+          });
+          y += it.h;
         });
       });
     }
 
-    // -- Slide: Investment Option table (hierarchical)
+    // -- Slide: Investment Option table (hierarchical) — measured, fitted, continued when needed
     if (!only || only === 'proposal') {
       const sorted = H.sortFundsByTaxonomy(selected.map(x=>x.fund)).map(f=>selected.find(x=>x.fund===f));
       const groups = {};
@@ -4570,246 +4921,187 @@ window.mfBenchmarkPerfFor = function(sub) {
         groups[ac][pc][sc] = groups[ac][pc][sc] || [];
         groups[ac][pc][sc].push(sel);
       }
-
-      // ----- cell builder -----
-      // CENTRE alignment for everything (numbers, fund names, strategy, etc.)
-      // LEFT alignment + 0.2cm left margin (≈ 0.08") for ASSET CLASS and PRODUCT CLASS header rows.
-      const LEFT_MARGIN_IN = 0.08;  // 0.2 cm
-      const cellC = (txt, fill, bold=false, color=COL.black) =>
-        ({text: String(txt), options:{fontFace:"Cambria", fontSize:9, fill:{color:fill}, bold, color, align:"center", valign:"middle"}});
-      const cellL = (txt, fill, bold=false, color=COL.black) =>
-        ({text: String(txt), options:{fontFace:"Cambria", fontSize:9, fill:{color:fill}, bold, color, align:"left", valign:"middle", margin: [0.02, 0.02, 0.02, LEFT_MARGIN_IN]}});
-
-      // ----- header builder (two-row) -----
-      const headerOpts = {fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white, align:"center", valign:"middle"};
-      const makeHdrRows = () => ([
-        [
-          {text:"Tenure",       options: {...headerOpts, rowspan: 2}},
-          {text:"Instruments",  options: {...headerOpts, rowspan: 2}},
-          {text:"Amount (" + uParen + ")", options: {...headerOpts, rowspan: 2}},
-          {text:"% Total",      options: {...headerOpts, rowspan: 2}},
-          {text:"Expected Pre-Tax IRR", options: {...headerOpts, colspan: 2}},
-          {text:"3Y",           options: {...headerOpts, rowspan: 2}},
-          {text:"5Y",           options: {...headerOpts, rowspan: 2}},
-          {text:"Strategy",     options: {...headerOpts, rowspan: 2}},
-          {text:"Maturity/Exit",options: {...headerOpts, rowspan: 2}}
-        ],
-        [
-          {text:"Low",  options: headerOpts},
-          {text:"High", options: headerOpts}
-        ]
-      ]);
-
       // ----- compute weighted returns for AC / PC / SC / Total -----
       const rollup = H.rollupReturns ? H.rollupReturns(selected) : null;
       const wr = (agg, key) => (agg && agg[key] != null) ? fmtPct(agg[key]) : "";
+      const totPct = rollup ? rollup.total.pct : selected.reduce((s,x)=>s+x.pct,0);
+      const tot = rollup ? rollup.total : { irr_low:null, irr_high:null, r3y:null, r5y:null };
 
-      // ----- build body rows -----
-      const bodyRows = [];
-      const blankCell = (fill) => cellC("", fill);
-      for (const ac of Object.keys(groups)) {
-        const acPct = Object.values(groups[ac]).flatMap(o=>Object.values(o)).flat().reduce((s,x)=>s+x.pct,0);
-        const acAgg = rollup && rollup.byAC[ac] ? rollup.byAC[ac].agg : null;
-        // ASSET CLASS row — ac text in Tenure col, LEFT-aligned with 0.2cm margin, weighted IRR/3Y/5Y filled
-        bodyRows.push([
-          cellL(ac.toUpperCase(), COL.greyM, true),
-          blankCell(COL.greyM),
-          cellC(dAmt(corpus*acPct/100), COL.greyM, true),
-          cellC(acPct.toFixed(2)+"%", COL.greyM, true),
-          cellC(wr(acAgg,'irr_low'), COL.greyM, true),
-          cellC(wr(acAgg,'irr_high'), COL.greyM, true),
-          cellC(wr(acAgg,'r3y'), COL.greyM, true),
-          cellC(wr(acAgg,'r5y'), COL.greyM, true),
-          blankCell(COL.greyM), blankCell(COL.greyM)
-        ]);
-        for (const pc of Object.keys(groups[ac])) {
-          const pcPct = Object.values(groups[ac][pc]).flat().reduce((s,x)=>s+x.pct,0);
-          const pcAgg = rollup && rollup.byAC[ac] && rollup.byAC[ac].byPC[pc] ? rollup.byAC[ac].byPC[pc].agg : null;
-          // PRODUCT CLASS row
-          bodyRows.push([
-            blankCell(COL.tan),
-            cellL(pc, COL.tan, true),
-            cellC(dAmt(corpus*pcPct/100), COL.tan, true),
-            cellC(pcPct.toFixed(2)+"%", COL.tan, true),
-            cellC(wr(pcAgg,'irr_low'), COL.tan, true),
-            cellC(wr(pcAgg,'irr_high'), COL.tan, true),
-            cellC(wr(pcAgg,'r3y'), COL.tan, true),
-            cellC(wr(pcAgg,'r5y'), COL.tan, true),
-            blankCell(COL.tan), blankCell(COL.tan)
-          ]);
-          for (const sc of Object.keys(groups[ac][pc])) {
-            const scList = groups[ac][pc][sc];
-            const scPct = scList.reduce((s,x)=>s+x.pct,0);
-            const scAgg = rollup && rollup.byAC[ac] && rollup.byAC[ac].byPC[pc] && rollup.byAC[ac].byPC[pc].bySC[sc]
-              ? rollup.byAC[ac].byPC[pc].bySC[sc] : null;
-            // SUB-CATEGORY row
-            bodyRows.push([
-              blankCell(COL.greyL),
-              cellL("    " + sc, COL.greyL, true),
-              cellC(dAmt(corpus*scPct/100), COL.greyL, true),
-              cellC(scPct.toFixed(2)+"%", COL.greyL, true),
-              cellC(wr(scAgg,'irr_low'), COL.greyL, true),
-              cellC(wr(scAgg,'irr_high'), COL.greyL, true),
-              cellC(wr(scAgg,'r3y'), COL.greyL, true),
-              cellC(wr(scAgg,'r5y'), COL.greyL, true),
-              blankCell(COL.greyL), blankCell(COL.greyL)
-            ]);
-            for (const sel of scList) {
-              const f = sel.fund;
-              const strat = sel.strategy || H.defaultStrategy(f);
-              const tenure = H.tenureFor(f);
-              bodyRows.push([
-                cellC(tenure, COL.white),
-                cellC(f.name, COL.white),
-                cellC(dAmt(corpus*sel.pct/100), COL.white),
-                cellC(sel.pct.toFixed(2)+"%", COL.white),
-                cellC(fmtPct(f.irr_low), COL.white),
-                cellC(fmtPct(f.irr_high), COL.white),
-                cellC(fmtPct(H.effectiveReturn(f,'r3y')), COL.white),
-                cellC(fmtPct(H.effectiveReturn(f,'r5y')), COL.white),
-                cellC(strat, COL.white),
-                cellC(f.exit_load || "—", COL.white)
-              ]);
+      // CENTRE alignment for everything (numbers, fund names, strategy, etc.); LEFT alignment with a
+      // 0.1" indent for the ASSET CLASS and PRODUCT CLASS heading rows.
+      const build = pt => {
+        const cellC = (txt, fill, bold=false, color=COL.black) =>
+          ({text: String(txt), options:{fontFace:"Cambria", fontSize:pt, fill:{color:fill}, bold, color, align:"center", valign:"middle"}});
+        const cellL = (txt, fill, bold=false, color=COL.black) =>
+          ({text: String(txt), options:{fontFace:"Cambria", fontSize:pt, fill:{color:fill}, bold, color, align:"left", valign:"middle", margin:[0.04, 0.05, 0.04, 0.1]}});
+        const blankCell = fill => cellC("", fill);
+        const headerOpts = {fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.black}, color:COL.white, align:"center", valign:"middle"};
+        const H1 = (t, o) => ({ text: t, options: { ...headerOpts, ...o }, _wrap: true });
+        const header = [
+          [
+            H1("Tenure", {rowspan: 2}), H1("Instruments", {rowspan: 2}), H1("Amount (" + uParen + ")", {rowspan: 2}),
+            H1("% Total", {rowspan: 2}), H1("Expected Pre-Tax IRR", {colspan: 2}), H1("3Y", {rowspan: 2}),
+            H1("5Y", {rowspan: 2}), H1("Strategy", {rowspan: 2}), H1("Maturity/Exit", {rowspan: 2})
+          ],
+          [ H1("Low"), H1("High") ]
+        ];
+        const sumRow = (label, labelCell, fill, amtPct, agg) => [
+          labelCell[0], labelCell[1],
+          cellC(dAmt(corpus*amtPct/100), fill, true), cellC(amtPct.toFixed(2)+"%", fill, true),
+          cellC(wr(agg,'irr_low'), fill, true), cellC(wr(agg,'irr_high'), fill, true),
+          cellC(wr(agg,'r3y'), fill, true), cellC(wr(agg,'r5y'), fill, true),
+          blankCell(fill), blankCell(fill)
+        ];
+        const body = [];
+        for (const ac of Object.keys(groups)) {
+          const acPct = Object.values(groups[ac]).flatMap(o=>Object.values(o)).flat().reduce((s,x)=>s+x.pct,0);
+          const acAgg = rollup && rollup.byAC[ac] ? rollup.byAC[ac].agg : null;
+          body.push({ level: 0, label: ac.toUpperCase(), cells: sumRow(ac, [cellL(ac.toUpperCase(), COL.greyM, true), blankCell(COL.greyM)], COL.greyM, acPct, acAgg) });
+          for (const pc of Object.keys(groups[ac])) {
+            const pcPct = Object.values(groups[ac][pc]).flat().reduce((s,x)=>s+x.pct,0);
+            const pcAgg = rollup && rollup.byAC[ac] && rollup.byAC[ac].byPC[pc] ? rollup.byAC[ac].byPC[pc].agg : null;
+            body.push({ level: 1, label: pc, cells: sumRow(pc, [blankCell(COL.tan), cellL(pc, COL.tan, true)], COL.tan, pcPct, pcAgg) });
+            for (const sc of Object.keys(groups[ac][pc])) {
+              const scList = groups[ac][pc][sc];
+              const scPct = scList.reduce((s,x)=>s+x.pct,0);
+              const scAgg = rollup && rollup.byAC[ac] && rollup.byAC[ac].byPC[pc] && rollup.byAC[ac].byPC[pc].bySC[sc]
+                ? rollup.byAC[ac].byPC[pc].bySC[sc] : null;
+              body.push({ level: 2, label: sc, cells: sumRow(sc, [blankCell(COL.greyL), cellL("    " + sc, COL.greyL, true)], COL.greyL, scPct, scAgg) });
+              for (const sel of scList) {
+                const f = sel.fund;
+                const strat = sel.strategy || H.defaultStrategy(f);
+                body.push({ level: 3, cells: [
+                  cellC(H.tenureFor(f), COL.white),
+                  cellC(f.name, COL.white),
+                  cellC(dAmt(corpus*sel.pct/100), COL.white),
+                  cellC(sel.pct.toFixed(2)+"%", COL.white),
+                  cellC(fmtPct(f.irr_low), COL.white),
+                  cellC(fmtPct(f.irr_high), COL.white),
+                  cellC(fmtPct(H.effectiveReturn(f,'r3y')) + star(f, 'r3y'), COL.white),
+                  cellC(fmtPct(H.effectiveReturn(f,'r5y')) + star(f, 'r5y'), COL.white),
+                  cellC(strat, COL.white),
+                  cellC(f.exit_load || "—", COL.white)
+                ] });
+              }
             }
           }
         }
-      }
-      // Grand total row — weighted IRR/3Y/5Y of the FULL proposal (used on every slice)
-      const totPct = rollup ? rollup.total.pct : selected.reduce((s,x)=>s+x.pct,0);
-      const tot = rollup ? rollup.total : { irr_low:null, irr_high:null, r3y:null, r5y:null };
-      const blackBold = (txt, align="center") => ({text:txt, options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white, align}});
-      const grandTotalRow = [
-        {text:"GRAND TOTAL", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white, align:"left", margin:[0.02,0.02,0.02,LEFT_MARGIN_IN]}},
-        {text:"", options:{fill:{color:COL.black}}},
-        blackBold(dAmt(corpus*totPct/100)),
-        blackBold(totPct.toFixed(2)+"%"),
-        blackBold(fmtPct(tot.irr_low)),
-        blackBold(fmtPct(tot.irr_high)),
-        blackBold(fmtPct(tot.r3y)),
-        blackBold(fmtPct(tot.r5y)),
-        {text:"", options:{fill:{color:COL.black}}},
-        {text:"", options:{fill:{color:COL.black}}}
-      ];
-
-      // ----- split into multiple slides if needed -----
-      // Reserve room for header (2 rows) + grand total (1 row at every slide) = 3 fixed rows.
-      const MAX_BODY_ROWS_PER_SLIDE = 21;
-      const slices = [];
-      for (let i = 0; i < bodyRows.length; i += MAX_BODY_ROWS_PER_SLIDE) {
-        slices.push(bodyRows.slice(i, i + MAX_BODY_ROWS_PER_SLIDE));
-      }
-      if (slices.length === 0) slices.push([]);
-
-      // Append the FULL-PROPOSAL grand total to EVERY slice (per spec).
-      slices.forEach(sl => sl.push(grandTotalRow));
-
-      slices.forEach((slice, idx) => {
-        const s = pptx.addSlide();
-        const title = slices.length > 1 ? `Investment Option (${idx+1}/${slices.length})` : "Investment Option";
-        applyMaster(s, title, logoData);
-        const tableRows = [...makeHdrRows(), ...slice];
-        s.addTable(tableRows, {
-          x: 0.25, y: 1.0, w: 12.85,
-          colW: [0.7, 3.0, 0.85, 0.65, 0.85, 0.85, 0.7, 0.7, 1.5, 2.2],
-          border: {type:"solid", pt:0.5, color:"BFBFBF"},
-          rowH: 0.24
-        });
+        // Grand total row — weighted IRR/3Y/5Y of the FULL proposal (closes every page, PRD 9.2)
+        const blackBold = (txt, align="center") => ({text:txt, options:{fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.black}, color:COL.white, align, valign:"middle"}});
+        const sticky = [[
+          {text:"GRAND TOTAL", options:{fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.black}, color:COL.white, align:"left", valign:"middle", margin:[0.04, 0.05, 0.04, 0.1]}},
+          {text:"", options:{fontSize:pt, fill:{color:COL.black}}},
+          blackBold(dAmt(corpus*totPct/100)), blackBold(totPct.toFixed(2)+"%"),
+          blackBold(fmtPct(tot.irr_low)), blackBold(fmtPct(tot.irr_high)),
+          blackBold(fmtPct(tot.r3y)), blackBold(fmtPct(tot.r5y)),
+          {text:"", options:{fontSize:pt, fill:{color:COL.black}}}, {text:"", options:{fontSize:pt, fill:{color:COL.black}}}
+        ]];
+        return { header, body, sticky };
+      };
+      // The star note is decided by the rows themselves, so measure once to know whether it shows.
+      starUsed = false; build(9);
+      const notes = starUsed ? [STAR_NOTE] : [];
+      const fb = footerBlock(notes, null);
+      const plan = planTable({
+        cols: [{wrap:true, min:0.75}, {wrap:true, min:2.2, prefer:4.0}, {}, {}, {}, {}, {}, {}, {wrap:true, min:1.0, prefer:1.5}, {wrap:true, min:1.6}],
+        build, width: DS.CW, avail: fb.bottom - DS.TOP, sizes: [11, 10.5, 10, 9.5, 9, 8.5, 8], pagePt: 9, leaf: 3,
+        context: (labels, pt) => [{ text: labels.join("  ·  ") + "  (continued)", options: { colspan: 10, fontFace: "Cambria", fontSize: pt,
+          italic: true, color: COL.note, fill: { color: COL.white }, align: "left", valign: "middle", margin: [0.04, 0.05, 0.04, 0.1] } }]
+      });
+      plan.pages.forEach((page, idx) => {
+        const { s, bottom } = contentSlide(pageTitle("Investment Option", idx, plan.pages.length), notes);
+        drawTable(s, page, plan.colW, DS.X, DS.TOP);
+        place(s, "table", DS.X, DS.TOP, DS.CW, page.height, bottom);
       });
     }
 
+    // Two analytics panels share one grid: left 0.25–6.35, right 6.75–13.08.
+    const PL = { x: DS.X, w: 6.1 }, PR = { x: 6.75, w: DS.R - 6.75 };
+    const listTable = (rowsAt, cols, width, avail, sizes) => planTable({ cols, build: pt => ({ header: [rowsAt(pt)[0]], body: rowsAt(pt).slice(1).map(c => ({ level: 1, cells: c })), sticky: [] }),
+      width, avail, sizes: sizes || [9, 8.5, 8], pagePt: 8, leaf: 1 });
+
     // -- Equity Analytics --
     if ((!only || only === 'equity') && H.aggEquityScoped(selected, corpus).exposure_cr > 0) {
-      const s = pptx.addSlide();
-      applyMaster(s, "Portfolio Analytics — Equity", logoData);
       const eq = H.aggEquityScoped(selected, corpus);
-      // Section labels
-      s.addText("Top Market Cap", {x:0.52, y:1.0, w:5.76, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      const { s, bottom } = contentSlide("Portfolio Analytics — Equity", [], "Analytics as on " + (DD.analytics || "—"));
+      const top = DS.TOP, lh = (bottom - top - 2 * 0.36 - DS.GAP) / 2;
+      sectionTitle(s, "Top Market Cap", PL.x, top, PL.w);
       s.addChart(pptx.ChartType.bar, [{
         name: "Market Cap",
         labels: ["Large", "Mid", "Small", "Others"],
         values: ["Large","Mid","Small","Others"].map(k => parseFloat(eq.mcap[k].toFixed(2)))
-      }], {
-        ...PPT_CHART_OPTS,
-        x:0.52, y:1.39, w:5.76, h:2.31,
-        barDir:"col"
-      });
+      }], { ...PPT_CHART_OPTS, x: PL.x, y: top + 0.36, w: PL.w, h: lh, barDir: "col" });
+      place(s, "chart", PL.x, top + 0.36, PL.w, lh, bottom);
 
-      s.addText("Top Sectors", {x:0.52, y:3.78, w:5.76, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      const y2 = top + 0.36 + lh + DS.GAP;
+      sectionTitle(s, "Top Sectors", PL.x, y2, PL.w);
       // Smallest → largest so the horizontal bar chart displays largest at the bottom
       const topSec = eq.sectors.slice(0,10).slice().reverse();
       s.addChart(pptx.ChartType.bar, [{
         name: "Sectors",
         labels: topSec.map(x=>x[0]),
         values: topSec.map(x=>parseFloat(x[1].toFixed(2)))
-      }], {
-        ...PPT_CHART_OPTS,
-        x:0.52, y:4.16, w:5.76, h:2.63,
-        barDir:"bar",
-        catAxisLabelFontSize:8
-      });
+      }], { ...PPT_CHART_OPTS, x: PL.x, y: y2 + 0.36, w: PL.w, h: lh, barDir: "bar", catAxisLabelFontSize: 8 });
+      place(s, "chart", PL.x, y2 + 0.36, PL.w, lh, bottom);
 
-      s.addText("Top Underlying Holdings", {x:7.02, y:1.0, w:5.16, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      sectionTitle(s, "Top Underlying Holdings", PR.x, top, PR.w);
       const topSt = eq.stocks.slice(0,20);
-      const stockRows = [
-        [{text:"#", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white}},
-         {text:"Stock", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white}},
-         {text:"% Eq", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white, align:"right"}}]
-      ];
-      topSt.forEach(([n,v],i) => stockRows.push([
-        {text:String(i+1), options:{fontFace:"Cambria", fontSize:9, align:"center"}},
-        {text:n, options:{fontFace:"Cambria", fontSize:9}},
-        {text:v.toFixed(2)+"%", options:{fontFace:"Cambria", fontSize:9, align:"right"}}
-      ]));
-      s.addTable(stockRows, {x:7.02, y:1.43, w:5.96, colW:[0.4, 4.36, 1.2], border:{type:"solid", pt:0.5, color:"BFBFBF"}, rowH: 0.24});
-      s.addText("*Analytics as on " + window.DATA_DATES.analytics + ".", {x:7.0, y:6.85, w:6, h:0.3, fontFace:"Cambria", fontSize:9, italic:true, color:"555555"});
+      const hd = (t, al) => ({ text: t, options: { fontFace: "Cambria", fontSize: 9, bold: true, fill: { color: COL.black }, color: COL.white, align: al || "left", valign: "middle" } });
+      const rowsAt = pt => [[hd("#", "center"), hd("Stock"), hd("% Eq", "right")].map(c => ({ ...c, options: { ...c.options, fontSize: pt } })),
+        ...topSt.map(([n, v], i) => [
+          { text: String(i + 1), options: { fontFace: "Cambria", fontSize: pt, align: "center", valign: "middle" } },
+          { text: n, options: { fontFace: "Cambria", fontSize: pt, valign: "middle" } },
+          { text: v.toFixed(2) + "%", options: { fontFace: "Cambria", fontSize: pt, align: "right", valign: "middle" } }])];
+      const tp = listTable(rowsAt, [{}, { wrap: true, min: 3 }, {}], PR.w, bottom - top - 0.42);
+      drawTable(s, tp.pages[0], tp.colW, PR.x, top + 0.42);
+      place(s, "table", PR.x, top + 0.42, PR.w, tp.pages[0].height, bottom);
     }
 
     // -- Debt Analytics --
     if ((!only || only === 'debt') && H.aggDebtScoped(selected, corpus).exposure_cr > 0) {
-      const s = pptx.addSlide();
-      applyMaster(s, "Portfolio Analytics — Debt", logoData);
       const db = H.aggDebtScoped(selected, corpus);
-      s.addText("Top Issuer Types", {x:0.52, y:1.0, w:5.76, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      const notes = (db.skipped && db.skipped.length)
+        ? ["Not in the look-through (no holdings data held): " + db.skipped.join(", ") + "."] : [];
+      const { s, bottom } = contentSlide("Portfolio Analytics — Debt", notes, "Analytics as on " + (DD.analytics || "—"));
+      const top = DS.TOP, lh = (bottom - top - 2 * 0.36 - DS.GAP) / 2;
+      sectionTitle(s, "Top Issuer Types", PL.x, top, PL.w);
       // Smallest → largest for visual descending order in horizontal bar
       const topSec = db.sectors.slice(0,10).slice().reverse();
       s.addChart(pptx.ChartType.bar, [{
         name:"Sectors",
         labels: topSec.map(x=>x[0]),
         values: topSec.map(x=>parseFloat(x[1].toFixed(2)))
-      }], {
-        ...PPT_CHART_OPTS,
-        x:0.52, y:1.39, w:5.76, h:2.6,
-        catAxisLabelFontSize:8
-      });
+      }], { ...PPT_CHART_OPTS, x: PL.x, y: top + 0.36, w: PL.w, h: lh, catAxisLabelFontSize: 8 });
+      place(s, "chart", PL.x, top + 0.36, PL.w, lh, bottom);
 
-      s.addText("Credit Rating Distribution", {x:0.52, y:4.1, w:5.76, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      // Doughnut: the legend carries each bucket's share, so no label sits on a thin slice.
+      const y2 = top + 0.36 + lh + DS.GAP;
+      sectionTitle(s, "Credit Rating Distribution", PL.x, y2, PL.w);
       const ratingKeys = Object.keys(db.rating);
       s.addChart(pptx.ChartType.doughnut, [{
         name:"Rating",
-        labels: ratingKeys,
+        labels: ratingKeys.map(k => k + " — " + db.rating[k].toFixed(2) + "%"),
         values: ratingKeys.map(k=>parseFloat(db.rating[k].toFixed(2)))
       }], {
-        x:0.52, y:4.45, w:5.76, h:2.5,
+        x: PL.x, y: y2 + 0.36, w: PL.w, h: lh,
         chartColors: ratingKeys.map(k => (H.CREDIT_COLORS[k] || "#BFBFBF").slice(1)),
-        showLegend:true, legendPos:"r",
-        showValue:true, dataLabelFontSize:9, dataLabelFontFace:"Cambria",
-        dataLabelFormatCode:'0.00"%"',
-        catAxisLabelFontFace:"Cambria", valAxisLabelFontFace:"Cambria",
-        valGridLine:{style:"none"}, catGridLine:{style:"none"}
+        holeSize: 55, showLegend: true, legendPos: "r", legendFontFace: "Cambria", legendFontSize: 10,
+        showValue: false, showPercent: false, showLabel: false,
+        dataBorder: { pt: 1, color: "FFFFFF" }
       });
+      place(s, "chart", PL.x, y2 + 0.36, PL.w, lh, bottom);
 
-      s.addText("Top Issuers", {x:7.02, y:1.0, w:5.16, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
-      const issRows = [[
-        {text:"Issuer", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white}},
-        {text:"Rating", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white}},
-        {text:"%", options:{fontFace:"Cambria", fontSize:9, bold:true, fill:{color:COL.black}, color:COL.white, align:"right"}}
-      ]];
-      db.issuers.slice(0,18).forEach(([n,o]) => issRows.push([
-        {text:n, options:{fontFace:"Cambria", fontSize:9}},
-        {text:o.rating, options:{fontFace:"Cambria", fontSize:9}},
-        {text:o.pct.toFixed(2)+"%", options:{fontFace:"Cambria", fontSize:9, align:"right"}}
-      ]));
-      s.addTable(issRows, {x:7.02, y:1.43, w:5.96, colW:[3.4, 1.4, 1.16], border:{type:"solid", pt:0.5, color:"BFBFBF"}, rowH: 0.26});
+      sectionTitle(s, "Top Issuers", PR.x, top, PR.w);
+      const hd = (t, al) => ({ text: t, options: { fontFace: "Cambria", fontSize: 9, bold: true, fill: { color: COL.black }, color: COL.white, align: al || "left", valign: "middle" } });
+      const iss = db.issuers.slice(0,18);
+      const rowsAt = pt => [[hd("Issuer"), hd("Rating", "center"), hd("%", "right")].map(c => ({ ...c, options: { ...c.options, fontSize: pt } })),
+        ...iss.map(([n, o]) => [
+          { text: n, options: { fontFace: "Cambria", fontSize: pt, valign: "middle" } },
+          { text: o.rating, options: { fontFace: "Cambria", fontSize: pt, align: "center", valign: "middle" } },
+          { text: o.pct.toFixed(2) + "%", options: { fontFace: "Cambria", fontSize: pt, align: "right", valign: "middle" } }])];
+      const tp = listTable(rowsAt, [{ wrap: true, min: 3 }, {}, {}], PR.w, bottom - top - 0.42, [9.5, 9, 8.5, 8]);
+      drawTable(s, tp.pages[0], tp.colW, PR.x, top + 0.42);
+      place(s, "table", PR.x, top + 0.42, PR.w, tp.pages[0].height, bottom);
     }
 
     // -- Annexure divider (uploaded slide, native fallback) --
@@ -4824,7 +5116,9 @@ window.mfBenchmarkPerfFor = function(sub) {
       }
     }
 
-    // -- Fund Performance sheets per bucket --
+    // -- Fund Performance — one table per bucket. Buckets that fit together at a readable size share a
+    // slide (each under its own heading and as-on date); a bucket too long for one slide continues on
+    // its own slides. PMS and AIF are split by asset class and dated by DATA_DATES.pms (D82).
     if (!only || only === 'perf') {
     const buckets = {};
     for (const sel of selected) {
@@ -4833,147 +5127,155 @@ window.mfBenchmarkPerfFor = function(sub) {
       if (f.asset_class === "Equity" && ["Mutual Fund","Index Fund","ETF"].includes(f.product_class)) b = "Equity Mutual Funds";
       else if (f.asset_class === "Hybrid") b = "Hybrid Mutual Funds";
       else if (f.asset_class === "Debt" && f.product_class === "Mutual Fund") b = "Debt Mutual Funds";
-      else if (f.product_class === "PMS") b = "PMS — Equity";
-      else if (f.product_class === "AIF") b = "AIF";
+      else if (f.product_class === "PMS") b = "PMS — " + f.asset_class;
+      else if (f.product_class === "AIF") b = "AIF — " + f.asset_class;
       else if (f.product_class === "Direct Equity") b = "Listed Direct Equity";
       buckets[b] = buckets[b] || [];
       buckets[b].push(f);
     }
-    const bucketOrder = ["Equity Mutual Funds", "Hybrid Mutual Funds", "Debt Mutual Funds", "PMS — Equity", "AIF", "Listed Direct Equity", "Other"];
+    const bOrd = b => { const base = ["Equity Mutual Funds", "Hybrid Mutual Funds", "Debt Mutual Funds", "PMS", "AIF", "Listed Direct Equity", "Other"];
+      const i = base.indexOf(b.split(" — ")[0]); return i * 100 + (b.indexOf(" — ") > 0 ? H.acIdx(b.split(" — ")[1]) : 0); };
+    const bucketOrder = Object.keys(buckets).sort((a, b) => bOrd(a) - bOrd(b));
     // Allocation weight per fund name (% allocation) for the portfolio-weighted return row.
     const perfWt = {};
     selected.forEach(sl => { perfWt[sl.fund.name] = (perfWt[sl.fund.name] || 0) + sl.pct; });
-    for (const bn of bucketOrder) {
-      if (!buckets[bn] || buckets[bn].length === 0) continue;
-      const s = pptx.addSlide();
-      applyMaster(s, `Fund Performance — ${bn}`, logoData);
-      s.addText("Performance as on " + ((window.DATA_DATES && window.DATA_DATES.performance) || "—"),
-        { x: 7.13, y: 7.04, w: 6.0, h: 0.3, fontFace: "Cambria", fontSize: 11, italic: true, color: "555555", align: "right" });
-      const kind = bn === "Debt Mutual Funds" ? "debt" : bn === "PMS — Equity" ? "pms" : bn === "AIF" ? "aif" : "equity";
+    const MCAP = ["mcap_large", "mcap_mid", "mcap_small", "mcap_other"];
+    const blocks = bucketOrder.map(bn => {
+      const funds = buckets[bn];
+      const kind = bn === "Debt Mutual Funds" ? "debt" : bn.indexOf("PMS") === 0 ? "pms" : bn.indexOf("AIF") === 0 ? "aif" : "equity";
       const debtMode = kind === "debt";
-      const subs = {};
-      for (const f of buckets[bn]) {
-        subs[f.sub_category] = subs[f.sub_category] || [];
-        subs[f.sub_category].push(f);
-      }
-      const hOpt = {fontFace:"Cambria", fontSize:8, bold:true, fill:{color:COL.black}, color:COL.white, align:"center", valign:"middle"};
-      const cOpt = (fill="FFFFFF", bold=false, align="right") => ({fontFace:"Cambria", fontSize:8, bold, fill:{color:fill}, color:COL.black, align, valign:"middle"});
-      const cols = debtMode
-        ? ["Scheme","Inc.","AUM","1M","3M","6M","1Y","2Y","3Y","5Y","S.I.","YTM","Avg M","Mod D"]
-        : kind === "pms"
-        ? ["Scheme","Inc.","AUM","1M","3M","6M","1Y","2Y","3Y","5Y","SI","Large","Mid","Small","Others"]
-        : kind === "aif"
-        ? ["Scheme","Inc.","AUM","1M","3M","6M","1Y","3Y","5Y","SI","Large","Mid","Small","Others"]
-        : ["Scheme","Inc.","AUM","3M","6M","1Y","3Y","5Y","10Y","S.I.","Large","Mid","Small","Others"];
-      const rows = [cols.map(c=>({text:c, options:{...hOpt, fill:{color:COL.gold}}}))];
-      for (const sc of Object.keys(subs)) {
-        rows.push([{text:sc, options:{...cOpt(COL.greyL, true, "left"), colspan: cols.length}}]);
-        for (const f of subs[sc]) {
-          const vals = debtMode
-            ? [f.r1m, f.r3m, f.r6m, f.r1y, f.r2y, f.r3y, f.r5y, f.si, f.ytm, f.avg_maturity, f.mod_duration]
-            : kind === "pms"
-            ? [f.r1m, f.r3m, f.r6m, f.r1y, f.r2y, f.r3y, f.r5y, f.si, f.mcap_large, f.mcap_mid, f.mcap_small, f.mcap_other]
-            : kind === "aif"
-            ? [f.r1m, f.r3m, f.r6m, f.r1y, f.r3y, f.r5y, f.si, f.mcap_large, f.mcap_mid, f.mcap_small, f.mcap_other]
-            : [f.r3m, f.r6m, f.r1y, f.r3y, f.r5y, f.r10y, f.si, f.mcap_large, f.mcap_mid, f.mcap_small, f.mcap_other];
-          const row = [
-            {text: f.name, options: cOpt("FFFFFF", false, "left")},
-            {text: fmtFullDate(f.inception), options: cOpt()},
-            {text: f.aum != null ? f.aum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "—", options: cOpt()}
-          ];
-          vals.forEach((v,i) => {
-            let txt;
-            if (v == null) txt = "—";
-            else if (debtMode && i >= 9) txt = v.toFixed(2);
-            else txt = (v*100).toFixed(2) + "%";
-            row.push({text: txt, options: cOpt()});
-          });
-          rows.push(row);
-        }
-        // NSE MF benchmark rows with actual returns from MF Monitor
-        const mfBs = (window.mfBenchmarkPerfFor ? window.mfBenchmarkPerfFor(sc) : []);
-        if (mfBs.length > 0) {
-          for (const mb of mfBs) {
-            const mvals = debtMode
-              ? [mb.r1m, mb.r3m, mb.r6m, mb.r1y, mb.r2y, mb.r3y, mb.r5y, mb.si, null, null, null]
-              : [mb.r3m, mb.r6m, mb.r1y, mb.r3y, mb.r5y, mb.r10y, mb.si, null, null, null, null];
-            const mRow = [
-              {text: mb.name, options: {...cOpt(COL.bgYellow, true, "left"), italic:true, color:COL.brown}},
-              {text: "—", options: cOpt(COL.bgYellow)},
-              {text: "—", options: cOpt(COL.bgYellow)}
-            ];
-            mvals.forEach(v => {
-              const txt = (v == null || isNaN(v)) ? "—" : (v*100).toFixed(2) + "%";
-              mRow.push({text: txt, options: cOpt(COL.bgYellow)});
-            });
-            rows.push(mRow);
-          }
-        } else {
-          // Fallback: text-only benchmark
-          const benches = (window.benchmarksFor ? window.benchmarksFor(sc) : []);
-          const bArr = Array.isArray(benches) ? benches : [benches];
-          for (const b of bArr) {
-            if (!b) continue;
-            rows.push([{text:"Benchmark: " + b, options: {...cOpt(COL.bgYellow, true, "left"), italic:true, color:COL.brown, colspan: cols.length}}]);
-          }
-        }
-        // PMS benchmark performance rows
-        const pmsBs = (window.pmsBenchmarkPerfFor ? window.pmsBenchmarkPerfFor(sc) : []);
-        for (const pb of pmsBs) {
-          const pvals = kind === "pms"
-            ? [pb.r1m, pb.r3m, pb.r6m, pb.r1y, pb.r2y, pb.r3y, pb.r5y, pb.si, null, null, null, null]
-            : kind === "aif"
-            ? [pb.r1m, pb.r3m, pb.r6m, pb.r1y, pb.r3y, pb.r5y, pb.si, null, null, null, null]
-            : [pb.r3m, pb.r6m, pb.r1y, pb.r3y, pb.r5y, null, pb.si, null, null, null, null];
-          const pmsRow = [
-            {text: pb.name, options: {...cOpt(COL.bgYellow, true, "left"), italic:true, color:COL.brown}},
-            {text: "—", options: cOpt(COL.bgYellow)},
-            {text: "—", options: cOpt(COL.bgYellow)}
-          ];
-          pvals.forEach(v => {
-            const txt = (v == null || isNaN(v)) ? "—" : (v*100).toFixed(2) + "%";
-            pmsRow.push({text: txt, options: cOpt(COL.bgYellow)});
-          });
-          rows.push(pmsRow);
-        }
-      }
-      // Portfolio weighted-return row (by % allocation) — one weighted return per tenure column.
-      const wrkeys = kind === 'debt' ? ['r1m','r3m','r6m','r1y','r2y','r3y','r5y','si']
+      // Market-cap columns only where the bucket's data carries a split (none for debt PMS/AIF or bonds)
+      const mcapOn = !debtMode && funds.some(f => MCAP.some(k => f[k] != null));
+      const title = bn === "Other" && funds.every(f => f.product_class === "Bonds") ? "Direct Bonds" : bn;
+      const asOn = (kind === "pms" || kind === "aif") ? (DD.pms || "—") : (DD.performance || "—");
+      const retKeys = debtMode ? ['r1m','r3m','r6m','r1y','r2y','r3y','r5y','si']
         : kind === 'pms' ? ['r1m','r3m','r6m','r1y','r2y','r3y','r5y','si']
         : kind === 'aif' ? ['r1m','r3m','r6m','r1y','r3y','r5y','si']
         : ['r3m','r6m','r1y','r3y','r5y','r10y','si'];
-      const wdata = wrkeys.map(k => {
-        let acc = 0, w = 0;
-        for (const f of buckets[bn]) { const p = perfWt[f.name] || 0; const v = f[k]; if (p > 0 && v != null && !isNaN(v)) { acc += v * p; w += p; } }
-        return w > 0 ? acc / w : null;
+      const retLbl = { r1m: "1M", r3m: "3M", r6m: "6M", r1y: "1Y", r2y: "2Y", r3y: "3Y", r5y: "5Y", r10y: "10Y", si: kind === "pms" || kind === "aif" ? "SI" : "S.I." };
+      // [field, header, shown as a % (decimal x 100) or as a plain number of years]
+      const extra = debtMode ? [["ytm", "YTM", true], ["avg_maturity", "Avg M", false], ["mod_duration", "Mod D", false]]
+        : mcapOn ? [["mcap_large", "Large", true], ["mcap_mid", "Mid", true], ["mcap_small", "Small", true], ["mcap_other", "Others", true]] : [];
+      const ncol = 3 + retKeys.length + extra.length;
+      const subs = {};
+      for (const f of funds) { subs[f.sub_category] = subs[f.sub_category] || []; subs[f.sub_category].push(f); }
+      const build = pt => {
+        const hOpt = {fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.gold}, color:COL.white, align:"center", valign:"middle"};
+        const cOpt = (fill="FFFFFF", bold=false, align="right") => ({fontFace:"Cambria", fontSize:pt, bold, fill:{color:fill}, color:COL.black, align, valign:"middle"});
+        const pctTxt = v => (v == null || isNaN(v)) ? "—" : (v*100).toFixed(2) + "%";
+        const header = [["Scheme", "Inc.", "AUM", ...retKeys.map(k => retLbl[k]), ...extra.map(e => e[1])].map(c => ({ text: c, options: hOpt, _wrap: true }))];
+        const body = [];
+        const benchRow = (name, vals) => {
+          const r = [{ text: name, options: { ...cOpt(COL.bgYellow, true, "left"), italic: true, color: COL.brown } },
+            { text: "—", options: cOpt(COL.bgYellow) }, { text: "—", options: cOpt(COL.bgYellow) }];
+          for (let j = 0; j < ncol - 3; j++) r.push({ text: pctTxt(j < vals.length ? vals[j] : null), options: cOpt(COL.bgYellow) });
+          return r;
+        };
+        for (const sc of Object.keys(subs)) {
+          body.push({ level: 0, label: sc, cells: [{ text: sc, options: { ...cOpt(COL.greyL, true, "left"), colspan: ncol } }] });
+          for (const f of subs[sc]) {
+            const row = [
+              { text: f.name, options: cOpt("FFFFFF", false, "left") },
+              { text: fmtFullDate(f.inception), options: cOpt() },
+              { text: f.aum != null ? f.aum.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : "—", options: cOpt() }
+            ];
+            retKeys.forEach(k => row.push({ text: pctTxt(f[k]) + (f[k] != null ? star(f, k) : ""), options: cOpt() }));
+            extra.forEach(([k, , pc]) => { const v = f[k]; row.push({ text: v == null ? "—" : pc ? (v*100).toFixed(2) + "%" : v.toFixed(2), options: cOpt() }); });
+            body.push({ level: 1, cells: row });
+          }
+          // NSE MF benchmark rows with actual returns from MF Monitor
+          const mfBs = (window.mfBenchmarkPerfFor ? window.mfBenchmarkPerfFor(sc) : []);
+          if (mfBs.length > 0) {
+            for (const mb of mfBs) body.push({ level: 1, cells: benchRow(mb.name, retKeys.map(k => k === 'r2y' && !debtMode ? null : mb[k])) });
+          } else {
+            // Fallback: text-only benchmark
+            const benches = (window.benchmarksFor ? window.benchmarksFor(sc) : []);
+            const bArr = Array.isArray(benches) ? benches : [benches];
+            for (const b of bArr) {
+              if (!b) continue;
+              body.push({ level: 1, cells: [{ text: "Benchmark: " + b, options: { ...cOpt(COL.bgYellow, true, "left"), italic: true, color: COL.brown, colspan: ncol } }] });
+            }
+          }
+          // PMS benchmark performance rows
+          const pmsBs = (window.pmsBenchmarkPerfFor ? window.pmsBenchmarkPerfFor(sc) : []);
+          for (const pb of pmsBs) body.push({ level: 1, cells: benchRow(pb.name, retKeys.map(k => kind === "equity" && k === 'r10y' ? null : pb[k])) });
+        }
+        // Portfolio weighted-return row (by % allocation) — one weighted return per tenure column.
+        const wdata = retKeys.map(k => {
+          let acc = 0, w = 0;
+          for (const f of funds) { const p = perfWt[f.name] || 0; const v = f[k]; if (p > 0 && v != null && !isNaN(v)) { acc += v * p; w += p; } }
+          return w > 0 ? acc / w : null;
+        });
+        const wRow = [{ text: "Portfolio Weighted (by % allocation)", options: cOpt(COL.tan, true, "left") },
+          { text: "—", options: cOpt(COL.tan, true) }, { text: "—", options: cOpt(COL.tan, true) }];
+        for (let j = 0; j < ncol - 3; j++) wRow.push({ text: pctTxt(j < wdata.length ? wdata[j] : null), options: cOpt(COL.tan, true) });
+        return { header, body, sticky: [wRow] };
+      };
+      const cols = [{ wrap: true, min: 2.4, prefer: 4.6 }, {}, {}, ...Array(ncol - 3).fill(0).map(() => ({}))];
+      return { bn: title, asOn, build, cols };
+    });
+    // the star note shows when any cell carries a star
+    starUsed = false; blocks.forEach(b => b.build(9));
+    const perfNotes = starUsed ? [STAR_NOTE] : [];
+    if (blocks.length) {
+      const fbS = footerBlock(perfNotes, null), fbP = footerBlock(perfNotes, "x");
+      const HEAD = 0.4;                                    // block heading + gap above its table
+      const SIZES = [11, 10.5, 10, 9.5, 9, 8.5];
+      const measure = (b, pt) => {
+        b.memo = b.memo || {};
+        if (b.memo[pt] !== undefined) return b.memo[pt];
+        const bb = b.build(pt); const rows = [...bb.header, ...bb.body.map(x => x.cells), ...bb.sticky];
+        const colW = columnWidths(b.cols, rows, DS.CW);
+        const h = colW ? rowHeights(rows, colW) : null;
+        return (b.memo[pt] = colW ? { pt, colW, page: { rows, heights: h, height: sum(h) } } : null);
+      };
+      const fits = (grp, pt, avail) => { let tot = 0; for (let i = 0; i < grp.length; i++) { const m = measure(grp[i], pt); if (!m) return null;
+        tot += m.page.height + (grp.length > 1 ? HEAD : 0) + (i ? DS.GAP : 0); } return tot <= avail + 0.001; };
+      // Greedy grouping: add the next bucket while the group still fits one slide at >= 8.5pt.
+      const slides = [];
+      let grp = [];
+      blocks.forEach(b => {
+        const cand = [...grp, b];
+        const avail = (cand.length > 1 ? fbS.bottom : fbP.bottom) - DS.TOP;
+        if (SIZES.some(pt => fits(cand, pt, avail))) { grp = cand; return; }
+        if (grp.length) slides.push(grp);
+        grp = [b];
       });
-      const wRow = [
-        {text: "Portfolio Weighted (by % allocation)", options: cOpt(COL.tan, true, "left")},
-        {text: "—", options: cOpt(COL.tan, true)},
-        {text: "—", options: cOpt(COL.tan, true)}
-      ];
-      for (let j = 0; j < cols.length - 3; j++) {
-        const v = j < wdata.length ? wdata[j] : null;
-        const txt = (v == null || isNaN(v)) ? "—" : (v * 100).toFixed(2) + "%";
-        wRow.push({text: txt, options: cOpt(COL.tan, true)});
-      }
-      rows.push(wRow);
-      const _dataCount = cols.length - 3;
-      const colW = debtMode
-        ? [3.2, 0.55, 0.7, ...Array(_dataCount).fill(0.65)]
-        : [3.2, 0.55, 0.7, ...Array(_dataCount - 4).fill(0.65), ...Array(4).fill(0.85)];
-      // shrink colW to fit 12.85
-      const sum = colW.reduce((a,b)=>a+b,0);
-      const scale = 12.85 / sum;
-      const finalCols = colW.map(c => c*scale);
-      s.addTable(rows, {x:0.25, y:1.0, w:12.85, colW: finalCols, border:{type:"solid", pt:0.4, color:"BFBFBF"}, rowH: 0.24});
+      if (grp.length) slides.push(grp);
+      slides.forEach(g => {
+        if (g.length === 1) {
+          const b = g[0];
+          const fb = footerBlock(perfNotes, "Performance as on " + b.asOn);
+          const plan = planTable({ cols: b.cols, build: b.build, width: DS.CW, avail: fb.bottom - DS.TOP, sizes: [11, 10.5, 10, 9.5, 9, 8.5, 8], pagePt: 9, leaf: 1,
+            context: (labels, pt) => [{ text: labels.join("  ·  ") + "  (continued)", options: { colspan: b.cols.length, fontFace: "Cambria", fontSize: pt,
+              italic: true, color: COL.note, fill: { color: COL.white }, align: "left", valign: "middle" } }] });
+          plan.pages.forEach((page, idx) => {
+            const { s, bottom } = contentSlide(pageTitle(`Fund Performance — ${b.bn}`, idx, plan.pages.length), perfNotes, "Performance as on " + b.asOn);
+            drawTable(s, page, plan.colW, DS.X, DS.TOP);
+            place(s, "table", DS.X, DS.TOP, DS.CW, page.height, bottom);
+          });
+          return;
+        }
+        const avail = fbS.bottom - DS.TOP;
+        const pt = SIZES.find(p => fits(g, p, avail));
+        const { s, bottom } = contentSlide("Fund Performance", perfNotes);
+        let y = DS.TOP;
+        g.forEach((b, i) => {
+          if (i) y += DS.GAP;
+          sectionTitle(s, b.bn, DS.X, y, DS.CW, "Performance as on " + b.asOn);
+          const m = measure(b, pt);
+          drawTable(s, m.page, m.colW, DS.X, y + HEAD);
+          place(s, "table", DS.X, y + HEAD, DS.CW, m.page.height, bottom);
+          y += HEAD + m.page.height;
+        });
+      });
     }
     } // end perf section
 
     // -- Portfolio Matrix — risk-reward ratios + 3Y rolling + blended returns --
     if ((!only || only === 'matrix') && selected.length > 0) {
       const RM = window.RISK_MATRIX || {};
-      const mAsOn = (window.DATA_DATES && window.DATA_DATES.riskMatrix) || "30 Jun 2026";
+      const mAsOn = DD.riskMatrix || "30 Jun 2026";
       const MCOLS = [
         {k:"rr", label:"3Y Roll", suf:"%", dp:2, red:true},
         {k:"be", label:"Beta", suf:"", dp:2, red:false},
@@ -4985,121 +5287,157 @@ window.mfBenchmarkPerfFor = function(sub) {
         {k:"ir", label:"Info Rt", suf:"", dp:2, red:true},
         {k:"dc", label:"Dn Cap", suf:"%", dp:1, red:false}
       ];
-      const s = pptx.addSlide();
-      applyMaster(s, "Portfolio Matrix — Risk-Reward & 3Y Rolling Return", logoData);
-      s.addText("Risk data as on " + mAsOn, {x:7.13, y:7.04, w:6.0, h:0.3, fontFace:"Cambria", fontSize:11, italic:true, color:"555555", align:"right"});
       const ordered = (H.orderSelected ? H.orderSelected(selected).map(x=>x.s) : selected);
-      // C17: with a flagged fund the † footnote sits at y 6.72, and a long table (about 22+ funds) ran
-      // into it. Rows, fonts and cell margins then shrink by one factor (floor 0.6) until the estimated
-      // table ends above the note; a name wraps in the 3.0" column at about 0.5 em a character.
-      // Without a flagged fund the slide is unchanged.
-      const NOTE_Y = 6.72;
-      let mk = 1;
-      if (ordered.some(sel => H.riskFlagged(RM[sel.fund.name]))) {
-        const estH = k => {
-          const cpl = Math.max(1, Math.floor((3.0 - 0.2*k) * 72 / (4*k)));
-          const rowH = lines => k * Math.max(0.24, 0.1 + 0.135*lines);
-          return 2*rowH(1) + ordered.reduce((a, sel) => a + rowH(Math.ceil((sel.fund.name.length + 2) / cpl)), 0);
-        };
-        while (mk > 0.6 && 1.0 + estH(mk) > NOTE_Y - 0.04) mk = Math.round((mk - 0.02) * 100) / 100;
-      }
-      const mFont = pt => Math.round(pt * mk * 10) / 10;
-      const mMargin = mk < 1 ? {margin:[0.05*mk, 0.1*mk, 0.05*mk, 0.1*mk]} : {};
-      const hOptM = {fontFace:"Cambria", fontSize:mFont(9), bold:true, fill:{color:COL.gold}, color:COL.white, align:"center", valign:"middle", ...mMargin};
-      const cOptM = (fill, align, color, bold) => ({fontFace:"Cambria", fontSize:mFont(8), bold:!!bold, fill:{color:fill||"FFFFFF"}, color:color||COL.black, align:align||"right", valign:"middle", ...mMargin});
-      const header = [{text:"Instrument", options:{...hOptM, align:"left"}}, {text:"% Alloc", options:hOptM}, ...MCOLS.map(c=>({text:c.label, options:hOptM}))];
-      const mrows = [header];
-      let tot=0, cover=0, mFlag=0;
-      const accCol={}, wCol={};
-      for (const c of MCOLS) { accCol[c.k]=0; wCol[c.k]=0; }
+      let tot = 0, cover = 0, mFlag = 0;
+      const accCol = {}, wCol = {};
+      for (const c of MCOLS) { accCol[c.k] = 0; wCol[c.k] = 0; }
       for (const sel of ordered) {
-        const f = sel.fund, r = RM[f.name] || null;
-        const amt = corpus * sel.pct/100; tot += amt;
+        const r = RM[sel.fund.name] || null, amt = corpus * sel.pct / 100;
+        tot += amt;
         if (r) cover += amt;
         if (H.riskFlagged(r)) mFlag++;
-        const row = [{text:f.name + (H.riskFlagged(r) ? " \u2020" : ""), options:cOptM("FFFFFF","left")}, {text:sel.pct.toFixed(2)+"%", options:cOptM()}];
-        for (const c of MCOLS) {
-          const v = r ? r[c.k] : null;
-          if (v!=null) { accCol[c.k]+=v*amt; wCol[c.k]+=amt; }
-          const txt = (v==null) ? "—" : (v.toFixed(c.dp)+c.suf);
-          const col = (c.red && v!=null && v<0) ? COL.red : COL.black;
-          row.push({text:txt, options:cOptM("FFFFFF","right",col)});
-        }
-        mrows.push(row);
+        for (const c of MCOLS) { const v = r ? r[c.k] : null; if (v != null) { accCol[c.k] += v * amt; wCol[c.k] += amt; } }
       }
-      const brow = [{text:"PORTFOLIO AVERAGE (by % allocation)", options:cOptM(COL.tan,"left",COL.black,true)}, {text:"100%", options:cOptM(COL.tan,"right",COL.black,true)}];
-      for (const c of MCOLS) {
-        const av = wCol[c.k]>0 ? accCol[c.k]/wCol[c.k] : null;
-        const txt = av!=null ? av.toFixed(c.dp)+c.suf : "—";
-        brow.push({text:txt, options:cOptM(COL.tan,"right",(c.red&&av!=null&&av<0)?COL.red:COL.black,true)});
+      const covPct = tot > 0 ? (cover / tot * 100) : 0;
+      const MD = String.fromCharCode(8220) + "—" + String.fromCharCode(8221);
+      const title = "Portfolio Matrix — Risk-Reward & 3Y Rolling Return";
+      const stamp = "Risk data as on " + mAsOn;
+      if (cover === 0) {
+        // No selected instrument is in the equity risk dataset: list each one with its status instead of
+        // a grid of dashes, and name the statistics the dataset would supply. No figure is shown as zero.
+        const notes = ["Risk-reward statistics (" + MCOLS.map(c => c.label).join(", ") + ") come from the equity risk dataset. None of the instruments above is in it, so no figure is shown; covers 0% of corpus with risk data."];
+        const build = pt => {
+          const hOpt = {fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.gold}, color:COL.white, align:"center", valign:"middle"};
+          const cO = (al, color) => ({fontFace:"Cambria", fontSize:pt, fill:{color:"FFFFFF"}, color: color || COL.black, align: al, valign:"middle"});
+          return { header: [[{ text: "Instrument", options: { ...hOpt, align: "left" } }, { text: "% Alloc", options: hOpt }, { text: "Risk-reward statistics", options: hOpt }]],
+            body: ordered.map(sel => ({ level: 1, cells: [{ text: sel.fund.name, options: cO("left") }, { text: sel.pct.toFixed(2) + "%", options: cO("right") },
+              { text: "Not in equity risk dataset", options: { ...cO("center", COL.note), italic: true } }] })), sticky: [] };
+        };
+        const fb = footerBlock(notes, stamp);
+        const plan = planTable({ cols: [{ wrap: true, min: 4, prefer: 6 }, {}, { wrap: true, min: 2.5 }], build, width: DS.CW, avail: fb.bottom - DS.TOP,
+          sizes: [11, 10.5, 10, 9.5, 9], pagePt: 10, leaf: 1 });
+        plan.pages.forEach((page, idx) => {
+          const { s, bottom } = contentSlide(pageTitle(title, idx, plan.pages.length), notes, stamp);
+          drawTable(s, page, plan.colW, DS.X, DS.TOP);
+          place(s, "table", DS.X, DS.TOP, DS.CW, page.height, bottom);
+        });
+      } else {
+        const notes = [
+          [{ text: "Portfolio Average (allocation-weighted): ", options: { bold: true } },
+           { text: "weighted average of each column by % allocation across the funds carrying that metric (covers " + covPct.toFixed(0) + "% of corpus with risk data).  " },
+           { text: "Alpha (Jensen) & Correlation derived from published Beta, Std Dev, Tracking Error & Information Ratio vs benchmark (rf 4.5%); " + MD + " = not in equity risk dataset.", options: { italic: true } }]
+        ];
+        if (mFlag > 0) notes.push([{ text: H.RISK_FLAG_NOTE, options: { italic: true } }]);
+        const build = pt => {
+          const hOptM = {fontFace:"Cambria", fontSize:pt, bold:true, fill:{color:COL.gold}, color:COL.white, align:"center", valign:"middle"};
+          const cOptM = (fill, align, color, bold) => ({fontFace:"Cambria", fontSize:pt, bold:!!bold, fill:{color:fill||"FFFFFF"}, color:color||COL.black, align:align||"right", valign:"middle"});
+          const header = [[{text:"Instrument", options:{...hOptM, align:"left"}, _wrap: true}, {text:"% Alloc", options:hOptM, _wrap: true}, ...MCOLS.map(c=>({text:c.label, options:hOptM, _wrap: true}))]];
+          const body = ordered.map(sel => {
+            const f = sel.fund, r = RM[f.name] || null;
+            const row = [{text:f.name + (H.riskFlagged(r) ? " " + String.fromCharCode(8224) : ""), options:cOptM("FFFFFF","left")}, {text:sel.pct.toFixed(2)+"%", options:cOptM()}];
+            for (const c of MCOLS) {
+              const v = r ? r[c.k] : null;
+              const txt = (v==null) ? "—" : (v.toFixed(c.dp)+c.suf);
+              row.push({text:txt, options:cOptM("FFFFFF","right",(c.red && v!=null && v<0) ? COL.red : COL.black)});
+            }
+            return { level: 1, cells: row };
+          });
+          // The % Alloc cell of the average row shows the share of the corpus that carries risk data.
+          const brow = [{text:"PORTFOLIO AVERAGE (by % allocation)", options:cOptM(COL.tan,"left",COL.black,true)}, {text:covPct.toFixed(2)+"%", options:cOptM(COL.tan,"right",COL.black,true)}];
+          for (const c of MCOLS) {
+            const av = wCol[c.k]>0 ? accCol[c.k]/wCol[c.k] : null;
+            brow.push({text: av!=null ? av.toFixed(c.dp)+c.suf : "—", options:cOptM(COL.tan,"right",(c.red&&av!=null&&av<0)?COL.red:COL.black,true)});
+          }
+          return { header, body, sticky: [brow] };
+        };
+        const fb = footerBlock(notes, stamp);
+        const plan = planTable({ cols: [{ wrap: true, min: 2.6, prefer: 4.4 }, {}, ...MCOLS.map(() => ({}))], build, width: DS.CW, avail: fb.bottom - DS.TOP,
+          sizes: [11, 10.5, 10, 9.5, 9, 8.5, 8], pagePt: 9, leaf: 1 });
+        plan.pages.forEach((page, idx) => {
+          const { s, bottom } = contentSlide(pageTitle(title, idx, plan.pages.length), notes, stamp);
+          drawTable(s, page, plan.colW, DS.X, DS.TOP);
+          place(s, "table", DS.X, DS.TOP, DS.CW, page.height, bottom);
+        });
       }
-      mrows.push(brow);
-      const mColW = [3.0, 0.85, ...Array(MCOLS.length).fill(1.0)];
-      s.addTable(mrows, {x:0.25, y:1.0, w:12.85, colW:mColW, border:{type:"solid", pt:0.4, color:"BFBFBF"}, rowH:0.24*mk});
-      const covPct = tot>0 ? (cover/tot*100).toFixed(0) : "0";
-      s.addText([
-        {text:"Portfolio Average (allocation-weighted): ", options:{bold:true}},
-        {text:"weighted average of each column by % allocation across the funds carrying that metric (covers " + covPct + "% of corpus with risk data).  ", options:{}},
-        {text:"Alpha (Jensen) & Correlation derived from published Beta, Std Dev, Tracking Error & Information Ratio vs benchmark (rf 4.5%); “—” = not in equity risk dataset.", options:{italic:true, color:"555555"}}
-      ], {x:0.25, y:7.02, w:6.8, h:0.42, fontFace:"Cambria", fontSize:8.5, color:COL.black, valign:"top"});
-      if (mFlag > 0) s.addText(H.RISK_FLAG_NOTE, {x:0.25, y:NOTE_Y, w:12.85, h:0.28, fontFace:"Cambria", fontSize:8.5, italic:true, color:"555555", valign:"top"});
     }
 
     // -- AMC + Liquidity --
     if ((!only || only === 'amc') && (H.aggAMC(selected, corpus).mf_total_cr > 0 || H.aggLiquidity(selected, corpus).total_cr > 0)) {
-      const s = pptx.addSlide();
-      applyMaster(s, "AMC Allocation & Portfolio Liquidity", logoData);
       const amc = H.aggAMC(selected, corpus);
       const liq = H.aggLiquidity(selected, corpus);
-      s.addText("AMC Allocation", {x:0.4, y:1.0, w:6, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      const { s, bottom } = contentSlide("AMC Allocation & Portfolio Liquidity",
+        amc.mf_total_cr > 0 ? ["AMC Allocation: share of the Mutual Fund / Index Fund / ETF allocation (₹ " + dAmt(amc.mf_total_cr) + " " + uAmt + ")."] : []);
+      const top = DS.TOP;
+      sectionTitle(s, "AMC Allocation", PL.x, top, PL.w);
       if (amc.items.length > 0) {
+        // Twelve bars at most; past that the smallest AMCs share one "Other AMCs (n)" bar, computed
+        // from the unrounded remainder, so the bars still add up to the whole MF allocation.
+        const MAXB = 12;
+        let items = amc.items;
+        if (items.length > MAXB) {
+          const rest = items.slice(MAXB - 1);
+          items = items.slice(0, MAXB - 1).concat([["Other AMCs (" + rest.length + ")", rest.reduce((a, x) => a + x[1], 0)]]);
+        }
+        const ch = Math.min(bottom - top - 0.42, 0.55 + items.length * 0.42);
         s.addChart(pptx.ChartType.bar, [{
           name:"AMC",
-          labels: amc.items.slice(0,12).map(x=>x[0]),
-          values: amc.items.slice(0,12).map(x=>parseFloat(x[1].toFixed(2)))
-        }], {
-          ...PPT_CHART_OPTS,
-          x:0.4, y:1.45, w:6.4, h:5.3,
-          catAxisLabelFontSize:9
-        });
+          labels: items.map(x=>x[0]).reverse(),
+          values: items.map(x=>parseFloat(x[1].toFixed(2))).reverse()
+        }], { ...PPT_CHART_OPTS, x: PL.x, y: top + 0.42, w: PL.w, h: ch, catAxisLabelFontSize: 9, barGapWidthPct: 60 });
+        place(s, "chart", PL.x, top + 0.42, PL.w, ch, bottom);
       } else {
-        s.addText("No MF/Index/ETF instruments.", {x:0.4, y:2.5, w:6, h:0.4, fontFace:"Cambria", fontSize:11, italic:true, color:"666666"});
+        s.addText("No MF/Index/ETF instruments.", {x:PL.x, y:top + 0.5, w:PL.w, h:0.4, fontFace:"Cambria", fontSize:11, italic:true, color:"666666"});
       }
-      s.addText("Portfolio Liquidity", {x:7.2, y:1.0, w:5.6, h:0.35, fontFace:"Cambria", fontSize:13, bold:true, color:COL.gold});
+      sectionTitle(s, "Portfolio Liquidity", PR.x, top, PR.w);
+      const lk = Object.keys(liq.pct);
+      // Liquidity detail table — every instrument; continues on the next slide when it cannot fit.
+      // The doughnut gives up height (2.1" down to 1.5") so a longer table can stay on this slide.
+      const hd = (t, al, pt) => ({ text: t, options: { fontFace: "Cambria", fontSize: pt, bold: true, fill: { color: COL.black }, color: COL.white, align: al || "left", valign: "middle" } });
+      const build = pt => ({ header: [[hd("Instrument", "left", pt), hd("Liquidity", "left", pt), hd("%", "right", pt)]],
+        body: liq.detail.map(d => ({ level: 1, cells: [
+          { text: d.fund.name, options: { fontFace: "Cambria", fontSize: pt, valign: "middle" } },
+          { text: d.liq, options: { fontFace: "Cambria", fontSize: pt, valign: "middle" } },
+          { text: d.pct.toFixed(2) + "%", options: { fontFace: "Cambria", fontSize: pt, align: "right", valign: "middle" } }] })), sticky: [] });
+      const cols = [{ wrap: true, min: 3 }, {}, {}];
+      const b8 = build(8), r8 = [...b8.header, ...b8.body.map(x => x.cells)];
+      const w8 = columnWidths(cols, r8, PR.w);
+      const t8 = w8 ? sum(rowHeights(r8, w8)) : 99;
+      const dH = Math.max(1.5, Math.min(2.1, bottom - (top + 0.4) - DS.GAP - t8));
       s.addChart(pptx.ChartType.doughnut, [{
         name:"Liquidity",
-        labels: Object.keys(liq.pct),
-        values: Object.values(liq.pct).map(v=>parseFloat(v.toFixed(2)))
+        labels: lk.map(k => k + " — " + liq.pct[k].toFixed(2) + "%"),
+        values: lk.map(k => parseFloat(liq.pct[k].toFixed(2)))
       }], {
-        x:7.2, y:1.45, w:5.6, h:2.6,
-        chartColors:[COL.gold, "1F2A38"], showLegend:true, legendPos:"b",
-        showValue:true, dataLabelFontSize:9, dataLabelFontFace:"Cambria",
-        dataLabelFormatCode:'0.00"%"',
-        valGridLine:{style:"none"}, catGridLine:{style:"none"}
+        x: PR.x, y: top + 0.4, w: PR.w, h: dH,
+        chartColors: [COL.gold, COL.navy], holeSize: 55, showLegend: true, legendPos: "r", legendFontFace: "Cambria", legendFontSize: 10,
+        showValue: false, showPercent: false, showLabel: false, dataBorder: { pt: 1, color: "FFFFFF" }
       });
+      place(s, "chart", PR.x, top + 0.4, PR.w, dH, bottom);
 
-      // Liquidity detail mini table
-      const liqRows = [[
-        {text:"Instrument", options:{fontFace:"Cambria", fontSize:8, bold:true, fill:{color:COL.black}, color:COL.white}},
-        {text:"Liquidity", options:{fontFace:"Cambria", fontSize:8, bold:true, fill:{color:COL.black}, color:COL.white}},
-        {text:"%", options:{fontFace:"Cambria", fontSize:8, bold:true, fill:{color:COL.black}, color:COL.white, align:"right"}}
-      ]];
-      for (const d of liq.detail) liqRows.push([
-        {text:d.fund.name, options:{fontFace:"Cambria", fontSize:8}},
-        {text:d.liq, options:{fontFace:"Cambria", fontSize:8}},
-        {text:d.pct.toFixed(2)+"%", options:{fontFace:"Cambria", fontSize:8, align:"right"}}
-      ]);
-      s.addTable(liqRows, {x:7.2, y:4.2, w:5.6, colW:[3.4, 1.2, 1.0], border:{type:"solid", pt:0.4, color:"BFBFBF"}, rowH: 0.2});
+      const ty = top + 0.4 + dH + DS.GAP;
+      const plan = planTable({ cols, build, width: PR.w, avail: bottom - ty, sizes: [9, 8.5, 8], pagePt: 9, leaf: 1, balance: false });
+      drawTable(s, plan.pages[0], plan.colW, PR.x, ty);
+      place(s, "table", PR.x, ty, PR.w, plan.pages[0].height, bottom);
+      if (plan.pages.length > 1) {
+        // the rest of the instruments continue full width on following slides
+        const fb = footerBlock([], null);
+        const done = plan.pages[0].rows.length - 1;
+        const restB = pt => { const bb = build(pt); return { header: bb.header, body: bb.body.slice(done), sticky: [] }; };
+        const plan2 = planTable({ cols, build: restB, width: DS.CW, avail: fb.bottom - DS.TOP, sizes: [10, 9.5, 9], pagePt: 9, leaf: 1 });
+        plan2.pages.forEach((page, idx) => {
+          const c = contentSlide(pageTitle("Portfolio Liquidity — continued", idx, plan2.pages.length));
+          drawTable(c.s, page, plan2.colW, DS.X, DS.TOP);
+          place(c.s, "table", DS.X, DS.TOP, DS.CW, page.height, c.bottom);
+        });
+      }
     }
 
     // -- Overlap slide as rendered PNG --
-    // Image is placed at its ORIGINAL natural size (preserves aspect ratio).
-    // pptxgenjs `sizing: { type: "contain" }` keeps the canvas aspect ratio so
-    // labels and cell text never get stretched / squashed.
+    // Image is placed at its ORIGINAL natural size (preserves aspect ratio), scaled down only to fit the
+    // content frame — never under the footer.
     const overlapEligible = H.eligibleOverlapFunds(selected).map(e => e.fund);
     if ((!only || only === 'overlap') && overlapEligible.length >= 2) {
-      const s = pptx.addSlide();
-      applyMaster(s, "Overlap Matrix — Listed Equity", logoData);
+      const { s, bottom } = contentSlide("Overlap Matrix — Listed Equity");
       const pngUrl = H.buildOverlapPng(overlapEligible);
       if (pngUrl) {
         // Read natural PNG dimensions via an in-memory <img> so we can centre it
@@ -5112,21 +5450,21 @@ window.mfBenchmarkPerfFor = function(sub) {
           imgEl.onload = () => res();
           imgEl.onerror = () => res();
         });
-        const SLIDE_W = 13.33;  // inches
-        const BODY_TOP = 0.95;
-        const BODY_H = 6.25;    // below header strip, above bottom margin
+        const BODY_TOP = DS.TOP;
+        const BODY_H = bottom - DS.TOP;
         const px2in = 1 / 96;   // 96 dpi nominal
         const natW_in = (imgEl.naturalWidth || 1) * px2in;
         const natH_in = (imgEl.naturalHeight || 1) * px2in;
         // Scale down only if needed; never up-scale (preserves crisp text)
-        const sx = Math.min(1, SLIDE_W / natW_in);
+        const sx = Math.min(1, DS.CW / natW_in);
         const sy = Math.min(1, BODY_H / natH_in);
         const scale = Math.min(sx, sy);
         const w = natW_in * scale;
         const h = natH_in * scale;
-        const x = (SLIDE_W - w) / 2;
+        const x = DS.X + (DS.CW - w) / 2;
         const y = BODY_TOP + (BODY_H - h) / 2;
         s.addImage({ data: pngUrl, x, y, w, h });
+        place(s, "image", x, y, w, h, bottom);
       }
     }
 
@@ -5136,8 +5474,7 @@ window.mfBenchmarkPerfFor = function(sub) {
       if (ES.thankyou) {
         imgSlide(ES.thankyou, LOGO_CLOSING);
       } else {
-        const s = pptx.addSlide();
-        applyMaster(s, "Important Disclaimer", logoData);
+        const { s } = contentSlide("Important Disclaimer");
         const body = "This proposal has been prepared by Centricity WealthTech Pvt. Ltd. for internal use and HNI / UHNI / Family Office client conversations. All performance numbers are as on " + window.DATA_DATES.performance + " (MF Monitor) and " + window.DATA_DATES.analytics + " (Analytics). Expected IRR ranges are indicative and based on Centricity Products Team views. Past performance is not indicative of future results.\n\nInvestors are advised to read all scheme-related documents, including PMS offer documents, risk factors and disclosures, carefully before investing. Mutual fund, PMS and AIF investments are subject to market risks.\n\nDirect bond and FD allocations carry issuer credit risk and reinvestment risk on coupon receipts. Hybrid SIF, AIF Cat II / III, REITs / InvITs and unlisted equity investments carry liquidity and lock-in restrictions described in the respective offer documents.";
         s.addText(body, {x:0.4, y:1.1, w:12.5, h:5.8, fontFace:"Cambria", fontSize:12, color:COL.black, valign:"top"});
       }
@@ -5145,11 +5482,15 @@ window.mfBenchmarkPerfFor = function(sub) {
 
     // Single-tab export with no content for the current selection → friendly placeholder slide.
     if (only && _slideCount === 0) {
-      const s = pptx.addSlide();
-      applyMaster(s, "No Data For This View", logoData);
+      const { s } = contentSlide("No Data For This View");
       s.addText("This tab has no exportable content for the current selection.",
         { x: 0.4, y: 1.2, w: 12.5, h: 1, fontFace: "Cambria", fontSize: 14, color: COL.black });
     }
+    // Bounds check of every placed block against the content frame and the slide.
+    const warnings = LAYOUT.filter(b => b.x < DS.X - 0.01 || b.x + b.w > DS.R + 0.01 || b.y < DS.TOP - 0.01 || b.y + b.h > b.limit + 0.01)
+      .map(b => `slide ${b.slide}: ${b.kind} at y ${b.y.toFixed(2)} h ${b.h.toFixed(2)} (limit ${b.limit.toFixed(2)}), x ${b.x.toFixed(2)} w ${b.w.toFixed(2)}`);
+    window.__PPTX_LAYOUT = { slides: _slideCount, blocks: LAYOUT, warnings };
+    warnings.forEach(w => console.warn('[pptx layout] ' + w));
     const SLIDE_FILES = {
       proposal: "Investment_Proposal", rationale: "Category_Rationale", perf: "Performance_Sheet",
       matrix: "Portfolio_Matrix",
@@ -5174,7 +5515,8 @@ window.mfBenchmarkPerfFor = function(sub) {
     return buildDeck(selected, corpus, corpusUnit, tabId);
   }
 
-  window.EXPORTS = { exportXlsx, exportPpt, exportMaster, exportTabSlide };
+  // _ds: the presentation design system, read-only, for tools/test/pptx_layout.test.js
+  window.EXPORTS = { exportXlsx, exportPpt, exportMaster, exportTabSlide, _ds: { DS, TXT, planTable, columnWidths, rowHeights } };
 })();
 </script>
 </head>

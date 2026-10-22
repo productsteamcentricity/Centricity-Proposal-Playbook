@@ -142,12 +142,19 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`, `:3397-3403`; `tools/bake_month.js:152-169`, `:212-220` |
 | C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3414-3415` |
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
-| C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Open | — | matrix slide `rowH:0.24*mk`, `site/index.html` |
+| C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Closed 22-Oct-2026 (PR #26, D82) | — | `planTable` in `buildDeck`, `site/index.html` |
 | C23 | Select popover Alpha shown 100 times too large [inference] | UI/data | P2 | Open (desk: confirm the unit) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
 | C24 | Headline weighted IRR counts instruments with no IRR band as 0% | UI/data | P2 | Open (owner decision) | — | `computeKPIs`, `site/index.html:1609-1626` |
 | C25 | Debt Analytics fund picker and its hint disagree | UI | P3 | Open | — | Debt Analytics picker |
 | C26 | Centricity Select popover gaps (empty HDFC FoF entry; PMS popover dates differ) | Data | P3 | Open (desk) | — | `CENTRICITY_SELECT` |
 | C27 | BHARAT Bond FoF Apr-2030: Direct figures equal Regular | Data | P3 | Open (desk) | — | `DIRECT_PERF` |
+| C28 | Expected returns are stored as track record (bond yields, AIF/PMS band mid-points) | Data | P2 | Open (owner/desk); marked `*` in the deck since 22-Oct-2026 (PR #26, D83) | — | MASTER r1y/r3y/r5y; `tools/merge_bond_list.js:198`; `tools/add_reckoner_funds.js:197`; `H.isExpectedReturn` |
+| C29 | Performance buckets are defined three times and disagree on Debt PMS | Code | P3 | Open | — | `bucketOf` (screen), `bof` (Excel), `buildDeck` (PowerPoint) in `site/index.html` |
+| C30 | The screen's Performance tab dates PMS/AIF figures with the MF date | UI | P3 | Open | — | `PerformanceTab` `asOn`, `site/index.html` |
+| C31 | AMC name falls back to the scheme name's first word for 354 MF/ETF records | Data | P3 | Open | — | `window.getAMC`, `site/index.html:1427` |
+| C32 | Debt look-through: an issuer's bucket is set by the first instrument seen; an unrated bond would default to "AAA & Equiv" | UI/data | P3 | Open | — | `H.aggDebtScoped`, `site/index.html` |
+| C33 | Commodity ETFs carry a market-cap split of about 100% "Others" | Data | P3 | Open (desk) | — | MASTER `mcap_other` |
+| C34 | Disclaimer slide image: text block in the top half, header line in another colour | UI | P3 | Open (desk: source slide, B7) | — | `EXTRA_SLIDES.disclaimer`; `tools/update_closing_slides.js` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -1161,6 +1168,9 @@ rule (checked 16-Oct-2026).
   bottom 7.87" (footnote overlapped by 1.15"), now 6.64" (`mk` 0.82, fonts 7.4 / 6.6 pt); 22 funds
   6.65"; 35 funds 6.51" (`mk` 0.62). The unflagged overflow is C22. The text below is the state
   before the fix.
+- **22-Oct-2026 (PR #26, D82):** the `mk` shrink and `NOTE_Y` are gone. Every matrix slide, flagged
+  or not, now goes through the design system's table engine: the largest type that fits above the
+  footer block, else continuation slides; the dagger note is a paragraph of that block.
 
 The C3 footnote on the Portfolio Matrix slide is placed at y 6.72 (`site/index.html:5029`). With
 about 22 or more selected funds the matrix table reaches that height and the footnote overlaps it
@@ -1298,7 +1308,13 @@ waiting for this decision and held the G-Sec record instead)
   with the owner, through a reviewed data change.
 
 ### C22. A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide
-**P3 · Open · —**
+**P3 · Closed 22-Oct-2026 (PR #26, D82) · —**
+
+- **Fixed:** the matrix table is measured and fitted like every table in the deck (D82): the largest
+  size from 11pt down to 8pt that fits above the notes, otherwise continuation slides at 9pt with the
+  header and the PORTFOLIO AVERAGE row on each page. Rendered in PowerPoint (22-Oct-2026): 30 funds
+  with risk data, two of them flagged, give two matrix slides, table bottoms 6.80" and above; 45
+  instruments give three. The text below is the state before the fix.
 
 - The matrix table starts at y 1.0 with rows of 0.24" (taller when a name wraps). With no flagged
   fund, about 24 or more selected funds reach the notes at y 7.02 ("Portfolio Average …", "Risk
@@ -1361,6 +1377,80 @@ Reckoner deck and PMS file; fill the rationale gap with the desk.
 
 `DIRECT_PERF` holds the same returns and the same 0.04% expense for the Direct plan as MASTER has for
 the Regular plan (live check, 21-Oct-2026). Possibly true for this fund; ask the desk to confirm.
+
+The items C28–C34 were found by the PowerPoint format audit of 22-Oct-2026
+(`docs/proposal-output-format-audit.md`), with a financial-data review of the display rules.
+
+### C28. Expected returns are stored as track record (bond yields, AIF/PMS band mid-points)
+**P2 · Open (owner/desk); marked in the deck since 22-Oct-2026 (PR #26, D83) · —**
+
+- **What:** `tools/merge_bond_list.js:198` writes every desk bond with r1y = r3y = r5y = its yield, and
+  `tools/add_reckoner_funds.js:197` writes AIF/PMS peers that publish no return series with r1y = r3y
+  = r5y = the IRR band mid-point. For a PMS/AIF matched to a performance record, a period the source
+  leaves blank keeps the stored mid-point (`applyPmsPerformance`, D55). The screen, the Excel and the
+  deck then show these as past performance: e.g. Inquant Debt Plus Fund, launched January 2024, at
+  12.50% for 3Y and 5Y; Neo Yield Enhancer's real 1Y next to a mid-point 3Y/5Y. 83 records carry the
+  "1Y = 3Y = 5Y, no other series" pattern (50 bonds, 16 AIF, 6 FD, 5 unlisted equity, 4 PMS, 1 REIT,
+  1 GIFT City) and 31 cells on 16 PMS/AIF records come from blank source periods.
+- **Also:** 12 of those mid-points no longer match the fund's current band, because a later band
+  change did not touch the returns (e.g. InCred Growth Partners II 27.50% against 22–25%; Neo Infra
+  Income Opportunities Fund II 16.00% against 14–16%). Alchemy Long Term Ventures (inception
+  1-Feb-2026) shows an 18.30% 1Y the source no longer publishes: stale, not an expected figure.
+- **Now (D83):** the deck marks such a figure `*` with a note saying it is the expected return held in
+  the data (`H.isExpectedReturn`), on the Investment Option and Fund Performance slides. The screen
+  still marks only the runtime fallback (`H.isFallbackReturn`); the Excel marks nothing.
+- **Suggested fix (owner/desk):** carry the basis in the data (e.g. a per-period `ret_basis` of
+  "expected"), or clear the periods a fund has no history for, and let the screen and Excel use
+  `H.isExpectedReturn` too. Decide what to do with the 12 stale mid-points and the Alchemy 1Y.
+
+### C29. Performance buckets are defined three times and disagree on Debt PMS
+**P3 · Open · —**
+
+The screen (`bucketOf`), the Excel export (`bof` in sheet 6) and the PowerPoint export each define the
+Fund Performance buckets. Screen and Excel put a Debt PMS under "Other" (shown with the equity column
+set, so its 1M and 2Y returns are not shown); the deck shows it under "PMS — Debt" with the PMS
+columns (D82; before, under "PMS — Equity"). Suggested fix: one shared bucket function in `H`.
+
+### C30. The screen's Performance tab dates PMS/AIF figures with the MF date
+**P3 · Open · —**
+
+`PerformanceTab` heads every bucket "Performance as on" `DATA_DATES.performance` (30-Sep-2026), while
+the PMS and AIF figures are as on `DATA_DATES.pms` (31-Aug-2026). The deck dates each table by its own
+source since PR #26 (D82). Suggested fix: the same per-bucket date on the screen.
+
+### C31. AMC name falls back to the scheme name's first word for 354 MF/ETF records
+**P3 · Open · —**
+
+`window.getAMC` (`site/index.html:1427`) returns the first word of the scheme name when no AMC prefix
+matches: 354 of 2,029 MF/ETF records (financial review, 22-Oct-2026), e.g. "Bank of India Large Cap
+Fund" counts under "Bank". The AMC chart, its "Other AMCs (n)" count and the Excel AMC sheet use these
+labels. Suggested fix: complete the AMC prefix list with the desk.
+
+### C32. Debt look-through: issuer bucket set by the first instrument seen; unrated-bond default
+**P3 · Open · —**
+
+In `H.aggDebtScoped` an issuer's rating bucket is taken from the first holding seen, so for the 49 of
+571 issuers whose holdings sit in more than one bucket the issuer table can depend on the order of
+the selection. A direct bond with no `bond_rating` would be bucketed "AAA & Equiv" (no live effect:
+all 50 bonds are rated); an MLD already defaults to "Unrated". The issuer table's "Rating" column
+shows the bucket, not the bond's own grade (deliberate: one vocabulary with the doughnut).
+
+### C33. Commodity ETFs carry a market-cap split of about 100% "Others"
+**P3 · Open (desk) · —**
+
+Commodity ETFs hold `mcap_other` of about 0.95–1.002, some above 100%. Since PR #26 the deck shows
+market-cap columns only where the bucket's data carry a split, so an "Other" bucket with a commodity
+ETF shows them. Suggested fix: clear the market-cap split for commodity funds with the desk.
+
+### C34. Disclaimer slide image: text block in the top half, header line in another colour
+**P3 · Open (desk: source slide, B7) · —**
+
+The Disclaimer slide is a full-slide image (`EXTRA_SLIDES.disclaimer`, made by
+`tools/update_closing_slides.js` from the desk's "Topic Slides, Disclaimer & Thank You" deck, which
+did not come with the handover, B7). Its text block fills the top half and its header rule is a
+different colour from the native slides. The wording is compliance text, so the deck does not crop or
+re-set it. Suggested fix: re-lay the source slide (text vertically balanced, gold rule), render it and
+run `update_closing_slides.js`.
 
 ---
 
