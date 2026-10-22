@@ -1,8 +1,9 @@
 # Project state
 
-_Last updated: 21-Oct-2026 — five small fixes merged (PRs #19–#23: tool exit codes, OneDrive rename
-retry, C17, C18, A27), after September Run 3 (PR #18) published 30-Sep-2026 figures for the 214
-funds the parser skipped (C19); one JioBlackRock record stays held for C20._
+_Last updated: 22-Oct-2026 — PowerPoint design system (PR #26, D82–D83): the proposal deck is laid
+out by measurement, fits or continues, and marks expected returns; awaiting the owner's review of the
+rendered deck before merge. Before that: five small fixes (PRs #19–#23) and September Run 3 (PR #18);
+one JioBlackRock record stays held for C20._
 
 ## Summary
 
@@ -93,6 +94,16 @@ International FoF, a PMS, a bond and Direct Equity; Excel (13 sheets), PowerPoin
 logo on each) and the Allocation Sheet round trip; all 9 Live Output tabs; data spot checks; the
 shared-link banner. No regression. Inherited quirks it surfaced are logged as C24–C27.
 
+PowerPoint design system, 22-Oct-2026 (PR #26, branch `feat/pptx-design-system`): `verify_page`
+output identical to `main`, exit 0; `npm test` 5 of 5 (the new `pptx_layout.test.js` about 800
+checks). Real exports through the page — the current 8-instrument debt proposal, the 4-fund check
+(23 slides), and stress portfolios of 3, 15 (Lakhs), 30 and 45 instruments — have no layout warning
+and, rendered in PowerPoint and measured with `tools/dev/check_pptx_bounds.js`, no table below the
+footer line, no overlap, no text past the rule (the pre-change deck fails three ways). All 73 rows the
+old and new decks share are value-identical; chart data identical. Audit:
+`docs/proposal-output-format-audit.md`; renders and sample decks (local only):
+`_testdata/pptx-design-system/`.
+
 ## Release
 
 | Item | Value |
@@ -154,7 +165,18 @@ Five independent fixes, one PR each; none changes a data block.
 | #22 | `fb9cbd6` | Centricity Select popover: dagger and note for a C3-flagged fund; new C23 (Select Alpha scale) | C18, C23 |
 | #23 | — | `tools/dev/rehearse.js --old-site <dir>`: rehearse a page-code change (old side seeded from another `site/`), with a data verdict | A27 |
 
+## PowerPoint design system (22-Oct-2026)
+
+| PR | Merge | What | Issues / decisions |
+|---|---|---|---|
+| #26 | — (awaiting the owner's review) | Every native slide laid out by measurement: shared frame, footer block and page numbers; table engine that fits or continues (Investment Option, performance, matrix, liquidity); rationale cards; legends with values; performance buckets share slides, PMS/AIF by asset class and dated by `DATA_DATES.pms`; matrix coverage list; "Other AMCs (n)"; `*` on expected returns; `pptx_layout.test.js`; `tools/dev/render_pptx.ps1` + `check_pptx_bounds.js`; audit `docs/proposal-output-format-audit.md` | D82, D83; C22 closed; C28–C34 new |
+
 ## In progress / blockers
+
+- **Owner review — PR #26 (PowerPoint design system).** Changes every client-facing deck; merge only
+  on the owner's go-ahead after the rendered sample (`_testdata/pptx-design-system/`, local only).
+  Two display choices in it are the owner's to confirm: the `*` marker and its note (D83, C28) and
+  the Fund Performance buckets sharing slides (D82).
 
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
@@ -190,8 +212,11 @@ Five independent fixes, one PR each; none changes a data block.
    Direct Equity (`KNOWN_ISSUES.md` C24; today they count as 0% in the tile, Future Value and the
    deck, but are left out of the Section 4 table).
 3b. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
-   it 100 times too large). Owner: whether a long matrix slide without a flagged fund should also
-   shrink to fit (C22).
+   it 100 times too large). (C22, the long unflagged matrix slide, is fixed by PR #26.)
+3c. Owner/desk, after PR #26: how the data should carry expected returns (C28: a per-period basis, or
+   clear periods a fund has no history for; the 12 stale mid-points; the Alchemy 1Y); the Disclaimer
+   source slide's layout (C34); whether fund pages like the reference deck's (fund narrative, alpha
+   avenues, fee slabs) are wanted — the portal does not hold that content for every fund.
 4. September-2026 catch-up, when the "October 2026" Reckoner is released (the last was applied on
    28-Sep): drop the Reckoner deck, `PMS_Scheme_Performance` as on 30-Sep, `Fund Manager Data` as on
    30-Sep and the latest `PMS & AIF Analytics` into `00_INBOX`, then `/monthly-update September 2026`.

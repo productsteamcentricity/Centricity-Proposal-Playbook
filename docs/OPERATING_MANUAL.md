@@ -505,6 +505,29 @@ to capture the built deck — do **not** wait on `write('base64')`, which stalls
 page. `window.EXPORTS.exportPpt(selected, corpus, unit)` drives a build directly, which avoids
 needing 100% allocated to enable the toolbar button.
 
+## The deck is laid out by measurement, never by fixed positions (22-Oct-2026, D82)
+
+Every native slide goes through the design system at the top of the PowerPoint export
+(`DS`, `TXT`, `applyMaster`, `footerBlock`, `planTable`): the table is measured and fitted, or
+continued on numbered slides; notes sit in the footer block above the gold rule; the page number is
+the slide-number field. The old code broke on real portfolios because it assumed things the data
+does not promise — 21 rows per slide, 0.24" rows, notes at y 7.02 — and one 8-instrument debt
+proposal lost its GRAND TOTAL off the bottom of the slide. Traps when you touch the export:
+
+- **No fixed rows per slide, row heights or note positions.** Build rows with `build(pt)` and hand
+  them to `planTable`; place content between `DS.TOP` and the `bottom` that `contentSlide` returns.
+- **pptxgenjs gives a cell without `margin` its own 0.1" / 0.05" margins**, and the engine measures
+  with `DS.CELL_M`; `drawTable` writes the margin into every cell, so draw tables only with it.
+- **Table width is the sum of `colW`**, whatever `w` says. Cell `margin` is in inches
+  `[top, right, bottom, left]`; a text box's `margin` is in **points**.
+- **Never `autoPage`** (its added slides skip `applyMaster`, so no header and no logo) and never rely
+  on `fit: 'shrink'` (PowerPoint applies it only when the text is edited).
+- **New characters in slide text:** the width table covers ASCII and — – ₹ † • ’ “ ”; anything else
+  is measured at 0.55 em, which errs wide (taller rows), never clipped.
+- **After a change:** `npm test` (`pptx_layout.test.js`), `window.__PPTX_LAYOUT.warnings` empty after a
+  real export, and for anything visual a PowerPoint render with `tools/dev/render_pptx.ps1` +
+  `tools/dev/check_pptx_bounds.js` (`docs/TESTING.md` §3).
+
 ## Refreshing the closing slides (Disclaimer / Thank You)
 
 Same story as the Market Update deck — native shapes, `ppt/media` holds only the photo, so the

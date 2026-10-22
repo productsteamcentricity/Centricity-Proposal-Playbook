@@ -69,6 +69,16 @@ Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
   (dry run, no workbooks) with a source path that does not exist and with an `--html` page that does
   not exist: each must exit 2 with its usage line and no stack trace. A tool added without a case
   fails the test.
+- `pptx_layout.test.js` (about 800 checks, added 22-Oct-2026 with the PowerPoint design system,
+  D82). It loads `site/index.html` and the siblings in a vm (as `verify_page.js` does), replaces
+  `PptxGenJS` with a recorder and exports portfolios picked **by rule** from MASTER (a debt mix, 3
+  instruments, 45 long-named instruments across ten classes, 30 equity funds with risk data incl.
+  flagged ones, 6 bonds, 15 AMCs, the debt mix in Lakhs), plus all nine single-tab exports for two of
+  them. It checks invariants only: every instrument once in each table family, the GRAND TOTAL closing
+  every Investment Option page with the summed %, 10 columns kept, every table and chart inside the
+  content frame, no layout warning, AMC bars summing to 100% in at most 12 bars, one rationale card per
+  sub-category, numbered continuation titles; and a unit test of the table engine (a 90-row table
+  paged without losing a row or ending a page on a group heading). The check count follows the data.
 
 CI runs `npm ci` and then the tests on every PR. Add a `<name>.test.js` file beside them for any new
 library function or parser rule.
@@ -148,9 +158,9 @@ Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `nod
 | 4 | Allocate 100% | Status "✓ 100.00% allocated — downloads ready"; Section 4 "✓ Ready to export" |
 | 5 | Regular/Direct | Returns change, IRR band does not; switching back restores |
 | 6 | Excel | `Centricity_Investment_Proposal.xlsx`, 13 sheets: Investment Proposal, Rationale, Equity MF, Hybrid MF, Debt MF, PMS, AIF, Listed Direct Equity, Other, Equity Analytics, Debt Analytics, AMC & Liquidity, Overlap Matrix; corpus in B2 |
-| 7 | PowerPoint | 25 slides for the 4-fund selection above; logo on every slide; switching the logo to Invictus stamps Invictus on every slide |
+| 7 | PowerPoint | 23 slides for the 4-fund selection above (25 before PR #26: the Fund Performance buckets now share slides, D82); logo on every slide; a page number on every native slide; `window.__PPTX_LAYOUT.warnings` empty after the export; switching the logo to Invictus stamps Invictus on every slide |
 | 8 | Allocation Sheet | Download → Clear All → upload restores the same funds and % ("Loaded 4 instrument(s) — 100.00% allocated") |
-| 9 | Live Output tabs | All 9 render; "⬇ Download slide" works per tab (Performance Sheet = 4 slides, others 1) |
+| 9 | Live Output tabs | All 9 render; "⬇ Download slide" works per tab (Performance Sheet = 2 slides since PR #26, 4 before; others 1) |
 | 10 | Credit rating | Debt Analytics doughnut sums to 100%, colours fixed per bucket (`H.CREDIT_COLORS`), same colours in the PPT |
 | 11 | MF Monitor upload | Section 7 card accepts the current monitor: "Updated N schemes · as on …" (session only); since the C19 change it may add "· N rows not merged" (the Sep-2026 Monitor gives 19 in the bake) and must never add "· N rows on unrecognised sheets" |
 
@@ -162,6 +172,16 @@ Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `nod
   `slide.addImage` to detect the logo at x 11.21 / y 0.22, or 8.47 / 4.33 on the closing slide) and
   `writeFile` records instead of saving; click "⬇ PowerPoint"; restore. Do not use
   `write('base64')` — it stalls on a hidden page.
+- **PowerPoint layout (after a change to the export, D82):** after any export,
+  `window.__PPTX_LAYOUT.warnings` lists every block the layout engine placed outside its frame (empty
+  is a pass). To see the deck as PowerPoint lays it out, save the built deck (e.g. post
+  `this.write({ outputType: 'base64' })` from the intercepted `writeFile` to a localhost-only
+  receiver; slow but it completes on a background page), copy it to a short folder such as
+  `%TEMP%\x\`, then run `powershell -File tools\dev\render_pptx.ps1 -Deck <deck> -OutDir <dir>`
+  (PNG per slide + `bounds.jsonl`) and `node tools/dev/check_pptx_bounds.js <dir>\bounds.jsonl`:
+  it fails on a table below the footer line or into a note, text past the footer rule or taller
+  than its box, or anything off the slide other than the cover's decoration. On the pre-D82 deck of
+  22-Oct-2026 it reports the Investment Option table ending at 8.65" and the matrix note on the rule.
 - **Steppers:** set the input value with the native setter + `input` event, then dispatch an
   `Enter` keydown (a background browser pane may not fire `blur`).
 - **Upload:** build a `File` and assign it to the hidden input through a `DataTransfer`.

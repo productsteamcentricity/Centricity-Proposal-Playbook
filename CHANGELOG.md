@@ -18,6 +18,46 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-22 — PowerPoint design system: the proposal deck fits, continues and labels honestly (PR #26, feat/pptx-design-system)
+
+Page code only (`site/index.html`, export section and one `H` predicate); no data block, sibling or
+library changed. `verify_page.js` output identical to `main`. Audit, root causes and validation:
+`docs/proposal-output-format-audit.md`.
+
+### Fixed
+- **Investment Option table no longer runs off the slide.** With 8 debt instruments the current export
+  lost the OneDigital rows and the GRAND TOTAL below the slide (fixed 21 rows per slide, 0.24" rows,
+  12.0" fixed columns). The table is now measured and fitted, or continued on "(i/n)" slides with the
+  header and GRAND TOTAL on every page; "100.00%" no longer wraps.
+- Portfolio Matrix notes no longer run into the footer rule; a long matrix without a flagged fund is
+  fitted or continued (KNOWN_ISSUES C22 closed).
+- Debt analytics doughnut labels no longer overlap (values move into the legend).
+- PMS and AIF performance tables are dated "as on" `DATA_DATES.pms` (31-Aug-2026), not the MF date;
+  a Debt PMS is no longer filed under "PMS — Equity".
+- AMCs after the twelfth are no longer dropped silently: they form one "Other AMCs (n)" bar.
+- A long liquidity table no longer overflows its panel.
+
+### Added
+- Presentation design system (D82): shared frame and type scale, Cambria text measurer calibrated
+  against PowerPoint (197 of 200 cells exact), page numbers on native slides, a footer block for notes
+  and the "as on" stamp, a table engine (measured column widths and row heights, largest fitting
+  size 11→8pt, balanced continuation pages with context rows), a layout log
+  (`window.__PPTX_LAYOUT`) that warns about any block outside the frame.
+- Rationale as a card grid (text unchanged); analytics panels aligned; Fund Performance buckets share a
+  slide when they fit; market-cap columns only where the data carry a split; the matrix shows a
+  coverage list when no instrument has risk data and its average row shows the covered share.
+- `*` on an expected 1Y/3Y/5Y figure (IRR band mid-point, bond yield) with a note, via
+  `H.isExpectedReturn` (D83, KNOWN_ISSUES C28).
+- `tools/test/pptx_layout.test.js` (in `npm test` and CI); `tools/dev/render_pptx.ps1` and
+  `tools/dev/check_pptx_bounds.js` to check a deck as PowerPoint lays it out.
+
+### Changed
+- Slide count follows the data: the 8-instrument proposal gives 21 slides (was 23), the TESTING.md
+  4-fund check 23 (was 25); long proposals gain continuation slides.
+- Docs: PRD §9.2, ARCHITECTURE line map, OPERATING_MANUAL (layout traps), TESTING (§2.1, §3 checks 7
+  and 9, the layout check), tools/README, DECISIONS D82–D83 (D74 note), KNOWN_ISSUES (C17 note, C22
+  closed, C28–C34 new), PROJECT_STATE; new `docs/proposal-output-format-audit.md`.
+
 ## 2026-10-21 — Rehearsal harness compares page-code changes (PR #23, fix/a27-rehearse-old-site)
 
 Developer tool only: no file in `site/` changed.

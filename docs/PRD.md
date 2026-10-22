@@ -826,6 +826,15 @@ Other files:
   - a gold footer line.
 - Colours: black 000000, gold BD9568, tan DBC8B2, greys BFBFBF / D9D9D9, cream FFF8E1, brown 5C3E17, red 931621.
 - Amounts follow the Cr/Lakhs toggle.
+- **Design system (D82, 22-Oct-2026).** Every native slide is laid out by measurement: content
+  between 0.25" and 13.083" from y 1.08", notes in a footer block that ends at 7.34" above the gold
+  rule, an "as on" stamp at its right, and a page number (slide-number field) on every native slide.
+  Tables pick the largest type from 11pt to 8pt that fits one slide, else continue on numbered
+  "(i/n)" slides with the header repeated, totals on every page and a "(continued)" row naming the
+  group carried over; no row, column or total is ever dropped. Doughnut legends carry the values;
+  labelled bars have no value axis.
+- **Expected returns (D83).** A 1Y/3Y/5Y figure that is an expected return (IRR band mid-point, a
+  bond's yield) rather than a published one is marked `*` with a note.
 
 **Slide order**
 
@@ -837,14 +846,14 @@ Other files:
 | 4 | `portfolioDivider` image |
 | 5 | Portfolio Construct and Requirements: 6 thesis bullets plus the Asset Allocation Summary table |
 | 6 | Net Asset Allocation |
-| 7 | Investment Options Rationale (paginated) |
-| 8 | Investment Option tables: 21 rows per slide, GRAND TOTAL on every slide |
+| 7 | Investment Options Rationale: one card per sub-category, two columns, tagged with the asset class; continued when it does not fit |
+| 8 | Investment Option table: measured and fitted, else continued; GRAND TOTAL on every slide |
 | 9 | Portfolio Analytics — Equity (if there is equity exposure) |
-| 10 | Portfolio Analytics — Debt (if there is debt exposure) |
+| 10 | Portfolio Analytics — Debt (if there is debt exposure); funds without holdings named in a note |
 | 11 | `annexureDivider` image |
-| 12 | Fund Performance — one slide per bucket |
-| 13 | Portfolio Matrix |
-| 14 | AMC Allocation & Portfolio Liquidity |
+| 12 | Fund Performance — one table per bucket (PMS and AIF split by asset class); buckets that fit together share a slide, each with its own as-on date (`DATA_DATES.pms` for PMS/AIF); a long bucket continues on its own slides |
+| 13 | Portfolio Matrix: fitted or continued; when no selected instrument has risk data, a list of the instruments and their status |
+| 14 | AMC Allocation & Portfolio Liquidity (at most 12 AMC bars, the rest as "Other AMCs (n)"; a long liquidity table continues on "Portfolio Liquidity — continued") |
 | 15 | Overlap Matrix (if ≥ 2 eligible funds) |
 | 16 | `disclaimer` image |
 | 17 | `thankyou` image (falls back to a native disclaimer slide) |

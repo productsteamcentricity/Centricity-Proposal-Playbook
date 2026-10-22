@@ -54,6 +54,9 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
    12 unclassified legacy SIF rows, dead code kept for parity).
 9. **Invariants:** 0 duplicate MASTER names; Centricity Select keys in MASTER = total; top-10 Direct
    Equity by market cap are "Large Cap"; `DATA_DATES.sif` is not "—".
+10. **PowerPoint layout goes through the export's design system** (D82): no fixed rows per slide,
+    row heights or note positions; check a change with `npm test` and a PowerPoint render
+    (`tools/dev/render_pptx.ps1` + `check_pptx_bounds.js`; OPERATING_MANUAL → "The deck is laid out by measurement").
 
 ## How every change is made
 

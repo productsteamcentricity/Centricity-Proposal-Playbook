@@ -113,6 +113,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D79 | 19-Oct-2026 | Rename history kept in `prev_names`; stale old-name keys dropped | Data model | Active |
 | D80 | 19-Oct-2026 | Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake | Tooling | Active |
 | D81 | 21-Oct-2026 | Publish the C19 re-run; keep values from blank Monitor cells; hold the C20 G-Sec record | Data | Active |
+| D82 | 22-Oct-2026 | The PowerPoint export lays out every native slide through one measured design system | Exports | Active (owner review of renders before merge) |
+| D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active (owner review before merge) |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -382,8 +384,9 @@ and the entry says so. "—" means no date is recorded.
 - **Alternatives / supersedes:** Supersedes D45 (pending). Hiding flagged figures (would drop data
   the desk publishes); flagging all 40 split notes, including the 12 about Max Drawdown only.
 - **Consequences:** Sep-2026: 33 flagged (28 `split`, 5 `lowcorr`). The Excel export has no
-  RISK_MATRIX sheet; the Select popover is not marked (C18); the footnote can overlap a slide with
-  about 22 or more funds (C17).
+  RISK_MATRIX sheet; the Select popover is not marked (C18, since fixed); the footnote could overlap
+  a slide with about 22 or more funds (C17, fixed by PR #21; since D82 the footnote sits in the slide's
+  footer block and the table is fitted or continued above it).
 - **Source:** `tools/merge_risk_matrix.js:21-29`, `:129-136`, `:201-202`; `H.riskFlagged`,
   `H.RISK_FLAG_NOTE` in `site/index.html`.
 
@@ -519,6 +522,66 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `docs/update-log/2026-09_Sep-2026.md` (Run 3);
   `monthly-updates/2026-09_Sep-2026/_review/run3_2026-10-19/5_hold_c20.txt` (local only);
   `site/index.html` non-null merge in `parseMfMonitor`.
+
+### D82 · The PowerPoint export lays out every native slide through one measured design system
+`Active` · 22-Oct-2026 (PR #26) · **owner review of the rendered deck before merge**
+- **Context:** The exported proposal broke on real data: the Investment Option table ran off the slide
+  (rows and GRAND TOTAL lost) because rows per slide (21), row height (0.24") and column widths were
+  fixed; notes sat at fixed y and ran into the footer rule; the rationale was one text box; doughnut
+  labels overlapped; four performance slides were 70–80% blank; the matrix overflowed without a flag
+  (C22). Audit: `docs/proposal-output-format-audit.md`.
+- **Decision:** a design system inside the export IIFE of `site/index.html` (no new deploy file, no new
+  library, pptxgenjs 3.12.0 unchanged): `DS` measures and type scale; `TXT`, one fixed Cambria
+  width table and a word-wrap that predicts PowerPoint (calibrated: 197 of 200 cells); `applyMaster`
+  with a fitted title and a page number on every native slide; `footerBlock` for notes and the "as
+  on" stamp; `columnWidths` / `rowHeights` / `planTable`, which pick the largest type (11 → 8pt) that
+  fits one slide or continue the table at 9pt with the header repeated, totals on every page, rows
+  spread evenly, no orphan group heading and a "(continued)" context row; a layout log that warns
+  about any block outside the frame. Slide rules built on it: the rationale as a card grid; legends
+  carrying the doughnut values; bar charts without the unit-less axis; Fund Performance buckets that
+  fit together share a slide, PMS and AIF split by asset class and dated `DATA_DATES.pms`, market-cap
+  columns only where the data carry a split; the matrix fitted or continued, or a coverage list when
+  no instrument has risk data, its average row showing the covered share; more than twelve AMCs end in
+  one "Other AMCs (n)" bar. The slide order of PRD §9.2 and the GRAND TOTAL on every Investment
+  Option page are kept.
+- **Rationale:** fit is computed from the data, so any portfolio — 3 or 45 instruments, long names —
+  stays inside the slide without dropping content or shrinking everything; one measured system
+  replaces a set of fixed positions that each failed differently.
+- **Alternatives / supersedes:** Supersedes the C17 `mk` shrink (PR #21). Rejected: shrinking all
+  text to fit (illegible at 40+ rows); pptxgenjs `autoPage` (its added slides skip the master and the
+  logo); `fit:'shrink'` (PowerPoint applies it only on edit); canvas `measureText` (depends on the
+  fonts of the machine and is not available to the Node tests); a separate sibling script (a seventh
+  deploy file, D1); re-laying the Disclaimer image (compliance text, desk source — C34).
+- **Consequences:** C22 closed. The deck's slide count now follows the data (continuation slides;
+  fewer performance slides). Image slides are not numbered, but the slide-number field counts them,
+  so native slides show their true position; a single-tab export starts at 1. Regression test
+  `tools/test/pptx_layout.test.js` (in CI). A page-code change of the export must keep the layout log
+  free of warnings.
+- **Source:** `buildDeck` and the design-system block before it in `site/index.html`;
+  `window.EXPORTS._ds`; `tools/test/pptx_layout.test.js`; `docs/proposal-output-format-audit.md`.
+
+### D83 · The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`)
+`Active` · 22-Oct-2026 (PR #26) · **owner review before merge; financial-data review 22-Oct-2026**
+- **Context:** Bonds, FDs and many AIF/PMS records hold their yield or IRR band mid-point in r1y/r3y/r5y
+  (`tools/merge_bond_list.js`, `tools/add_reckoner_funds.js`; D55 keeps a mid-point where the PMS
+  source is blank). The deck showed them as past performance, e.g. 3Y and 5Y returns for a fund
+  launched in January 2024 (C28). The hand-finished reference deck marks such cells "*".
+- **Decision:** `H.isExpectedReturn(fund, key, entry)` is true for the screen's IRR-mid-point fallback
+  (`H.isFallbackReturn`); for a stored record with 1Y = 3Y = 5Y and no 1M/3M/6M/2Y/SI (the two tools'
+  convention; 83 records, no false positive); and for a PMS/AIF period its performance source leaves
+  blank. It reads the stored MASTER record and skips a period the user overrode, so a Direct-plan
+  figure or a user's own return is never marked. The Investment Option and Fund Performance slides add
+  `*` to such a figure and one note: the figure is the expected return held in the data, not past
+  performance; weighted rows include these figures. Values are unchanged; weighted rows are not marked.
+- **Rationale:** the limitation reaches the client without hiding or changing a number, and only with
+  rules traced to the code that wrote the values.
+- **Alternatives / supersedes:** clearing the figures (changes data and the weighted rows — owner
+  decision, C28); marking every bond and AIF by product class (would mark real AIF track records);
+  matching values to the current band mid-point (fails for the 12 stale mid-points).
+- **Consequences:** the screen still marks only the fallback and the Excel marks nothing (C28). Weighted
+  rows that include expected figures are explained by the note, not marked.
+- **Source:** `H.isExpectedReturn` next to `H.isFallbackReturn` in `site/index.html`; `star()` in
+  `buildDeck`.
 
 ---
 
