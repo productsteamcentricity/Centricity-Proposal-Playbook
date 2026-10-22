@@ -113,8 +113,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D79 | 19-Oct-2026 | Rename history kept in `prev_names`; stale old-name keys dropped | Data model | Active |
 | D80 | 19-Oct-2026 | Refresh-only Monitor sheets: refresh existing records, never create; unknown sheets fail the bake | Tooling | Active |
 | D81 | 21-Oct-2026 | Publish the C19 re-run; keep values from blank Monitor cells; hold the C20 G-Sec record | Data | Active |
-| D82 | 22-Oct-2026 | The PowerPoint export lays out every native slide through one measured design system | Exports | Active (owner review of renders before merge) |
-| D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active (owner review before merge) |
+| D82 | 22-Oct-2026 | The PowerPoint export lays out every native slide through one measured design system | Exports | Active |
+| D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -524,7 +524,7 @@ and the entry says so. "—" means no date is recorded.
   `site/index.html` non-null merge in `parseMfMonitor`.
 
 ### D82 · The PowerPoint export lays out every native slide through one measured design system
-`Active` · 22-Oct-2026 (PR #26) · **owner review of the rendered deck before merge**
+`Active` · 22-Oct-2026 (PR #26, merge `5d39821`) · **owner decision: approved after the rendered sample deck**
 - **Context:** The exported proposal broke on real data: the Investment Option table ran off the slide
   (rows and GRAND TOTAL lost) because rows per slide (21), row height (0.24") and column widths were
   fixed; notes sat at fixed y and ran into the footer rule; the rationale was one text box; doughnut
@@ -561,7 +561,7 @@ and the entry says so. "—" means no date is recorded.
   `window.EXPORTS._ds`; `tools/test/pptx_layout.test.js`; `docs/proposal-output-format-audit.md`.
 
 ### D83 · The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`)
-`Active` · 22-Oct-2026 (PR #26) · **owner review before merge; financial-data review 22-Oct-2026**
+`Active` · 22-Oct-2026 (PR #26, merge `5d39821`) · **owner decision: approved with the rendered sample; financial-data review 22-Oct-2026**
 - **Context:** Bonds, FDs and many AIF/PMS records hold their yield or IRR band mid-point in r1y/r3y/r5y
   (`tools/merge_bond_list.js`, `tools/add_reckoner_funds.js`; D55 keeps a mid-point where the PMS
   source is blank). The deck showed them as past performance, e.g. 3Y and 5Y returns for a fund

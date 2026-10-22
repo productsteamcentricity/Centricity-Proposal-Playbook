@@ -22,7 +22,8 @@ Dates are commit dates in IST.
 
 Page code only (`site/index.html`, export section and one `H` predicate); no data block, sibling or
 library changed. `verify_page.js` output identical to `main`. Audit, root causes and validation:
-`docs/proposal-output-format-audit.md`.
+`docs/proposal-output-format-audit.md`. Merged as `5d39821` on the owner's approval of the rendered
+sample; Actions run 39806564591 published it, and the seven live files equal `site/` (SHA-256).
 
 ### Fixed
 - **Investment Option table no longer runs off the slide.** With 8 debt instruments the current export

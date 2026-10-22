@@ -1,9 +1,9 @@
 # Project state
 
-_Last updated: 22-Oct-2026 — PowerPoint design system (PR #26, D82–D83): the proposal deck is laid
-out by measurement, fits or continues, and marks expected returns; awaiting the owner's review of the
-rendered deck before merge. Before that: five small fixes (PRs #19–#23) and September Run 3 (PR #18);
-one JioBlackRock record stays held for C20._
+_Last updated: 22-Oct-2026 — PowerPoint design system live (PR #26, merge `5d39821`, D82–D83,
+approved by the owner after the rendered sample): the proposal deck is laid out by measurement, fits
+or continues, and marks expected returns. Before that: five small fixes (PRs #19–#23) and September
+Run 3 (PR #18); one JioBlackRock record stays held for C20._
 
 ## Summary
 
@@ -102,7 +102,9 @@ and, rendered in PowerPoint and measured with `tools/dev/check_pptx_bounds.js`, 
 footer line, no overlap, no text past the rule (the pre-change deck fails three ways). All 73 rows the
 old and new decks share are value-identical; chart data identical. Audit:
 `docs/proposal-output-format-audit.md`; renders and sample decks (local only):
-`_testdata/pptx-design-system/`.
+`_testdata/pptx-design-system/`. After the merge (`5d39821`, Actions run 39806564591, verify +
+publish succeeded): the seven live files equal `site/` (SHA-256, 7 of 7), and an export on the live
+site of the 4-fund check gives 23 slides, no layout warning, console clean.
 
 ## Release
 
@@ -112,8 +114,8 @@ old and new decks share are value-identical; chart data identical. Audit:
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #22 → `fb9cbd6` (21-Oct-2026), the last merge that changed `site/`; Actions run 39555759202 (verify + publish) succeeded. PR #18 → `f37fa01` published Sep-2026 Run 3. PR #23 (A27) changes no file in `site/` |
-| Live status | 21-Oct-2026: the six deploy files and `robots.txt` on the live site equal `main` `fb9cbd6` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
+| Latest merge | PR #26 → `5d39821` (22-Oct-2026), the last merge that changed `site/` (PowerPoint design system, D82–D83); Actions run 39806564591 (verify + publish) succeeded. Before it: PR #22 → `fb9cbd6`; PR #18 → `f37fa01` published Sep-2026 Run 3 |
+| Live status | 22-Oct-2026: the six deploy files and `robots.txt` on the live site equal `main` `5d39821` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -169,14 +171,9 @@ Five independent fixes, one PR each; none changes a data block.
 
 | PR | Merge | What | Issues / decisions |
 |---|---|---|---|
-| #26 | — (awaiting the owner's review) | Every native slide laid out by measurement: shared frame, footer block and page numbers; table engine that fits or continues (Investment Option, performance, matrix, liquidity); rationale cards; legends with values; performance buckets share slides, PMS/AIF by asset class and dated by `DATA_DATES.pms`; matrix coverage list; "Other AMCs (n)"; `*` on expected returns; `pptx_layout.test.js`; `tools/dev/render_pptx.ps1` + `check_pptx_bounds.js`; audit `docs/proposal-output-format-audit.md` | D82, D83; C22 closed; C28–C34 new |
+| #26 | `5d39821` | Every native slide laid out by measurement: shared frame, footer block and page numbers; table engine that fits or continues (Investment Option, performance, matrix, liquidity); rationale cards; legends with values; performance buckets share slides, PMS/AIF by asset class and dated by `DATA_DATES.pms`; matrix coverage list; "Other AMCs (n)"; `*` on expected returns; `pptx_layout.test.js`; `tools/dev/render_pptx.ps1` + `check_pptx_bounds.js`; audit `docs/proposal-output-format-audit.md` | D82, D83; C22 closed; C28–C34 new |
 
 ## In progress / blockers
-
-- **Owner review — PR #26 (PowerPoint design system).** Changes every client-facing deck; merge only
-  on the owner's go-ahead after the rendered sample (`_testdata/pptx-design-system/`, local only).
-  Two display choices in it are the owner's to confirm: the `*` marker and its note (D83, C28) and
-  the Fund Performance buckets sharing slides (D82).
 
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
