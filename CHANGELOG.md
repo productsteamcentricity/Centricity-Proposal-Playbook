@@ -18,6 +18,39 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-27 — The outgoing owner's handover export ingested (docs only)
+
+No `site/` or `tools/` change. Record: `docs/update-log/2026-10-23_handover-export.md`.
+
+### Added
+- The export of 23-Oct-2026 (two zips) was verified by SHA-256, extracted by script (2,720 files)
+  and matched against its manifest (2,680 of 2,680).
+- 32 desk files were filed by data month into the local `monthly-updates/`, including a new
+  `2026-03_Mar-2026` folder. The final Sep market deck replaced the first issue, and one April
+  monitor is held (B9).
+- New `KNOWN_ISSUES.md` items:
+  - B8: NAV Data and Fund Risk Ratios were made in-house and now have no producer;
+  - B9: the held April monitor;
+  - C35: two Sortino definitions;
+  - C36: undated May-2026 Select ratios;
+  - C37: the bond 3Y/5Y rule of 20-May never applied;
+  - C38: an inferred SIF AMC;
+  - C39: segregated side pockets;
+  - C40: the rename tool's "new to MASTER" count;
+  - A28: `tools/lib/pptx.js` on some decks;
+  - R8: client items found inside the export.
+
+### Changed
+- Corrected from the export:
+  - B1 (PMS performance is 31-Jul data under the 31-Aug label), B2, B3 (closed) and B7;
+  - C5 (very likely our existing record), C6, C11 (Rf drives the live matrix), C23 (source-confirmed;
+    46 entries), C24 (99 records with no band), C28 (14 AIFs) and R1;
+  - R6 (OneDrive placeholders broke `git checkout`).
+- `docs/INPUT_FILES.md`: who sends each file (roles only); #12 and #17 marked made in-house; the PMS,
+  Reckoner, bond, IRR and closing-slide sections; the coverage matrix (a 2026-03 column); the gaps
+  and requests.
+- `docs/PROJECT_STATE.md`, `docs/handover/README.md` and the CLAUDE.md headline.
+
 ## 2026-10-22 — PowerPoint design system: the proposal deck fits, continues and labels honestly (PR #26, feat/pptx-design-system)
 
 Page code only (`site/index.html`, export section and one `H` predicate); no data block, sibling or

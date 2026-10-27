@@ -71,9 +71,14 @@ on 20-Aug and 28-Sep.)
 | 9 | `Exit Load_<Month>.xlsx` | Exit loads |
 | 10 | `SIF Monitor_<date>.xlsx` | SIF returns |
 | 11 | `Fund Manager Data_<date>.xlsx` | Fund manager names |
-| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Portfolio Matrix (Beta, Sharpe, Sortino, …) |
+| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` — **not sent by the desk** (see below) | Portfolio Matrix (Beta, Sharpe, Sortino, …) |
 | 13 | `Monthly Outlook Pagers_<Month>.pptx` — **the final issue** | The Market Update slides in every exported PowerPoint |
-| 17 (opt.) | `NAV Data as on <date>.xlsx` | Alternative way to compute the risk matrix |
+| 17 (opt.) | `NAV Data as on <date>.xlsx` — **not sent by the desk** (see below) | Alternative way to compute the risk matrix |
+
+#12 and #17 were made in-house by the outgoing owner with a PowerShell + C# toolchain, from AMFI NAV
+history and Nifty index files downloaded by hand. Nobody sends them, and nobody builds them now. Until
+the owner decides who does (`KNOWN_ISSUES.md` B8), the Portfolio Matrix cannot be refreshed. Do not
+ask the desk for them.
 
 **When the monthly Reckoner is released (the "Reckoner cycle"; the deck is titled one month ahead of
 its data)**

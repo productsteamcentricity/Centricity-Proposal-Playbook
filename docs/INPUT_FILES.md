@@ -66,9 +66,21 @@ node -e "const X=require('xlsx');const wb=X.readFile(process.argv[1],{sheetRows:
 
 ## 1. Summary
 
-"Sent by" is `desk/vendor` where the pack does not say who produced the file. The outgoing owner
-forwarded every file, and the original sender of each was not recorded. "Top" means the top level of
-the month folder.
+"Sent by" is `desk/vendor` where the pack does not say who produced the file. "Top" means the top
+level of the month folder. Senders, by role only (from the outgoing owner's handover export,
+25-Oct-2026):
+- **#1–#10:** e-mailed from the ACE / Accord data-export mailbox to a shared analyst mailbox, then
+  forwarded by the products desk. The month-end set lands around the 12th–17th of the next month.
+- **#15:** the Reckoner comes from the firm-wide "Centricity Updates" mailer, around the 18th–20th.
+- **#13:** a research or products-desk analyst.
+- **#14:** the PMS-data vendor's format, about four weeks after month-end.
+- **P1:** an internal colleague, irregularly.
+- **#12 and #17:** **made in-house** by the outgoing owner, not sent by anyone (`KNOWN_ISSUES.md`
+  B8).
+- **Not determined:** the rest.
+
+Files land in two portal folders ("For Centricity Proposal Playbook Portal" and "For Centricity
+Portfolio Review Portal"), and a re-issue sometimes reaches only one of them: check both.
 
 | # | File (typical name) | Cadence | Sent by | Consumed by (`tools/…`) | Goes in | Recognise it by content |
 |---|---|---|---|---|---|---|
@@ -83,17 +95,17 @@ the month folder.
 | 9 | `Exit Load_<Month>.xlsx` | Monthly | desk/vendor | `merge_expense_exitload.js --exitload` | Top | `Scheme Name` and `Remark` (prose). Since Sep-2026 also a numeric `Exit Load` column. |
 | 10 | `SIF Monitor_<date>.xlsx` | Monthly | desk/vendor | `merge_sif_monitor.js` | Top | One sheet with about 30 scheme rows. Returns columns plus `Category`, `Asset Type` (`Equity`/`Hybrid`), `Class Name`, `Sub Category`, `Remark`. |
 | 11 | `Fund Manager Data_<date>.xlsx` | Monthly | desk/vendor | `merge_fund_managers.js` (after the bake) | Top | `Scheme Name`, `Inception Date`, `Fund Manager`, `From Date`, `To Date`, with interleaved `Scheme Name: …` group rows. About 13,600 rows. |
-| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Monthly | desk/vendor | `merge_risk_matrix.js` | Top | Sheets `Risk Ratios & 3Y Rolling` and `Data Flags`. A1 reads `RISK RATIOS & 3Y ROLLING RETURNS - ALL MUTUAL FUNDS (AS ON …)`. Header row 4: `Fund Name`, `CMV`, `Wt %`, `Beta`, `SD (Ann.)`, `Alpha` …, `3Y Rolling`. |
+| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Monthly | **made in-house** (no producer now, B8) | `merge_risk_matrix.js` | Top | Sheets `Risk Ratios & 3Y Rolling` and `Data Flags`. A1 reads `RISK RATIOS & 3Y ROLLING RETURNS - ALL MUTUAL FUNDS (AS ON …)`. Header row 4: `Fund Name`, `CMV`, `Wt %`, `Beta`, `SD (Ann.)`, `Alpha` …, `3Y Rolling`. |
 | 13 | `Monthly Outlook Pagers_<ship month>.pptx` | Monthly | desk | PowerPoint render, then `update_market_slides.js` | Top | 5–6 slides titled `EQUITY UPDATE`, `DEBT UPDATE`, `COMMODITY UPDATE`, `OVERALL MARKET UPDATE`. |
 | 14 | `PMS_Scheme_Performance_<Month Year>.xlsx` | Reckoner cycle | vendor | `merge_pms_performance.js`, then `pin_pms_alias.js` | Top | A sheet whose row 1 has `Scheme Name` and `Scheme Return 1 Year` among 25 required columns. **Never in the pack.** |
 | 15 | `Monthly Investment Reckoner - <ship Month Year>.pptx` | Reckoner cycle | desk/vendor | `merge_reckoner.js`, `merge_aif_performance.js`, `add_reckoner_funds.js` (on demand) | Top | 100+ slides. Slide 1 reads `Investment Reckoner <Month Year>`, then `INDEX` slides. Grid slides `PMS – EQUITY` and `AIF PERFORMANCE …` have a "Performance as on …" footnote. |
 | 16 | `PMS & AIF Analytics <Month Year>.xlsx` | Reckoner cycle, when supplied | desk/vendor | `merge_pms_aif_analytics.js` | Top | `Product Category`, `Scheme Name`, `Company Name`, `Corrected Name`, `Holding(%)`, `Sector`, `ISIN`, `SEBI Mcap`. Each scheme's `Holding(%)` sums to about 1.0. |
-| 17 | `NAV Data as on <date>.xlsx` (optional) | Monthly, optional | desk/vendor | `build_risk_matrix.py` | Top | Sheets `NAV Data-MF`, `CATEGORY FOR MF`, `NAV Data-Benchmark`. About 1,088 fund columns. |
-| P1 | `Bond List_<date>.xlsx` | When it changes | desk | `merge_bond_list.js` | Top | Sheets `OneDigital Bonds Options` and `Invictus Bonds Options`. Row 1: `Tenure`/`Structure`, `Issuer`, `Rating`, `Expected Pre Tax IRR` … `Face Value`. |
+| 17 | `NAV Data as on <date>.xlsx` (optional) | Monthly, optional | **made in-house** (no producer now, B8) | `build_risk_matrix.py` | Top | Sheets `NAV Data-MF`, `CATEGORY FOR MF`, `NAV Data-Benchmark`. About 1,088 fund columns. |
+| P1 | `Bond List_<date>.xlsx` | When it changes | desk | `merge_bond_list.js` | Top | Either two sheets, `OneDigital Bonds Options` and `Invictus Bonds Options`, or one `Sheet1` that names no desk (06-Aug-2026, Invictus). Row 1: `Tenure`/`Structure`, `Issuer`, `Rating`, `Expected Pre Tax IRR` … `Face Value`. |
 | P2 | `Gift City Master List.xlsx` | When it changes | desk | none: `NEW_GIFT` in `site/Centricity_June_Refresh.js` **and** the embedded MASTER block (D24; the block only through `tools/lib/blocklib.js`); Off Shore funds in `site/Centricity_IRR_Offshore.js` | Top | `Fund Name`, `Type`, `In/Out`, `Minimum Investment`, `Expected IRR Range`. `Type` values are MF Feeder, GIFT CITY and Off Shore. |
 | P3 | `SIF Master List_<Month>.xlsx` | When it changes | desk | none: hand-edit `var SIF` in `site/Centricity_SIF_Refresh.js` | Top | `Scheme Name`, `AMC`, `Category`, `Remark`, `Range`. About 30 rows. |
 | P4 | `Exit Load & Expected IRR Return Range.xlsx` | When it changes (the old manual says monthly) | desk | none: hand-edit `var IRR` in `site/Centricity_IRR_Offshore.js` | Top | Sheets `Mutual Funds` and `PMS & AIF`. `Scheme Name`, `Maturity/Exit Load`, `Expected IRR` with a `Range` sub-header. |
-| P5 | `Topic Slides, Disclaimer & Thank You Slide.pptx` | When it changes | desk | PowerPoint render, then `update_closing_slides.js` | Top | Disclaimer and Thank You slides **[unverified: never in the pack]**. |
+| P5 | `Topic Slides, Disclaimer & Thank You Slide.pptx` | When it changes | desk | PowerPoint render, then `update_closing_slides.js` | Top | Disclaimer and Thank You slides. Two versions came with the handover export (archive only, `04_slides/source_decks/`). |
 
 Timing at handover: the MF cycle (#1–#13, #17) for data month M was applied around the 13th–17th of
 M+1. The Reckoner cycle (#14–#16) came later. The Reckoner carrying month-M data is titled M+1: the
@@ -352,12 +364,19 @@ exceptions are noted under their files:
 - **Size:** 1,088 funds. Data Flags had 175 rows in Aug and 167 in Sep.
 - **Older layouts** (section 3) abort the tool: `Risk Ratios_May 2026 Updated` and
   `3Y Rolling + Risk Ratios - MF (as on 30-Jun-2026)`.
+- **Who makes it (25-Oct-2026, handover export):** nobody sends this file. The outgoing owner
+  computed it in-house from #17 with a PowerShell + C# toolchain (export
+  `05_project_working_folder/_nav_risk_toolchain/`): Rf 4.5% (C11) and, since August, the textbook
+  Sortino (C35). Until the owner decides who builds it, the October risk matrix has no producer
+  (`KNOWN_ISSUES.md` B8).
 
 ### 13. Market Update deck ("Monthly Outlook Pagers")
 
 - **Names seen:** `Monthly Outlook Pagers- July 2026` (June data) and `Monthly Outlook Pagers- Sep 2026`
-  (Aug data). The July-data edition was `Market Update Slide_August 2026`, which is not in the pack.
-  Then `Monthly Outlook Pagers_Oct 2026` (Sep data). **Each deck is named for the month it ships,
+  (Aug data). The July-data edition was `Market Update Slide_August 2026`, and the April edition was
+  `Monthly Market Update`. Both arrived with the handover export and are filed (25-Oct-2026). Then
+  `Monthly Outlook Pagers_Oct 2026` (Sep data); its final 17:14 re-issue is now in the September
+  folder, with the 11:28 first issue in `_superseded/`. **Each deck is named for the month it ships,
   one month after its data.**
 - **Content:** the June and Aug decks have 5 slides: `EQUITY UPDATE` (twice), `DEBT UPDATE`,
   `COMMODITY UPDATE` and `OVERALL MARKET UPDATE`. The Oct deck has 6 slides, adding a second
@@ -373,11 +392,17 @@ exceptions are noted under their files:
 
 ### 14. PMS_Scheme_Performance
 
-- **Never in the pack.** The live data (`DATA_DATES.pms` "31st August 2026", `site/index.html:1451`)
-  came from `PMS_Scheme_Performance_31st August 2026`, applied on 28-Sep-2026 (commit "PMS + AIF
-  performance as on 31 Aug 2026"). The outgoing owner kept it outside the month folders. An earlier
-  03-Sep-2026 re-issue was merged with `DATA_DATES.pms` left at 31-Jul. This specification comes
-  from the code only.
+- **Filed from the handover export (25-Oct-2026), by content:**
+  - 2026-05: the `June 2026`-named file holds 31-May data, in an old 27-column layout the tool rejects.
+  - 2026-06: `PMS_Scheme_Performance (003)` holds 30-Jun data.
+  - 2026-07: the `31st August 2026`-named file holds 31-Jul data. The 03-Sep `31st July 2026` issue
+    is in `_superseded/`.
+- **The live data is 31-Jul, not 31-Aug.** `PMS_Scheme_Performance_31st August 2026`, applied on
+  28-Sep-2026 (commit `ac4347b` moved `DATA_DATES.pms` to "31st August 2026", `site/index.html:1451`),
+  equals the live block on all 692 records. Its content is as on 31-Jul-2026: the newest `Risk Ratios
+  Date` is 31-Jul, and its rows match the Aug-2026 deck ("as on July 31st"), not the Sep deck. The
+  AIF part, from the Sep deck, really is 31-Aug. The label is the owner's call (`KNOWN_ISSUES.md` B1).
+- No file holds 31-Aug or later data yet.
 - **Recognise:** any sheet whose row 1 contains both `Scheme Name` and `Scheme Return 1 Year`. The
   sheet has been seen as `PMS Performance` and as `Sheet1` (`merge_pms_performance.js:95-105`).
   25 columns are required (`:107-113`): `Scheme Name`, `AUM`, `P/E Ratio`, `Large Cap`, `Mid Cap`,
@@ -401,8 +426,11 @@ exceptions are noted under their files:
 
 ### 15. Monthly Investment Reckoner deck
 
-- **Names seen:** only `Monthly Investment Reckoner - August 2026.pptx`, with data as on 31-Jul-2026.
-  Each deck is named for the month it ships.
+- **Names seen:** `Monthly Investment Reckoner - <April … September> 2026.pptx`, with data as on
+  31-Mar to 31-Aug-2026. Each deck is named for the month it ships, one month after its data. The
+  April–July and September decks came with the handover export and are filed by data month
+  (25-Oct-2026). Only the 08-Oct copy of the September deck is readable: the 17-Sep download is
+  truncated and has no zip central directory (A28).
 - **Content:** 114 slides, 12 media files and 59 MB.
   - Slide 1: `Investment Reckoner <Month Year>`.
   - Slides 2–4: `INDEX` and table of contents. `NARRATIVE` must be re-read from these every month.
@@ -447,7 +475,11 @@ exceptions are noted under their files:
 
 ### 17. NAV Data (optional)
 
-- **Names seen:** `NAV Data as on <dd>th <Month> 2026` (June, August, September).
+- **Names seen:** `NAV Data as on <dd>th <Month> 2026` (June, July, August, September), and
+  `NAV_Data_31May2021_31May2026` (May). The May and July files came with the handover export.
+- **Who makes it:** the outgoing owner, in-house (AMFI NAV history plus five Nifty index files
+  downloaded by hand from niftyindices.com; export `_nav_risk_toolchain/`). Nobody sends it, and
+  nobody builds it now (`KNOWN_ISSUES.md` B8).
 - **Layout:** three sheets, read by exact name (`build_risk_matrix.py:66`, `:82`, `:90`):
   - `NAV Data-MF`: row 1 is `Date | <one column per fund>`, about 1,088 funds. Row 2 holds AMFI codes
     and is dropped when it is not a date (`:68-74`).
@@ -463,10 +495,15 @@ exceptions are noted under their files:
 
 ### P1. Bond List
 
-- **Names seen:** `Bond List_08th June 2026`, which sat at the portal root and was filed in 2026-06.
-  The live Invictus bonds came from a list dated 06-Aug-2026 (39 rows, 36 bonds) that is not in the
-  pack.
-- **Layout:** two sheets, `OneDigital Bonds Options` and `Invictus Bonds Options`. Row 1 is a header
+- **Names seen:** `Bond List_08th June 2026`, which sat at the portal root and was filed in 2026-06;
+  from the handover export, also the 20-May list (2026-05), the 01-Jun list (2026-06
+  `_superseded/`) and the 06-Aug list (2026-08), filed on 25-Oct-2026.
+- **Which desk:** the live 36 Invictus bonds come from the 06-Aug-2026 list (39 rows → 36 bonds; a
+  dry run reproduces them). The live 14 OneDigital bonds come from the 08-Jun list's `OneDigital Bonds
+  Options` sheet.
+- **Layout:** usually two sheets, `OneDigital Bonds Options` and `Invictus Bonds Options`. The
+  06-Aug list has a single `Sheet1` that names no desk: the desk is known only from the owner's
+  instruction, so always pass `--desk`. Row 1 is a header
   (A1 is `Tenure` on one sheet and `Structure` on the other): `Issuer | Rating | Expected Pre Tax IRR
   | (blank) | Maturity Date | Secured/ Unsecured | Residual Tenor (months) | Interest Frequency |
   Face Value`. Row 2 has a `Range` sub-header with the low and high IRR in columns D and E. Data
@@ -515,12 +552,18 @@ exceptions are noted under their files:
 - **Use:** no tool. It is the source of the hand-maintained `var IRR` map in
   `site/Centricity_IRR_Offshore.js`, keyed by exact MASTER name. `rename_schemes.js` re-keys that map
   on renames.
-- Only the April copy exists. The old manual lists this file as monthly, with "format changed —
-  verify columns each run". `docs/PRD.md` §11.1 omits it.
+- The copy in the April folder is not an April issue. It is the 23-Jun-2026 file, the last one
+  applied and the source of the live IRR map (export manifest LastWriteTime, 25-Oct-2026). Earlier
+  drafts (15-May, 31-May, 23-Jun 10:57) are archive only. No later file exists: the 99 MF/ETF/SIF
+  records with no band (`KNOWN_ISSUES.md` C24) need a current one. The old manual lists this file as
+  monthly, with "format changed — verify columns each run". `docs/PRD.md` §11.1 omits it.
 
 ### P5. Topic Slides, Disclaimer & Thank You Slide
 
-- **Never in the pack.** Render the Disclaimer slide to `disclaimer.png` and the Thank You slide to
+- **Not in the month folders.** Two versions came with the handover export (archive only,
+  `04_slides/source_decks/`): `Topic Slides, Disclaimer & Thank You Slide.pptx` (29-Jul) and
+  `Disclaimer & Thank You Slides.pptx` (27-Aug, re-saved after the 25-Aug apply). Filing one waits
+  for the owner. Render the Disclaimer slide to `disclaimer.png` and the Thank You slide to
   `thankyou.jpg`, both at exactly 2001 × 1125, after deleting the logo and slide-number placeholders.
   Then run `update_closing_slides.js --dir <render dir>` (`:45-48`, `:78`). The steps are in the
   operating manual → *Refreshing the closing slides*.
@@ -542,7 +585,7 @@ a sibling.
 | `Investment Proposal Sample.xlsx` (2026-04) | Layout sample for the Excel export | Design reference only |
 | `SAMPLE CONSTRUCT.pptx` (2026-04) | Layout sample for the construct slide | Design reference only |
 | `Extra Slides.pptx` (2026-04) | The three divider slides | Rendered once into `site/Centricity_ExtraSlides.js` (needed only to redraw them) |
-| `OneDigital Reckoner_May 2026.xlsx` (2026-04) | Original seed of the Centricity Select taxonomy (40 sheets) | `CENTRICITY_SELECT`; superseded by the Reckoner deck (#15) |
+| `OneDigital Reckoner_May 2026.xlsx` (2026-04) | Original seed of the Centricity Select taxonomy (40 sheets) | `CENTRICITY_SELECT`. The Reckoner deck (#15) now sets membership, but this workbook is still the only source of the Select ratios (Sharpe, SD, alpha), which are May-2026 values (`KNOWN_ISSUES.md` C23, C36) |
 | `AMFI CODE.xlsx` (2026-06) | Scheme name → AMFI code | Not wired to anything; adding it would be a feature |
 | `desktop.ini` (2026-07/Analytics) | Windows folder metadata | Noise |
 | `_handover_manifest.json` (monthly-updates/) | SHA-256 of every file extracted from the handover zip | Provenance only |
@@ -561,91 +604,114 @@ a sibling.
 
 ---
 
-## 4. Historical coverage (handover pack, 2026-04 … 2026-09)
+## 4. Historical coverage (month folders, 2026-03 … 2026-09)
 
-This table shows what the month folders hold. It does not show what the desk sent: before August
-the outgoing owner kept some files (the returns file, PMS performance, the Reckoner decks) at the
-Desktop root, outside these folders.
+This table shows what the month folders hold. It was updated on 25-Oct-2026 when the outgoing
+owner's handover export was filed (`docs/update-log/2026-10-23_handover-export.md`). It does not
+show what the desk sent: some files were kept outside these folders, and the 2026-03 folder exists
+only because the export held March-data files.
 
-Cell values: **present** (compatible with the current tool) · **missing** · **incompatible**
-(section 3) · **—** (periodic file, not expected that month). Letters refer to the notes below the
-table.
+Cell values:
+- **present**: compatible with the current tool;
+- **missing**;
+- **incompatible**: see section 3;
+- **—**: a periodic file, not expected that month.
 
-| # | Input | 2026-04 | 2026-05 | 2026-06 | 2026-07 | 2026-08 | 2026-09 |
-|---|---|---|---|---|---|---|---|
-| 1 | Daily MF Monitor (Regular) | present (a) | present (b) | present | present | present | present |
-| 2 | Daily MF Monitor (Direct) | missing | present | present | present | present | present |
-| 3 | Equity Analytics | present (c) | present | present (d) | present | present | present (e) |
-| 4 | Hybrid Analytics | present (c) | present | present | present | present | present (e) |
-| 5 | Debt Analytics | present (c) | present | present | present | present | present |
-| 6 | Listed Direct Equity — universe | incompatible | present | present | present | present | present |
-| 7 | Listed Direct Equity — returns | missing | missing | missing | present | present | present (f) |
-| 8 | Expense Ratio | missing | missing | incompatible | present | present | present |
-| 9 | Exit Load | incompatible | missing | present | present | present | present |
-| 10 | SIF Monitor | missing | missing | missing | missing | present | present |
-| 11 | Fund Manager Data | missing | missing | incompatible | missing | present | missing |
-| 12 | Fund Risk Ratios & 3Y Rolling | missing | incompatible | incompatible | missing | present | present |
-| 13 | Market Update deck | missing | missing | present | missing | present | present (g) |
-| 14 | PMS_Scheme_Performance | incompatible | incompatible | missing | missing | missing | missing |
-| 15 | Monthly Investment Reckoner deck | missing | missing | missing | present | missing | missing (h) |
-| 16 | PMS & AIF Analytics | present | present | missing | present | missing | missing |
-| 17 | NAV Data (optional) | missing | missing | present | missing | present | present |
-| P1 | Bond List | — | — | present (i) | — | — | — |
-| P2 | Gift City Master List | present | present | — | — | — | — |
-| P3 | SIF Master List | — | — | present | — | — | — |
-| P4 | Exit Load & Expected IRR Return Range | present | — | — | — | — | — |
-| P5 | Topic Slides, Disclaimer & Thank You | — | — | — | — | — | — |
+Letters refer to the notes below the table.
+
+| # | Input | 2026-03 | 2026-04 | 2026-05 | 2026-06 | 2026-07 | 2026-08 | 2026-09 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Daily MF Monitor (Regular) | missing | present (a) | present (b) | present | present | present | present |
+| 2 | Daily MF Monitor (Direct) | missing | missing | present | present | present | present | present |
+| 3 | Equity Analytics | present (j) | present (c) | present | present (d) | present | present | present (e) |
+| 4 | Hybrid Analytics | present (j) | present (c) | present | present | present | present | present (e) |
+| 5 | Debt Analytics | present (j) | present (c) | present | present | present | present | present |
+| 6 | Listed Direct Equity — universe | missing | incompatible | present | present | present | present | present |
+| 7 | Listed Direct Equity — returns | missing | missing | missing | missing | present | present | present (f) |
+| 8 | Expense Ratio | missing | missing | missing | incompatible | present | present | present |
+| 9 | Exit Load | missing | incompatible | missing | present | present | present | present |
+| 10 | SIF Monitor | missing | missing | missing | missing | missing | present | present |
+| 11 | Fund Manager Data | missing | missing | missing | incompatible | missing | present | missing |
+| 12 | Fund Risk Ratios & 3Y Rolling | missing | missing | incompatible | incompatible | missing | present | present |
+| 13 | Market Update deck | missing | present (k) | present | present | present | present | present (g) |
+| 14 | PMS_Scheme_Performance | missing | incompatible | incompatible (l) | present | present (m) | missing | missing |
+| 15 | Monthly Investment Reckoner deck | present (n) | present | present | present | present | present (o) | missing (h) |
+| 16 | PMS & AIF Analytics | missing | present | present | missing | present | missing | missing |
+| 17 | NAV Data (optional) | missing | missing | present | present | present | present | present |
+| P1 | Bond List | — | — | present | present (i) | — | present | — |
+| P2 | Gift City Master List | — | present | present | — | — | — | — |
+| P3 | SIF Master List | — | — | — | present | — | — | — |
+| P4 | Exit Load & Expected IRR Return Range | — | present (p) | — | — | — | — | — |
+| P5 | Topic Slides, Disclaimer & Thank You | — | — | — | — | — | — | — (q) |
 
 - (a) Named "15th May 2026", but the AUM date is 30-Apr-2026. April was the initial-build pack, and
-  it has no `Analytics/` folder or Direct monitor, so `bake_month.js` cannot run on it.
+  it has no `Analytics/` folder or Direct monitor, so `bake_month.js` cannot run on it. The export
+  also has a true 30-Apr month-end monitor, which is held for the owner (`KNOWN_ISSUES.md` B9).
 - (b) The soft hyphen in the file name.
 - (c) At the folder root, not in `Analytics/`. Hybrid and Debt also lack the `<Class> Analytics_`
   prefix. The headers are compatible, so `merge_analytics.js` with explicit paths would work.
 - (d) Banner rows; the header is on row 4.
 - (e) No SIF schemes. Aug had 16 equity and 13 hybrid.
 - (f) The good re-issue. The broken 13:52 copy is not in the pack.
-- (g) The stale 11:28 first issue. The live slides came from the 17:14 re-issue, which is not in the
-  pack.
-- (h) The "October 2026" deck (Sep data) was not yet due on 16-Oct-2026 [inference: the previous
-  two decks were applied on 20-Aug and 28-Sep].
-- (i) Taken from the portal root and filed under June.
+- (g) The final 17:14 re-issue, filed from the handover export on 25-Oct-2026. The 11:28 first issue
+  is in `_superseded/`.
+- (h) The "October 2026" deck (Sep data) is still to come.
+- (i) Taken from the portal root and filed under June. The 01-Jun list is in `_superseded/`.
+- (j) The March analytics, from the export. The header is on row 2 or row 4.
+- (k) `Monthly Market Update.pptx`, from the export. It is undated; slide 1 says "in the month of
+  Apr 2026".
+- (l) The `June 2026`-named PMS file holds 31-May data, in an old 27-column layout the tool rejects.
+- (m) The `31st August 2026`-named file holds July data and equals the live block (`KNOWN_ISSUES.md`
+  B1). The 03-Sep issue is in `_superseded/`.
+- (n) The "April 2026" deck (data as on 31-Mar).
+- (o) The 08-Oct copy. The 17-Sep download is truncated (A28) and was not filed.
+- (p) The 23-Jun-2026 issue, the latest applied, despite the folder.
+- (q) Two versions are in the export archive (`04_slides/source_decks/`). Filing one waits for the
+  owner.
 
 ---
 
 ## 5. Gaps at handover and what to ask the desk for next
 
-**What is live on 16-Oct-2026** (from `site/index.html:1448-1452`, `:5093` and
-`site/Centricity_SIF_Refresh.js:61`):
+**What is live** (from `site/index.html:1448-1452`, `:5093` and `site/Centricity_SIF_Refresh.js:61`;
+first written 16-Oct-2026, updated 25-Oct-2026 with the handover export):
 
-- **30-Sep-2026:** MF performance, analytics, SIF performance, the risk matrix, Direct Equity, and
-  expense and exit loads.
-- **31-Aug-2026:** PMS performance, AIF performance and Centricity Select (from the September
-  Reckoner deck).
+- **30-Sep-2026:**
+  - MF performance, including, since Sep Run 3, the 214 refresh-only-sheet funds; the JioBlackRock
+    G-Sec record is held (C20);
+  - analytics, SIF performance, the risk matrix and Direct Equity;
+  - expense and exit loads.
+- **31-Aug-2026:** AIF performance and Centricity Select, from the September Reckoner deck.
+- **31-Jul-2026:**
+  - **PMS performance**, under the label "31st August 2026" (`KNOWN_ISSUES.md` B1);
+  - the PMS/AIF look-through.
 - **Fund managers:** mostly the single `[Fund Manager 1]` name from the 30-Sep monitor. The Sep bake
-  overwrote the 31-Aug roster, and `merge_fund_managers.js` was not re-run. A dry run with the
-  Aug file on 16-Oct-2026 would rewrite 1,310 schemes.
-- **31-Jul-2026:** the PMS/AIF look-through.
-- **Older:** Invictus bonds (06-Aug-2026 list), GIFT City and the SIF universe (June-2026 lists plus
-  later hand edits).
+  overwrote the 31-Aug roster, and `merge_fund_managers.js` was not re-run. A dry run with the Aug
+  file on 16-Oct-2026 would rewrite 1,310 schemes.
+- **Older:**
+  - Invictus bonds: the 06-Aug-2026 list.
+  - OneDigital bonds: the 08-Jun-2026 list.
+  - GIFT City and the SIF universe: the June-2026 lists plus later hand edits.
+  - IRR bands: the 23-Jun-2026 file.
 
-| Gap | Effect on the dashboard | Ask the desk for |
+| Gap | Effect on the dashboard | Ask for |
 |---|---|---|
 | No Fund Manager Data for Sep-2026 | `fund_mgr` (internal field) shows only the monitor's first manager; the Sep bake overwrote the 31-Aug roster | `Fund Manager Data` as on 30-Sep-2026 |
-| `PMS_Scheme_Performance` is in no month folder | PMS returns are one cycle behind (31-Aug) | The file as on 30-Sep-2026, plus `PMS_Scheme_Performance_31st August 2026` (the live one) for the archive |
-| The live Reckoner deck ("September 2026", as on 31-Aug) is not in the pack | Centricity Select and AIF returns are at 31-Aug | The "October 2026" deck (as on 30-Sep) when it is released, plus the September deck for the archive |
+| No PMS file holds 31-Aug or later data (the live file is archived in 2026-07: 31-Jul content) | PMS returns are two cycles behind, under a 31-Aug label (B1) | The files as on 31-Aug and 30-Sep-2026 |
+| The "October 2026" Reckoner deck (as on 30-Sep) is not out yet; the September deck is now archived | Centricity Select and AIF returns are at 31-Aug | The "October 2026" deck when it is released |
 | The newest PMS & AIF Analytics is July | The look-through is two months old | The latest `PMS & AIF Analytics` |
 | The Sep-2026 analytics contain no SIF schemes | The SIF look-through stays at 31-Aug | Equity and Hybrid Analytics that include the SIF/long-short schemes, from October onwards (and a Sep re-issue if possible) |
-| The pack's Oct market deck is the stale first issue | None (the live slides came from the re-issue) | The final `Monthly Outlook Pagers_Oct 2026.pptx`, for the archive |
 | The SIF Master List is June (28 schemes); live has 30 | Universe changes since June were made by hand | The current `SIF Master List` |
-| The 06-Aug Bond List behind the live Invictus bonds is not in the pack; OneDigital is older | Bond lists may be stale | The current Bond List for both desks, saying which sheet is which |
-| `Exit Load & Expected IRR Return Range` exists only as the April copy, and its format reportedly changed | IRR bands may be stale | The current version |
+| Bond lists name the desk only by sheet; the 06-Aug list names none | The desk depends on the owner's instruction | The current Bond List for both desks, with the desk named in the file |
+| The latest `Exit Load & Expected IRR Return Range` is the 23-Jun-2026 file | 99 MF/ETF/SIF records have no IRR band (C24) | The current version |
 | The GIFT City list dates from June-2026 | — | Confirmation that it is unchanged, or a new list |
-| The closing-slides deck has never been supplied | — | One copy for the archive (needed only when those slides change) |
+| #12 Fund Risk Ratios and #17 NAV Data were made in-house by the outgoing owner | No producer for the Oct-2026 risk matrix (B8) | Not a desk request: the owner decides who builds them |
 
-**Next regular cycle (data as on 31-Oct-2026).** Ask for inputs #1–#13 (and #17 if convenient) after
-month-end. Ask for the "November 2026" Reckoner cycle (#14–#16) when it is released. Remind the desk
-of two things:
+**Next regular cycle (data as on 31-Oct-2026).** Ask for inputs #1–#11 and #13 after month-end; #12
+and #17 are not sent by anyone (B8). Ask for the "November 2026" Reckoner cycle (#14–#16) when it is
+released. Remind the desk of three things:
 
 - Always send the **final** issue of a deck. A corrected re-issue that keeps the same name should be
   flagged as such.
 - The Expense Ratio file needs the `Ratio` and `Direct Plan Ratio` columns.
+- Files land in two portal folders, and a re-issue may reach only one of them.

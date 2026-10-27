@@ -36,9 +36,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 ## Before the next refresh
 
 1. Ask the desk for the missing inputs: the PMS performance file (B1), the October Reckoner deck
-   (B2), the final issue of the market deck (B3), analytics workbooks that include SIFs (B4), Fund
-   Manager Data (B5, C15) and PMS & AIF Analytics (B6); and why four unmatured Debt ETFs are absent
-   from the Sep-2026 Monitor (C19).
+   (B2), analytics workbooks that include SIFs (B4), Fund Manager Data (B5, C15) and PMS & AIF
+   Analytics (B6); and why four unmatured Debt ETFs are absent from the Sep-2026 Monitor (C19).
 2. **Owner decision before the next MF cycle's rename `--apply`:** with dates now read correctly
    (A6), `rename_schemes.js` finds 8 renames in the Sep-2026 (and Aug-2026) Monitor that it used to
    miss: HDFC Retirement Savings Fund-Hybrid-Debt Plan → HDFC Retirement Fund-Hybrid-Debt Plan; four
@@ -46,7 +45,9 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    Allocation Passive FoF-Aggressive → Motilal Oswal Multi Asset Passive FoF. All 8 match on the exact
    inception date. The Motilal one looks suspicious (MASTER files it as Equity ETF, the Monitor lists
    it on its Hybrid sheet, and the name changes more than a rename usually does): confirm it with the
-   owner. None is applied yet. The new names sit on two of the four refresh-only Monitor sheets
+   owner. The handover export found no AMC notice. Its new name first appears on the 30-Jun Monitor,
+   and the record has carried the 15-Jun-2026 figures since then, longer than the other seven. Its
+   Conservative sister plan, with the same inception, kept its name. None is applied yet. The new names sit on two of the four refresh-only Monitor sheets
    (`Solution Oriented,ETFs,FOFs` and `Hybrid`; C19, D80), so the bake lists these 8 rows as `not in
    MASTER` and leaves the old-name records with older figures. With the C19 parser fix, once a rename
    is approved and applied, the next bake refreshes that record by exact name (its class stays as
@@ -82,6 +83,20 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
    of this Monitor` (Sep-2026: 19 rows, no WARN, 42), and a FAIL gate for fund rows on unrecognised
    sheets. A new fund on a refresh-only sheet is added to MASTER by hand with the owner, never by the
    bake. What to do with each line: `tools/README.md` §6.
+10. **From the outgoing owner's handover export (ingested 25-Oct-2026,
+    `docs/update-log/2026-10-23_handover-export.md`):**
+    - Owner decisions:
+      - the PMS label (B1: 31-Jul data under "31st August 2026");
+      - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the Oct-2026 Portfolio Matrix);
+      - the held April monitor (B9);
+      - the client items found in the export (R8, with compliance);
+      - the Sortino definition (C35);
+      - the bond 3Y/5Y rule (C37);
+      - the segregated side-pocket records (C39).
+    - Desk requests: a current Exit Load & Expected IRR file (C24: 99 records have no band); the
+      Reckoner label for the Motilal GIFT City fund (C5); the AMCs of Prism and of the Magnum Equity
+      Ex-Top 100 SIF (C6, C38); the unit and period of the Select alpha (C23); and the Rf house rate
+      (C11).
 
 ## Summary
 
@@ -114,24 +129,27 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A25 | Invisible characters that must survive any edit | Tools | P2 | Partly fixed 19-Oct-2026 (PRs #7, #9–#11, #15) | — | `.gitattributes` |
 | A26 | One-off tools are not safe to re-run blindly | Tools | P3 | Closed 19-Oct-2026 (PR #11) | — | `tools/split_sif_add_mld.js`, `fold_duplicate_names.js`, `fold_index_funds.js` |
 | A27 | Rehearsal harness cannot compare page-code changes | Tools: rehearsal | P3 | Closed 21-Oct-2026 (PR #23) | — | `tools/dev/rehearse.js` `--old-site` |
-| B1 | No PMS performance file transferred; PMS at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
-| B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-07_Jul-2026/` |
-| B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-09_Sep-2026/` |
+| A28 | `tools/lib/pptx.js` fails on some decks (data-descriptor entries; a truncated zip reads as 0 slides) | `tools/lib` | P3 | Open | — | `tools/lib/pptx.js:19-26` |
+| B1 | No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
+| B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Partly fixed 25-Oct-2026 (handover export: archive copy filed); Oct-2026 deck open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-08_Aug-2026/` |
+| B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Closed 25-Oct-2026 (handover export: final issue filed) | — | `monthly-updates/2026-09_Sep-2026/` |
 | B4 | Sep analytics workbooks carry no SIF holdings | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-09_Sep-2026/Analytics/` |
 | B5 | Fund-manager data stops at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-08_Aug-2026/` |
 | B6 | PMS/AIF look-through stops at 31-Jul-2026 | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-07_Jul-2026/Analytics/` |
-| B7 | Periodic inputs missing from the pack | Inputs | P3 | Open (desk) | — | `monthly-updates/` |
+| B7 | Periodic inputs missing from the pack | Inputs | P3 | Partly fixed 25-Oct-2026 (handover export: 06-Aug Bond List filed); rest open (desk) | — | `monthly-updates/` |
+| B8 | NAV Data (#17) and Fund Risk Ratios (#12) were made in-house; nobody builds them now | Inputs | P1 | Open (owner decision) | **Blocks** the Oct-2026 Portfolio Matrix | `docs/INPUT_FILES.md` #12, #17; export `_nav_risk_toolchain/` |
+| B9 | April folder holds a mid-May monitor; a true 30-Apr monitor is held | Inputs | P3 | Open (owner decision) | — | `monthly-updates/2026-04_Apr-2026/` |
 | C1 | Siblings 3–5 not folded into the page (six-file deploy) | Architecture | P2 | Open | — | `site/index.html:5083-5085` |
 | C2 | README stale | Docs | — | Closed 16-Oct-2026 | — | `docs/archive/README_original_2026-05.md` |
 | C3 | Risk stats flagged unreliable by the source are shown as normal | UI/data | P1 | Closed 19-Oct-2026 (PRs #9, #12, #13) | — | `tools/merge_risk_matrix.js:129-136`; `H.riskFlagged` |
 | C4 | Mosaic Multiyield Series I keeps a Select badge | Data | P2 | Open (desk) | **Affects** | `CENTRICITY_SELECT` |
-| C5 | Motilal Oswal Gift City India Equity Fund – Inbound not in MASTER | Data | P2 | Open (desk) | **Affects** | MASTER; `site/Centricity_June_Refresh.js` |
+| C5 | Motilal Oswal Gift City India Equity Fund – Inbound: very likely our existing record under a new deck label | Data | P2 | Open (desk to confirm, then a pin) | **Affects** | `tools/data/pins.json`; `CENTRICITY_SELECT` |
 | C6 | Prism Hybrid Long-Short Fund has no AMC prefix | Data | P3 | Open | — | `site/Centricity_SIF_Refresh.js` |
 | C7 | 360 ONE Balanced Hybrid Fund not in MASTER | Data | P3 | Open (upstream) | — | — |
 | C8 | Five SIFs have no look-through (PRD list corrected) | Data | P2 | Open (desk) | **Affects** | analytics stores |
 | C9 | Debt rating chart covered only the top 20 holdings | UI | — | Closed 14-Oct-2026 (`862e40b`) | — | — |
 | C10 | `RISK_MATRIX` has no `c`; `RISK_MATRIX_BENCH_SD` stale | Data | P3 | Open | — | `site/index.html:5091-5094` |
-| C11 | Rf = 4.5% to re-confirm with the desk | Data | P2 | Open (desk) | — | `tools/build_risk_matrix.py:28` (`--rf`, default 0.045) |
+| C11 | Rf = 4.5% to re-confirm with the desk; it drives the live risk matrix | Data | P2 | Open (desk) | — | export `_nav_risk_toolchain/navwork/Metrics.cs:27`; `tools/build_risk_matrix.py:28` |
 | C12 | Dead code kept for parity (`parseAnalytics` is not dead) | Code | P3 | Accepted | — | `site/index.html:6700`, `:6796-6807` |
 | C13 | Cosmetic UI inconsistencies kept for parity | UI | P3 | Closed 19-Oct-2026 (PR #12), frozen-pane classes kept | — | `site/index.html` Master Editor heading; tab `num` 6.1–6.9 |
 | C14 | Shared links drop funds renamed since the link was made | UI | P2 | Closed 19-Oct-2026 (PR #12) | — | `hashPick` in `site/index.html` |
@@ -139,12 +157,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided with C20) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
 | C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Closed 21-Oct-2026 (PR #21) | — | `NOTE_Y`, `mk` in the matrix slide, `site/index.html` |
 | C18 | Select popover ratios are never marked unreliable | UI | P3 | Closed 21-Oct-2026 (PR #22) | — | `CentricitySelectPopover`, `site/index.html` |
-| C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3225-3227`, `:3397-3403`; `tools/bake_month.js:152-169`, `:212-220` |
-| C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3414-3415` |
+| C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3248-3250`, `:3420-3426`; `tools/bake_month.js:152-169`, `:212-220` |
+| C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (owner decision); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3437-3438` |
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
 | C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Closed 22-Oct-2026 (PR #26, D82) | — | `planTable` in `buildDeck`, `site/index.html` |
-| C23 | Select popover Alpha shown 100 times too large [inference] | UI/data | P2 | Open (desk: confirm the unit) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
-| C24 | Headline weighted IRR counts instruments with no IRR band as 0% | UI/data | P2 | Open (owner decision) | — | `computeKPIs`, `site/index.html:1609-1626` |
+| C23 | Select popover Alpha shown 100 times too large (source-confirmed) | UI/data | P2 | Open (desk: confirm the period) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
+| C24 | Headline weighted IRR counts instruments with no IRR band as 0% (Direct Equity and 99 MF/ETF/SIF records) | UI/data | P2 | Open (owner decision; desk: a current IRR file) | — | `computeKPIs`, `site/index.html:1609-1626` |
 | C25 | Debt Analytics fund picker and its hint disagree | UI | P3 | Open | — | Debt Analytics picker |
 | C26 | Centricity Select popover gaps (empty HDFC FoF entry; PMS popover dates differ) | Data | P3 | Open (desk) | — | `CENTRICITY_SELECT` |
 | C27 | BHARAT Bond FoF Apr-2030: Direct figures equal Regular | Data | P3 | Open (desk) | — | `DIRECT_PERF` |
@@ -155,6 +173,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C32 | Debt look-through: an issuer's bucket is set by the first instrument seen; an unrated bond would default to "AAA & Equiv" | UI/data | P3 | Open | — | `H.aggDebtScoped`, `site/index.html` |
 | C33 | Commodity ETFs carry a market-cap split of about 100% "Others" | Data | P3 | Open (desk) | — | MASTER `mcap_other` |
 | C34 | Disclaimer slide image: text block in the top half, header line in another colour | UI | P3 | Open (desk: source slide, B7) | — | `EXTRA_SLIDES.disclaimer`; `tools/update_closing_slides.js` |
+| C35 | Sortino has two definitions: June workbook semi-deviation, Aug/Sep textbook (never approved) | Data | P2 | Open (owner/desk) | **Affects** the next risk build | export `Metrics.cs:168-174`; `tools/build_risk_matrix.py:117-118` |
+| C36 | Select popover ratios are May-2026 values and carry no date | UI/data | P3 | Open (owner) | — | `CENTRICITY_SELECT[].sharpe/sortino/beta/sd/alpha` |
+| C37 | Bonds store the top of the IRR band as 1Y/3Y/5Y; the owner asked for the band average (20-May) | Data | P2 | Open (owner decision) | — | `tools/merge_bond_list.js:198`; MASTER OneDigital bonds |
+| C38 | The "SBI" AMC of the Magnum Equity Ex-Top 100 SIF was inferred, not sourced | Data | P3 | Open (desk) | — | `site/Centricity_SIF_Refresh.js` |
+| C39 | Four segregated side-pocket records are live and pickable; two UTI rows pass the parser's skip | Data | P3 | Open (owner) | — | MASTER; `site/index.html:3415` segregated skip |
+| C40 | `rename_schemes.js` "new to MASTER" counts rows the bake never adds | Tools | P3 | Open | — | `tools/rename_schemes.js` (count line) |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -162,6 +186,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | R5 | Stale `Centricity_Risk_Matrix.js` is published | Hosting | P3 | Closed 19-Oct-2026 (PR #12, D78) | — | `docs/archive/Centricity_Risk_Matrix_2026-06-30.js` |
 | R6 | The git repository lives inside OneDrive | Repo | P2 | Open (owner decision); blocked rename retried since 21-Oct-2026 (PR #20) | **Affects** | repo root |
 | R7 | Old site still live alongside the new one | Hosting | P2 | Open (outgoing owner) | — | old Pages site |
+| R8 | The handover export shipped two client items despite its README | Security | P1 | Open (owner + compliance) | — | `handover-archive/export_20261023/extracted/` (local, git-ignored) |
 | E1 | Operating manual keeps stale statements as history | Docs | P3 | Accepted | — | `docs/OPERATING_MANUAL.md` → Errata |
 | E2 | PRD contains wrong tool and hosting facts | Docs | P3 | Open | — | `docs/PRD.md` §2, §5, §11, §13, §14 |
 | E3 | Runbooks and specs are out of date | Docs | P2 | Open | **Affects** (if followed) | `docs/runbooks/`, `docs/specs/` |
@@ -893,11 +918,25 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Suggested fix:** an `--old-site <dir>` option that seeds the old side from the old checkout's
   `site/`.
 
+### A28. `tools/lib/pptx.js` fails on some decks
+**P3 · Open · —**
+
+- **What (found 25-Oct-2026 while filing the handover export):** for an entry stored with a data
+  descriptor, `entries().get()` estimates the compressed size from the next local header
+  (`tools/lib/pptx.js:19-26`). On the Oct-2026 and June-2026 market-pager decks this throws
+  `Z_DATA_ERROR` on media and chart entries. A reader that takes sizes from the central directory
+  works. Separately, a truncated download (the 17-Sep copy of the September Reckoner has no zip
+  central directory) reads as 0 slides instead of failing loudly.
+- **Impact:** none found in production. Slide XML reads, which `merge_reckoner.js` and
+  `merge_aif_performance.js` use, worked on every deck tested. A truncated deck would give a dry run
+  with 0 rows rather than a clear refusal.
+- **Suggested fix:** read sizes from the central directory, and refuse a file without one.
+
 ---
 
 ## B. Monthly-cycle gaps at handover
 
-### B1. No PMS performance file transferred; PMS at 31-Aug-2026
+### B1. No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label
 **P2 · Open (desk) · Blocks the PMS step**
 
 - **Evidence:** No `PMS_Scheme_Performance_*` file is in any `monthly-updates/` folder. The
@@ -905,12 +944,19 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   substitutes. `site/index.html:1451` has `pms: "31st August 2026"`; `docs/PRD.md` §11.3 marks PMS as
   one cycle behind. The template named in `docs/runbooks/PMS_Performance_Update_Prompt.md:3` is also
   absent.
+- **25-Oct-2026 (handover export):** the export's earlier `PMS_Scheme_Performance` files are now
+  filed in the month folders (`docs/update-log/2026-10-23_handover-export.md`); none holds 31-Aug or
+  later data. The live block equals `2026-07_Jul-2026/PMS_Scheme_Performance_31st August 2026.xlsx`,
+  whose content is **31-Jul-2026** data: its newest Risk Ratios Date is 31-Jul, and its returns match
+  the August-2026 Reckoner ("as on July 31st"), not the September deck. Commit `ac4347b` (28-Sep-2026)
+  moved the label from "31st July 2026". AIF performance (from the September deck) really is 31-Aug.
+  Relabelling `DATA_DATES.pms` is a data change for the owner.
 - **Impact:** `merge_pms_performance.js` and `pin_pms_alias.js` cannot run; PMS returns stay at
-  31-Aug-2026.
+  31-Jul-2026 data.
 - **Action:** Ask the desk for the Sep-2026 and Oct-2026 files and file them in the month folders.
 
 ### B2. Live Sep-2026 Reckoner deck not in the pack
-**P2 · Open (desk) · Blocks the Reckoner and AIF steps**
+**P2 · Partly fixed 25-Oct-2026 (handover export) · Open (desk) for the Oct-2026 deck · Blocks the Reckoner and AIF steps**
 
 - **Evidence:** Only `monthly-updates/2026-07_Jul-2026/Monthly Investment Reckoner - August 2026.pptx`
   (as on 31-Jul) was transferred. The Sep-2026 deck (as on 31-Aug), which produced today's
@@ -918,9 +964,14 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Impact:** The Reckoner steps need the Oct-2026 deck (as on 30-Sep). Today's Select block cannot
   be reproduced from archived inputs.
 - **Action:** Request the Oct-2026 deck. Ask the outgoing owner for the Sep-2026 deck for the archive.
+- **Partly fixed 25-Oct-2026:** the Sep-2026 deck (31-Aug data) came with the handover export and is
+  filed as `monthly-updates/2026-08_Aug-2026/Monthly Investment Reckoner - September 2026 (re-issue
+  2026-10-08 1652).pptx`. Dry runs on a scratch copy reproduce the live AIF block (12 → 12, values
+  unchanged) and the Select membership (178 → 178, 33 categories); retained entries keep their text by
+  design, so this is not a field-by-field match. The Oct-2026 deck is still missing.
 
 ### B3. Sep market deck in the pack is the superseded first issue
-**P2 · Open (desk) · Affects the market-slide step**
+**P2 · Closed 25-Oct-2026 (handover export) · —**
 
 - **Evidence:** `monthly-updates/2026-09_Sep-2026/Monthly Outlook Pagers_Oct 2026.pptx` was saved at
   11:28 IST on 13-Oct-2026, and its slide 6 is titled "OVERALL MARKET UPDATE – August 2026". The six
@@ -929,6 +980,10 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Impact:** Re-rendering from this copy would publish outdated slides.
 - **Action:** Do not render from it. Ask for the final issue every month; re-issues keep the same
   file name.
+- **Closed 25-Oct-2026:** the 17:14 re-issue came with the handover export and is filed as
+  `monthly-updates/2026-09_Sep-2026/Monthly Outlook Pagers_Oct 2026 (re-issue 2026-10-13 1714).pptx`
+  (slide 6 "– September 2026"; the export's renders of it equal the six live images). The 11:28 first
+  issue moved to `2026-09_Sep-2026/_superseded/`.
 
 ### B4. Sep analytics workbooks carry no SIF holdings
 **P2 · Open (desk) · Affects the analytics step**
@@ -957,7 +1012,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Action:** Request it. When it arrives, see A3.
 
 ### B7. Periodic inputs missing from the pack
-**P3 · Open (desk) · —**
+**P3 · Partly fixed 25-Oct-2026 (handover export) · Open (desk) · —**
 
 - Never transferred: `Topic Slides, Disclaimer & Thank You Slide.pptx`; the Bond List of 06-Aug-2026
   (only 08-Jun is present; see A1); `SIF Master List_Jul 2026` (only June, with 28 schemes; the live
@@ -966,6 +1021,45 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   hand-maintained IRR map in `site/Centricity_IRR_Offshore.js`, and `docs/PRD.md` §11.1 omits it
   from the monthly inputs.
 - Until the desk resends them, these refreshes cannot be repeated or audited.
+- **Partly fixed 25-Oct-2026:** the Bond List of 06-Aug-2026 came with the handover export and is
+  filed in `monthly-updates/2026-08_Aug-2026/` (a dry run reproduces the 36 live Invictus bonds). The
+  closing-slides decks are in the export (`04_slides/source_decks/`) but are not filed until the
+  owner decides (`docs/INPUT_FILES.md` P5). The April-folder IRR file is not an April issue: it is the
+  23-Jun-2026 file, the source of the live IRR map. Still missing: a SIF Master List after June and a
+  current IRR file.
+
+### B8. NAV Data and Fund Risk Ratios were made in-house; nobody builds them now
+**P1 · Open (owner decision) · Blocks the Oct-2026 Portfolio Matrix refresh**
+
+- **What:** `docs/INPUT_FILES.md` lists #12 (`Fund Risk Ratios & 3Y Rolling`) and #17 (`NAV Data`)
+  as desk or vendor files. The handover export shows the outgoing owner made both with Claude. The
+  toolchain is in `05_project_working_folder/_nav_risk_toolchain/` (PowerShell + C#):
+  - `AmfiFetch.ps1` downloads AMFI NAV history;
+  - five Nifty index files are downloaded by hand from niftyindices.com;
+  - `Calc.cs` / `Metrics.cs` and the month scripts write both workbooks.
+
+  Its outputs are byte-identical to the Aug and Sep workbooks we hold.
+- **Impact:** the desk will not send these files, so the Oct-2026 risk matrix has no producer.
+  The repo's only alternative, `tools/build_risk_matrix.py`, is unvalidated (A22), and it differs on
+  Sortino (C35) and on the start of the 3-year window. Rf 4.5% is hard-coded in both (C11).
+- **Options (owner):**
+  - port the core of the toolchain (about 12 scripts) to Node in `tools/`, with a Sep-2026 regression
+    test that must reproduce the live workbook;
+  - validate and align `build_risk_matrix.py` instead;
+  - or ask the desk to take it on.
+
+  Decide C35 and C11 first.
+- Also correct `docs/INPUT_FILES.md` (#12, #17) and `docs/MONTHLY_UPDATE_PROCESS.md`, which still
+  list both among the desk's files.
+
+### B9. April folder holds a mid-May monitor; a true 30-Apr monitor is held
+**P3 · Open (owner decision) · —**
+
+`monthly-updates/2026-04_Apr-2026/` holds `Daily MF monitor_15th May 2026.xlsx` as the April
+Regular monitor (returns as on 17-May). The handover export has a true month-end
+`MF Monitor_30th April 2026.xlsx` (A3 and B12 read 30-Apr; 2,079 fund rows). It was **held**, not
+filed. Decide whether it becomes the April file, with the 15-May copy moved to `_superseded/`.
+History only: no live data depends on April.
 
 ---
 
@@ -1023,20 +1117,34 @@ instrument the deck no longer recommends. Adding Series II is a universe change
 (`add_reckoner_funds.js`, A20) and needs a desk call on whether Series I is retired or only closed to
 new money.
 
-### C5. Motilal Oswal Gift City India Equity Fund – Inbound not in MASTER
-**P2 · Open (desk) · Affects the Reckoner step**
+### C5. Motilal Oswal Gift City India Equity Fund – Inbound: very likely our existing record under a new deck label
+**P2 · Open (desk to confirm, then a pin) · Affects the Reckoner step**
 
 The Sep-2026 deck's replacement fund appears nowhere in `site/index.html` or the siblings. The fund
 it replaced, `Motilal Oswal Alternative Investment (Inbound)`, is still in MASTER and in `NEW_GIFT`,
 but is no longer a Select key. The GIFT City bucket is one fund short of the deck. Note that
 `add_reckoner_funds.js` re-adds the dropped fund to `NEW_GIFT` (A20).
 
+**Corrected 25-Oct-2026 (handover export):** this is very likely one product under two labels, not
+a missing fund [inference, strong].
+- `tools/add_reckoner_funds.js:97-100` created our record from deck slide 105 with the Reckoner
+  name `Motilal Oswal Gift City India Equity Fund`.
+- Both the August deck and the September re-issue index `Motilal Oswal Gift City India Equity Fund
+  – Inbound | 105`. Slide 105 is titled "Gift City AIF – Inbound | Motilal Oswal Alternative
+  Investment".
+- `tools/data/pins.json` maps only the old deck label, which is why the record lost its badge.
+
+Once the desk confirms, add a Reckoner pin and re-run the Reckoner step. That restores the badge
+without adding a fund.
+
 ### C6. Prism Hybrid Long-Short Fund has no AMC prefix
 **P3 · Open · —**
 
 The record exists only in `site/Centricity_SIF_Refresh.js`; the Monitor gives no AMC. New SIFs
 appended by `merge_sif_monitor.js` arrive without an AMC prefix or IRR band
-(`tools/merge_sif_monitor.js:91`). Add the AMC when the desk confirms it.
+(`tools/merge_sif_monitor.js:91`). Add the AMC when the desk confirms it. The handover export
+(25-Oct-2026) confirms that no desk answer exists anywhere. The record also has no IRR band (C24);
+ask for both, together with C38.
 
 ### C7. 360 ONE Balanced Hybrid Fund not in MASTER
 **P3 · Open (upstream) · —**
@@ -1068,8 +1176,12 @@ A22 for the remaining validation.
 **P2 · Open (desk) · —**
 
 Since 19-Oct-2026 (PR #9) it is the `--rf` argument of `tools/build_risk_matrix.py` (default 0.045,
-printed on every run). It matters only for the Python route; `merge_risk_matrix.js` takes the
-vendor's ratios as given [inference].
+printed on every run). **Corrected 25-Oct-2026 (handover export):** it does not matter only for the
+Python route. There is no vendor: the live `Fund Risk Ratios & 3Y Rolling` workbook is computed
+in-house (B8), and Rf = 0.045 is hard-coded there too (export `Metrics.cs:27`, `Calc.cs:21`). It feeds
+Sharpe, Sortino, Treynor and Jensen alpha, so Rf shapes the live RISK_MATRIX. The outgoing owner's
+notes call it a "standing desk convention", not taken from any file; its source is unverified.
+Re-ask the desk for the house rate before the next risk build.
 
 ### C12. Dead code kept for parity
 **P3 · Accepted · —**
@@ -1326,11 +1438,16 @@ waiting for this decision and held the G-Sec record instead)
   or continue a long table on a second slide; decide with the owner, since it changes slides that
   have no flag.
 
-### C23. Select popover Alpha shown 100 times too large [inference]
-**P2 · Open (desk: confirm the unit) · —**
+### C23. Select popover Alpha shown 100 times too large (source-confirmed)
+**P2 · Open (desk: confirm the period) · —**
 
+- **Confirmed 25-Oct-2026 (handover export):** the source workbook, `OneDigital Reckoner_May
+  2026.xlsx`, labels the row `Alpha (%) (3 Yrs)`, next to `SD (%) (3 Yrs)`. So the stored alpha is
+  in percent units. Live has **46** Select entries with alpha, not 37. In the popover, 34 of them show
+  |alpha| ≥ 10%. Still unknown: whether the alpha is monthly or annual. The ratios themselves are
+  May-2026 values (C36).
 - The popover formats `CENTRICITY_SELECT[].alpha` with `fmtPctRaw` (value × 100, then `%`). The
-  stored values look like percentages already: 37 entries range from -0.447 to 1.2644, so the
+  stored values look like percentages already: entries range from -0.447 to 1.2644, so the
   popover shows ICICI Pru Large Cap Fund(G) at 25.18% (stored 0.2518), Nippon India Large Cap
   Fund(G) at 37.40% and one fund at 126.44%. For the same funds RISK_MATRIX's Jensen alpha (`al`,
   percent) is 1.47 and 1.05. Sharpe and Beta in the two stores agree in scale (0.30 vs 0.41; 0.92 vs
@@ -1352,8 +1469,14 @@ waiting for this decision and held the G-Sec record instead)
   the Live Output GRAND TOTAL showed 9.51–11.13% while Section 4 showed 10.57–12.37%.
 - **Impact:** client-facing. The tile feeds Future Value and the PowerPoint's "Expected Pre-Tax
   Return". The code is the same at `handover-baseline`, so this is inherited, not a regression.
+- **Wider than Direct Equity (25-Oct-2026, handover export):** live MASTER has **99** MF/ETF/SIF
+  records with no band, all treated the same way:
+  - Equity MF 64, Debt MF 11, Hybrid MF 7, Equity ETF 7, Commodity ETF 5, Debt ETF 3, SIF 2.
+  - 95 are 2026 launches (the last IRR file is the 23-Jun-2026 one, B7).
+  - 4 are older: two Quantum gold funds, and the two UTI side pockets of C39.
 - **Decision needed (owner):** exclude instruments without a band from the weighting (and say so on
-  the slide), or give them an expected return. Then make every table use the same rule.
+  the slide), or give them an expected return. Then make every table use the same rule. **Desk:** a
+  current `Exit Load & Expected IRR Return Range` file would give most of the 99 a band.
 
 ### C25. Debt Analytics fund picker and its hint disagree
 **P3 · Open · —**
@@ -1392,9 +1515,17 @@ The items C28–C34 were found by the PowerPoint format audit of 22-Oct-2026
   12.50% for 3Y and 5Y; Neo Yield Enhancer's real 1Y next to a mid-point 3Y/5Y. 83 records carry the
   "1Y = 3Y = 5Y, no other series" pattern (50 bonds, 16 AIF, 6 FD, 5 unlisted equity, 4 PMS, 1 REIT,
   1 GIFT City) and 31 cells on 16 PMS/AIF records come from blank source periods.
-- **Also:** 12 of those mid-points no longer match the fund's current band, because a later band
-  change did not touch the returns (e.g. InCred Growth Partners II 27.50% against 22–25%; Neo Infra
-  Income Opportunities Fund II 16.00% against 14–16%). Alchemy Long Term Ventures (inception
+- **Bonds (25-Oct-2026):** the "yield" stored for desk bonds is the top of the IRR band, while the
+  owner asked on 20-May for the band average (C37).
+- **Also:** 14 AIF mid-points no longer match the fund's current band, because a later band change
+  did not touch the returns. Examples: InCred Growth Partners II at 27.50% against 22–25%; Neo Infra
+  Income Opportunities Fund II at 16.00% against 14–16%.
+
+  This entry first counted 12. The handover export (25-Oct-2026) found two more:
+  - Vedartha India Opportunities – Series 1, at 18% against 16–18;
+  - Emkay Emerging Stars, at 21% against 16–18.
+
+  Both have performance records with no 1Y/3Y/5Y, so the old mid-points stay. Alchemy Long Term Ventures (inception
   1-Feb-2026) shows an 18.30% 1Y the source no longer publishes: stale, not an expected figure.
 - **Now (D83):** the deck marks such a figure `*` with a note saying it is the expected return held in
   the data (`H.isExpectedReturn`), on the Investment Option and Fund Performance slides. The screen
@@ -1450,7 +1581,90 @@ The Disclaimer slide is a full-slide image (`EXTRA_SLIDES.disclaimer`, made by
 did not come with the handover, B7). Its text block fills the top half and its header rule is a
 different colour from the native slides. The wording is compliance text, so the deck does not crop or
 re-set it. Suggested fix: re-lay the source slide (text vertically balanced, gold rule), render it and
-run `update_closing_slides.js`.
+run `update_closing_slides.js`. The source decks did arrive with the handover export on
+25-Oct-2026 (`04_slides/source_decks/`, archive only until the owner decides P5).
+
+### C35. Sortino has two definitions in the live history, and a third route uses another
+**P2 · Open (owner/desk) · Affects the next risk build (B8)**
+
+Checked 25-Oct-2026 by recomputing both definitions from our NAV Data files and matching to 2 dp:
+- **June 2026 workbook:** semi-deviation (standard deviation of negative excess returns), matching
+  917 of 917 funds.
+- **August 2026:** the textbook form (root-mean-square of negative excess over all days), matching
+  958 of 958.
+- **Live September RISK_MATRIX:** the textbook form, matching 908 of 908.
+
+The in-house calculator says "Sortino: textbook definition" (export `Metrics.cs:168-174`). The
+desk never approved the change (export KT-4; no approval found in the owner's messages). On
+September data the two forms differ by 0.04 on average and 0.27 at most.
+
+`tools/build_risk_matrix.py` implements the June form (`:117-118`). It also starts the 3-year window
+at the last trading day on or before AS_ON − 3Y (`:101`), where the in-house build starts on or after.
+In September that changes SD at 2 dp for 477 of 908 funds. So A22's "agrees with the live matrix on
+most fields" does not hold for Sortino, or for SD in such months.
+
+**Decision (owner/desk):** accept the textbook Sortino or return to June's. Align whichever builder
+is adopted (B8) before it is used.
+
+### C36. Select popover ratios are May-2026 values and carry no date
+**P3 · Open (owner) · —**
+
+All 46 Centricity Select entries that carry ratios equal the May-2026 `OneDigital Reckoner_May
+2026.xlsx` exactly (Sharpe, SD, alpha; 46 of 46). `tools/merge_reckoner.js` keeps a retained fund's
+ratios and gives a new MF entry none, because the decks carry no ratio columns. The popover shows
+them beside 30-Sep Portfolio Matrix figures with no as-on date. `docs/INPUT_FILES.md` calls that
+workbook superseded, but it is still the only source of these ratios.
+
+**Decision (owner):** date them "as on 31-May-2026", replace them with RISK_MATRIX values, or hide
+them. C23 (the alpha unit) is part of the same decision.
+
+### C37. Bonds store the top of the IRR band as 1Y/3Y/5Y; the owner asked for the band average
+**P2 · Open (owner decision) · —**
+
+On 20-May-2026 the owner asked that the 3Y and 5Y past performance used for bonds in a proposal be
+"the average of the expected pre tax irr range" (owner message in the export's Cowork audit log).
+`tools/merge_bond_list.js:198` writes r1y = r3y = r5y = `irr_high`. All 14 live OneDigital bonds
+hold the top of their band, e.g. OXYZO 9.95% where 9.75–9.95 averages 9.85%. The 36 Invictus bonds
+have `irr_low = irr_high`, so they are unaffected today.
+
+**Decision (owner):** confirm the average. If confirmed, change the tool and the 14 records in a
+reviewed data change, and record it in DECISIONS. Related: C28.
+
+### C38. The "SBI" AMC of the Magnum Equity Ex-Top 100 SIF was inferred, not sourced
+**P3 · Open (desk) · —**
+
+The SIF Monitor's raw name is `Magnum Equity Ex-Top 100 Long-Short Fund-Reg(G)`, with no AMC. The
+outgoing owner's Claude chose `sif_amc` "SBI" from the Magnum brand (export KT-3.8). That is plausible,
+since SBI Magnum Hybrid Long-Short is an SBI SIF in the same sibling, but unconfirmed. The record also
+has no IRR band (C24). Confirm the AMC with the desk, together with C6.
+
+### C39. Four segregated side-pocket records are live and pickable
+**P3 · Open (owner) · —**
+
+MASTER holds four segregated portfolios, all with AUM 0 (or 9e-9), no returns and no IRR band, and
+each can be picked into a proposal:
+- Franklin India Short Term Income Plan-Segregated Portfolio 3;
+- Franklin India Credit Risk Fund-Segregated Portfolio 3;
+- UTI Medium Term Fund (Segregated - 06032020);
+- UTI Credit Risk Fund (Segregated - 06032020).
+
+The parser skips only names containing "segregated portfolio" (`site/index.html:3415`), so the two
+UTI rows are parsed every month. The outgoing owner's notes flagged this trap.
+
+**Decision (owner):** drop the four records, and tighten the skip to any "segregated" name, in a
+`fix/` branch.
+
+### C40. `rename_schemes.js` "new to MASTER" counts rows the bake never adds
+**P3 · Open · —**
+
+The Sep-2026 dry run (25-Oct-2026) prints `new to MASTER: 14 (left for bake_month.js to add)`. None
+of the 14 is added by the bake:
+- 5 are new launches on the refresh-only sheets. The bake lists them as `not merged`, and they are
+  added by hand with the owner (D80).
+- 9 are segregated or unclaimed rows that the page parser filters out.
+
+The count overstates what the bake will do. Suggested fix: split the count into "added by the bake",
+"refresh-only (add by hand)" and "filtered by the parser", or drop the hint.
 
 ---
 
@@ -1481,6 +1695,10 @@ run `update_closing_slides.js`.
   notification is needed and, optionally, whether the spec needs anything more. Locally, never
   `git push --mirror` and never push `refs/remotes/upstream/*` to `origin`. After the purge, remove
   or re-fetch the `upstream` remote.
+- **25-Oct-2026:** the same unredacted file also reached us inside the handover export, in a clone's
+  git pack (R8). The repo zip at the root of `handover-archive/`, received 14-Oct, is the unredacted
+  GitHub download too. Both are local and git-ignored. Whether to delete them from this machine is the
+  owner's call, with compliance (R8).
 
 ### R2. Public repo and site; `robots.txt` ineffective
 **P2 · Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) · —**
@@ -1563,7 +1781,15 @@ regenerate it outside `site/`.
   the write succeeds after four retries (`main` before the change threw after 18 ms). A sync that
   holds the file longer still fails the write, leaving the target untouched. The folder itself stays
   in OneDrive (owner decision below).
-- **Workaround:** Set the folder to "Always keep on this device"; pause OneDrive sync during tool runs
+- **Seen 25–27-Oct-2026:** switching branches with `git checkout` aborted with "fatal: mmap failed:
+  Invalid argument" and left tracked files truncated or deleted. They were restored from git, and
+  nothing was lost. The cause: several files in `.git/objects/pack/` had become OneDrive cloud-only
+  placeholders (attributes Offline + RecallOnDataAccess) while OneDrive was **not running**, so
+  Windows could not recall them (`Permission denied` on read). Git memory-maps pack files, which
+  fails on a placeholder. `git fsck --connectivity-only` still passed, and everything committed is on
+  `origin`. Branch switches in this folder were then done without `checkout` (rewrite the files from
+  `git cat-file`; `git update-ref` + `git symbolic-ref`).
+- **Workaround:** Keep OneDrive running. Set the folder to "Always keep on this device"; pause OneDrive sync during tool runs
   and git operations; verify with Node on the real Windows path. If a write still fails with `EPERM`
   after its retries, check the file is unchanged and re-run the step. GitHub (`origin`) is the real backup.
 - **Suggested fix (owner decision):** Move the clone outside OneDrive and keep only the
@@ -1579,6 +1805,27 @@ regenerate it outside `site/`.
   it.
 - **Action:** Give users the new URL now. Ask the outgoing owner to replace the old site with a
   notice or redirect (together with R1).
+
+### R8. The handover export shipped two client items despite its README
+**P1 · Open (owner + compliance) · —**
+
+- **What (found 24-Oct-2026 by an independent scan):** the export's README says every client file
+  was withheld. Two client items reached part02 nonetheless:
+  - a PDF byte-identical to a withheld client review PDF, saved under a temp-file name at
+    `06_claude_knowledge/cowork/sessions/2026-05-21_Portfolio_Review_Dashboard_Project_Setup_d96341ac/outputs/lu477p5yg.tmp`;
+  - a clone's `.git` at `05_project_working_folder/_scratch_scripts/ovl/push/repo/.git/`, whose pack
+    holds the unredacted Portfolio Review build prompt (the same content as R1).
+
+  In addition, `01_manifest/manifest.csv` (2 rows) and `manifest.json` name the client family in
+  the file names of two withheld uploads. The outgoing owner's screen read files by extension and
+  skipped git packs. No secrets were found.
+- **Where it is:** only under `handover-archive/export_20261023/` (and the zips beside it), which
+  is git-ignored. Nothing was copied into `monthly-updates/` or the repo, and nothing was deleted.
+- **Action (owner + compliance):**
+  - decide whether to delete these items (and the repo zip of R1) from this machine;
+  - tell the outgoing owner, so their own copies and any other recipient get the same treatment;
+  - never push `refs/remotes/upstream/*`, and never push with `--mirror`.
+- Record: `docs/update-log/2026-10-23_handover-export.md`.
 
 ---
 

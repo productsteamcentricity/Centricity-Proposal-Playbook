@@ -91,9 +91,12 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 
 Data as on **30-Sep-2026** (performance, analytics, SIF, risk matrix; the 214 funds on the four
 refresh-only Monitor sheets since Sep Run 3, 21-Oct-2026; the JioBlackRock G-Sec record is held at
-earlier values until the owner decides KNOWN_ISSUES C20); PMS/AIF performance and
-Centricity Select **31-Aug-2026**; PMS/AIF look-through 31-Jul-2026; fund managers = the 30-Sep
+earlier values until the owner decides KNOWN_ISSUES C20); AIF performance and
+Centricity Select **31-Aug-2026**; PMS performance 31-Jul-2026 data under the page's "31st August 2026"
+label (KNOWN_ISSUES B1); PMS/AIF look-through 31-Jul-2026; fund managers = the 30-Sep
 Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,682 ·
 Centricity Select 178 (178 in MASTER) · PMS 692 / AIF 12 / benchmarks 4 · RISK_MATRIX 1,088 ·
 EQUITY_ANALYTICS 1,205 · 0 duplicates · 0 script errors. Next due: the Sep-2026 Reckoner catch-up ("October 2026" deck,
-`/monthly-update September 2026`), then the Oct-2026 MF cycle (mid-November).
+`/monthly-update September 2026`), then the Oct-2026 MF cycle (mid-November). Its Portfolio Matrix
+has no producer until the owner decides who builds the in-house risk-ratio and NAV workbooks
+(KNOWN_ISSUES B8).

@@ -1,9 +1,11 @@
 # Project state
 
-_Last updated: 22-Oct-2026 — PowerPoint design system live (PR #26, merge `5d39821`, D82–D83,
-approved by the owner after the rendered sample): the proposal deck is laid out by measurement, fits
-or continues, and marks expected returns. Before that: five small fixes (PRs #19–#23) and September
-Run 3 (PR #18); one JioBlackRock record stays held for C20._
+_Last updated: 27-Oct-2026 — the outgoing owner's handover export (23-Oct-2026) is ingested: verified,
+extracted, 32 desk files filed into `monthly-updates/` (one held), findings recorded
+(`docs/update-log/2026-10-23_handover-export.md`). No `site/` change. It found that PMS performance is
+31-Jul data under a 31-Aug label (B1), that nobody now builds the risk-ratio and NAV workbooks (B8),
+and that two client items reached the export (R8). Before that: the PowerPoint design system (PR
+#26, D82–D83), small fixes (PRs #19–#23) and September Run 3 (PR #18)._
 
 ## Summary
 
@@ -31,7 +33,7 @@ on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 
 | Portfolio Matrix (risk ratios) | 30-Sep-2026; 33 funds carry the source's reliability flag (28 NAV split, 5 low correlation), shown with a dagger and footnote | Oct-2026 MF cycle |
 | Market Update slides | October-2026 deck (September outlook) | next Outlook deck |
 | Fund managers (internal: search box and Master Editor only) | 30-Sep Monitor, first-named manager only (the Sep bake replaced the 31-Aug full-team roster) | **behind** — needs `Fund Manager Data` as on 30-Sep or later, applied after the bake (step 9) |
-| PMS performance, AIF performance, Centricity Select | 31-Aug-2026 (September-2026 Reckoner) | **behind one cycle** — needs `PMS_Scheme_Performance` as on 30-Sep and the "October 2026" Reckoner deck (`/monthly-update September 2026`) |
+| PMS performance, AIF performance, Centricity Select | AIF and Select 31-Aug-2026 (September-2026 Reckoner); PMS 31-Jul-2026 data under the "31st August 2026" label (`KNOWN_ISSUES.md` B1; found through the handover export) | **behind** (PMS two cycles, AIF and Select one) — needs `PMS_Scheme_Performance` as on 30-Sep and the "October 2026" Reckoner deck (`/monthly-update September 2026`) |
 | PMS/AIF look-through (no page label; D70) | 31-Jul-2026 | when `PMS & AIF Analytics` arrives |
 | Invictus bonds / GIFT City & Offshore / SIF universe | 6-Aug-2026 / Jun–Jul-2026 / Jun-2026 list (28 schemes; 30 live in `var SIF`) | only when the desk sends new lists |
 
@@ -173,8 +175,34 @@ Five independent fixes, one PR each; none changes a data block.
 |---|---|---|---|
 | #26 | `5d39821` | Every native slide laid out by measurement: shared frame, footer block and page numbers; table engine that fits or continues (Investment Option, performance, matrix, liquidity); rationale cards; legends with values; performance buckets share slides, PMS/AIF by asset class and dated by `DATA_DATES.pms`; matrix coverage list; "Other AMCs (n)"; `*` on expected returns; `pptx_layout.test.js`; `tools/dev/render_pptx.ps1` + `check_pptx_bounds.js`; audit `docs/proposal-output-format-audit.md` | D82, D83; C22 closed; C28–C34 new |
 
+## Handover export (ingested 24–25-Oct-2026)
+
+The outgoing owner's export arrived on 23-Oct-2026 (two zips, 1.7 GB, sent over Teams). It was
+verified (SHA-256), extracted by script (2,720 files) and matched against its manifest (2,680 of
+2,680). 32 desk files are now filed by data month in `monthly-updates/`, plus one move to
+`_superseded/`; one file is held (B9). Nothing in `site/` changed: the export's deploy files equal
+upstream `72e1f1e`, and the live site is newer. Record:
+`docs/update-log/2026-10-23_handover-export.md`.
+
+It surfaced:
+- **B1:** PMS performance is 31-Jul data under the label "31st August 2026".
+- **B8:** NAV Data and Fund Risk Ratios were made in-house; nobody builds them now, which blocks the
+  Oct-2026 Portfolio Matrix.
+- **R8:** two client items reached the export despite its README (local and git-ignored; for the
+  owner and compliance).
+- New items C35–C40 and A28; corrections to C5, C6, C11, C23, C24, C28 and R1.
+
+The Git repo also hit OneDrive cloud-only placeholders in `.git/objects/pack/` while OneDrive was not
+running: `git checkout` failed with "mmap failed" (R6).
+
 ## In progress / blockers
 
+- **Owner decisions from the handover export (P1):**
+  - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the October risk matrix;
+    decide Rf C11 and Sortino C35 first);
+  - the PMS label (B1);
+  - what to do with the client items found in the export, with compliance, and whether to tell the
+    outgoing owner (R8).
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
   earlier values (Run 3) so it does not mix the Regular inception with the Direct plan's figures.
@@ -200,6 +228,10 @@ Five independent fixes, one PR each; none changes a data block.
 
 ## Next steps (in order)
 
+0. Owner: decide who builds the NAV Data and Fund Risk Ratios workbooks before the October cycle
+   (B8; Rf C11, Sortino C35). The recommended route is porting the outgoing owner's toolchain to
+   Node in `tools/`, with a Sep-2026 regression test. Also decide the PMS label (B1) and the export's
+   client items (R8). Keep OneDrive running, and this folder on "Always keep on this device" (R6).
 1. Owner: decide C20 (13 JioBlackRock Regular records); then release the held G-Sec record and apply
    the decision to all 13 in one reviewed change.
 2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
