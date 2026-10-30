@@ -9,6 +9,8 @@ Start with the document for your question. Each fact lives in one place; others 
 | Know which source files are needed and how to recognise them | [`INPUT_FILES.md`](INPUT_FILES.md) |
 | Run a specific tool | [`../tools/README.md`](../tools/README.md) |
 | Take over the project as a new developer | [`HANDOVER.md`](HANDOVER.md) |
+| Take over as the project's Moderator chat, or hand a chat over to a successor | [`handover/README.md`](handover/README.md) (current package, bootstrap and successor prompts) |
+| See which chat owns which task or file, open decisions, the task and requirements registers | [`project-control/README.md`](project-control/README.md) |
 | Understand how the system is built | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Know exactly what the product does (features, formulas, outputs, design) | [`PRD.md`](PRD.md) — the handover product spec |
 | Avoid the traps that have broken production before | [`OPERATING_MANUAL.md`](OPERATING_MANUAL.md) → Traps (the outgoing owner's detailed manual) |
@@ -32,8 +34,11 @@ Other folders:
   of `site/` on 19-Oct-2026, D78).
 - `update-log/` — the record of every data refresh: inputs (name, as-on, SHA-256), steps, gate
   outcomes, count changes and reasons.
-- `handover/` — material for completing the handover, e.g. `DATA_EXTRACTION_PROMPT.md`, the prompt
-  the outgoing owner runs to export every remaining file and note from their machine.
+- `handover/` — handover packages between chats (dated, versioned; `README.md` says which is
+  authoritative), the Moderator bootstrap prompt, templates, `continuations/` (successor prompts), and the
+  material for completing the transfer from the outgoing owner (`DATA_EXTRACTION_PROMPT.md`).
+- `project-control/` — the multi-chat registers: chats, tasks, requirements, open decisions, active
+  changes and file ownership, integration log, interfaces, dependency map, repository state.
 
 Conventions: exact dates (16-Oct-2026); code references as `path:line` (line numbers into
 `site/index.html` drift — re-derive with Grep); facts are verified against the code, and where a

@@ -18,6 +18,32 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-10-30 — Moderator handover package MOD-01 → MOD-02 and project-control registers (docs only)
+
+No `site/` or `tools/` change. Branch `handover/mod-01-to-mod-02-20261028`; package dated 28-Oct-2026.
+
+### Added
+- `docs/handover/`: master handover, existing-dashboard (EX) and new-build (NB, OPS) handovers, the
+  Codebase Guardian handover, the Moderator bootstrap prompt, Moderator and sub-chat handover
+  templates, `continuations/` (procedure and the MOD-01 → MOD-02 successor prompt); `README.md` now
+  indexes the package above its existing transfer content.
+- `docs/project-control/`: chat registry, task register (TASK-001–074), requirements and change
+  register (REQ-001–095, REQ-PPT-01–153), decision log (open DEC-OPEN-01–28 and an index of approved
+  D-numbers), file ownership and change control (single writer, change-impact contract, gates A–E,
+  recovery), active change register, integration and regression log (PRs #1–#28), interface contracts,
+  architecture and dependency map, known-issues and regression-risk index, repository and environment
+  state.
+- `.claude/agents/integration-guardian.md` (ARC-01, read-only reviewer of change-impact contracts and
+  diffs).
+- `docs/KNOWN_ISSUES.md`: 22 new entries found while reconstructing the state (A29–A31, C41–C45,
+  E6–E16, R9–R11), including C43 (P1, an ETF's 297,765% since-inception value reaches clients) and C41
+  (static PMS/AIF benchmark rows); dated corrections to existing entries (C24, C17, B8, B1 and others).
+
+### Changed
+- `CLAUDE.md`: a "Project control" section (Moderator, registers, worktrees, single writer, no
+  `git checkout`/`git switch` in the OneDrive checkout, handover triggers). `docs/README.md`: rows for
+  `handover/` and `project-control/`. `docs/PROJECT_STATE.md`: the handover and the checks of 28-Oct.
+
 ## 2026-10-27 — The outgoing owner's handover export ingested (docs only)
 
 No `site/` or `tools/` change. Record: `docs/update-log/2026-10-23_handover-export.md`.
