@@ -18,8 +18,8 @@ not against documents.
 |---|---|---|
 | `site/` | **The dashboard = the six-file deploy set**: `index.html` + `Centricity_ExtraSlides.js`, `Centricity_PMS_AIF_Terms.js`, `Centricity_June_Refresh.js`, `Centricity_IRR_Offshore.js`, `Centricity_SIF_Refresh.js` (+ `robots.txt`). Published to GitHub Pages. | tracked |
 | `tools/`, `tools/lib/` | Monthly Node tools (dry-run by default) + `build_risk_matrix.py`; shared libraries | tracked |
-| `docs/` | PRD, operating manual (trap catalogue), architecture, process, decisions, state, issues, update logs | tracked |
-| `.claude/` | `agents/` (8 specialists), `skills/` (`monthly-update`, `verify-dashboard`), `serve.js`, `launch.json` | tracked |
+| `docs/` | PRD, operating manual (trap catalogue), architecture, process, decisions, state, issues, update logs; `project-control/` (multi-chat registers) and `handover/` (handover packages, successor prompts) | tracked |
+| `.claude/` | `agents/` (9 specialists incl. `integration-guardian`), `skills/` (`monthly-update`, `verify-dashboard`), `serve.js`, `launch.json` | tracked |
 | `.github/workflows/pages.yml` | Parity gate on every PR, push to `main` and manual run; publishes `site/` from `main` | tracked |
 | `monthly-updates/` | `00_INBOX/` (owner drops files) + one folder per data month | **local only** |
 | `backups/`, `handover-archive/` | Pre-refresh snapshots; the handover zips as received | **local only** |
@@ -62,7 +62,8 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 
 1. Understand the request; investigate the code (use `repo-archaeologist`); for anything material,
    plan it (`principal-architect`; `financial-data-reviewer` if financial logic or data is touched).
-2. Branch from `main`: `data/<YYYY-MM>`, `feat/…`, `fix/…`, `docs/…`, `chore/…`.
+2. Branch from `main`: `data/<YYYY-MM>`, `feat/…`, `fix/…`, `docs/…`, `chore/…`; chat handovers use
+   `handover/<from>-to-<to>-<YYYYMMDD>` and `continuation/<chat-id>-task-<id>-<YYYYMMDD>`.
 3. Smallest coherent change; no unrelated refactors (log them in `docs/KNOWN_ISSUES.md`).
 4. Verify: `node tools/verify_page.js site` + the `verify-dashboard` skill (`qa-verifier`).
 5. Update docs in the same branch: `CHANGELOG.md`, `docs/PROJECT_STATE.md`, and whatever the change
@@ -71,6 +72,25 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
    `verify` check, merge (= publish), confirm the live files match `site/` (`release-manager`).
    Monthly refreshes auto-publish when every check passes (D61); other changes: merge when verified
    unless the owner asked to review first.
+
+## Project control (several chats)
+
+- One **Moderator** chat coordinates the project; who is active is in
+  [`docs/project-control/CHAT_REGISTRY.md`](docs/project-control/CHAT_REGISTRY.md). The registers live in
+  `docs/project-control/` (start at its README). Claim files in `ACTIVE_CHANGE_REGISTER.md` before
+  editing; one writer at a time for `site/index.html`, for each sibling and for `tools/lib/`.
+- The main checkout (this OneDrive folder) stays on `main`. **Never `git checkout` / `git switch` here
+  while any `.git` file is cloud-only** (229 were on 28-Oct-2026; a switch on 25-Oct failed with "mmap
+  failed" and truncated tracked files, KNOWN_ISSUES R6). Create branches with `git branch <new>
+  origin/main`, commit through a temporary index, or work in a worktree
+  (`docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`). This overrides the `git switch` steps
+  in the monthly-update skill and process doc until they are fixed.
+- Coding sub-chats work in their own worktree. Material or high-risk changes get a change-impact contract
+  and an `integration-guardian` review before and after (gates A–E:
+  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`).
+- Hand over before context is lost (third compaction, lost context, or a replacement):
+  `docs/handover/continuations/README.md`. A new Moderator starts from
+  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`.
 
 ## Hosting and repositories
 

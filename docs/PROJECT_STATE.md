@@ -1,6 +1,14 @@
 # Project state
 
-_Last updated: 27-Oct-2026 — the outgoing owner's handover export (23-Oct-2026) is ingested: verified,
+_Last updated: 30-Oct-2026 — the Moderator handover package (MOD-01 → MOD-02, dated 28-Oct-2026) is
+added: `docs/handover/` (master, workstream and Guardian handovers, bootstrap and successor prompts)
+and `docs/project-control/` (chat, task, requirement, decision, change and integration registers), plus
+the `integration-guardian` agent. No `site/` or `tools/` change. The reconstruction found 22 new issues
+(A29–A31, C41–C45, E6–E16, R9–R11), among them C43 (P1: a since-inception value of 297,765% reaches
+the screen, Excel and the deck) and C41 (PMS/AIF benchmark rows use a static list no tool updates).
+Who coordinates: [`project-control/CHAT_REGISTRY.md`](project-control/CHAT_REGISTRY.md).
+
+_Previous update: 27-Oct-2026 — the outgoing owner's handover export (23-Oct-2026) is ingested: verified,
 extracted, 32 desk files filed into `monthly-updates/` (one held), findings recorded
 (`docs/update-log/2026-10-23_handover-export.md`). No `site/` change. It found that PMS performance is
 31-Jul data under a 31-Aug label (B1), that nobody now builds the risk-ratio and NAV workbooks (B8),
@@ -195,6 +203,26 @@ It surfaced:
 The Git repo also hit OneDrive cloud-only placeholders in `.git/objects/pack/` while OneDrive was not
 running: `git checkout` failed with "mmap failed" (R6).
 
+## Moderator handover and project control (28–30-Oct-2026)
+
+On the owner's instruction (27/28-Oct-2026), MOD-01, the chat that ran the project from 15-Oct, handed
+over to a new Moderator chat, MOD-02. The package was reconstructed from the code, git, the 28 PRs and
+every owner message, and checked against the code (record:
+[`handover/MASTER_HANDOVER_2026-10-28_v1.md`](handover/MASTER_HANDOVER_2026-10-28_v1.md)).
+- **Checks on 28-Oct-2026:** `verify_page` unchanged (counts in "Latest verification"); `npm test` 5 of
+  5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 58 of 58 runs green; the
+  page starts in a browser with MASTER 7,682, the three sibling flags set and no console errors. No
+  proposal was built and nothing was exported in a browser: the full acceptance check last ran on
+  21-Oct, before PR #26 (TASK-064).
+- **New ways of working:** one Moderator coordinates; coding sub-chats work in their own worktrees; one
+  writer at a time per deploy file; material changes get a change-impact contract and an
+  `integration-guardian` review; gates A–E; hand over before context is lost. Rules:
+  [`project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`](project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md).
+- **Registers:** tasks TASK-001–074, requirements REQ-001–095 and REQ-PPT-01–153, open owner
+  decisions DEC-OPEN-01–28 ([`project-control/DECISION_LOG.md`](project-control/DECISION_LOG.md)).
+- **Git in this folder:** OneDrive is not running and 229 `.git` files are cloud-only, so never
+  `git checkout` / `git switch` here (R6; CLAUDE.md "Project control").
+
 ## In progress / blockers
 
 - **Owner decisions from the handover export (P1):**
@@ -228,6 +256,13 @@ running: `git checkout` failed with "mmap failed" (R6).
 
 ## Next steps (in order)
 
+The full, dependency-ordered plan is in
+[`project-control/TASK_REGISTER.md`](project-control/TASK_REGISTER.md) and section 13 of the master
+handover; where this list and the register differ, the register wins.
+
+**First:** MOD-02 validates the handover against the repository (TASK-016) and takes over as
+Moderator; the owner starts OneDrive and sets this folder to "Always keep on this device" (TASK-017).
+
 0. Owner: decide who builds the NAV Data and Fund Risk Ratios workbooks before the October cycle
    (B8; Rf C11, Sortino C35). The recommended route is porting the outgoing owner's toolchain to
    Node in `tools/`, with a Sep-2026 regression test. Also decide the PMS label (B1) and the export's
@@ -238,8 +273,9 @@ running: `git checkout` failed with "mmap failed" (R6).
    (S&P 500 Top 50 ETF FoF 1M 24.79%, NYSE FANG+ ETF FoF 1M 16.21%) before a client deck uses them.
 3. Owner: confirm or reject the 8 renames (above).
 3a. Owner: decide how the headline expected return treats instruments with no IRR band, such as
-   Direct Equity (`KNOWN_ISSUES.md` C24; today they count as 0% in the tile, Future Value and the
-   deck, but are left out of the Section 4 table).
+   Direct Equity (`KNOWN_ISSUES.md` C24; today they count as 0% in the Section 1 tile, Section 5
+   Future Value and the Section 6.1 Live Output, but are left out of the Section 4 table and the deck's
+   GRAND TOTAL — corrected 28-Oct-2026).
 3b. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
    it 100 times too large). (C22, the long unflagged matrix slide, is fixed by PR #26.)
 3c. Owner/desk, after PR #26: how the data should carry expected returns (C28: a per-period basis, or
