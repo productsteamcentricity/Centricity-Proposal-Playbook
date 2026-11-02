@@ -28,18 +28,20 @@ with a stable `TASK-nnn` ID. It is the coordination record that survives chat re
 Code and git win over this file. A task is VERIFIED COMPLETE only when the evidence column names a
 merged PR or commit and the check that verified it.
 
-**Effective date of the 2-Nov-2026 entries.** Entries dated 2-Nov-2026 that PR #30 carried (TASK-015 and
-TASK-016 VERIFIED COMPLETE, TASK-017 IN PROGRESS, TASK-018 widened, TASK-075..077, the counts) took effect
-when PR #30 merged (2-Nov-2026 12:20 UTC, `32172f5`; branch `docs/mod-02-validation-20261102`). The later
-2-Nov-2026 updates in this file (the PR #30 record, the GOV-01 and EX-01 proposals, the branch counts) take
-effect when the follow-up docs PR that carries them merges.
+**Effective date of the 2-Nov-2026 entries.** The 2-Nov-2026 entries carried by PR #30 (TASK-015 and TASK-016
+VERIFIED COMPLETE, TASK-017 IN PROGRESS, TASK-018 widened, TASK-075..077, the counts) and by PR #31 (the PR #30
+record, the GOV-01 and EX-01 proposals, the branch counts) took effect when those PRs merged (PR #30 on
+2-Nov-2026 12:20 UTC, `32172f5`, branch `docs/mod-02-validation-20261102`; PR #31 on 2-Nov-2026 14:41 UTC,
+`c0fb2dd`, branch `docs/mod-02-release-pr30-20261102`, the latest). The D86 entries of this file (the TASK-022
+re-scope, TASK-078, GOV-01 and EX-01 as started by the owner) take effect when the docs PR that carries them
+merges.
 
 ## 2. How to add or update a task
 
 1. **Search first.** Before adding a task, search this file for the KNOWN_ISSUES ID, REQ ID or key words.
    If the owner repeats a request, update the existing task (add the new date and source to its
    evidence line). Never open a second task for the same work.
-2. **New task = next free number.** Next free on 2-Nov-2026: **TASK-078**. Numbers are never reused,
+2. **New task = next free number.** Next free on 2-Nov-2026: **TASK-079**. Numbers are never reused,
    renumbered or recycled, even when a task is dropped (mark it SUPERSEDED and say by what).
 3. **Every task records:** title (imperative), workstream (EX, NB, OPS, GOV), status, priority, owner
    chat, depends on, blocked by, acceptance criteria, evidence or next step, related REQ / KNOWN_ISSUES /
@@ -66,15 +68,15 @@ effect when the follow-up docs PR that carries them merges.
 
 | Fact | Value | Label |
 |---|---|---|
-| Code and data baseline | `main` = `origin/main` = `32172f5` (PR #30 merge, 2-Nov-2026, docs only; PR #29 `f5c2431` before it; `site/` and `tools/` byte-identical to `2b2a397`, the 28-Oct baseline); last site change `5d39821` (PR #26) | VERIFIED 2-Nov |
+| Code and data baseline | `main` = `origin/main` = `c0fb2dd` (PR #31 merge, 2-Nov-2026, docs only; PR #30 `32172f5` and PR #29 `f5c2431` before it; `site/` and `tools/` byte-identical to `2b2a397`, the 28-Oct baseline); last site change `5d39821` (PR #26) | VERIFIED 2-Nov |
 | `node tools/verify_page.js site` | exit 0; MASTER 7,682; Centricity Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; RISK_MATRIX 1,088; EQUITY_ANALYTICS 1,205; 0 duplicates; 0 script errors | VERIFIED 28-Oct and 2-Nov |
 | `npm test` | 5 of 5 files, 903 checks, 0 failures | VERIFIED 28-Oct and 2-Nov |
-| Live site | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ ; 7 of 7 published files SHA-256 identical to `site/` | VERIFIED 28-Oct and 2-Nov |
+| Live site | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ ; 7 of 7 published files SHA-256 identical to `site/`; 7 of 7 equal `site/` after the PR #31 publish run (41464361000) | VERIFIED 28-Oct and 2-Nov |
 | App startup in a browser | 28-Oct-2026 07:12:58-07:13:25 UTC (the earlier "~08:55 UTC" was wrong: `REPOSITORY_AND_ENVIRONMENT_STATE.md` section 13.4), `preview_start playbook` at `2b2a397`: page renders, in-browser MASTER 7,682, three sibling flags set, 0 console errors; repeated 2-Nov-2026 by MOD-02 at `f5c2431`: MASTER 7,682, three sibling flags set, 0 console messages. No proposal built and no export run. | VERIFIED |
 | Last full 7-area browser acceptance | 21-Oct-2026 on site state S6 (before PR #26) | VERIFIED (doc record) |
 | OneDrive | 28-Oct: OneDrive.exe not running; repo folder not pinned; 229 of 519 `.git` files cloud-only; historical and stash blob reads fail with `mmap failed`. 2-Nov-2026: OneDrive.exe running since 11:47 IST, folder still not pinned, 228 of 568 `.git` files cloud-only, historical blob reads still fail with `mmap failed`; `git fsck --connectivity-only` exit 0 | VERIFIED 28-Oct and 2-Nov |
 | Monthly inbox | `monthly-updates/00_INBOX/` holds only its README on 28-Oct and on 2-Nov-2026: no desk file has arrived | VERIFIED 28-Oct and 2-Nov |
-| Calendar | Sep-2026 Reckoner catch-up due now; Oct-2026 MF cycle ~13-17-Nov-2026; Oct-2026 Reckoner cycle ~20-28-Nov-2026; implied decision deadline ~13-Nov-2026 for DEC-OPEN-01/02/03/08. Correction 2-Nov-2026: DEC-OPEN-01, -02 and -03 were due "by about 13-Nov" in the 28-Oct text, but that date is the START of the Oct cycle; DEC-OPEN-02 and -03 were answered 2-Nov (D84, D85); DEC-OPEN-01 is needed well before 13-Nov (`DECISION_LOG.md` section 1.2); only DEC-OPEN-08 is due about 13-Nov | INFERRED (documented cadence) |
+| Calendar | Sep-2026 Reckoner catch-up due now; Oct-2026 MF cycle ~13-17-Nov-2026; Oct-2026 Reckoner cycle ~20-28-Nov-2026; implied decision deadline ~13-Nov-2026 for DEC-OPEN-01/02/03/08. Correction 2-Nov-2026: DEC-OPEN-01, -02 and -03 were due "by about 13-Nov" in the 28-Oct text, but that date is the START of the Oct cycle; DEC-OPEN-01, -02 and -03 were answered 2-Nov (D86, D84, D85; `DECISION_LOG.md` section 1.6); TASK-022 still has to merge before step 10 of the Oct cycle and is gated by DEC-OPEN-30 and -31; only DEC-OPEN-08 of the four is due about 13-Nov | INFERRED (documented cadence) |
 | ARC-01 conditions (2-Nov-2026) | no `/monthly-update`, no tool `--apply` and no OPS or NB sub-chat before the widened TASK-018 PR merges; launch packets state: no checkout / switch / merge / pull in the main checkout, no `--delete-branch`, where the chat runs, whether a Guardian pre-check applies | VERIFIED (ARC-01 report) |
 
 **Never `git checkout` or `git switch` in the OneDrive main checkout, and never `git merge` or
@@ -87,29 +89,33 @@ fixed by TASK-018). (CLAUDE.md names only checkout and switch until TASK-018 cha
 ## 4. Start here: order of work for MOD-02 (dependency order)
 
 1. **TASK-016** validate the package against the repo. DONE 2-Nov-2026 (PR #30; VERIFIED COMPLETE; section 7).
-2. **TASK-018** (widened) rule-document consistency PR (docs only), launched as GOV-01 in its own
-   worktree: the gate for every `/monthly-update`, tool `--apply` and OPS / NB launch (ARC-01
-   condition). Material: contract + ARC-01 DIFF REVIEW + `security-reviewer`.
+2. **TASK-018** (widened) rule-document consistency PR (docs only), GOV-01: started by the owner on 2-Nov-2026
+   in its own worktree, no claim in force yet (contract and Guardian pre-check first); the gate for every
+   `/monthly-update`, tool `--apply` and OPS / NB launch (ARC-01 condition). Material: contract + ARC-01 DIFF
+   REVIEW + `security-reviewer`.
 3. **TASK-017** (owner) restore OneDrive health: OneDrive is running; pin the folder ("Always keep on
    this device") and let it hydrate; MOD-02 verifies. Gate for every later `git checkout` /
    `git switch` / `git merge` / `git pull` in the main checkout, history read and tool `--apply` run;
    read-only checks (`git fetch`, `verify_page`, `npm test`, the live site) and docs-only commits
    through the temporary index may run before it.
-4. **TASK-064** full browser acceptance on the live build (Workstream A first, REQ-071): EX-01
-   (proposed) or MOD-02; read-only; may start now; uses the live site and the preview.
-5. **Owner decision session** ([`DECISION_LOG.md`](DECISION_LOG.md)): DEC-OPEN-02 and -03 DONE
-   2-Nov-2026 (D84, D85); DEC-OPEN-01 asked 2-Nov, needed well before 13-Nov; then -08 (by about
-   13-Nov); -04 and -11; -05; -07; -13 / -14 / -24; -25, then -26; -29; then the rest.
+4. **TASK-064** full browser acceptance on the live build (Workstream A first, REQ-071): EX-01, started by the
+   owner on 2-Nov-2026; read-only; uses the live site and the preview.
+5. **Owner decision session** ([`DECISION_LOG.md`](DECISION_LOG.md)): DEC-OPEN-01, -02 and -03 DONE
+   2-Nov-2026 (D86, D84, D85); then the new DEC-OPEN-30 to -33 (-30 and -31 gate TASK-022); then -08 (by
+   about 13-Nov); -04 and -11; -05; -07; -13 / -14 / -24; -25, then -26; -29; then the rest.
 6. **TASK-019** (owner) send the desk request pack (Appendix A), PMS, Reckoner, Fund Manager and
-   Analytics first.
+   Analytics first. **TASK-078** (owner) ask the MF dashboard team, above all for the FINAL 15-Oct-2026
+   pack by about 11-Nov-2026 (MOD-02 drafts the message).
 7. **Housekeeping** once the owner agrees (DEC-OPEN-22): TASK-061 (worktrees) -> TASK-060 (local
    branches) -> TASK-059 (remote branches); TASK-062 exports the stash patch before any drop.
 8. **TASK-020** Sep-2026 Reckoner catch-up. Steps 12-15 start when DESK-01 and DESK-02 arrive; steps 9
    and 16 also need DESK-03 and DESK-04, so TASK-020 stays BLOCKED until all four are in the inbox
    (fold in TASK-025 and the C5 pin of TASK-029 if decided by then; not before item 2).
-9. **TASK-022** NAV / risk-ratio producer after DEC-OPEN-01, regression-tested against Sep-2026,
-   ideally before step 11. Rf = 4.5% (D84) and the textbook Sortino (D85) are decided (Rf: for now); blocked only by
-   DEC-OPEN-01 (not before item 2).
+9. **TASK-022** feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override,
+   tests, docs), regression-tested against Sep-2026, ideally before step 11. Launched as NB-04 (proposed)
+   only after the widened TASK-018 PR merges (item 2); also blocked by DEC-OPEN-30 and DEC-OPEN-31. Rf = 4.5%
+   (D84) stands (Rf: for now); the pack's Sortino is not the textbook form of D85 (C46). If the build is not
+   merged when step 10 of the Oct cycle is reached, the cycle runs without step 10.
 10. **TASK-023** C20 change after DEC-OPEN-07, before or with the October bake (not before item 2).
 11. **TASK-021** Oct-2026 MF cycle ~13-17-Nov-2026 with TASK-024 (renames); risk matrix only if TASK-022
     is ready (not before item 2).
@@ -143,11 +149,11 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-015 | Produce the MOD-01 -> MOD-02 handover package | GOV | VERIFIED COMPLETE | - | MOD-01 | Done |
 | TASK-016 | MOD-02 validates the package (PR #30) | GOV | VERIFIED COMPLETE | - | MOD-02 | Done |
 | TASK-017 | Restore OneDrive health | OPS | IN PROGRESS | P1 | owner (machine setting); MOD-02 verifies | R |
-| TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gates OPS/NB) | GOV | PLANNED | P1 | MOD-02 assigns (GOV-01, proposed 2-Nov-2026) | R |
+| TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gates OPS/NB) | GOV | IN PROGRESS | P1 | GOV-01 (started by the owner 2-Nov-2026; contract phase, no claim in force yet) | R |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
 | TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED | P1 | MOD-02 assigns (OPS-01) | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | PLANNED | P1 | MOD-02 assigns | R |
-| TASK-022 | Producer of NAV Data and Fund Risk Ratios | NB | BLOCKED | P1 | MOD-02 assigns | O |
+| TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | BLOCKED | P1 | NB-04 (proposed; after the widened TASK-018 PR merges) | O |
 | TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | BLOCKED | P1 | MOD-02 assigns | O |
 | TASK-024 | Apply or reject the 8 scheme renames | OPS | BLOCKED | P1 | MOD-02 assigns | O |
 | TASK-025 | PMS label (B1) | OPS | BLOCKED | P1 | MOD-02 assigns | O |
@@ -178,20 +184,20 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-050 | Split the rename "new to MASTER" count | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-051 | Hang Seng ETFs and ageing debt stats | OPS | BLOCKED | P3 | MOD-02 assigns | O |
 | TASK-052 | Complete the AMC prefix list | NB | BLOCKED | P3 | MOD-02 assigns | D |
-| TASK-053 | Restore or drop `c` / `RISK_MATRIX_BENCH_SD` | OPS | BLOCKED | P3 | MOD-02 assigns | O |
+| TASK-053 | Restore or drop `c` / `RISK_MATRIX_BENCH_SD` (proposed: drop after one verified month on the pack route: nothing reads them) | OPS | BLOCKED | P3 | MOD-02 assigns | O |
 | TASK-054 | Correct PRD facts; rewrite or retire runbooks/specs | GOV | NOT STARTED | P2 | MOD-02 | G |
 | TASK-055 | Favicon PNG data URI; drop unused tenor column | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-056 | Fix the stale `.gitattributes` comment | GOV | NOT STARTED | P3 | MOD-02 | H |
-| TASK-057 | Validate or retire `build_risk_matrix.py` | NB | BLOCKED | P2 | MOD-02 assigns | O |
+| TASK-057 | Validate or retire `build_risk_matrix.py` (proposed: retire after one verified month on the pack route) | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-058 | SheetJS upgrade (page and tools together) | NB | NOT STARTED | P3 | MOD-02 assigns (owner instruction only) | O |
 | TASK-059 | Delete the 27 merged branches on origin | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-060 | Delete the 29 merged local branches (incl. 3 `claude/*`) | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-061 | Remove the 4 extra worktrees, then prune | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-062 | Export, then drop `stash@{0}` | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-063 | Retention rule for `backups/` | GOV | UNKNOWN / NEEDS INVESTIGATION | P3 | MOD-02 | H |
-| TASK-064 | Full browser acceptance on the live build | EX | PLANNED | P1 | EX-01 (proposed) or MOD-02 | R |
+| TASK-064 | Full browser acceptance on the live build | EX | IN PROGRESS | P1 | EX-01 (started by the owner 2-Nov-2026; read-only) | R |
 | TASK-065 | PMS/AIF benchmark rows from the decided source | NB | BLOCKED | P2 | MOD-02 assigns | O |
-| TASK-066 | 12 unreachable RISK_MATRIX keys; effective-MASTER key check | NB | NOT STARTED | P2 | MOD-02 assigns | E |
+| TASK-066 | 12 unreachable RISK_MATRIX keys; effective-MASTER key check (sequence after TASK-022: same file) | NB | NOT STARTED | P2 | MOD-02 assigns | E |
 | TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | NOT STARTED | P1 | MOD-02 assigns | E |
 | TASK-068 | Compare the two PMS/AIF holdings parsers | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-069 | Deck: Construct/NAA through the design system; all `listTable` pages | NB | NOT STARTED | P2 | MOD-02 assigns | E |
@@ -203,10 +209,11 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-075 | Public-repository hygiene PR (SEC-01..05, R12) | GOV | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-076 | Extend `tool_inputs.test.js` to the whole CLI contract (A32) | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-077 | TASK-016 audit corrections backlog (P3 wording, snapshot errata) | GOV | PLANNED | P2 | MOD-02 assigns (docs-keeper) | G |
+| TASK-078 | Owner asks the MF dashboard team | OPS | NOT STARTED | P1 | owner (MOD-02 drafts the message) | R |
 
-Counts (2-Nov-2026): 77 tasks. Completed history 16 (15 VERIFIED COMPLETE, 1 IMPLEMENTED NOT FULLY
-VERIFIED). Open 61: BLOCKED 24, NOT STARTED 27, PLANNED 7, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 1.
-By group: R 6, O 19, D 7, E 17, H 7, G 5.
+Counts (2-Nov-2026): 78 tasks. Completed history 16 (15 VERIFIED COMPLETE, 1 IMPLEMENTED NOT FULLY
+VERIFIED). Open 62: BLOCKED 24, NOT STARTED 28, PLANNED 5, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 3.
+By group: R 7, O 19, D 7, E 17, H 7, G 5.
 
 ## 6. Open tasks
 
@@ -232,14 +239,14 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 - Rel: R6, E10, R11; DEC-OPEN-19; INC-16.
 
 #### TASK-064 Full browser acceptance pass on the current live build (site state S7)
-- WS EX | Status PLANNED | P1 | Owner: EX-01 (proposed to the owner 2-Nov-2026; the owner starts it) or MOD-02 | Dep: TASK-016 | Blk: -
+- WS EX | Status IN PROGRESS (EX-01, read-only) | P1 | Owner: EX-01 (started by the owner on 2-Nov-2026) | Dep: TASK-016 | Blk: -
 - Accept: the `verify-dashboard` skill run against the live URL; all 11 checks of `docs/TESTING.md`
   section 3 PASS (the 21-Oct pass grouped its work into 7 areas, `docs/PROJECT_STATE.md`); a proposal built end to end; PowerPoint export with `window.__PPTX_LAYOUT.warnings`
   empty; Excel export opened in Microsoft Excel (never done so far); browser console clean; a draft
   full-test checklist for the owner (input to DEC-OPEN-24); results recorded in `docs/PROJECT_STATE.md`
   and `INTEGRATION_AND_REGRESSION_LOG.md`.
-- Next: may start now (read-only; it needs neither TASK-017 nor the TASK-018 PR); it runs read-only in the
-  shared main checkout (no worktree, no branch, no commit); exports go to
+- Next: EX-01 was started by the owner on 2-Nov-2026 (read-only; it needs neither TASK-017 nor the TASK-018
+  PR); it runs read-only in the shared main checkout (no worktree, no branch, no commit); exports go to
   `_testdata/acceptance-2026-11/` (git-ignored: `.gitignore` line 56) or `monthly-updates/<month>/_review/`
   (ignored through `monthly-updates/*`), never to tracked folders; a bare `_review/` at the repository
   root is NOT ignored. Startup alone was VERIFIED on 28-Oct and again on
@@ -255,8 +262,22 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   ready-to-send list. Order: DESK-01, -02, -03, -04 first (they block TASK-020).
 - Rel: B1, B2, B4-B7, C4-C6, C11, C23, C24, C26, C27, C31, C33, C35, C38.
 
+#### TASK-078 Owner asks the MF dashboard team
+- WS OPS | Status NOT STARTED | P1 | Owner: owner (MOD-02 drafts the message) | Dep: - | Blk: owner
+- Accept: the owner sends the asks (list a-i in `docs/update-log/2026-11-02_datapack-feasibility.md`) and
+  confirms the date sent; each reply is tracked here. (a) The FINAL 15-Oct-2026 pack by about 11-Nov-2026, or
+  written confirmation that the stock-price rule does not touch the files the risk path reads. (b) Written
+  permission (DEC-OPEN-32: the computed ratios on the public page and in decks, and the pack's contract described in this public repository). (c) Additive fields in a v1.x: textbook Sortino, Jensen alpha and correlation,
+  risk window dates and observation counts, partial-window ratios. (d) The cadence (a month-end pack?).
+  (e) Stable spelling and scheme codes. (f) A slim risk-only export. (g) Notice before any contract change.
+  (h) Confirmation of the rolling field. (i) Same-day notice of any Rf change.
+- Next: MOD-02 drafts the message; the analysis of 2-Nov-2026 recommends sending it by 4-Nov-2026, so that the
+  final pack can arrive by about 11-Nov-2026, before step 10 of the Oct cycle (about 13-17-Nov-2026). The
+  Screener's address stays out of every repository document.
+- Rel: D86, DEC-OPEN-32, TASK-022.
+
 #### TASK-018 Docs-consistency PR, widened 2-Nov-2026 (docs only; Material)
-- WS GOV | Status PLANNED | P1 | Owner: GOV-01 (proposed to the owner 2-Nov-2026; own worktree; MOD-02 assigns the launch) | Dep: TASK-016 (done: PR #30, `32172f5`) | Blk: -
+- WS GOV | Status IN PROGRESS (GOV-01: contract phase, no claim in force yet) | P1 | Owner: GOV-01 (started by the owner on 2-Nov-2026; own worktree; no claim in force yet: contract and Guardian pre-check first) | Dep: TASK-016 (done: PR #30, `32172f5`) | Blk: -
 - Accept: (a) the ARC-01 conditions of 2-Nov-2026: CLAUDE.md "Project control" and "Never" widened to
   `git checkout` / `git switch` / `git merge` / `git pull` and `--delete-branch`; one Guardian pre-check
   rule everywhere; one risk class for a routine monthly refresh, and Gate B named in CLAUDE.md; the
@@ -275,9 +296,9 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   section 6 template) + ARC-01 DIFF REVIEW (expected GO) + `security-reviewer` before the push;
   docs-only PR merged with `verify` green; `site/` unchanged; the Moderator checks each condition by
   grep before Gate D.
-- Next: launched as GOV-01 when the owner starts the proposed card (PR #30 has merged); one `docs/` branch
-  from `origin/main`, created in its own worktree by the app; the launch packet carries the ARC-01
-  conditions.
+- Next: GOV-01 was started by the owner on 2-Nov-2026 (PR #30 has merged); no claim is in force yet (its
+  contract and the Guardian pre-check come first); one `docs/` branch from `origin/main`, created in its own
+  worktree by the app; the launch packet carries the ARC-01 conditions.
 - Scope notes (file survey of 2-Nov-2026):
   - (1) The exact claimed files (19; 22 at most) are in `ACTIVE_CHANGE_REGISTER.md` section 3.
   - (2) The three as-received handover documents get errata only (`docs/handover/README.md`), never in-place
@@ -312,34 +333,84 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 
 #### TASK-021 Oct-2026 MF cycle: `/monthly-update October 2026` (data 31-Oct-2026), ~13-17-Nov-2026
 - WS OPS | Status PLANNED | P1 | Owner: MOD-02 assigns | Dep: TASK-017; TASK-024 before step 1 `--apply`;
-  TASK-022 (otherwise the Portfolio Matrix keeps "30 Sep 2026"); not before the widened TASK-018 PR
-  merges (ARC-01 condition) | Blk: DESK-23, DESK-05, DESK-03
+  TASK-022, the FINAL 15-Oct-2026 pack (TASK-078), DEC-OPEN-32 (permission to show the Screener's ratios
+  publicly: a written yes before the first apply, about 14-16-Nov-2026) and DEC-OPEN-33 (use of the PROVISIONAL
+  pack: only if the final pack is late, by about 11-Nov-2026), all for step 10 only (otherwise the Portfolio
+  Matrix keeps "30 Sep 2026"); not before the widened TASK-018 PR merges (ARC-01 condition) | Blk: DESK-23,
+  DESK-05, DESK-03
 - Accept: renames applied or rejected per the owner (TASK-024); every gate passes; the bake lines are read
   (not-merged list, WARN lines, CHECK count about 42, the unrecognised-sheet FAIL gate); step 9 runs after
   the bake; SIF analytics included or the gap logged; `docs/update-log/2026-10_Oct-2026.md` written; live
-  check passes. Publishes automatically when every check passes (D61).
-- Next: confirm DEC-OPEN-08 by ~13-Nov-2026 and DEC-OPEN-01 well before it (the producer build must merge
-  before step 10 of the cycle; `DECISION_LOG.md` section 1.2); ask the owner to request DESK-23 after 31-Oct.
+  check passes. Publishes automatically when every check passes (D61); the first step 10 on the pack route
+  (override flag, pins) needs the owner's approval before the merge (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 7); step 10 runs only after DEC-OPEN-32 is answered with a written yes (and DEC-OPEN-33 if the final
+  pack is late), the answers quoted in the update log.
+- Next: confirm DEC-OPEN-08 by ~13-Nov-2026. DEC-OPEN-01 is answered (D86): the pack bridge (TASK-022) must
+  merge before step 10 of the cycle, and the first use of step 10 needs the owner's approval before the merge
+  (see TASK-022). D61's stop rule applies (override flag and pins need the owner's approval; FILE_OWNERSHIP
+  section 7). For step 10, DEC-OPEN-32 (a written yes, about 14-16-Nov-2026) is needed before the first apply
+  and DEC-OPEN-33 only if the final pack is late (by about 11-Nov-2026); ask the owner to request DESK-23 after
+  31-Oct.
 - Rel: A6, A14, B4, B5, C8, C15, C19, C21, C40; D46, D61, D80; REQ-044.
 
 ### 6.2 Waiting for an owner decision (O)
 
-#### TASK-022 Build the producer of NAV Data (#17) and Fund Risk Ratios & 3Y Rolling (#12)
-- WS NB | Status BLOCKED | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-01 (DEC-OPEN-02 and DEC-OPEN-03 were
-  answered 2-Nov-2026: D84, D85); TASK-070 (the outgoing owner's toolchain is a local-only copy) | Blk: owner
-  decision (DEC-OPEN-01)
-- Accept (if the documented port route is chosen): Node tools in `tools/`, dry-run by default, D72 exit-code
-  contract; a regression test that reproduces the live Sep-2026 workbook and therefore the live
-  `RISK_MATRIX` (1,088 entries, 33 `fl` flags: 28 split, 5 lowcorr) through `tools/merge_risk_matrix.js`
-  with 0 differences; monthly steps documented (AMFI NAV history fetch; five Nifty index files downloaded by hand, B8);
-  `docs/INPUT_FILES.md` #12/#17, `docs/MONTHLY_UPDATE_PROCESS.md` and a DECISIONS entry updated.
-- Decided (Rf: for now) 2-Nov-2026: Rf = 4.5% (D84; kept for now, the desk's confirmation DESK-15 is still open, D58) and
-  the textbook Sortino, the root-mean-square of the negative excess returns over all days (D85); the only
-  open input is DEC-OPEN-01 (who builds). The build must be merged before step 10 of the Oct cycle (about
-  13-17-Nov-2026); otherwise the Oct risk table keeps "30 Sep 2026".
-- Next: owner answers DEC-OPEN-01 (buttons offered on 27-Oct: "Yes, rebuild them" / "Desk will provide";
-  asked again by MOD-02 on 2-Nov-2026, not yet answered).
-- Rel: B8, C10, C11, C35, A22, C42; D43, D58; D84, D85; TASK-057, TASK-053, TASK-066.
+#### TASK-022 Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run)
+- WS NB | Status BLOCKED (TASK-018; DEC-OPEN-30 and DEC-OPEN-31) | P1 | Owner: NB-04 (proposed; MOD-02 launches
+  it only after the widened TASK-018 PR has merged) | Dep: TASK-018, DEC-OPEN-30, DEC-OPEN-31 (TASK-070 is no
+  longer a dependency) | Blk: TASK-018 (ARC-01 condition); owner decisions DEC-OPEN-30 and DEC-OPEN-31
+- Risk class HIGH (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7: triggers 7 financial calculation, 8 scale,
+  9 identity matching, 10 override flag; trigger 4 only if `tools/lib/blocklib.js` is touched): contract +
+  Guardian pre-check before building, Guardian diff review after, `financial-data-reviewer`, `security-reviewer`.
+- Re-scoped 2-Nov-2026 (D86). The owner answered DEC-OPEN-01 in chat: the data comes from the MF dashboard (the
+  Centricity Mutual Fund Screener, sign-in only), and the owner will share Excel files every month like the two
+  attachments. The attachments are zips of JSON and CSV (export contract `pr-datapack-v1`, exporter 1.0.0), not
+  Excel workbooks. MOD-02's reading (INFERRED): the two legacy inputs (inbox rows 12 and 17, KNOWN_ISSUES B8)
+  are not rebuilt in-house; from the October 2026 cycle the Portfolio Matrix (`RISK_MATRIX` block) is fed from
+  the Screener's monthly data pack, which the owner shares. No Claude chat signs in to the Screener or opens
+  anything behind its login page (MOD-02 opened only the login page once, without signing in); the owner
+  supplies the packs.
+- Accept (short list; the full contract, the test thresholds and the task split T0-T8 are in
+  `docs/update-log/2026-11-02_datapack-feasibility.md`): (1) a new tool `tools/datapack_risk_workbook.js` turns an
+  extracted pack folder into the existing "Fund Risk Ratios & 3Y Rolling" workbook layout (strict CLI per D72,
+  dry-run default; refuses a `.zip` and any tracked folder; gates on contract version, file hashes, provisional
+  status, and Rf and scale tripwires); (2) `tools/merge_risk_matrix.js` stays the only writer of `RISK_MATRIX`
+  and gains an owner-only override of the coverage gate (the flag name is to be fixed in the TASK-022 contract;
+  `--allow-coverage-drop` already exists for `tools/merge_direct_equity_returns.js` with a different meaning);
+  (3) tests (a new `tools/test/datapack_risk.test.js` on a
+  synthetic miniature pack, no real data; cases for the new tool in `tools/test/tool_inputs.test.js`); (4) the
+  minimum docs (`docs/MONTHLY_UPDATE_PROCESS.md` step 10, `docs/INPUT_FILES.md`, `tools/README.md`, the inbox
+  README, `CHANGELOG.md`, `docs/PROJECT_STATE.md`); (5) a regression run against the live 30-Sep-2026 table with
+  the thresholds of the update-log; (6) `.gitignore` keeps `pr-datapack*/` and `datapack/` out of git (the
+  patterns are absent on 2-Nov-2026 and are added by this task; a test keeps them; TASK-075 also edits
+  `.gitignore`). The old acceptance, "reproduce the Sep workbook with 0 differences", survives only for the
+  unchanged merge step: the Sep table cannot be reproduced from a pack (the window end, the NAV source and the
+  definitions differ).
+- Decided 2-Nov-2026 (Rf: for now): Rf = 4.5% (D84; kept for now, the desk's confirmation DESK-15 is still open,
+  D58); the pack states the same 4.5%.
+- Open: D85 (the textbook Sortino) cannot be honoured from pack data, because the pack's Sortino is the
+  June-2026 form; what the October matrix does about it is an owner decision (`DECISION_LOG.md`). For the other
+  definition changes from the live table (Alpha, benchmark, window, coverage, flags) see C46.
+- Next: while TASK-018 runs, MOD-02 writes the 12-field contract (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 6
+  template) and runs the Guardian pre-check on it (no code); NB-04 starts after TASK-018 has merged and
+  DEC-OPEN-30 and -31 are answered; MOD-02 lifts the REQ-063 pause in the launch packet. Effort about 6 working
+  days (INFERRED: tool and tests 3, merge flag 0.5, docs 1, regression run 0.5, reviews 1). The first use in the
+  October cycle (step 10 of TASK-021) needs the owner's approval before the merge: the list of keys that lose
+  their ratios, any pins and the use of the coverage override. D61's stop rule applies (override flag and pins
+  need the owner's approval; FILE_OWNERSHIP section 7). Fallback: if the build is not merged when step 10 of the
+  October cycle is reached, the cycle runs without step 10 and the table keeps "30 Sep 2026". Points for the
+  contract and the Guardian pre-check:
+  - The adapter must run after `tools/rename_schemes.js` and `tools/fold_duplicate_names.js` (they re-key the
+    `RISK_MATRIX` block; with TASK-024).
+  - Consumers to list in the contract: `tools/verify_page.js`, `tools/dev/rehearse.js` and
+    `tools/test/pptx_layout.test.js` (the case "thirty funds with risk data": at `fl` = 0 the dagger layout path
+    loses its only npm test coverage, so add a synthetic flagged record to the L0 tests of the update-log
+    (section 8); INFERRED).
+  - The planned second pins file `tools/data/risk_pack_pins.json` goes against D75 (one pins file,
+    `tools/data/pins.json`): decide at the pre-check.
+  - The two deadlines (DEC-OPEN-30 and DEC-OPEN-31) protect different things (see `DECISION_LOG.md` section 1.2).
+- Rel: B8, C10, C11, C35, C42, A22, C46; D43, D58, D84, D85, D86; DEC-OPEN-01, -30, -31, -32, -33; TASK-057,
+  TASK-053, TASK-066, TASK-070, TASK-078.
 
 #### TASK-023 Apply the C20 decision to all 13 JioBlackRock Regular records; release the held G-Sec record
 - WS OPS | Status BLOCKED | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-07 | Blk: owner decision
@@ -435,15 +506,15 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 - Rel: C21.
 
 #### TASK-053 Restore `c` / `RISK_MATRIX_BENCH_SD` or drop them
-- WS OPS | Status BLOCKED | P3 | Owner: MOD-02 assigns | Dep: the TASK-022 route | Blk: owner decision (via
-  DEC-OPEN-01)
-- Accept: decided together with the B8 builder; the page and the decision record agree.
+- WS OPS | Status BLOCKED | P3 | Owner: MOD-02 assigns | Dep: TASK-022 | Blk: one verified month on the pack route
+- Accept: MOD-02 proposal (not decided; update-log T8): drop the `c` field and `RISK_MATRIX_BENCH_SD` after one
+  verified month on the pack route, because nothing reads them, with the owner's yes.
 - Rel: C10; D43.
 
 #### TASK-057 Validate or retire `tools/build_risk_matrix.py`
-- WS NB | Status BLOCKED | P2 | Owner: MOD-02 assigns | Dep: DEC-OPEN-01 | Blk: owner decision
-- Accept: per the chosen B8 route: validated against Sep-2026 (it implements the June Sortino and a
-  different 3-year window start, C35) or retired with the docs updated.
+- WS NB | Status BLOCKED | P2 | Owner: MOD-02 assigns | Dep: TASK-022 | Blk: one verified month on the pack route
+- Accept: MOD-02 proposal (not decided; update-log T8): retire `tools/build_risk_matrix.py` and the Python
+  runbook (or keep them as reference) once one month has been verified on the pack route.
 - Rel: A22, C35; D43.
 
 #### TASK-058 SheetJS upgrade, page and tools together
@@ -475,6 +546,8 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   `docs/archive/README_original_2026-05.md` become role words; `.gitignore` gains
   `*.tar *.gz *.tgz *.bz2 *.xz *.docm *.pem *.key *.p12 *.pfx *.sqlite *.db *.env id_rsa* credentials*.json .npmrc`, and the session ids the public registers carry (SEC-05) are reviewed; no history rewrite (it needs
   the owner's explicit instruction); `security-reviewer` pass; `verify` green.
+- Note 2-Nov-2026: TASK-022 also adds patterns to `.gitignore` (`pr-datapack*/` and `datapack/`): sequence the
+  two or fold them.
 - Rel: R1, R12, DEC-OPEN-13, -18, -29; D60, D64.
 
 ### 6.3 Waiting for desk files or answers (D)
@@ -551,6 +624,7 @@ Most of these are backlog: done only when the owner asks, except where the prior
 - Accept: the 12 keys (MASTER rows the SIF sibling removes at load) explained and resolved;
   `tools/merge_risk_matrix.js` checks keys against the effective (post-sibling) MASTER; SIF risk-row
   coverage (0 of 30 today) decided with TASK-022.
+- Note 2-Nov-2026 (D86): sequence after TASK-022: same file `tools/merge_risk_matrix.js`.
 - Rel: C42.
 
 #### TASK-069 Deck: Construct and Net Asset Allocation through `planTable`/`drawTable`; draw every `listTable` page
@@ -688,11 +762,13 @@ TASK-062 only exports the patch and may run before TASK-017 (the export reads cu
 #### TASK-070 Inventory and secure local-only artefacts
 - WS GOV | Status NOT STARTED | P2 | Owner: MOD-02 + owner | Dep: TASK-017 | Blk: owner (for `ref.pptx`)
 - Items: the B8 toolchain in `handover-archive/export_20261023/extracted/05_project_working_folder/_nav_risk_toolchain/`
-  (221 files; the only source for a TASK-022 port); `_testdata/pptx-design-system/`; `%TEMP%\x\` (raw COM
+  (221 files; the reference for the textbook Sortino (D85 is active; the pack cannot honour it, see DEC-OPEN-30): D86 no longer needs a port); `_testdata/pptx-design-system/`; `%TEMP%\x\` (raw COM
   bounds files, deck authoring source, and `ref.pptx`, likely a copy of the client reference deck, never to
   be opened, quoted or committed); the stash snapshot `wt_snapshot` in session `7628c9ae`'s scratchpad.
 - Accept: each item listed with location, size and backup state in `REPOSITORY_AND_ENVIRONMENT_STATE.md`;
   cloud copies confirmed once OneDrive runs; owner decides on `ref.pptx`; nothing committed.
+- Note 2-Nov-2026 (D86): keep the archived in-house toolchain as the textbook-Sortino reference; no longer a
+  dependency of TASK-022 (no TASK-022 port is planned).
 - Rel: R10, R11, B8.
 
 #### TASK-056 Fix the stale `.gitattributes` NUL comment
@@ -705,7 +781,7 @@ TASK-062 only exports the patch and may run before TASK-017 (the export reads cu
 #### TASK-074 Record the conversation-only owner decisions as D-numbers
 - WS GOV | Status PLANNED | P2 | Owner: MOD-02 | Dep: TASK-015 | Blk: -
 - Accept: each approved decision listed in `DECISION_LOG.md` section 2.2 recorded in `docs/DECISIONS.md` from
-  D86 (D84 and D85 are used by the 2-Nov-2026 answers), wording confirmed by the owner; the old-site
+  D87 (D84 to D86 are used by the 2-Nov-2026 answers), wording confirmed by the owner; the old-site
   retirement condition added to KNOWN_ISSUES R7 and `docs/DEPLOYMENT.md`. The R7 part is already recorded
   (KNOWN_ISSUES R7 status line and corrected block); only `docs/DEPLOYMENT.md` and `docs/DECISIONS.md` still
   lack the full-testing condition (audit finding decisions F-01).
@@ -786,7 +862,7 @@ Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every 
 | DESK-13 | AMC of Prism Hybrid Long-Short Fund and of Magnum Equity Ex-Top 100 Long-Short SIF (+ IRR bands) | C6, C38, C24; TASK-029 |
 | DESK-14 | Unit and period of the Select alpha | C23; TASK-030 |
 | DESK-15 | Risk-free house rate | C11; DEC-OPEN-02 (Rf kept at 4.5%, D84; desk confirmation still open, D58) |
-| DESK-16 | Sortino definition (with the owner) | C35; DEC-OPEN-03 (answered 2-Nov: D85) |
+| DESK-16 | Sortino definition (with the owner) | C35; DEC-OPEN-03 (answered 2-Nov: D85); a textbook-Sortino field is ask (c) of TASK-078 |
 | DESK-17 | Mirae Asset S&P 500 Top 50 ETF FoF and NYSE FANG+ ETF FoF September returns | check before a client deck uses them |
 | DESK-18 | Why 4 unmatured Debt ETFs are absent from the Sep Monitor | C19 follow-up |
 | DESK-19 | BHARAT Bond FoF Apr-2030: Direct = Regular, true? | C27 |
@@ -809,5 +885,9 @@ Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every 
 | 2-Nov-2026 | TASK-059, TASK-060, TASK-061 | counts updated (26 / 28 / 4) | `git branch` and `git worktree list`, 2-Nov-2026 | MOD-02 |
 | 2-Nov-2026 | TASK-075, TASK-076, TASK-077 | created | TASK-016 audit (SEC-01..05; interfaces D-01; P3 backlog) | MOD-02 |
 | 2-Nov-2026 | TASK-016 | PR #30 merged (`32172f5`); Gate D done; live 7 of 7 | PR #30 merged 2-Nov-2026 12:20 UTC; push run 41443940610 (verify + publish) success; 7 of 7 live files SHA-256-identical to `site/`; Gate E (the owner confirms the D84 and D85 wording) pending | MOD-02 |
-| 2-Nov-2026 | TASK-018, TASK-064 | proposed to the owner as sub-chats GOV-01 and EX-01 (cards); claims and launch packets follow | cards proposed 2-Nov-2026; no session started yet, nothing runs until the owner starts them | MOD-02 |
+| 2-Nov-2026 | TASK-018, TASK-064 | proposed to the owner as sub-chats GOV-01 and EX-01 (cards); claims and launch packets follow | cards proposed 2-Nov-2026; both started by the owner on 2-Nov-2026 (GOV-01: no claim in force yet, contract and Guardian pre-check first) | MOD-02 |
 | 2-Nov-2026 | TASK-059, TASK-060 | branch counts updated after PR #30 (27 merged branches on origin; 29 non-main local branches) | `git branch` and `gh api`, 2-Nov-2026 | MOD-02 |
+| 2-Nov-2026 | TASK-016, TASK-018, TASK-064 | PR #31 merged (`c0fb2dd`); live 7 of 7 | PR #31 merged 2-Nov-2026 14:41 UTC; PR-check run 41464073329 success; push run 41464361000 (verify + publish) success; deployment 7495000062; 7 of 7 live files equal `site/` | MOD-02 |
+| 2-Nov-2026 | TASK-018, TASK-064 | PLANNED -> IN PROGRESS: started by the owner as GOV-01 (contract phase, no claim in force yet) and EX-01 (read-only); open counts: IN PROGRESS 1 -> 3, PLANNED 7 -> 5 | the owner started both sub-chats on 2-Nov-2026; EX-01 is read-only (shared checkout, no branch, no commit); GOV-01's contract and the Guardian pre-check come first | MOD-02 |
+| 2-Nov-2026 | TASK-022 (notes on TASK-053, TASK-057, TASK-066, TASK-070) | re-scoped after the owner's answer to DEC-OPEN-01 (D86): from building the NAV Data and Fund Risk Ratios workbooks to feeding the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run); stays BLOCKED, now by TASK-018 and DEC-OPEN-30 / DEC-OPEN-31; owner NB-04 (proposed); TASK-070 no longer a dependency | owner's answer in chat, 2-Nov-2026; `docs/update-log/2026-11-02_datapack-feasibility.md` | MOD-02 |
+| 2-Nov-2026 | TASK-078 | created (NOT STARTED, OPS, P1): the owner asks the MF dashboard team (asks a-i) | D86; `docs/update-log/2026-11-02_datapack-feasibility.md` | MOD-02 |

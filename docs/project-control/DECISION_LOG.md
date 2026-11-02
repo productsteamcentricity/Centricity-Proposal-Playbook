@@ -32,35 +32,50 @@ works today; future maintenance; risks and whether it can be undone; the documen
 to record the answer. Every entry is BLOCKED on the named decider (answered entries move to section 1.6).
 
 The options, effects and recommendations come from the cited KNOWN_ISSUES and DECISIONS entries and the
-28-Oct-2026 fact sheets. Where a benefit, disadvantage or effect is MOD-01's own reasoning rather than a
-documented fact, it is marked (INFERRED).
+28-Oct-2026 fact sheets and, for DEC-OPEN-30 to -33, the 2-Nov-2026 pack analysis
+(`docs/update-log/2026-11-02_datapack-feasibility.md`). Where a benefit, disadvantage or effect is MOD-01's or
+MOD-02's own reasoning rather than a documented fact, it is marked (INFERRED).
 
 ## 1.2 Order to ask, and deadlines
 
 The Oct-2026 MF cycle is expected about 13-17-Nov-2026 (INFERRED from the 13th-17th cadence: data applied
-15-Jul, 13-Aug, 17-Sep and 13-Oct). Two different dates follow from that. DEC-OPEN-08 (the renames) is due by
+15-Jul, 13-Aug, 17-Sep and 13-Oct). Several different dates follow from that. DEC-OPEN-08 (the renames) is due by
 about 13-Nov-2026, because `rename_schemes.js --apply` is step 1 of the run. DEC-OPEN-01, DEC-OPEN-02 and
-DEC-OPEN-03 (the NAV and risk-ratio workbooks; -02 and -03 are answered) are needed WELL BEFORE 13-Nov-2026
-if the October risk matrix is to be refreshed: step 10 (`merge_risk_matrix.js`) needs the #12 workbook, so the
-producer (TASK-022, after TASK-070) and its Sep-2026 regression test must be merged before the run reaches step 10.
-The build lead time is not documented (UNKNOWN). If the decisions come later, the October cycle runs without step 10
-(an absent input is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late second run or the
-November cycle. Suggested order for the owner's decision session:
+DEC-OPEN-03 (who makes the NAV and risk-ratio inputs, the risk-free rate, the Sortino definition) are ANSWERED
+(2-Nov-2026: D86, D84, D85). D86 means (MOD-02's reading, INFERRED until Gate E) that from October the Portfolio Matrix is fed from the MF Screener's data
+pack; that raised four new questions, DEC-OPEN-30 to DEC-OPEN-33. DEC-OPEN-30 and DEC-OPEN-31 gate the build of
+the tool that turns the pack into the input of step 10 (`merge_risk_matrix.js`; TASK-022, re-scoped): its mapping
+depends on them, so they are needed by about 6-Nov-2026 and about 9-Nov-2026, and the tool must be merged before
+the run reaches step 10. DEC-OPEN-32 is needed before the first apply (step 10, about 14-16-Nov-2026) and
+DEC-OPEN-33 by about 11-Nov-2026 (acted on at run time). The build is estimated at about 6 working days
+(INFERRED, analysis of 2-Nov-2026; it counted 5-6 needed against about 4 available) and needs both DEC-OPEN-30 and
+DEC-OPEN-31 answered (update-log T1; the analysis assumed answers by 4-Nov-2026). The two answer dates protect
+different things. Answering both DEC-OPEN-30 and DEC-OPEN-31 by about 6-Nov-2026 keeps a merge by 13-Nov-2026
+possible (before step 10 of the October cycle, about 13-17-Nov-2026). Answering DEC-OPEN-31 by 9-Nov-2026 at the
+latest means a merge about 16-Nov-2026, which is step 10 itself. The estimate leaves no slack, so the fallback is
+the LIKELY case if TASK-018 (which must merge before the build starts) slips or the answers come late: the October
+cycle runs without step 10 (an absent input is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until
+a late second run or the November cycle. Suggested order for the owner's decision session:
 
-1. DEC-OPEN-02 and DEC-OPEN-03 (ANSWERED 2-Nov-2026: D84, D85), then DEC-OPEN-01 (asked again 2-Nov-2026;
-   pending; as early as possible, well before ~13-Nov-2026).
-2. DEC-OPEN-08 (by ~13-Nov-2026).
-3. DEC-OPEN-04 and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a); DEC-OPEN-05;
+1. DEC-OPEN-30 and DEC-OPEN-31 (they gate the build; about 6-Nov and about 9-Nov-2026). DEC-OPEN-01, -02 and -03
+   are ANSWERED (2-Nov-2026: D86, D84, D85).
+2. DEC-OPEN-32 (before the first apply, about 14-16-Nov-2026; INFERRED: it needs people outside this project, so
+   it can take longest), then DEC-OPEN-33 (by about 11-Nov-2026, acted on at run time).
+3. DEC-OPEN-08 (by ~13-Nov-2026).
+4. DEC-OPEN-04 and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a); DEC-OPEN-05;
    DEC-OPEN-07.
-4. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
-5. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
-6. The rest as time allows.
+5. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
+6. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
+7. The rest as time allows.
 
 ## 1.3 Summary
 
+Entries DEC-OPEN-01 to DEC-OPEN-33 exist: 3 are answered (DEC-OPEN-01, -02 and -03; section 1.6) and 30 are
+open. Next free: DEC-OPEN-34.
+
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
 |---|---|---|---|---|---|
-| DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022, TASK-057, TASK-053 | as soon as possible (before step 10 of the Oct cycle, about 13-17-Nov-2026) | yes (port to Node) |
+| DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022 (re-scoped); TASK-057 and TASK-053 are MOD-02 proposals only (update-log T8) | ANSWERED 2-Nov-2026 (D86) | n/a (answered) |
 | DEC-OPEN-02 | Risk-free rate | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D84) | n/a (answered) |
 | DEC-OPEN-03 | Sortino definition | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D85) | n/a (answered) |
 | DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | before TASK-020 | no |
@@ -89,57 +104,14 @@ November cycle. Suggested order for the owner's decision session:
 | DEC-OPEN-27 | Source of the PMS/AIF benchmark rows | owner (+ desk) | TASK-065 | - | no |
 | DEC-OPEN-28 | Which dashboard "the portfolio dashboard" meant | owner | - | - | not applicable (a question) |
 | DEC-OPEN-29 | Public-repository hygiene: old-repository locators, staff identities | owner (+ compliance) | TASK-075 | after DEC-OPEN-13 | yes (a) |
+| DEC-OPEN-30 | Which Sortino formula the Portfolio Matrix uses from October | owner (+ desk, DESK-16) | TASK-022 | ~6-Nov-2026 (with -31, keeps a merge by 13-Nov-2026 possible); if late, the fallback is likely (section 1.2) | yes (a) |
+| DEC-OPEN-31 | Accepting the other changes the pack brings to the Portfolio Matrix | owner | TASK-022 | ~9-Nov-2026 at the latest (a merge ~16-Nov-2026 is step 10 itself; for a merge by 13-Nov-2026: ~6-Nov-2026); if late, the fallback is likely (section 1.2) | yes (accept all) |
+| DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | before the first apply (~14-16-Nov-2026) | yes (a written yes) |
+| DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
 
 ## 1.4 The open decisions
 
-### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
-
-Decider: owner. First asked: 27-Oct-2026 12:28 UTC by MOD-01 ("Should I rebuild the risk-ratio and NAV
-workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); unanswered. Asked again by
-MOD-02 on 2-Nov-2026 with the buttons "Yes, rebuild them" / "Desk will provide"; pending. Deadline: as soon as
-possible (see section 1.2). Unblocks: TASK-022, TASK-057, TASK-053. Related: KNOWN_ISSUES B8, A22, C10; D43.
-
-- **The problem.** Every month the dashboard shows risk numbers for about 1,088 funds (how bumpy a fund's
-  returns were, and how much return it gave for that bumpiness: Sharpe, Sortino and similar ratios). They
-  come from two spreadsheets, "NAV Data" (#17) and "Fund Risk Ratios & 3Y Rolling" (#12). We believed the desk
-  sent them. The outgoing owner's export (read 23-27-Oct) showed the outgoing owner made them on their own
-  computer with a home-made PowerShell and C# toolchain. Nobody makes them now. The only copy of that
-  toolchain is local: `handover-archive/export_20261023/extracted/05_project_working_folder/_nav_risk_toolchain/`
-  (221 files, git-ignored).
-- **Why a decision is needed.** Without a maker, the October cycle cannot refresh the risk table; it keeps
-  saying "30 Sep 2026" and gets older every month. Building a replacement takes time, so the choice is needed
-  before the October cycle.
-- **Options.** (a) Rebuild the core of the toolchain (about 12 scripts) as Node tools in `tools/`, with a test
-  that must reproduce the live Sep-2026 workbook and risk table exactly. (b) Validate and use the existing
-  Python tool `tools/build_risk_matrix.py` (never validated, A22; it uses the June Sortino definition and a
-  different 3-year window start, C35; it still needs NAV Data as input, so a NAV maker is needed anyway,
-  INFERRED from its usage line). (c) Ask the desk to make both workbooks.
-- **What each changes.** (a) New tools, a regression test and docs; each month the AMFI NAV history is fetched
-  (a script in the outgoing owner's toolchain) and someone downloads five Nifty index files by hand (B8).
-  (b) The Python route becomes production and D43 is revisited.
-  (c) No engineering; the October data depends on the desk.
-- **Update 2-Nov-2026.** With D84 (Rf 4.5%) and D85 (textbook Sortino) decided (Rf: for now), option (a) can be
-  proven by reproducing the live September workbook and RISK_MATRIX exactly; option (b) now also needs the
-  Python tool changed (it implements June's Sortino and a different 3-year start). The build must be merged
-  before step 10 of the October cycle or the October risk table keeps "30 Sep 2026".
-- **Benefits and disadvantages.** (a) In our control, tested, same language as the other monthly tools; costs
-  engineering time before mid-November and a monthly manual download. (b) Less new code, but unvalidated,
-  differs from the live definition, and does not remove the need for a NAV maker. (c) No build work, but
-  depends on people outside the project, timing unknown, and the desk has not made these files before
-  (INFERRED from B8).
-- **Impact on existing functionality.** None until a new risk table is applied; today's table stays as it is.
-- **Maintenance.** (a) and (b): we maintain the builder code and its test. (c): we maintain only the merge step
-  (`tools/merge_risk_matrix.js`).
-- **Risks and reversibility.** Reversible: nothing changes on the page until a built table is merged. The risk is
-  a wrong table reaching client decks; the regression test in option (a) is the guard.
-- **Documented recommendation (not a decision).** Option (a): port the core toolchain to Node in `tools/` with a
-  Sep-2026 regression test; decide DEC-OPEN-02 and DEC-OPEN-03 first (both decided 2-Nov-2026: D84, D85), and
-  keep today's risk-free rate and Sortino definition until they are decided (KNOWN_ISSUES B8;
-  `docs/PROJECT_STATE.md` next steps; MOD-01, 27-Oct-2026). No separate rationale is written down; the option's
-  own guard is the regression test that must reproduce the live workbook (B8).
-- **Record the answer as.** A new `Dnn` that amends D43; update B8; set TASK-022 (and TASK-057, TASK-053) from
-  BLOCKED to PLANNED. Originating chat: MOD-01 (retired); MOD-02 relays the answer to the chat it assigns to
-  TASK-022.
+### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026 - ANSWERED 2-Nov-2026: moved to section 1.6 (D86)
 
 ### DEC-OPEN-02 Which risk-free rate the risk ratios use - ANSWERED 2-Nov-2026: moved to section 1.6 (D84)
 
@@ -766,12 +738,174 @@ PR #29 (SEC-01 to SEC-05). Unblocks: TASK-075. Related: R1, R12, DEC-OPEN-13, DE
   (DEC-OPEN-13), because it is the real fix.
 - **Record the answer as.** A new `Dnn`; update R1 and R12; set TASK-075 to PLANNED.
 
+### DEC-OPEN-30 Which Sortino formula the Portfolio Matrix uses from October
+
+Decider: owner (+ desk, DESK-16). Raised: 2-Nov-2026 by MOD-02 from the analysis of the MF Screener data pack
+(`docs/update-log/2026-11-02_datapack-feasibility.md`). Deadline: about 6-Nov-2026 (the mapping of the bridge tool
+depends on it; with DEC-OPEN-31 also answered by then, a merge by 13-Nov-2026 stays possible, before step 10 of the
+October cycle; if the answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks:
+TASK-022. Related: C35, D85, D86.
+
+- **The problem.** The Sortino ratio shows how much return a fund gave for each unit of "bad" bumpiness: only the
+  days it earned less than the risk-free rate count. Earlier on 2-Nov-2026 (08:52 UTC) the owner chose the textbook
+  formula (D85). The MF Screener's data pack does not use it: it divides the average excess return by the spread of
+  the bad days only, which is the form the June 2026 table used, and the textbook form cannot be rebuilt from the
+  pack, which does not carry the daily figures it needs. On 205 funds whose daily series provably equals the pack's,
+  the pack's form reproduces the pack's published Sortino to within 0.014 for all 205, while the textbook form gets
+  within 0.02 for only 119 of them (tested on the 15-Aug and 15-Sep-2026 packs; the 15-Oct daily series was not
+  available; the 15-Oct definitions file states the same formula). The two forms differ by about 0.03-0.05 on
+  average and 0.2-0.3 at most.
+- **Why a decision is needed.** D85 (textbook) was taken before the owner pointed to the MF dashboard as the source (D86; that this means the pack is MOD-02's reading, INFERRED), and the
+  two now conflict on this one column: with the pack as the source, the textbook figure cannot be produced. Only the
+  owner can say what the page shows instead.
+- **Options.** (a) Accept the MF dashboard's Sortino for October, with a one-line note under the table, and ask the
+  dashboard team for a textbook field in a later pack. (b) Leave the Sortino column as dashes until a textbook
+  figure exists. (c) Hold the whole October matrix at 30-Sep-2026.
+- **What each changes.** (a) The history reads textbook in August and September, June's form in June and from
+  October, and a new decision supersedes D85 for the matrix. (b) The page has no Sortino for a month or more.
+  (c) The matrix ages: every column keeps "30 Sep 2026".
+- **Benefits and disadvantages.** (a) The whole October table is refreshed, with the dashboard's own number; the
+  column changes meaning again, so October is not comparable with August and September (the note says so). (b) No
+  mixed forms, but a blank column on screen and in client decks (INFERRED). (c) No definition changes anywhere, but
+  every column of the matrix gets a month older (INFERRED).
+- **Impact on existing functionality.** (a) and (b): the Sortino column of the Portfolio Matrix on screen and in the
+  deck, from the October publish. (c): nothing changes.
+- **Maintenance.** (a) The one-line note stays until the dashboard team adds a textbook field; then a one-line
+  change and a decision record. (b) The same, with dashes instead of the note.
+- **Risks and reversibility.** Reversible: rebuild and publish again. Decks already sent to clients are not
+  recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): option (a), confirmed in
+  writing as a new decision that supersedes D85 for the matrix.
+- **Record the answer as.** A new `Dnn` (for option (a): it supersedes D85 for the Portfolio Matrix, and D85's
+  status in the index changes then); update C35 and C46; put the choice in TASK-022's acceptance.
+
+### DEC-OPEN-31 Accepting the other changes the pack brings to the Portfolio Matrix
+
+Decider: owner. Raised: 2-Nov-2026 by MOD-02 from the same analysis. Deadline: about 9-Nov-2026 at the latest (a merge
+then lands about 16-Nov-2026, which is step 10 itself; a merge by 13-Nov-2026 needs it by about 6-Nov-2026; if the
+answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks: TASK-022 (the mapping of the
+bridge tool, and one small wording change on the page). Related: C46, D86, D84.
+
+- **The problem.** The pack does not calculate the numbers in the same way as the table the page shows today
+  (as on 30-Sep-2026). Besides the Sortino form (DEC-OPEN-30), four things change. They are one package: the owner
+  may accept it whole, or part by part.
+  - (a) Date. The table would be stamped with the pack's date, 15-Oct-2026 (the page label would read "15 Oct
+    2026"), not a month-end as the page's other risk data are. Recommended: accept, and ask the MF dashboard team
+    whether a month-end pack exists.
+  - (b) Coverage. Only funds with a full three-year record get ratios. About 370 of today's 966 funds lose their
+    benchmark-based ratios (Beta, Correlation, Information Ratio, Down Capture, Alpha) and show dashes: 311 are too
+    young, 39 have a stale benchmark (the index data ends before the cycle date; the count changes between packs), 9
+    have no benchmark, 4 (reason to be confirmed: PROXY benchmark or no source) and 10 have a name that does not
+    match the dashboard's. Standard deviation, Sharpe and Sortino go from 966 to 636 funds, and the 3-year rolling
+    return from 433 to 451. The merge tool's check "funds with metrics did not shrink" would stop the merge, so it
+    has to be waived once, with an owner-only override of the coverage gate still to be added to the tool (the flag
+    name is to be fixed in the TASK-022 contract; `--allow-coverage-drop` already exists for the Direct Equity tool with
+    another meaning) and only with the owner's approval after reading the list of the funds that lose their
+    ratios. Recommended: accept, and waive the check once after reading the list.
+  - (c) Benchmark and alpha. Until now each fund was compared with one of four broad indices; the pack compares it
+    with its own benchmark. The benchmark label changes for about 554 funds, and Beta, Correlation, Information
+    Ratio, Down Capture and Alpha change meaning for about 264 of the 593 funds that keep them. The dashboard's own
+    alpha is simple excess return, not Jensen's alpha, which is what the page's wording says ("Alpha (Jensen)").
+    The tool would derive Jensen alpha at Rf 4.5% from the pack's 3-year returns and beta, so that the wording
+    stays true; this works for funds on a total-return benchmark only (7 funds on a price index get a dash).
+    Recommended: accept both.
+  - (d) Daggers and wording. 33 funds carry a warning dagger today: 28 for a NAV split (on the 28 funds flagged for
+    NAV splits, the table's standard deviation is about 3.5 times the MF dashboard's (median ratio), because the
+    MF dashboard adjusts NAV for splits itself) and 5 for low correlation with the index they were compared with.
+    With the pack all 33 lose the dagger. The hint text on the tab changes from "funds with < 250 trading days"
+    to "funds without a full three-year record". Recommended: accept both.
+- **Why a decision is needed.** These change what clients see in the Portfolio Matrix, on screen and in the deck: a
+  different date, dashes where there are numbers today, a different yardstick for each fund, and no warning
+  daggers. Only the owner can accept that.
+- **Options.** Accept all four (recommended); accept with changes (say which); or hold the whole matrix at
+  30-Sep-2026.
+- **What each changes.** Accept all: from the October publish the table has the pack's date, fewer funds with
+  ratios, each fund against its own benchmark, derived Jensen alpha, no daggers and the new hint text; October is
+  then not comparable with September in Sortino (DEC-OPEN-30), the five benchmark-based columns and coverage.
+  Accept with changes: the mapping of the bridge tool follows the owner's list. Hold: the matrix keeps "30 Sep 2026"
+  and ages.
+- **Benefits and disadvantages.** Accept all: the matrix is refreshed without an in-house toolchain to maintain,
+  and each fund is compared with a benchmark that fits it better (INFERRED); clients see fewer funds with ratios
+  and a break in the series. Hold: no break, but the matrix ages.
+- **Impact on existing functionality.** The Portfolio Matrix tab and the deck's matrix (client-facing), and one hint
+  line in `site/index.html`.
+- **Maintenance.** Each month the tool prints the funds that gain or lose ratios, and the update log records the
+  counts.
+- **Risks and reversibility.** Reversible: the next publish replaces the table. Decks already sent to clients are
+  not recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): accept all four, and
+  waive the coverage check once after the owner has read the list.
+- **Record the answer as.** A new `Dnn` (extends D86) that says which of (a) to (d) are accepted; update C46; put
+  the mapping in TASK-022's acceptance. The hint-text change is one small `site/index.html` change, merged before
+  the October cycle if the owner agrees.
+
+### DEC-OPEN-32 May the Screener's computed ratios appear in the public Playbook page and in client decks, and the pack's contract be described in this public repository?
+
+Decider: owner (with the Screener's owner and compliance). Raised: 2-Nov-2026 by MOD-02 from the same analysis.
+Deadline: before the first apply (step 10 of the October cycle, about 14-16-Nov-2026). Unblocks: the first apply of
+the pack-fed table (TASK-021 step 10). Related: the update-log risk R8
+(`docs/update-log/2026-11-02_datapack-feasibility.md`), KNOWN_ISSUES R2 and R12, D60, DEC-OPEN-29, D86.
+
+- **The problem.** The Playbook page is public (D60: free GitHub Pages, so anyone with the link can read the numbers
+  in it). The pack comes from the MF Screener, which is sign-in only and limited to invited users. From October the
+  page's risk block (`RISK_MATRIX`) would carry ratios that the Screener computed, and client decks would show them.
+- **Why a decision is needed.** Nobody has said whether the Screener's computed numbers may be shown outside its
+  sign-in. That is a question of permission and confidentiality, not of engineering, and what is published on a
+  public page stays readable in its history (INFERRED). The same question covers the public records of the pack's
+  contract (file names, field names, definitions) that are kept in this repository
+  (`docs/update-log/2026-11-02_datapack-feasibility.md`), in the tool's code and in its tests; the details of the Screener team's own methodology are kept in a local-only note.
+- **Options.** (a) A written yes (one line is enough). (b) No. (c) Ask the MF dashboard team first.
+- **What each changes.** (a) Nothing changes; the first apply goes ahead. (b) The Portfolio Matrix cannot be fed from
+  the pack: it keeps "30 Sep 2026", and D86 needs another source for these numbers (INFERRED). (c) The first apply
+  waits for their answer; if it is late, the October cycle runs without step 10 and the page keeps "30 Sep 2026".
+- **Benefits and disadvantages.** (a) Quick and clear, once someone entitled gives it. (b) Safest, but the risk table
+  stops being refreshed (INFERRED). (c) The answer comes from the right people; it costs time before mid-November.
+- **Impact on existing functionality.** The Portfolio Matrix refresh only (screen and deck).
+- **Maintenance.** The update log and the PR for the October run record only counts, hashes and dates, never
+  fund-level pack values or manager names (compare R12 and DEC-OPEN-29).
+- **Risks and reversibility.** A publish is hard to take back: the page and its history are public, and decks
+  already sent are not recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): get a one-line written yes
+  before the first apply.
+- **Record the answer as.** The owner's line, quoted with its date, in the update log of the October run and in a
+  note on D86; a new `Dnn` only if it comes with conditions or is a no (a no reopens the source of the Portfolio
+  Matrix).
+
+### DEC-OPEN-33 Use the PROVISIONAL October pack if the final one is late?
+
+Decider: owner (at run time, in chat). Raised: 2-Nov-2026 by MOD-02 from the same analysis. Deadline: about
+11-Nov-2026 (when the final pack is wanted). Unblocks: October step 10, if the final pack is late. Related: D86,
+TASK-021, TASK-022.
+
+- **The problem.** The 15-Oct-2026 pack is marked PROVISIONAL because one of its automatic checks failed: the rule
+  that 95% of the domestic stocks the funds hold must have at least three years of monthly prices. That check
+  concerns a file the risk table does not read (stock prices). The final pack is not available yet.
+- **Why a decision is needed.** If the final pack is late on the day the October run reaches step 10, someone must
+  say whether the run waits or goes ahead on the provisional one. A provisional pack may be replaced by a final one
+  with different contents.
+- **Options.** (a) Use the provisional pack for the October step 10, with the owner's explicit yes in chat, recorded
+  in the update log, and check again when the final pack arrives (re-run the step if the final pack's fund file
+  differs). (b) Skip step 10 and keep "30 Sep 2026".
+- **What each changes.** (a) The Portfolio Matrix is refreshed in the October cycle, and a second run follows if the
+  final pack differs. (b) The matrix keeps "30 Sep 2026" until a late second run or the November cycle.
+- **Benefits and disadvantages.** (a) On time, but it relies on a pack still marked provisional, although its own
+  report limits the failure to the stock-price file (the validator's own work was not checked). (b) Safe, but the
+  matrix is a month older (INFERRED).
+- **Impact on existing functionality.** The Portfolio Matrix only.
+- **Maintenance.** The update log names the pack, its cycle date, its generation time and a short hash of its fund
+  file, so that a later final pack can be compared.
+- **Risks and reversibility.** A second run replaces the table; decks sent in between carry the provisional numbers.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): use the provisional pack,
+  with an explicit yes in chat.
+- **Record the answer as.** The owner's yes (or no), quoted in the update log of the October run; no `Dnn` unless
+  the owner sets a standing rule for provisional packs.
+
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
    chat ID)` and set its status from BLOCKED to ANSWERED (and name the Dnn). Do not delete the entry: move it to
    section 1.6.
-2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D86 on 2-Nov-2026):
+2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D87 on 2-Nov-2026):
    Context, Decision, Rationale, Alternatives, Consequences, Source (the owner's message, date and chat). Add it to
    the index table there. If the wording is MOD-02's summary of the owner's answer, the owner confirms it.
    (Small filing answers such as DEC-OPEN-06 need no `Dnn`; the entry says so.)
@@ -786,7 +920,73 @@ PR #29 (SEC-01 to SEC-05). Unblocks: TASK-075. Related: R1, R12, DEC-OPEN-13, DE
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-02 (D84), DEC-OPEN-03 (D85).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85).
+
+### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
+
+Decider: owner. First asked: 27-Oct-2026 12:28 UTC by MOD-01 ("Should I rebuild the risk-ratio and NAV
+workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); unanswered. Asked again by
+MOD-02 on 2-Nov-2026 with the buttons "Yes, rebuild them" / "Desk will provide"; answered later that day
+(below). Deadline: as soon as possible (see section 1.2). Unblocks: TASK-022 (re-scoped); TASK-057 and
+TASK-053 are MOD-02 proposals only (update-log T8). Related: KNOWN_ISSUES B8, A22, C10; D43.
+
+Answer: "DEC-OPEN-01: who makes the NAV Data and Fund Risk Ratios workbooks from October? - Get it from [address of
+the MF dashboard]. The owner will share excel files every month like the attached" (typed in the MOD-02 chat,
+2-Nov-2026, shortly after the two attached packs were saved at 14:19 UTC; the address of the sign-in-only page
+is replaced here by a placeholder and must not appear in any repository document) -> D86. Attachments:
+`pr-datapack_2026-10-15_PROVISIONAL.zip` and `pr-datapack-backfill_2026-10-15.zip`, JSON and CSV packs (export
+contract `pr-datapack-v1`, exporter 1.0.0), not Excel workbooks. Status: ANSWERED.
+
+MOD-02's reading (INFERRED, not stated by the owner): the two legacy inputs (inbox rows 12 "Fund Risk Ratios & 3Y
+Rolling" and 17 "NAV Data", KNOWN_ISSUES B8) are not rebuilt in-house; from the October 2026 cycle the Portfolio
+Matrix (the `RISK_MATRIX` block) is fed from the Screener's monthly data pack, which the owner shares. The page
+behind the address is the Centricity Mutual Fund Screener (sign-in only, access limited to invited users); MOD-02
+did not and must not sign in. None of options (a) to (c) below was chosen. The answer raised four follow-up
+questions, DEC-OPEN-30 to DEC-OPEN-33 (section 1.4). (The options, the update, the recommendation and the "Record
+the answer as" line below are the text as asked, before the answer: D86 leaves D43 in force, with a note added
+there, and TASK-022 is re-scoped in `TASK_REGISTER.md`.)
+
+- **The problem.** Every month the dashboard shows risk numbers for about 1,088 funds (how bumpy a fund's
+  returns were, and how much return it gave for that bumpiness: Sharpe, Sortino and similar ratios). They
+  come from two spreadsheets, "NAV Data" (#17) and "Fund Risk Ratios & 3Y Rolling" (#12). We believed the desk
+  sent them. The outgoing owner's export (read 23-27-Oct) showed the outgoing owner made them on their own
+  computer with a home-made PowerShell and C# toolchain. Nobody makes them now. The only copy of that
+  toolchain is local: `handover-archive/export_20261023/extracted/05_project_working_folder/_nav_risk_toolchain/`
+  (221 files, git-ignored).
+- **Why a decision is needed.** Without a maker, the October cycle cannot refresh the risk table; it keeps
+  saying "30 Sep 2026" and gets older every month. Building a replacement takes time, so the choice is needed
+  before the October cycle.
+- **Options.** (a) Rebuild the core of the toolchain (about 12 scripts) as Node tools in `tools/`, with a test
+  that must reproduce the live Sep-2026 workbook and risk table exactly. (b) Validate and use the existing
+  Python tool `tools/build_risk_matrix.py` (never validated, A22; it uses the June Sortino definition and a
+  different 3-year window start, C35; it still needs NAV Data as input, so a NAV maker is needed anyway,
+  INFERRED from its usage line). (c) Ask the desk to make both workbooks.
+- **What each changes.** (a) New tools, a regression test and docs; each month the AMFI NAV history is fetched
+  (a script in the outgoing owner's toolchain) and someone downloads five Nifty index files by hand (B8).
+  (b) The Python route becomes production and D43 is revisited.
+  (c) No engineering; the October data depends on the desk.
+- **Update 2-Nov-2026.** With D84 (Rf 4.5%) and D85 (textbook Sortino) decided (Rf: for now), option (a) can be
+  proven by reproducing the live September workbook and RISK_MATRIX exactly; option (b) now also needs the
+  Python tool changed (it implements June's Sortino and a different 3-year start). The build must be merged
+  before step 10 of the October cycle or the October risk table keeps "30 Sep 2026".
+- **Benefits and disadvantages.** (a) In our control, tested, same language as the other monthly tools; costs
+  engineering time before mid-November and a monthly manual download. (b) Less new code, but unvalidated,
+  differs from the live definition, and does not remove the need for a NAV maker. (c) No build work, but
+  depends on people outside the project, timing unknown, and the desk has not made these files before
+  (INFERRED from B8).
+- **Impact on existing functionality.** None until a new risk table is applied; today's table stays as it is.
+- **Maintenance.** (a) and (b): we maintain the builder code and its test. (c): we maintain only the merge step
+  (`tools/merge_risk_matrix.js`).
+- **Risks and reversibility.** Reversible: nothing changes on the page until a built table is merged. The risk is
+  a wrong table reaching client decks; the regression test in option (a) is the guard.
+- **Documented recommendation (not a decision).** Option (a): port the core toolchain to Node in `tools/` with a
+  Sep-2026 regression test; decide DEC-OPEN-02 and DEC-OPEN-03 first (both decided 2-Nov-2026: D84, D85), and
+  keep today's risk-free rate and Sortino definition until they are decided (KNOWN_ISSUES B8;
+  `docs/PROJECT_STATE.md` next steps; MOD-01, 27-Oct-2026). No separate rationale is written down; the option's
+  own guard is the regression test that must reproduce the live workbook (B8).
+- **Record the answer as.** A new `Dnn` that amends D43; update B8; set TASK-022 (and TASK-057, TASK-053) from
+  BLOCKED to PLANNED. Originating chat: MOD-01 (retired); MOD-02 relays the answer to the chat it assigns to
+  TASK-022.
 
 ### DEC-OPEN-02 Which risk-free rate the risk ratios use
 
@@ -817,6 +1017,8 @@ made before the answer; D58 was not closed.)
   (KNOWN_ISSUES C11). No value is recommended.
 - **Record the answer as.** A new `Dnn` that closes D58 (D58's status then changes from Open to Superseded by
   the new entry); update C11; note the value in TASK-022's acceptance.
+- **Note 2-Nov-2026.** The text above was written before DEC-OPEN-01 was answered; read 'builder' as the planned
+  bridge tool (D86).
 
 ### DEC-OPEN-03 Which Sortino definition to use
 
@@ -841,6 +1043,8 @@ Answer: 'Keep textbook' (a button offered by MOD-02; 2-Nov-2026 08:52 UTC, MOD-0
 - **Risks and reversibility.** Reversible (re-run).
 - **Documented recommendation (not a decision).** No recommendation documented.
 - **Record the answer as.** A new `Dnn`; update C35; put the formula in TASK-022's acceptance (and TASK-057).
+- **Note 2-Nov-2026.** The text above was written before DEC-OPEN-01 was answered; read 'builder' as the planned
+  bridge tool (D86).
 
 ---
 
@@ -848,8 +1052,8 @@ Answer: 'Keep textbook' (a button offered by MOD-02; 2-Nov-2026 08:52 UTC, MOD-0
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D85 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D86**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D86 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D87**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -861,7 +1065,7 @@ before acting on it.
 | D25 | Join `sebi_mcap` by name; top-10 Large Cap gate | Active | the gate exists only in tools (A31) |
 | D37 | Exclude no-holdings funds; no fabricated fallbacks | Active | CLAUDE.md rule 6 |
 | D42 | Bake with the page's own parsers; dry-run by default | Active (amended by D72) | page parser edits change the next bake |
-| D43 | Node route into `RISK_MATRIX`; drop `c` | Active (premise reopened) | DEC-OPEN-01 (B8) |
+| D43 | Node route into `RISK_MATRIX`; drop `c` | Active (premise reopened) | D86 (B8): `merge_risk_matrix.js` stays the only writer; the producer of its input changes from October |
 | D46 | Rename before every bake; identity = inception + AMC | Active (amended by D73, D79) | CLAUDE.md rule 7; DEC-OPEN-08 |
 | D48 | One hybrid predicate for all four analytics gates | Active | CLAUDE.md rule 8 |
 | D49 | PMS/AIF look-through is written in two places | Active | A29, TASK-068 |
@@ -890,13 +1094,14 @@ before acting on it.
 | D81 | Publish the C19 re-run; keep blank-cell values; hold the C20 G-Sec record (owner, 21-Oct-2026) | Active | DEC-OPEN-07 |
 | D82 | The PowerPoint export lays out every native slide through one measured design system (owner, 22-Oct-2026) | Active | CLAUDE.md rule 10; C44, C45 are exceptions |
 | D83 | The deck marks an expected 1Y/3Y/5Y figure with `*` (owner, 22-Oct-2026) | Active | C28; DEC-OPEN-16 |
-| D84 | Rf stays 4.5% for now (owner, 2-Nov-2026) | Active | TASK-022 builder constant; D58 stays Open (DESK-15) |
-| D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active | TASK-022 builder formula; tools/build_risk_matrix.py implements June's form |
+| D84 | Rf stays 4.5% for now (owner, 2-Nov-2026) | Active | the planned bridge tool (TASK-022, not built) is to refuse a pack whose stated Rf is not 4.5% (MOD-02 proposal) |
+| D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active | cannot be met from the pack data: see DEC-OPEN-30 |
+| D86 | NAV and risk-ratio inputs from the MF dashboard (owner, 2-Nov-2026); data-pack reading INFERRED | Active | TASK-022 re-scoped (bridge tool); DEC-OPEN-30 to DEC-OPEN-33 open; D85 cannot be met from the pack |
 
 ## 2.2 Owner decisions made in conversation, not yet recorded as a D-number
 
 These were approved by the owner but live only in chat transcripts. TASK-074 records them in
-`docs/DECISIONS.md` from D86, with wording the owner confirms. Until then, this table is the record.
+`docs/DECISIONS.md` from D87, with wording the owner confirms. Until then, this table is the record.
 
 | When (UTC) | Decision (owner's words or act) | Where it lives today | Label |
 |---|---|---|---|
@@ -914,9 +1119,9 @@ These were approved by the owner but live only in chat transcripts. TASK-074 rec
 ## 2.3 Recommendations that are not decisions
 
 Recommendations in part 1 stay recommendations until the owner answers. Examples that are easy to mistake for
-decisions: "port the risk toolchain to Node" (DEC-OPEN-01), "move the clone outside OneDrive" (DEC-OPEN-19),
-"require the verify check on main" (DEC-OPEN-17), "one Moderator per project" (DEC-OPEN-25), "clear the
-JioBlackRock pre-launch returns" (DEC-OPEN-07). None of them may be implemented on the strength of the
+decisions: "accept the dashboard's Sortino for October" (DEC-OPEN-30), "move the clone outside OneDrive"
+(DEC-OPEN-19), "require the verify check on main" (DEC-OPEN-17), "one Moderator per project" (DEC-OPEN-25), "clear
+the JioBlackRock pre-launch returns" (DEC-OPEN-07). None of them may be implemented on the strength of the
 recommendation alone.
 
 ## 3. Change log
@@ -926,3 +1131,4 @@ recommendation alone.
 | 28-Oct-2026 | Log created: DEC-OPEN-01..DEC-OPEN-28 (all BLOCKED on the owner); index of load-bearing D-numbers; conversation-only approved decisions listed for TASK-074. | MOD-01 |
 | 2-Nov-2026 | DEC-OPEN-02 answered ("Keep 4.5% for now") = D84; DEC-OPEN-03 answered ("Keep textbook") = D85; both moved to section 1.6. | MOD-02 |
 | 2-Nov-2026 | TASK-016 audit corrections: s2.2 row 4, DEC-OPEN-18 and the D60 row (F-01, F-02), deadlines for DEC-OPEN-01/-02/-03 (F-03), F-04..F-08, F-11; DEC-OPEN-29 added. | MOD-02 |
+| 2-Nov-2026 | DEC-OPEN-01 answered (NAV and risk-ratio inputs from the MF dashboard, per the owner; the data-pack reading is INFERRED) = D86; moved to section 1.6. DEC-OPEN-30 to DEC-OPEN-33 added from the pack analysis (the Sortino form; the other changes; permission to show the ratios publicly; use of a PROVISIONAL pack). Order to ask, summary, next-free ids and the load-bearing index updated. | MOD-02 |

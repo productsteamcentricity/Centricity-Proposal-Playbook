@@ -10,7 +10,8 @@ status and section say which PR and what is left. A29–A31, C41–C45, R9–R11
 28-Oct-2026 during the MOD-01 handover reconstruction (fact sheets checked against the code at
 `2b2a397`, re-checked 30-Oct-2026); the same pass corrected several older entries, each correction
 marked "corrected 28-Oct-2026" (C20, C40 and E5 carry a dated note instead). A32, E17 and R12 were
-found on 2-Nov-2026 in the TASK-016 audit of the handover registers.
+found on 2-Nov-2026 in the TASK-016 audit of the handover registers; C46 was found the same day in the
+analysis of the MF Screener data pack (D86).
 
 **How to use this file**
 
@@ -94,10 +95,10 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
     `docs/update-log/2026-10-23_handover-export.md`):**
     - Owner decisions:
       - the PMS label (B1: 31-Jul data under "31st August 2026");
-      - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the Oct-2026 Portfolio Matrix);
+      - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the Oct-2026 Portfolio Matrix) (answered 2-Nov-2026, D86);
       - the held April monitor (B9);
       - the client items found in the export (R8, with compliance);
-      - the Sortino definition (C35);
+      - the Sortino definition (C35) (reopened in effect by DEC-OPEN-30);
       - the bond 3Y/5Y rule (C37);
       - the segregated side-pocket records (C39).
     - Desk requests: a current Exit Load & Expected IRR file (C24: 99 records have no band); the
@@ -161,7 +162,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | B5 | Fund-manager data stops at 31-Aug-2026 | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-08_Aug-2026/` |
 | B6 | PMS/AIF look-through stops at 31-Jul-2026 | Inputs | P2 | Open (desk) | **Affects** | `monthly-updates/2026-07_Jul-2026/Analytics/` |
 | B7 | Periodic inputs missing from the pack | Inputs | P3 | Partly fixed 25-Oct-2026 (handover export: 06-Aug Bond List filed); rest open (desk) | — | `monthly-updates/` |
-| B8 | NAV Data (#17) and Fund Risk Ratios (#12) were made in-house; nobody builds them now | Inputs | P1 | Open (owner decision) | **Blocks** the Oct-2026 Portfolio Matrix | `docs/INPUT_FILES.md` #12, #17; export `_nav_risk_toolchain/` |
+| B8 | NAV Data (#17) and Fund Risk Ratios (#12) were made in-house; nobody builds them now | Inputs | P1 | Open (owner answered 2-Nov-2026, D86, whose reading is INFERRED until Gate E; build pending) | **Blocks** the Oct-2026 Portfolio Matrix | `docs/INPUT_FILES.md` #12, #17; export `_nav_risk_toolchain/` |
 | B9 | April folder holds a mid-May monitor; a true 30-Apr monitor is held | Inputs | P3 | Open (owner decision) | — | `monthly-updates/2026-04_Apr-2026/` |
 | C1 | Siblings 3–5 not folded into the page (six-file deploy) | Architecture | P2 | Open | — | `site/index.html:5525-5527` (was `:5083-5085`; corrected 28-Oct-2026) |
 | C2 | README stale | Docs | — | Closed 16-Oct-2026 | — | `docs/archive/README_original_2026-05.md` |
@@ -208,6 +209,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C43 | `UTI BSE India Sector Leaders ETF` shows a since-inception return of ~297,765% (`si` 2977.646); the MF bake has no `si` bound | Data | P1 | Open (owner decision, with C20) | **Affects** (scan `si` after the bake) | MASTER `si`; `tools/bake_month.js:194-228`; readers `site/index.html:4063-4072`, `:5151-5154`, `:7844` |
 | C44 | Construct and Net Asset Allocation slides draw their tables with `slide.addTable` at fixed positions, not `drawTable` | UI | P3 | Open | — | `buildDeck`, `site/index.html:4720-4773`, `:4784-4825` |
 | C45 | Analytics `listTable` tables (Top Underlying Holdings, Top Issuers) draw only their first page | UI | P2 | Open (latent) | — | `buildDeck`, `site/index.html:5055-5057`, `:5102-5104` |
+| C46 | Portfolio Matrix definitions change from October when the MF Screener pack becomes the source | Data | P2 | Open (owner decisions DEC-OPEN-30 and DEC-OPEN-31) | **Affects** the October risk table | `tools/merge_risk_matrix.js`; `RISK_MATRIX` block in `site/index.html` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -842,6 +844,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 - **Workaround:** Keep using `merge_risk_matrix.js`, the route used for Aug and Sep. To try Python,
   write the output to a scratch path, never into `site/`.
 - **Suggested fix:** A validated run, argument checks and a `prev_name` tier.
+- **Update 2-Nov-2026:** MOD-02 proposal (not decided): retire `tools/build_risk_matrix.py` and the Python runbook after one verified month on the pack route (TASK-057).
 
 ### A23. `verify_page.js` and the vm tools hide real errors
 **P2 · Partly fixed 19-Oct-2026 (PRs #3, #7) · —**
@@ -1172,7 +1175,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   current IRR file.
 
 ### B8. NAV Data and Fund Risk Ratios were made in-house; nobody builds them now
-**P1 · Open (owner decision) · Blocks the Oct-2026 Portfolio Matrix refresh**
+**P1 | Open (owner answered 2-Nov-2026, D86, whose reading is INFERRED until Gate E; build pending) | Blocks the Oct-2026 Portfolio Matrix refresh**
 
 - **What:** `docs/INPUT_FILES.md` lists #12 (`Fund Risk Ratios & 3Y Rolling`) and #17 (`NAV Data`)
   as desk or vendor files (corrected 28-Oct-2026: it did until `11d5c0a`, PR #28, which now marks
@@ -1200,6 +1203,18 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   (PR #28). The stale lists that remain are `docs/HANDOVER.md` §5 and
   `monthly-updates/00_INBOX/README.md` rows 12 and 17 (E8); the same stale sentence is in
   `docs/update-log/2026-10-23_handover-export.md:207-209`.
+
+**Answered 2-Nov-2026 (D86):** the owner answered DEC-OPEN-01 in chat: get the data from the Centricity MF
+Screener (a sign-in-only page; its address is not recorded here), and the owner will share the files every
+month like the two packs attached. The packs are zips of JSON and CSV (export contract `pr-datapack-v1`),
+not Excel, and the October pack is PROVISIONAL. This is none of the three options above. MOD-02's reading
+(INFERRED): the two workbooks are not rebuilt in-house; from the October 2026 cycle the Portfolio Matrix
+(the `RISK_MATRIX` block) is fed from the Screener's monthly data pack. TASK-022 is re-scoped to that
+bridge (risk class HIGH). The pack defines several ratios differently from the live table (C46;
+DEC-OPEN-30 to DEC-OPEN-33 are open). If the build is not merged when step 10 of the October cycle is
+reached, the cycle runs without that step and the page keeps '30 Sep 2026'. This entry stays open and
+closes after one verified month on the pack route (T8 of the plan; analysis record
+`docs/update-log/2026-11-02_datapack-feasibility.md`).
 
 ### B9. April folder holds a mid-May monitor; a true 30-Apr monitor is held
 **P3 · Open (owner decision) · —**
@@ -1324,6 +1339,9 @@ A22 for the remaining validation. (Corrected 28-Oct-2026: the RISK_MATRIX block 
 `RISK_MATRIX_BENCH_SD` are at `site/index.html:5533-5536` at `2b2a397`; the summary cited
 `:5091-5094`.)
 
+**Update 2-Nov-2026 (D86):** the producer of the risk-matrix input changes from October (the MF Screener
+data pack; B8).
+
 ### C11. Rf = 4.5% to re-confirm with the desk
 **P2 · Open (desk) · —**
 
@@ -1335,9 +1353,12 @@ Sharpe, Sortino, Treynor and Jensen alpha, so Rf shapes the live RISK_MATRIX. Th
 notes call it a "standing desk convention", not taken from any file; its source is unverified.
 Re-ask the desk for the house rate before the next risk build.
 
-**Update 2-Nov-2026:** the owner kept Rf = 4.5% for now (D84, the answer to DEC-OPEN-02), so the
-risk-ratio builder (TASK-022) uses it as one documented constant. Where 4.5% comes from, and whether the
+**Update 2-Nov-2026:** the owner kept Rf = 4.5% for now (D84, the answer to DEC-OPEN-02), so the planned
+bridge tool (TASK-022) checks that the pack states Rf 4.5%. Where 4.5% comes from, and whether the
 desk uses another house rate (DESK-15), is still unconfirmed, so D58 and this entry stay open.
+
+**Update 2-Nov-2026 (D86):** the MF Screener data pack states Rf 4.5%, equal to D84; D58 stays open for
+the desk.
 
 ### C12. Dead code kept for parity
 **P3 · Accepted · —**
@@ -1784,11 +1805,15 @@ most fields" does not hold for Sortino, or for SD in such months.
 **Decision (owner/desk):** accept the textbook Sortino or return to June's. Align whichever builder
 is adopted (B8) before it is used.
 
-**Update 2-Nov-2026:** the owner chose the textbook formula (D85, the answer to DEC-OPEN-03). The builder
-(TASK-022) implements exactly that formula; `tools/build_risk_matrix.py` still implements June's form (and
-the different 3-year start) and must be changed before it is ever used. June's Sortino values are not
-comparable with later months. This entry stays open until the builder exists and reproduces the live
-September table.
+**Update 2-Nov-2026:** the owner chose the textbook formula (D85, the answer to DEC-OPEN-03). D85 cannot be
+carried out from the pack: the textbook form needs the daily series (C46, DEC-OPEN-30); TASK-022 is a bridge
+from the pack, not a builder.
+`tools/build_risk_matrix.py` still implements June's form (and the different 3-year start) and must be changed
+before it is ever used. June's Sortino values are not comparable with later months.
+This entry stays open until one month has been verified on the pack route (update-log T8) and DEC-OPEN-30 is answered.
+
+**Update 2-Nov-2026 (D86):** the MF Screener pack's Sortino is June's form, not the textbook form; see
+C46 and DEC-OPEN-30.
 
 ### C36. Select popover ratios are May-2026 values and carry no date
 **P3 · Open (owner) · —**
@@ -1992,6 +2017,42 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **Suggested fix:** draw every page (a continuation slide, as the other tables do) or fail loudly
   when `pages.length > 1`.
 - **Related:** C44, D82; REQ-PPT-110, REQ-PPT-120; TASK-069.
+
+### C46. Portfolio Matrix definitions change from October when the MF Screener pack becomes the source
+**P2 | Open (owner decisions DEC-OPEN-30 and DEC-OPEN-31) | Affects the October risk table**
+
+- **What (found 2-Nov-2026 in the analysis of the MF Screener data pack, D86; record
+  `docs/update-log/2026-11-02_datapack-feasibility.md`):** from the October 2026 cycle the Portfolio
+  Matrix is fed from the Screener's monthly data pack (B8; MOD-02's reading of D86, INFERRED), and the pack does not define the ratios as
+  the live 30-Sep-2026 table does:
+  - Sortino: the pack's is the mean excess return over the standard deviation of the negative-excess
+    days (June 2026's form, which `tools/build_risk_matrix.py` also uses), not the textbook form of D85
+    (tested on the 15-Aug and 15-Sep-2026 packs; the 15-Oct daily series was not available; the 15-Oct
+    definitions file states the same formula); the textbook form cannot be built from the pack (C35).
+  - Alpha: the pack's is excess return, not Jensen; Jensen alpha has to be derived from the fund and
+    benchmark 3-year returns, the beta and Rf that the pack carries.
+  - Benchmark: each fund is measured against its own benchmark, not one of four broad indices chosen by
+    category. About 554 of 1,029 labels change, and Beta, Correlation, Information Ratio, Down Capture
+    and Alpha change meaning (not only date) for about 264 of the 593 funds that have them.
+  - Window and date: the trailing 3 years to the pack date (15-Oct-2026 for the October cycle), not to
+    month-end; no risk block carries an as-on field.
+  - Coverage: only funds with a full 3-year record get ratios. Beta 966 -> 593 (311 with too short a
+    history, 39 with a stale benchmark, 9 with no benchmark,
+    4 (reason to be confirmed: PROXY benchmark or no source), 10 not matched); SD, Sharpe and Sortino
+    966 -> 636; 3Y Rolling 433 -> 451.
+  - Flags: 33 -> 0. The pack handles NAV splits itself and carries no reliability flag, so the 33
+    flagged funds (28 NAV split, 5 low correlation) lose their dagger.
+  - Rf: unchanged. The pack states 4.5%, equal to D84 (confirmed against the pack's own Sharpe values).
+- **Impact:** the October table is not comparable with September's in Sortino, Alpha, the five relative
+  columns and coverage. The merge gate "funds with metrics did not shrink" (966 funds today) would stop
+  the merge without an owner-approved override.
+- **Who sees it:** the owner, clients (decks) and advisers.
+- **Suggested fix:** the owner answers DEC-OPEN-30 (the Sortino form) and DEC-OPEN-31 (the other
+  changes); the TASK-022 build, with an owner-only override of the coverage gate in
+  `tools/merge_risk_matrix.js`; a note on the tab or in the deck saying how the October figures are
+  defined.
+- **Related:** B8, C10, C11, C35, D84, D85, D86; DEC-OPEN-30 to DEC-OPEN-33, TASK-022
+  (`docs/project-control/`).
 
 ---
 

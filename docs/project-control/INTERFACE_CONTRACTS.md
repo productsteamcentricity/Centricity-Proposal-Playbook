@@ -63,7 +63,7 @@ repository.
 7. **Record in the same PR:** update the contract text here and add a row to section 10. If a decision in
    [`docs/DECISIONS.md`](../DECISIONS.md) fixes the contract (for example D42 bake = upload, D72 tool
    contract, D80 Monitor sheets, D82 design system), the change needs the owner's approval and a new
-   decision number there (next free: D86; Update 2-Nov-2026, D84 and D85 were taken that day).
+   decision number there (next free: D87; Update 2-Nov-2026, D84 to D86 were taken that day).
 8. **If compatibility cannot be established, do not merge.** Record the problem in
    [`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md) and investigate.
 

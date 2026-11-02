@@ -9,7 +9,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
-  tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 and D85 sit
+  tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86 sit
   under the "Risk matrix" heading). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -118,6 +118,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active |
 | D84 | 2-Nov-2026 | Rf stays 4.5% for now (owner) | Risk | Active |
 | D85 | 2-Nov-2026 | Sortino stays the textbook formula (owner) | Risk | Active |
+| D86 | 2-Nov-2026 | NAV and risk-ratio inputs from the MF dashboard (owner); data-pack reading INFERRED | Risk | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1114,8 +1115,9 @@ and the entry says so. "—" means no date is recorded.
 - **Rationale:** The UI and PPT export read nine keys, not `c`; an old CAGR under a new date is stale data.
 - **Alternatives / supersedes:** The Python route.
 - **Consequences:** Python 3.14 with pandas, numpy and openpyxl is now installed on the owner's machine,
-  but the Python route is not validated against pandas 3.x. Whether to return to it is open.
+  but the Python route is not validated against pandas 3.x. Whether to return to it is open (not chosen: D86).
 - **Source:** `OPERATING_MANUAL.md:691-709`; `tools/merge_risk_matrix.js:13, 175`.
+- **Note (2-Nov-2026):** `merge_risk_matrix.js` stays the only writer; the producer of its input workbook changes from October (D86).
 
 #### D44 · Risk joins via `prev_name` and plan-base; ambiguity refuses
 `Active` · 18-Sep-2026 (upstream `8e49d3a`)
@@ -1164,6 +1166,7 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-02 (section 1.6); the owner's chat answer of
   2-Nov-2026 (MOD-02). The wording of D84 and D85 is MOD-02's summary of the owner's button answers; the
   owner confirms it at Gate E (DECISION_LOG section 1.5 step 2).
+- **Note (2-Nov-2026, later):** the MF Screener data pack states Rf 4.5% in its definitions, equal to this decision; the bridge tool planned in TASK-022 refuses a pack whose stated Rf is not 4.5% (see the update-log, section 7 T1 gates). DEC-OPEN-01 is answered (D86): no in-house builder is planned; read 'builder' in the Consequences above as the planned bridge tool of TASK-022 (D84: it is to refuse a pack whose stated Rf is not 4.5%; D85: cannot be met from the pack data, see DEC-OPEN-30).
 
 #### D85 - Sortino stays the textbook formula
 `Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
@@ -1186,6 +1189,69 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-03 (section 1.6); the owner's chat answer of
   2-Nov-2026 (MOD-02). The wording of D84 and D85 is MOD-02's summary of the owner's button answers; the
   owner confirms it at Gate E (DECISION_LOG section 1.5 step 2).
+- **Note (2-Nov-2026, later):** the MF Screener data pack's Sortino is not the textbook form; see D86 and DEC-OPEN-30. DEC-OPEN-01 is answered (D86): no in-house builder is planned; read 'builder' in the Consequences above as the planned bridge tool of TASK-022 (D84: it is to refuse a pack whose stated Rf is not 4.5%; D85: cannot be met from the pack data, see DEC-OPEN-30).
+
+#### D86 - The NAV and risk-ratio inputs come from the MF dashboard (the owner's answer to DEC-OPEN-01); MOD-02 reads it as the Screener's monthly data pack (INFERRED)
+`Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** `docs/KNOWN_ISSUES.md` B8: the two inputs of the Portfolio Matrix (inbox rows 12 "Fund Risk Ratios &
+  3Y Rolling" and 17 "NAV Data") were made in-house by the outgoing owner, and nobody makes them now. DEC-OPEN-01
+  asked the owner who should (MOD-01 on 27-Oct-2026 at 12:28 UTC, and MOD-02 again on 2-Nov-2026). Step 10 of the
+  October MF cycle (`tools/merge_risk_matrix.js`) needs the input; without it the Portfolio Matrix keeps
+  "30 Sep 2026".
+- **Decision:** The owner's words, typed in the MOD-02 chat on 2-Nov-2026 shortly after the two attached packs were
+  saved at 14:19 UTC (the address of the sign-in-only page is replaced here by a placeholder and must not appear
+  in any repository document): "DEC-OPEN-01: who makes the NAV Data and Fund Risk Ratios workbooks from October? -
+  Get it from [address of the MF dashboard]. The owner will share excel files every month like the attached".
+  Attachments: `pr-datapack_2026-10-15_PROVISIONAL.zip` and `pr-datapack-backfill_2026-10-15.zip`. They are JSON
+  and CSV packs (export contract `pr-datapack-v1`, exporter 1.0.0), not Excel workbooks. The page behind the
+  address is the Centricity Mutual Fund Screener (sign-in only, access limited to invited users); MOD-02 did not and must not
+  sign in. MOD-02's reading (INFERRED, not stated by the owner): the two inputs are not rebuilt
+  in-house; from the October 2026 cycle the Portfolio Matrix (the `RISK_MATRIX` block) is fed from the Screener's
+  monthly data pack, which the owner shares.
+- **Rationale:** MOD-02's reading, not stated by the owner: no in-house producer exists and the owner chose not to
+  rebuild one.
+- **Alternatives / supersedes:** The three options put to the owner in DEC-OPEN-01 were not chosen: port the
+  in-house toolchain to Node (the documented recommendation), validate the Python tool, or ask the desk.
+  Supersedes nothing: D43 stays in force (only the producer of its input changes), and D85 cannot be carried out
+  from the pack's data (DEC-OPEN-30).
+- **Consequences:** The read-only analysis of 2-Nov-2026 (the two packs, the live page and the local September
+  workbooks; `docs/update-log/2026-11-02_datapack-feasibility.md`) found the following. NONE of these changes has
+  been accepted by the owner yet: they are put to the owner as DEC-OPEN-30 (the Sortino form, which conflicts with
+  D85), DEC-OPEN-31 (the other changes), DEC-OPEN-32 (permission to show the computed ratios on the public page
+  and in client decks) and DEC-OPEN-33 (use of a PROVISIONAL pack).
+  - The packs: 2,090 funds, cycle date 15-Oct-2026 (returns as on 15-Oct-2026, holdings month-end 30-Sep-2026),
+    with month-end NAV history, 1-year and 3-year risk blocks, benchmarks and the AMFI scheme code; the file
+    hashes match the manifests. The October pack is PROVISIONAL because one blocking check failed (the 95%
+    price-history rule for stock prices), which the risk figures do not read; the backfill pack is final.
+  - Identity, by name alone: 1,076 of the 1,088 `RISK_MATRIX` keys match (1,043 exactly, 33 through the previous
+    name); 12 do not, and 6 JioBlackRock Regular keys land on Direct-plan rows (a plan guard is needed).
+  - Agreement with the live 30-Sep-2026 table on clean funds (15-Oct pack): Beta and Correlation about 100% within
+    tolerance, standard deviation 98%, Down Capture 97%, 3Y Rolling 86%, Sharpe 77% (90% against the 15-Sep
+    cycle), Information Ratio 66%, derived Jensen alpha 69%; no percent/decimal slip.
+  - Definitions that differ from the live table: Sortino is the mean excess return over the standard deviation of
+    the negative-excess days (the June 2026 form; DEC-OPEN-30) (tested on the 15-Aug and 15-Sep-2026 packs; the
+    15-Oct daily series was not available; the 15-Oct definitions file states the same formula); Alpha is excess
+    return, not Jensen (Jensen can be derived); each fund has its own benchmark (the label changes for about 554 of
+    1,029 funds; Beta, Correlation, Information Ratio, Down Capture and Alpha change meaning for about 264 of 593
+    funds); the window is the trailing 3 years to the cycle date, and no risk block carries an as-on field.
+  - Coverage and flags: only funds with a full 3-year record get ratios (Beta 966 -> 593 funds; standard
+    deviation, Sharpe and Sortino 966 -> 636; 3Y Rolling 433 -> 451), so the merge gate "funds with metrics did
+    not shrink" would stop the merge; the 33 flagged funds (28 split, 5 low correlation) lose the dagger: the pack
+    handles NAV splits itself and measures the 5 low-correlation funds against their own indices.
+  - D84 stands: the pack states Rf 4.5%, and a check against its published Sharpe ratios agrees. D85 cannot be
+    implemented from the pack's data (DEC-OPEN-30). D43 stays: `tools/merge_risk_matrix.js` is still the
+    production route and the only writer of `RISK_MATRIX`; only the producer of its input changes.
+  - TASK-022 is re-scoped (`docs/project-control/TASK_REGISTER.md`) and `docs/KNOWN_ISSUES.md` C46 records the
+    differences. MOD-02's recommended route, not yet approved or built: a new tool turns an extracted pack folder
+    into the existing `Fund Risk Ratios & 3Y Rolling` workbook layout; the merge tool gains an owner-only override of
+    the coverage gate (the flag name is to be fixed in the TASK-022 contract; `--allow-coverage-drop` already exists for the
+    Direct Equity tool with another meaning); `.gitignore` gains `pr-datapack*/` and `datapack/`; about 6 working
+    days (INFERRED), risk class HIGH. If it is not ready at step 10 of the October cycle (about 13-17-Nov-2026), the
+    cycle runs without step 10 and the page keeps "30 Sep 2026".
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-01 (section 1.6) and DEC-OPEN-30 to DEC-OPEN-33; the
+  owner's chat answer of 2-Nov-2026 (MOD-02); `docs/update-log/2026-11-02_datapack-feasibility.md`. Only the quoted
+  sentence is the owner's: the rest of D86 is MOD-02's summary, findings and reading, and the owner confirms it at
+  Gate E (DECISION_LOG section 1.5 step 2).
 
 ### Process
 
@@ -1272,7 +1338,7 @@ SHA for `git show` in this repository.
 
 ## How to add a decision
 
-1. Take the next free ID (D70 onward). Never reuse or renumber an ID, and never delete an entry.
+1. Take the next free ID (D87 on 2-Nov-2026). Never reuse or renumber an ID, and never delete an entry.
 2. Add a row to the index, then the entry under its area heading, with the same fields (Context,
    Decision, Rationale, Alternatives / supersedes, Consequences, Source) in 3–8 lines.
 3. Cite evidence a reader can open: `path:line` in the code and the PR or commit that made the change.

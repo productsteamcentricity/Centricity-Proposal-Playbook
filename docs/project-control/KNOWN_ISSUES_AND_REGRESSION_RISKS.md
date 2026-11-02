@@ -7,7 +7,7 @@
 | Author chat | MOD-01 (version 1, for MOD-02 and ARC-01); MOD-02 (version 2) |
 | Status | Sections 1-3: Historical snapshot (index of `docs/KNOWN_ISSUES.md` at `2b2a397`; newer only: section 1.2, the lines marked "Update 2-Nov-2026" and the wording corrections of 2-Nov-2026); section 4: Authoritative (regression-risk catalogue) |
 | Supersedes | Version 1 of 28-Oct-2026 (kept in git history) |
-| Next review | after the next merge that adds or closes a KNOWN_ISSUES item or changes a gate or test (re-counted after PR #30, `32172f5`, on 2-Nov-2026: 118 rows, Open 68; the re-count for the merge of `handover/mod-01-to-mod-02-20261028` was done on 2-Nov-2026: 115 rows, Open 65) |
+| Next review | after the next merge that adds or closes a KNOWN_ISSUES item or changes a gate or test (re-counted with the C46 entry on 2-Nov-2026: 119 rows, Open 69; after PR #30, `32172f5`, on 2-Nov-2026: 118 rows, Open 68; the re-count for the merge of `handover/mod-01-to-mod-02-20261028` was done on 2-Nov-2026: 115 rows, Open 65) |
 
 **Which file is authoritative for what.** [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md) is the single register of
 defects: IDs, severity, status, evidence and fixes live there and only there. Sections 1-3 below are a dated index
@@ -79,14 +79,21 @@ Counts after the 2-Nov-2026 additions (section 1.2: A32, E17, R12, all Open; VER
 (A 32, B 9, C 45, R 12, E 17, F 3); Open 68 (P1 5, P2 31, P3 32); Partly fixed 12; Fixed 1; Accepted 4; Closed 33;
 not closed (any status except Closed) 85; severity totals P1 10, P2 59, P3 47, none 2.
 
+Counts after C46 (section 1.2: Open P2; VERIFIED by a Node parse of the Summary table of `KNOWN_ISSUES.md` as changed with
+it, and by `grep -c '^| [A-Z][0-9]* |'`, on 2-Nov-2026): 119 rows (A 32, B 9, C 46, R 12, E 17, F 3); Open 69 (P1 5, P2 32,
+P3 32); Partly fixed 12; Fixed 1; Accepted 4; Closed 33; not closed (any status except Closed) 86; severity totals P1 10,
+P2 60, P3 47, none 2.
+
 ### 1.2 Entries added on 2-Nov-2026 (Update 2-Nov-2026)
 
-The TASK-016 audit of the handover registers adds three entries to `KNOWN_ISSUES.md` (all status Open). Their sections
-are written there; find each with the grep hint in section 1.1.
+The TASK-016 audit of the handover registers adds three entries to `KNOWN_ISSUES.md`, and the analysis of the MF Screener
+data pack (D86) adds a fourth, C46 (all status Open). Their sections are written there; find each with the grep hint in
+section 1.1.
 
 | ID | Sev | One line |
 |---|---|---|
 | A32 | P3 | `tools/test/tool_inputs.test.js` (43 cases) covers only missing-input and bad-path exits: no case for an unknown flag, a stray word, a flag without a value, a bad or missing `--as-on`, or a missing `--html` on three tools; a CLI parsing regression passes `npm test` and CI; Open (engineering), TASK-076 |
+| C46 | P2 | Portfolio Matrix definitions change from October when the MF Screener data pack becomes the source (D86): the pack's Sortino is June's form, not the textbook form of D85; its Alpha is excess return, not Jensen; each fund is compared with its own benchmark; the window ends 15-Oct; only funds with a full 3-year record get ratios (Beta 966 -> 593); the 33 reliability flags go; the merge gate "funds with metrics did not shrink" would stop the merge; Open (owner decisions DEC-OPEN-30 and DEC-OPEN-31), TASK-022 |
 | E17 | P2 | The rule documents contradict each other on gates, risk class, worktrees and git commands (ARC-01 DIFF REVIEW of TASK-015, GO WITH CONDITIONS); no `/monthly-update` run, tool `--apply` or OPS/NB sub-chat launch until TASK-018 (widened) merges; Open (Moderator) |
 | R12 | P3 | The public repository carries staff identities in commit metadata, one name and address in three lines, and a thin `.gitignore` guard rail (SEC-02 to SEC-05); Open (owner), DEC-OPEN-29, TASK-075 |
 
@@ -96,7 +103,7 @@ are written there; find each with the grep hint in section 1.1.
 
 | ID | One line | Status (abbreviated; KNOWN_ISSUES.md is exact) | Covered by | Section |
 |---|---|---|---|---|
-| B8 | NAV Data (#17) and Fund Risk Ratios & 3Y Rolling (#12) were made in-house; nobody builds them now; **blocks the Oct-2026 Portfolio Matrix** | Open (owner decision) | DEC-OPEN-01, -02, -03; TASK-022 | [B8](../KNOWN_ISSUES.md#b8-nav-data-and-fund-risk-ratios-were-made-in-house-nobody-builds-them-now) |
+| B8 | NAV Data (#17) and Fund Risk Ratios & 3Y Rolling (#12) were made in-house; nobody builds them now; **blocks the Oct-2026 Portfolio Matrix** | Open (owner answered 2-Nov-2026, D86, whose reading is INFERRED until Gate E; build pending) | DEC-OPEN-01 (answered: D86), -02, -03; TASK-022 | [B8](../KNOWN_ISSUES.md#b8-nav-data-and-fund-risk-ratios-were-made-in-house-nobody-builds-them-now) |
 | C20 | 12 JioBlackRock Regular records show Direct-plan returns from before their launch (13 with the held G-Sec record, C16) | Open (owner decision) | DEC-OPEN-07; TASK-023 | [C20](../KNOWN_ISSUES.md#c20-jioblackrock-regular-records-show-direct-plan-returns-from-before-their-launch) |
 | R1 | Client personal data still public in the outgoing owner's repository history and old site | Open (outgoing owner) | DEC-OPEN-13; TASK-033 | [R1](../KNOWN_ISSUES.md#r1-client-pii-still-public-in-the-outgoing-owners-repo-and-site) |
 | R8 | The outgoing owner's export shipped two client items (kept local, git-ignored) | Open (owner + compliance) | DEC-OPEN-05; TASK-032 | [R8](../KNOWN_ISSUES.md#r8-the-handover-export-shipped-two-client-items-despite-its-readme) |
@@ -112,7 +119,7 @@ every refresh).
 
 ### 3.1 Open P2 (18 at `2b2a397`; the 12 new P2 entries are in section 1.1)
 
-Update 2-Nov-2026: the Open P2 entry added on 2-Nov-2026 (E17) is listed in section 1.2.
+Update 2-Nov-2026: the Open P2 entries added on 2-Nov-2026 (E17, C46) are listed in section 1.2.
 
 | ID | One line | Status (abbreviated; KNOWN_ISSUES.md is exact) | Covered by | Section |
 |---|---|---|---|---|
@@ -129,7 +136,7 @@ Update 2-Nov-2026: the Open P2 entry added on 2-Nov-2026 (E17) is listed in sect
 | C23 | Select popover Alpha shown 100 times too large | Open (desk: period) | DESK-14; DEC-OPEN-12; TASK-030 | [C23](../KNOWN_ISSUES.md#c23-select-popover-alpha-shown-100-times-too-large-source-confirmed) |
 | C24 | Headline weighted IRR counts instruments with no IRR band as 0% (three screen paths; Section 4 and the deck GRAND TOTAL exclude them, per the 28-Oct correction) | Open (owner; desk IRR file) | DEC-OPEN-15; DESK-06; TASK-026 | [C24](../KNOWN_ISSUES.md#c24-headline-weighted-irr-counts-instruments-with-no-irr-band-as-0) |
 | C28 | Expected returns stored as track record (bond yields, AIF/PMS band mid-points; 14 stale mid-points); deck marks them `*` (D83) | Open (owner/desk) | DEC-OPEN-16; TASK-031 | [C28](../KNOWN_ISSUES.md#c28-expected-returns-are-stored-as-track-record-bond-yields-aifpms-band-mid-points) |
-| C35 | Sortino has two definitions in the live history (June semi-deviation; Aug/Sep textbook) | Open (owner/desk) | DEC-OPEN-03 (answered: D85); DESK-16; TASK-022 | [C35](../KNOWN_ISSUES.md#c35-sortino-has-two-definitions-in-the-live-history-and-a-third-route-uses-another) |
+| C35 | Sortino has two definitions in the live history (June semi-deviation; Aug/Sep textbook) | Open (owner/desk) | DEC-OPEN-03 (answered: D85); DEC-OPEN-30; DESK-16; TASK-022 | [C35](../KNOWN_ISSUES.md#c35-sortino-has-two-definitions-in-the-live-history-and-a-third-route-uses-another) |
 | C37 | Bonds store the top of the IRR band as 1Y/3Y/5Y; the owner asked for the band average | Open (owner decision) | DEC-OPEN-09; TASK-027 | [C37](../KNOWN_ISSUES.md#c37-bonds-store-the-top-of-the-irr-band-as-1y3y5y-the-owner-asked-for-the-band-average) |
 | R6 | The git repository lives inside OneDrive (cloud-only `.git` files; checkout hazard; EPERM on rename) | Open (owner decision) | TASK-017; DEC-OPEN-19; TASK-037 | [R6](../KNOWN_ISSUES.md#r6-the-git-repository-lives-inside-onedrive) |
 | R7 | Old site still live alongside the new one (retire only after full testing of the new build) | Open (owner: retire only after full testing of the new build; then outgoing owner) | DEC-OPEN-14, DEC-OPEN-24; TASK-034 | [R7](../KNOWN_ISSUES.md#r7-old-site-still-live-alongside-the-new-one) |
@@ -143,7 +150,7 @@ Update 2-Nov-2026: the Open P2 entry added on 2-Nov-2026 (E17) is listed in sect
 | A14 | Direct Equity universe joins by name only; no `prev_name` stamp; warning does not fail | TASK-044; DESK-24 | [A14](../KNOWN_ISSUES.md#a14-de-universe-joins-by-name-only-industry-never-written) |
 | A19 | AIF merge: deck-order scan, no AIF as-on date, MASTER-AIF gate cannot fail | TASK-040 | [A19](../KNOWN_ISSUES.md#a19-aif-performance-merge-carries-data-forward-silently) |
 | A20 | `add_reckoner_funds.js` `ADD` list hard-coded; PMS additions keep non-schema keys | TASK-041 | [A20](../KNOWN_ISSUES.md#a20-add_reckoner_fundsjs-hard-coded-deck-facts-re-adds-a-dropped-gift-city-fund) |
-| A22 | Python risk-matrix route not validated for production | TASK-057; DEC-OPEN-01 | [A22](../KNOWN_ISSUES.md#a22-python-risk-matrix-route-unvalidated-and-unguarded) |
+| A22 | Python risk-matrix route not validated for production | TASK-057; DEC-OPEN-01 (answered: D86) | [A22](../KNOWN_ISSUES.md#a22-python-risk-matrix-route-unvalidated-and-unguarded) |
 | A23 | `verify_page.js` compares no counts with a baseline; protocol-relative `src`; lazy script regex | TASK-042 | [A23](../KNOWN_ISSUES.md#a23-verify_pagejs-and-the-vm-tools-hide-real-errors) |
 | A24 | `tools/lib` parsing hazards (`pptx.js`, `reck_parse.js` unguarded write, `reck_narrative.js`) | TASK-043 | [A24](../KNOWN_ISSUES.md#a24-shared-libraries-latent-parsing-hazards) |
 | A25 | Invisible characters that must survive any edit; stale `.gitattributes` comment | TASK-056 | [A25](../KNOWN_ISSUES.md#a25-invisible-characters-that-must-survive-any-edit) |
@@ -159,7 +166,7 @@ added; DEC-OPEN-18) - [R4](../KNOWN_ISSUES.md#r4-xlsx-0185-has-two-high-severity
 
 - **Blocks:** B1 (PMS step), B2 (Reckoner and AIF steps), B8 (Oct-2026 Portfolio Matrix).
 - **Affects:** A6 (8 renames await the owner, DEC-OPEN-08), A14, A18 (pins still by hand), A19, A20, B4, B5, B6, C4,
-  C5, C8, C15, C19 (read the new bake lines), C35, R6, E3.
+  C5, C8, C15, C19 (read the new bake lines), C35, C46 (Update 2-Nov-2026: D86), R6, E3.
 - **Added by the package, also Affects:** A30, A31, C41, C42, C43 (P1), E7, E8 - read them before the Oct-2026 cycle
   (`KNOWN_ISSUES.md`, Before the next refresh, items 4 and 11).
 - **Update 2-Nov-2026, also Affects:** E17 (every OPS and NB launch; ARC-01's condition: no `/monthly-update` run, no
@@ -182,9 +189,9 @@ reading `tools/verify_page.js:90-96` and `pages.yml:37-61`). `site/index.html` l
 | 3 | Scale conventions | percent stored where a decimal is expected (or the reverse); scale auto-detected; DIRECT_PERF off MASTER's scale; RISK_MATRIX percent points read as decimals | returns or ratios 100 times too large or small on screen, in Excel and in the deck (precedents: SIF parser showed 100x before the fixed /100 rule; C23 alpha) | page parsers divide Monitor and SIF values by 100 unconditionally; SIF parser rejects results beyond +-1000%; SIF bake +-300% bound; `rebuild_directperf` scale gates; `financial-data-reviewer` (manual) | no value-range check in `verify_page` or CI; the MF bake has no `si` bound (C43: 2977.646 live); PMS/AIF holdings `Holding(%)` heuristic in `parsePMSHoldings` | CLAUDE.md rule 4 (MASTER decimals; analytics percent; Monitor and SIF Monitor always /100, never auto-detect); `financial-data-reviewer` on every data change; TASK-067 (an `si` gate) |
 | 4 | Renames and identity matching | renames applied after the bake; a rename that misses a store; identity (inception + AMC, D46) misjudged; shared links to renamed funds | duplicate MASTER names; Centricity Select keys missing from MASTER; analytics, risk or IRR band lost for a renamed fund; orphan keys | `verify_page` 0 duplicates and the Select-in-MASTER canary (both CI hard gates); `rename_schemes.js` gates; bake duplicate-name gate; `H.resolveFundName` for links (C14 closed) | `rename_schemes.js` does not re-key `PMS_PERFORMANCE`, `PMS_PERF_ALIAS`, `PMS_AIF_TERMS`, `var SIF`, `NEW_GIFT`, `OFFSHORE`, `var EQ` or `tools/data/pins.json` (INFERRED from the interfaces ripple list); RISK_MATRIX keys are checked against the baseline, not the effective MASTER (C42); 8 renames pending | rename before every bake (CLAUDE.md rule 7); ambiguous renames go to the owner (rule 5; DEC-OPEN-08, TASK-024); a manual plan for the stores above; TASK-066 |
 | 5 | Reckoner and PMS pins, name joins | a pin pointing at the wrong scheme; a trailing-space mismatch; a vendor rename breaking pins; Reckoner deck drops; an unmapped deck heading | another manager's numbers on a client fund; a Select badge lost; "MASTER PMS with perf 23 of 27" falls | `merge_reckoner.js` drop gates (D71, D76; `--accept-drops` only by the owner); pins loaders exit 1 on an edge-space mismatch; byte-exact names; `verify_page` prints PMS-with-perf (not a hard gate) | PMS-with-perf count not gated in CI; `merge_pms_aif_analytics.js` "every mapped key is a MASTER PMS/AIF record" only prints; A19 MASTER-AIF gate cannot fail; A20 hard-coded `ADD`; two PMS/AIF holdings parsers (A29); C5 pin pending | report, never guess (CLAUDE.md rule 5); pins only with the owner (D75); TASK-040, TASK-041, TASK-068, TASK-029 |
-| 6 | Risk matrix, Sortino and Rf | Rf changed silently; Sortino definition switched; risk route switched (Python vs Node, D43); `fl` flags lost; `DATA_DATES.riskMatrix` not advanced; keys unreachable | Portfolio Matrix values shift on screen and in the deck; dagger notes missing; the matrix note "rf 4.5%" no longer true; the Oct matrix keeps "30 Sep 2026" | `merge_risk_matrix.js` gates (keys in baseline MASTER, `fl` added, short `--as-on` label via `checkAsOn`, `</html>`); rehearsal case `mf-chain-sep` includes `merge_risk_matrix.js` (local only) | no producer for the input workbooks (B8, P1); Rf 4.5% unconfirmed (C11, D58); two Sortino definitions (C35); Python route unvalidated (A22); 12 unreachable keys and 0 SIF risk rows (C42); `RISK_MATRIX_BENCH_SD` stale (C10); no test reproduces the live RISK_MATRIX from its inputs | decide DEC-OPEN-01 before any port (DEC-OPEN-02 and -03 were answered 2-Nov-2026: D84, D85); TASK-022 with a Sep-2026 regression test; TASK-066; `financial-data-reviewer` |
+| 6 | Risk matrix, Sortino and Rf | Rf changed silently; Sortino definition switched; risk route switched (Python vs Node, D43); `fl` flags lost; `DATA_DATES.riskMatrix` not advanced; keys unreachable | Portfolio Matrix values shift on screen and in the deck; dagger notes missing; the matrix note "rf 4.5%" no longer true; the Oct matrix keeps "30 Sep 2026" | `merge_risk_matrix.js` gates (keys in baseline MASTER, `fl` added, short `--as-on` label via `checkAsOn`, `</html>`); rehearsal case `mf-chain-sep` includes `merge_risk_matrix.js` (local only) | no producer for the input workbooks (B8, P1); Rf 4.5% unconfirmed (C11, D58); two Sortino definitions (C35); Python route unvalidated (A22); 12 unreachable keys and 0 SIF risk rows (C42); `RISK_MATRIX_BENCH_SD` stale (C10); no test reproduces the live RISK_MATRIX from its inputs | DEC-OPEN-01 answered (D86); DEC-OPEN-30 and -31 before the pack tool is built; TASK-022 with the regression plan of `docs/update-log/2026-11-02_datapack-feasibility.md` (L1 to L6); TASK-066 after it; `financial-data-reviewer` |
 | 7 | PowerPoint design system (D82) | fixed rows, row heights or note positions reintroduced; a table past the footer; a row, column or GRAND TOTAL dropped; `autoPage` used; cells drawn without margins; `DS` constants changed without `check_pptx_bounds.js` | content past the 7.08 in footer line; clipped tables; missing totals or page numbers; `[pptx layout]` console warnings | `pptx_layout.test.js` (798 checks in CI: 7 rule-picked portfolios, every instrument once, GRAND TOTAL on every Investment Option page, frame bounds); `window.__PPTX_LAYOUT.warnings` after a browser export (manual); `tools/dev/render_pptx.ps1` + `check_pptx_bounds.js` (manual, Windows + PowerPoint) | CI checks the geometry the export requested, not PowerPoint's own wrap; `listTable` draws only `pages[0]` (C45); Construct and Net Asset Allocation bypass `drawTable` (C44); chart internals (label overlap) unchecked; low-density slides keep blank areas (REQ-PPT-04, -62) | OPERATING_MANUAL "The deck is laid out by measurement"; CLAUDE.md rule 10; render and bounds-check before merge for any visible change; `check_pptx_bounds.js:18` `FOOT = 7.08` changes with `DS.FOOT - DS.STAMP_H`; TASK-069 |
-| 8 | Excel export | a sheet missing or renamed; rows in the wrong performance bucket; benchmark rows; dates or percent formats | fewer than 13 sheets; wrong values; Excel offers to repair the file | none automated; manual browser check (TESTING.md section 3 check 6: 13 sheets, corpus in B2) through an in-page `XLSX.writeFile` intercept | no test calls `exportXlsx` (VERIFIED: no reference under `tools/test/`); the workbook has never been opened in Microsoft Excel (REQ-019); Excel buckets differ from screen and deck (C29); benchmark rows static (C41); `xlsx` 0.18.5 advisories (R4) | browser Excel export for every change near `exportXlsx` / `perfRows`; TASK-064 (open it in Excel); no task covers an automated Excel test yet (next free ID TASK-078 if the Moderator registers one) |
+| 8 | Excel export | a sheet missing or renamed; rows in the wrong performance bucket; benchmark rows; dates or percent formats | fewer than 13 sheets; wrong values; Excel offers to repair the file | none automated; manual browser check (TESTING.md section 3 check 6: 13 sheets, corpus in B2) through an in-page `XLSX.writeFile` intercept | no test calls `exportXlsx` (VERIFIED: no reference under `tools/test/`); the workbook has never been opened in Microsoft Excel (REQ-019); Excel buckets differ from screen and deck (C29); benchmark rows static (C41); `xlsx` 0.18.5 advisories (R4) | browser Excel export for every change near `exportXlsx` / `perfRows`; TASK-064 (open it in Excel); no task covers an automated Excel test yet (next free ID TASK-079 if the Moderator registers one) |
 | 9 | `REFRESH` parsers and bake = upload coupling | a page parser edit silently changes the next bake; a new or renamed Monitor sheet; refresh-only sheets; IST date off by one | current-dated labels over stale figures (C19 precedent: 215 funds on four unmapped sheets); bake counts change | `parser_refresh_only.test.js` (18, CI); `bake_month.js` "fund rows on unrecognised Monitor sheets" gate (exit 1); `dates.test.js`; `rehearse.js --old-site` (manual, A27) | the rehearsal is local only (needs `monthly-updates/` and a root path shorter than 260 characters, E16) and not in CI; `SHEET_MAP` and `rename_schemes.js` `SHEET_SUB` must be kept equal by hand (43 = 43 on 28-Oct) | ARC-01 requires rehearsal evidence for any parser or load-time code change (TESTING.md section 2.3); D80 |
 | 10 | Single predicates and duplicated logic | a re-inlined hybrid, SIF or debt test; a new copy of the performance buckets, a parser, the name index or the expected-return rule | SIF funds silently missing from analytics (precedent before `H.isHybridScheme` was shared); totals that differ between screen, Excel and deck (C24, C29) | none automated (review only) | C24 (one headline return computed two ways in five places); C29 (buckets x3); A7 (two Direct-plan parsers); A29 (two PMS/AIF holdings parsers); `merge_reckoner.js` mirrors `H.buildFundIndex` | CLAUDE.md rule 8; ARC-01 greps for re-inlined tests; TASK-026 (after DEC-OPEN-15), TASK-046, TASK-039, TASK-068 |
 | 11 | `DATA_DATES` labels and "as on" stamps | a label advanced without the data (or the reverse); wrong long/short style; `DATA_DATES.sif` left as "-"; PMS label ahead of its data | wrong "as on" on screen, Excel sheets and deck footers | `blocklib.checkAsOn`; `setDataDate` exactly-one-match; `merge_sif_monitor.js` date gates; `merge_risk_matrix.js` `replaceOnce`; `verify_page` prints `DATA_DATES` (no gate) | `DATA_DATES.sif` not "-" is not enforced in CI (A31); no freshness check; B1 (31-Jul data under "31st August 2026") | TASK-042 (A31); TASK-025 (B1, DEC-OPEN-04) |
@@ -202,16 +209,16 @@ reading `tools/verify_page.js:90-96` and `pages.yml:37-61`). `site/index.html` l
 | Gap | Task | Status |
 |---|---|---|
 | Count baseline, silent sibling failure, two unenforced invariants (A23, A30, A31) | TASK-042 | NOT STARTED |
-| Full browser acceptance on S7, Excel opened in Excel, full-test checklist for the owner | TASK-064 | PLANNED |
+| Full browser acceptance on S7, Excel opened in Excel, full-test checklist for the owner | TASK-064 | IN PROGRESS |
 | Deck tables outside `drawTable`; `listTable` page 2 (C44, C45) | TASK-069 | NOT STARTED |
 | `si` bound in the MF bake (C43) | TASK-067 | NOT STARTED |
 | RISK_MATRIX keys against the effective MASTER (C42) | TASK-066 | NOT STARTED |
-| A producer and a regression test for the risk matrix (B8, C11, C35, A22) | TASK-022, TASK-057 | BLOCKED (DEC-OPEN-01, -02, -03) |
+| A producer and a regression test for the risk matrix (B8, C11, C35, A22) | TASK-022, TASK-057 | TASK-022: BLOCKED (TASK-018; DEC-OPEN-30, -31); TASK-057: proposed, after one verified month |
 | Static PMS/AIF benchmark rows (C41) | TASK-065 | BLOCKED (DEC-OPEN-27) |
 | Branch protection (R9) | TASK-036 | BLOCKED (DEC-OPEN-17) |
-| OneDrive health; docs still saying `git switch` (R6, E7, E10) | TASK-017, TASK-018 | NOT STARTED |
+| OneDrive health; docs still saying `git switch` (R6, E7, E10) | TASK-017, TASK-018 | IN PROGRESS |
 | Strict CLI parsing: unknown flag, stray word, value-less flag, bad or missing `--as-on`, missing `--html` on three tools (A32) | TASK-076 | NOT STARTED |
-| Rule documents contradict each other (E17) | TASK-018 | PLANNED |
+| Rule documents contradict each other (E17) | TASK-018 | IN PROGRESS |
 | Automated Excel export test | none registered | - |
 | Old share links decoding test | none registered | - |
 
