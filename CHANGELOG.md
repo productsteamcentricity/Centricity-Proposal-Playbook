@@ -18,6 +18,27 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-03 - GOV-01 claim for TASK-018 recorded; DEC-OPEN-34 opened (docs only)
+
+No `site/`, `tools/`, `.github/` or package-file change. The live files are unchanged (7 of 7 equal `site/`).
+
+### Added
+- The claim of the GOV-01 chat for TASK-018 (the widened docs-consistency PR that gates every `/monthly-update` run,
+  tool `--apply` and OPS or NB launch): 23 files by name and a condensed 12-field change-impact contract in
+  `docs/project-control/ACTIVE_CHANGE_REGISTER.md`, in force from the merge of this change. ARC-01's pre-check of the
+  contract: GO WITH CONDITIONS (C1 to C9; C2, C3, C5 and C6 confirmed in writing; C1 (text confirmed, walkthrough evidence open), C4 and C7 to C9 open). A second owner approval is recorded as a blocker of TASK-018's Gate D: the owner's yes to the operator-run Gate B in every monthly refresh.
+- Owner decision DEC-OPEN-34 (who accepts a finished change, the Gate E scope; OPEN; the documented recommendation
+  is option (a), not a decision) in `docs/project-control/DECISION_LOG.md`.
+
+### Changed
+- `docs/project-control/CHAT_REGISTRY.md` (GOV-01 and EX-01 records, shortened session ids, ARC-01's further uses),
+  `docs/project-control/TASK_REGISTER.md` (TASK-018 status and progress, section 4, a TASK-060 / TASK-061 note: the
+  worktree `focused-wright-d50bee` is now GOV-01's), `docs/project-control/DECISION_LOG.md` (the order of the
+  decision session; section 2.3), `docs/project-control/README.md` (next-free ids) and `docs/PROJECT_STATE.md`.
+
+Risk class Material (a claim and a decision record); ARC-01 DIFF REVIEW (GO WITH CONDITIONS on the first version; its conditions are applied) and security-reviewer ran before the push.
+This change (PR number to be added at release) takes effect when it merges.
+
 ## 2026-11-02 - MOD-02 validates the handover package (TASK-016); registers and records brought up to date (docs only)
 
 No `site/`, `tools/`, `.github/` or package-file change. The live files are unchanged (7 of 7 equal `site/`).
@@ -69,7 +90,7 @@ succeeded and 7 of 7 live files equal `site/`.
 
 Later on 2-Nov-2026 (docs only; no `site/`, `tools/` or `.github/` change): PR #31 (record of the PR #30 release;
 GOV-01 and EX-01 proposed) was released (merge `c0fb2dd`, 2-Nov-2026 14:41 UTC; Actions push run 41464361000,
-verify + publish, succeeded; live files 7 of 7 verified). This change (PR number to be added at release) records
+verify + publish, succeeded; live files 7 of 7 verified). PR #32 (merge `703b975`, 2-Nov-2026 19:50 UTC; Actions push run 41513729682, verify + publish, succeeded) records
 the owner's answer to DEC-OPEN-01 as D86 (the NAV and risk-ratio inputs of the Portfolio Matrix come from the MF
 Screener data pack; MOD-02's reading of the answer, INFERRED), opens DEC-OPEN-30 to -33 for the definition
 changes, re-scopes TASK-022, adds TASK-078 and KNOWN_ISSUES C46 (A22, B8, C10, C11 and C35 carry notes) and the

@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 2-Nov-2026 |
-| Author chat | MOD-01; MOD-02 (update of 2-Nov-2026) |
+| Date | 3-Nov-2026 |
+| Author chat | MOD-01; MOD-02 (updates of 2-Nov-2026 and 3-Nov-2026) |
 | Status | Authoritative (index of this folder and the rules for keeping it) |
 | Supersedes | the version of 28-Oct-2026 (kept in git history); the folder was created by the MOD-01 -> MOD-02 handover package |
 | Next review | when the widened TASK-018 PR merges |
@@ -71,8 +71,8 @@ with the code or git, the code wins. Fix the register with a dated correction.
 ## 4. Update rules
 
 1. **Stable IDs.** Never renumber, reuse or delete an ID. A withdrawn item becomes SUPERSEDED with a
-   pointer to what replaced it. A new item takes the next free number. As of 2-Nov-2026: REQ-096,
-   REQ-PPT-154, TASK-079, DEC-OPEN-34, D87, A33, B10, C47, R13, E18, F4, INC-20; chats EX-02, NB-04,
+   pointer to what replaced it. A new item takes the next free number. As of 3-Nov-2026: REQ-096,
+   REQ-PPT-154, TASK-079, DEC-OPEN-35, D87, A33, B10, C47, R13, E18, F4, INC-20; chats EX-02, NB-04,
    OPS-01, GOV-02, ARC-02, MOD-03; external labels EXT-PR-06.
 2. **Dated entries.** Dates as 28-Oct-2026 (with UTC time where order matters). A status change adds a
    dated note; it does not silently rewrite history. A correction is marked "Correction <date>:" with
