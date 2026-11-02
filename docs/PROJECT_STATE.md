@@ -1,13 +1,14 @@
 # Project state
 
 _Last updated: 2-Nov-2026 - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
-PR #29 (`f5c2431`) is on `main`; `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
+PR #30 (`32172f5`) is now on `main` (merged 2-Nov-2026 12:20 UTC), with PR #29 (`f5c2431`) before it;
+`verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
 unchanged from 28-Oct. ARC-01's first review (GO WITH CONDITIONS) and a security review found no secret
 or client name in the package. 77 audit findings (P2 17, P3 60) are recorded in
 [`update-log/2026-11-02_task-016-validation.md`](update-log/2026-11-02_task-016-validation.md) and the
-register errors corrected (effective when the docs PR from branch `docs/mod-02-validation-20261102`
-merges). The owner decided D84 (the risk-free rate stays 4.5% for now) and D85 (the textbook Sortino
-formula). Next is the widened TASK-018 docs PR, which gates every OPS and NB launch.
+register errors corrected (PR #30). The owner decided D84 (the risk-free rate stays 4.5% for now) and D85
+(the textbook Sortino formula). Next is the widened TASK-018 docs PR, which gates every OPS and NB launch;
+TASK-018 is proposed to the owner as sub-chat GOV-01 and TASK-064 (browser acceptance) as EX-01.
 No `site/` or `tools/` change._
 
 _Previous update: 30-Oct-2026 - the Moderator handover package (MOD-01 -> MOD-02, dated 28-Oct-2026) is
@@ -139,8 +140,8 @@ site of the 4-fund check gives 23 slides, no layout warning, console clean.
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
-| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `f5c2431` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
+| Latest merge | PR #30 -> `32172f5` (2-Nov-2026), docs only; Actions run 41443940610 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before it: PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
+| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `32172f5` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -225,7 +226,7 @@ over to a new Moderator chat, MOD-02. The package was reconstructed from the cod
 every owner message, and checked against the code (record:
 [`handover/MASTER_HANDOVER_2026-10-28_v1.md`](handover/MASTER_HANDOVER_2026-10-28_v1.md)).
 - **Checks on 28-Oct-2026:** `verify_page` unchanged (counts in "Latest verification"); `npm test` 5 of
-  5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 58 of 58 runs green (60 of 60 on 2-Nov-2026); the
+  5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 58 of 58 runs green (60 of 60 at `f5c2431` on 2-Nov-2026; 62 of 62 after PR #30); the
   page starts in a browser with MASTER 7,682, the three sibling flags set and no console errors. No
   proposal was built and nothing was exported in a browser: the full acceptance check last ran on
   21-Oct, before PR #26 (TASK-064).
@@ -260,6 +261,9 @@ every owner message, and checked against the code (record:
     NB-02 and NB-03 are now archived (probably by the owner); their two worktrees are on a detached HEAD (no work lost).
   - Owner decisions: D84 (the risk-free rate stays 4.5% for now) and D85 (the textbook Sortino formula).
   - New ids: TASK-075 to TASK-077, DEC-OPEN-29, KNOWN_ISSUES A32, E17 and R12, INC-18 and INC-19.
+  - Release: PR #30 merged 2-Nov-2026 12:20 UTC (merge `32172f5`); Actions run 41443940610 (verify + publish)
+    succeeded; 7 of 7 live files equal `site/`; local `main` advanced to the merge without checkout, switch,
+    merge or pull (`update-ref` + `reset`).
 
 ## In progress / blockers
 
@@ -267,6 +271,9 @@ every owner message, and checked against the code (record:
   `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
   states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
   the chat runs; whether a Guardian pre-check applies.
+- **Gate E for PR #30:** the owner confirms the wording of D84 and D85 (the Moderator's summary of the
+  two button answers). GOV-01 (TASK-018) and EX-01 (TASK-064) are proposed to the owner as cards
+  (QUEUED); nothing runs until the owner starts them.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the October risk matrix;
     Rf C11 and Sortino C35 decided 2-Nov-2026: D84, D85);

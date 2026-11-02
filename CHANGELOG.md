@@ -40,10 +40,11 @@ files and CI (60 of 60 runs) agree with the 28-Oct-2026 baseline.
 ### Changed
 - Registers and records brought up to date: CHAT_REGISTRY (MOD-01 retired, MOD-02 and ARC-01 active),
   ACTIVE_CHANGE_REGISTER (TASK-015 released), TASK_REGISTER (015 and 016 done, 075-077 new, 018 widened),
-  INTEGRATION_AND_REGRESSION_LOG (PR #29 entry, baseline `f5c2431`, 17-check validation record, INC-18,
-  INC-19), REPOSITORY_AND_ENVIRONMENT_STATE (section 19), DECISION_LOG and DECISIONS (D84, D85,
-  DEC-OPEN-29), KNOWN_ISSUES (A32, E17, R12; R1 and R6 updates; P3 fixes), the REQUIREMENTS register
-  (REQ-023, REQ-PPT-150, REQ-063..095 statuses), INTERFACE_CONTRACTS and ARCHITECTURE wording.
+  INTEGRATION_AND_REGRESSION_LOG (PR #29 entry, baseline `f5c2431`, then `32172f5` after the merge of PR #30,
+  17-check validation record, INC-18, INC-19), REPOSITORY_AND_ENVIRONMENT_STATE (section 19), DECISION_LOG and
+  DECISIONS (D84, D85, DEC-OPEN-29), KNOWN_ISSUES (A32, E17, R12; R1 and R6 updates; P3 fixes), the
+  REQUIREMENTS register (REQ-023, REQ-PPT-150, REQ-063..095 statuses), INTERFACE_CONTRACTS and
+  ARCHITECTURE wording.
 - `docs/PROJECT_STATE.md`: the validation, the ARC-01 conditions and the decisions of 2-Nov-2026.
 - `docs/handover/README.md` (version 3) and `docs/handover/continuations/README.md`: the MOD-01 -> MOD-02
   successor prompt is a historical snapshot; MOD-02 has been ACTIVE since 2-Nov-2026.
@@ -63,6 +64,8 @@ or OPS or NB launch.
 
 Risk class Material (records plus decisions D84 and D85); ARC-01 DIFF REVIEW (GO WITH CONDITIONS) and
 security-reviewer ran before the push; details in INTEGRATION_AND_REGRESSION_LOG section 11.
+Released as PR #30 (merge `32172f5`, 2-Nov-2026 12:20 UTC); Actions run 41443940610 (verify + publish)
+succeeded and 7 of 7 live files equal `site/`.
 
 ## 2026-10-30 — Moderator handover package MOD-01 → MOD-02 and project-control registers (docs only)
 
