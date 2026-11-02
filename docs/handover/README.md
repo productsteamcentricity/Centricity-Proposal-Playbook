@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 2 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 |
+| Version | 3 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026) |
 | Status | Authoritative (index of this folder) |
-| Supersedes | the version of 27-Oct-2026 (its content is kept unchanged in substance in section 2) |
-| Next review | at every handover, and when MOD-02 completes TASK-016 |
+| Supersedes | version 2 of 28-Oct-2026 |
+| Next review | at every handover (the TASK-016 review was done on 2-Nov-2026) |
 
 ## 1. Chat handover packages
 
@@ -21,7 +21,8 @@
 
 | File | Status | What it holds | Give it to the next Moderator? |
 |---|---|---|---|
-| [`MASTER_HANDOVER_2026-10-28_v1.md`](MASTER_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | project history, architecture, current state, replication, decisions, blockers, uncertainty (section 12), ordered plan (section 13) | yes: the successor prompt names it |
+| [`MASTER_HANDOVER_2026-10-28_v1.md`](MASTER_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) (dated snapshot; errata below) | project history, architecture, current state, replication, decisions, blockers, uncertainty (section 12), ordered plan (section 13) | yes: the successor prompt names it |
+| [`../update-log/2026-11-02_task-016-validation.md`](../update-log/2026-11-02_task-016-validation.md) | Authoritative record (2-Nov-2026) | the TASK-016 validation of package v1 and the audit findings, with where each went | yes, with the master handover |
 | [`EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`](EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream A (EX): replication, parity, transfer, old-site retirement | yes, for EX work |
 | [`NEW_BUILD_HANDOVER_2026-10-28_v1.md`](NEW_BUILD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream B (NB) and monthly operations (OPS) | yes, for NB and OPS work |
 | [`CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md`](CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | ARC-01: dependency map, shared interfaces, ownership, integration state, risks | yes; also input to every Guardian review |
@@ -29,11 +30,15 @@
 | [`MODERATOR_HANDOVER_TEMPLATE.md`](MODERATOR_HANDOVER_TEMPLATE.md) | Template | fields for a Moderator or Guardian handover, with the MOD-01 example | when MOD-02 hands over |
 | [`SUBCHAT_HANDOVER_TEMPLATE.md`](SUBCHAT_HANDOVER_TEMPLATE.md) | Template | fields for a sub-chat handover, with the NB-03 example | to every sub-chat at its handover |
 | [`continuations/README.md`](continuations/README.md) | Authoritative (procedure and index) | triggers, continuation branches, cases A-D, verification, successor prompt A-J, the owner's message 1-10, index of prompts | when a chat is replaced |
-| [`continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Authoritative until MOD-02 is ACTIVE, then historical snapshot | the exact prompt that starts MOD-02 | **this is the one thing to paste** |
+| [`continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 has been ACTIVE since 2-Nov-2026 | the exact prompt that starts MOD-02 | no (only if MOD-02 must be replaced: use a new successor prompt) |
 | [`DATA_EXTRACTION_PROMPT.md`](DATA_EXTRACTION_PROMPT.md) | Historical (sent; the export arrived on 23-Oct-2026) | the prompt the outgoing owner ran to export their files (section 2) | no; reference only |
 | [`../project-control/README.md`](../project-control/README.md) | Authoritative (living registers) | chats, tasks, requirements, open decisions, ownership, integration log, interfaces, dependency map, repository state | yes: read after the master handover |
 
 ### What to give the next Moderator
+
+Update 2-Nov-2026: MOD-02 has been ACTIVE since 2-Nov-2026, so the prompt named below is a historical snapshot.
+To replace MOD-02, write a new successor prompt ([`continuations/README.md`](continuations/README.md)) and give only
+that one; the rest of this subsection describes how MOD-02 was started.
 
 Only the successor prompt. The owner opens a new chat in the Claude desktop app's Code tab on the
 repository folder (the main checkout, no worktree), or clicks the session card MOD-01 offers, and pastes
@@ -54,13 +59,35 @@ prompts name their predecessor and successor IDs.
 |---|---|---|---|
 | v1 | 28-Oct-2026 | MOD-01 -> MOD-02 | Authoritative (current) |
 
+MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the authoritative package.
+
+### 1.1 Errata to the 28-Oct-2026 snapshot documents (found 2-Nov-2026)
+
+MOD-02's validation of package v1 (TASK-016; record:
+[`../update-log/2026-11-02_task-016-validation.md`](../update-log/2026-11-02_task-016-validation.md)) found the errors
+below. The snapshot documents stay as written (a dated snapshot is not edited): read them together with this table.
+The living registers were corrected in the same update (the rows say where). The ids ERR-1 to ERR-8 belong to this table;
+they are not KNOWN_ISSUES ids (those are written with the file name, for example "KNOWN_ISSUES E7"). Line numbers are
+those of the unedited snapshot files.
+
+| # | Where | What the snapshot says | What is true | Source |
+|---|---|---|---|---|
+| ERR-1 | MASTER_HANDOVER 2.1 (line 114) and 5 (line 261); EXISTING_DASHBOARD 3 (line 172); CODEBASE_GUARDIAN 6 (line 228). Corrected 2-Nov-2026 in the registers: REPOSITORY_AND_ENVIRONMENT_STATE K07, TASK_REGISTER 3, ARCHITECTURE 0 | the 28-Oct start-up check ran "about 08:55 UTC" (or "~08:55 UTC") | it ran 07:12:58-07:13:25 UTC (REPOSITORY_AND_ENVIRONMENT_STATE 13.4) | audit package-consistency:D-01 |
+| ERR-2 | MASTER_HANDOVER 4.1 (line 208) and 8.1 (lines 424-426); EXISTING_DASHBOARD 6.1 (line 298). Corrected 2-Nov-2026: DECISION_LOG 2.2 row 4 | the owner's condition that the old site goes only after full testing is "recorded in no repo document" (MASTER_HANDOVER), "recorded in no repository document today" (EXISTING_DASHBOARD) and "not in R7" (DECISION_LOG) | KNOWN_ISSUES R7, REQ-049, TASK-034, DEC-OPEN-14 and DEC-OPEN-24 record it; only `docs/DEPLOYMENT.md` and `docs/DECISIONS.md` still lack it (TASK-074) | audit decisions:F-01 |
+| ERR-3 | MASTER_HANDOVER 8.1 (D60 row, line 416). Corrected 2-Nov-2026: DECISION_LOG DEC-OPEN-18 and the D60 row | "no client data anywhere in the repo" (MASTER_HANDOVER, DECISION_LOG D60 row) and "No client data is in the repo" (DECISION_LOG DEC-OPEN-18) | no client names or files are in the tree; de-identified per-client sample figures remain in the public history (KNOWN_ISSUES R1) | audit decisions:F-02 |
+| ERR-4 | MASTER_HANDOVER 8.2 (lines 434, 463-464), 9.3 (line 523) and 13 step 3 (line 671); successor prompt F.3 (lines 156-159); MODERATOR_HANDOVER_TEMPLATE example (line 176). Corrected 2-Nov-2026: DECISION_LOG 1.2 and 1.3 | DEC-OPEN-01, -02 and -03 are due "about 13-Nov-2026" | 13-Nov-2026 is the START of the October MF cycle: only DEC-OPEN-08 is due then; DEC-OPEN-01 is needed well before it (the producer must be merged before step 10 of the cycle); DEC-OPEN-02 and DEC-OPEN-03 were decided on 2-Nov-2026 (D84, D85) | audit decisions:F-03 |
+| ERR-5 | NEW_BUILD_HANDOVER 5.1 (line 201); EXISTING_DASHBOARD 8 (line 406) | TASK-017 is "needed before any worktree or branch" (NEW_BUILD_HANDOVER) and "worktree creation is unsafe until fixed" (EXISTING_DASHBOARD) | TASK-017 gates checkout, switch, merge and pull in the main checkout, worktrees at historical commits, history reads and tool `--apply`; `git branch <new> origin/main` and a worktree at the current `origin/main` are allowed (to be fixed in TASK-018) | audit guardian-gate-b:D-06 |
+| ERR-6 | CLAUDE.md "Project control"; KNOWN_ISSUES E7; "Other documents to read with care" below | the override names only `git switch` | the monthly-update skill (`SKILL.md` line 20) and the process doc (`MONTHLY_UPDATE_PROCESS.md` line 145) also run `git pull --ff-only`; the rule covers checkout, switch, merge and pull (TASK-018) | audit guardian-gate-b:D-01 |
+| ERR-7 | many, for example MASTER_HANDOVER 2.2 (line 116), 3.3 (lines 169-171) and 3.4 (lines 181, 186); EXISTING_DASHBOARD 2.3 (line 147) and 8 (line 406); CODEBASE_GUARDIAN 5 (line 199), 6 (lines 224, 232) and 7 (line 272); the successor prompt A (line 23), C (line 56), D (line 104) and J (line 260); MODERATOR_HANDOVER_TEMPLATE example (lines 159, 169) | "58 of 58" CI runs; "28 PRs"; "3 worktrees besides the main checkout"; "26 local branches besides main"; "229 of 519" cloud-only files; "OneDrive.exe not running"; "MOD-02 QUEUED" | superseded by REPOSITORY_AND_ENVIRONMENT_STATE section 19 (19.6 lists the changed key numbers) and CHAT_REGISTRY | the 2-Nov-2026 refresh |
+| ERR-8 | ACTIVE_CHANGE_REGISTER 2 (contract of TASK-015, field 10, "Required tests") (as merged in PR #29, 7cc3946; condensed since in INTEGRATION_AND_REGRESSION_LOG section 11) | the added lines are checked to be ASCII | the 22 new files are ASCII; 87 added lines in 5 existing files (CHANGELOG.md 8, CLAUDE.md 2, docs/KNOWN_ISSUES.md 67, docs/PROJECT_STATE.md 8, docs/README.md 2) carry the files' own typography (dashes, middle dot, arrow, ellipsis, section sign, plus-minus sign), with no control characters and no decoded escapes | audit package-consistency:D-03 |
+
 ### Other documents to read with care
 
 - [`../HANDOVER.md`](../HANDOVER.md) (new-maintainer guide, last changed 16-Oct-2026) is still useful, but
   its section 5 lists risk ratios among the desk and vendor workbooks (the Fund Risk Ratios and NAV Data
   workbooks have no producer, KNOWN_ISSUES B8 and E8; the inbox README also lists both) and its section 8
   OneDrive advice omits the checkout hazard (E10). Treat both
-  as stale until TASK-018.
+  as stale until TASK-018 (E10 still open).
 - `.claude/skills/monthly-update/SKILL.md` and [`../MONTHLY_UPDATE_PROCESS.md`](../MONTHLY_UPDATE_PROCESS.md)
   still say `git switch` (E7); the "Project control" section of `CLAUDE.md` overrides them.
 

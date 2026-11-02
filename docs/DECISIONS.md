@@ -9,7 +9,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
-  tool fixes that followed it. IDs are never reused.
+  tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 and D85 sit
+  under the "Risk matrix" heading). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
 - **Fields.** Each entry has Context, Decision, Rationale, Alternatives / supersedes, Consequences and
@@ -115,6 +116,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D81 | 21-Oct-2026 | Publish the C19 re-run; keep values from blank Monitor cells; hold the C20 G-Sec record | Data | Active |
 | D82 | 22-Oct-2026 | The PowerPoint export lays out every native slide through one measured design system | Exports | Active |
 | D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active |
+| D84 | 2-Nov-2026 | Rf stays 4.5% for now (owner) | Risk | Active |
+| D85 | 2-Nov-2026 | Sortino stays the textbook formula (owner) | Risk | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -582,6 +585,12 @@ and the entry says so. "—" means no date is recorded.
   rows that include expected figures are explained by the note, not marked.
 - **Source:** `H.isExpectedReturn` next to `H.isFallbackReturn` in `site/index.html`; `star()` in
   `buildDeck`.
+- **Correction 2-Nov-2026:** the Context lumps these figures together as "yield or IRR band mid-point". Desk
+  bonds hold the top of their IRR band (the 14 OneDigital bonds) or the yield (the 36 Invictus bonds, where low
+  = high); many AIF and PMS peers hold the band mid-point (`docs/KNOWN_ISSUES.md` C28, C37; DEC-OPEN-09 and
+  DEC-OPEN-16 in `docs/project-control/DECISION_LOG.md`). The last alternative fails for the 14 stale AIF
+  mid-points: the count was 12 when D83 was written and has been 14 since the handover export of 25-Oct-2026
+  (C28). The decision itself is unchanged.
 
 ---
 
@@ -1132,6 +1141,51 @@ and the entry says so. "—" means no date is recorded.
   T-Bill at about 5.26%.
 - **Decision:** Pending: re-confirm with the desk.
 - **Source:** `OPERATING_MANUAL.md:1221-1222`; `docs/PRD.md` §14 item 11.
+- **Update 2-Nov-2026:** the owner kept 4.5% for now (D84); the desk's confirmation (DESK-15) is still
+  pending, so this entry stays Open.
+
+#### D84 - Rf stays 4.5% for now
+`Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The risk ratios (Sharpe, Sortino, Treynor, Jensen alpha) use Rf = 4.5%, a "standing desk
+  convention" whose source is unverified (`docs/KNOWN_ISSUES.md` C11); D58 recorded it as pending desk
+  confirmation; the manual notes the 91-day Treasury Bill at about 5.26%. DEC-OPEN-02 put the question to the
+  owner on 2-Nov-2026: keep 4.5%, or use the desk's own house rate.
+- **Decision:** The owner chose the button 'Keep 4.5% for now', one of two that MOD-02 offered in chat on
+  2-Nov-2026 (answer received 08:02 UTC; the other button was 'Use desk's rate'). The desk is still asked
+  where 4.5% comes from and which rate it uses (DESK-15); D58 stays Open for that confirmation. Adopting a
+  different rate needs a new owner decision.
+- **Rationale:** MOD-02's reading, not stated by the owner: continuity with the live table and earlier
+  months; changing Rf would change every ratio.
+- **Alternatives / supersedes:** Use the desk's house rate now: needs the desk's answer and changes every ratio
+  at the next build.
+- **Consequences:** MOD-02's reading, conditional on DEC-OPEN-01: if a risk-ratio builder is made (TASK-022)
+  it uses 4.5% as one documented constant; C11 stays open until the desk answers; reversible by rebuilding
+  with another rate.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-02 (section 1.6); the owner's chat answer of
+  2-Nov-2026 (MOD-02). The wording of D84 and D85 is MOD-02's summary of the owner's button answers; the
+  owner confirms it at Gate E (DECISION_LOG section 1.5 step 2).
+
+#### D85 - Sortino stays the textbook formula
+`Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The Sortino ratio has two definitions in the live history: the June 2026 workbook used the
+  semi-deviation (the standard deviation of the negative excess returns); the August 2026 workbook, the live
+  September `RISK_MATRIX` and the in-house calculator use the textbook form (the root-mean-square of the
+  negative excess returns over all days). The desk never approved the change; on September data the two forms
+  differ by 0.04 on average and 0.27 at most (`docs/KNOWN_ISSUES.md` C35).
+- **Decision:** The owner chose the button 'Keep textbook', one of two that MOD-02 offered in chat on
+  2-Nov-2026 (answer received 08:52 UTC; the other button was 'Return to June's'). The textbook formula is
+  the root-mean-square of the negative excess returns over all days, as in the live September table.
+- **Rationale:** MOD-02's reading, not stated by the owner: it is what the live table and the last two months
+  show; clients see no change.
+- **Alternatives / supersedes:** Return to June's semi-deviation form: matches the earlier months and the
+  Python tool but changes today's numbers.
+- **Consequences:** MOD-02's reading, conditional on DEC-OPEN-01: if a builder is made (TASK-022) it
+  implements exactly that formula; tools/build_risk_matrix.py implements June's form and would have to be
+  changed before it is used; June's Sortino values are not comparable with later months; KNOWN_ISSUES C35
+  carries a note; reversible by rebuilding.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-03 (section 1.6); the owner's chat answer of
+  2-Nov-2026 (MOD-02). The wording of D84 and D85 is MOD-02's summary of the owner's button answers; the
+  owner confirms it at Gate E (DECISION_LOG section 1.5 step 2).
 
 ### Process
 

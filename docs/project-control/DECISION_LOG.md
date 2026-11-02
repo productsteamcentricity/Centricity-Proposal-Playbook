@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (handover package, TASK-015) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026) |
 | Status | Authoritative for decisions waiting for the owner (DEC-OPEN-nn). Approved decisions: `docs/DECISIONS.md` is authoritative; part 2 here is only an index. |
-| Supersedes | nothing (first version) |
-| Next review | MOD-02 at TASK-016, then each time the owner answers a decision |
+| Supersedes | the version of 28-Oct-2026 (kept in git history) |
+| Next review | each time the owner answers a decision |
 
 **A recommendation is not a decision.** Part 1 lists questions only the owner can answer. Where the repo or
 a dated MOD-01 message documents a recommendation, it is quoted as such; where none is documented, the entry
@@ -29,7 +29,7 @@ for `### <ID>.`, e.g. `### B8.`).
 Each entry follows the owner's escalation format (handover master prompt section 27): the problem in plain
 words; why a decision is needed; the options; what each changes; benefits and disadvantages; impact on what
 works today; future maintenance; risks and whether it can be undone; the documented recommendation; and how
-to record the answer. Every entry is BLOCKED on the named decider.
+to record the answer. Every entry is BLOCKED on the named decider (answered entries move to section 1.6).
 
 The options, effects and recommendations come from the cited KNOWN_ISSUES and DECISIONS entries and the
 28-Oct-2026 fact sheets. Where a benefit, disadvantage or effect is MOD-01's own reasoning rather than a
@@ -37,26 +37,36 @@ documented fact, it is marked (INFERRED).
 
 ## 1.2 Order to ask, and deadlines
 
-The Oct-2026 MF cycle runs about 13-17-Nov-2026, so four decisions have an implied deadline of
-**~13-Nov-2026** (INFERRED from the documented cadence). Suggested order for the owner's decision session:
+The Oct-2026 MF cycle is expected about 13-17-Nov-2026 (INFERRED from the 13th-17th cadence: data applied
+15-Jul, 13-Aug, 17-Sep and 13-Oct). Two different dates follow from that. DEC-OPEN-08 (the renames) is due by
+about 13-Nov-2026, because `rename_schemes.js --apply` is step 1 of the run. DEC-OPEN-01, DEC-OPEN-02 and
+DEC-OPEN-03 (the NAV and risk-ratio workbooks; -02 and -03 are answered) are needed WELL BEFORE 13-Nov-2026
+if the October risk matrix is to be refreshed: step 10 (`merge_risk_matrix.js`) needs the #12 workbook, so the
+producer (TASK-022, after TASK-070) and its Sep-2026 regression test must be merged before the run reaches step 10.
+The build lead time is not documented (UNKNOWN). If the decisions come later, the October cycle runs without step 10
+(an absent input is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late second run or the
+November cycle. Suggested order for the owner's decision session:
 
-1. DEC-OPEN-02 and DEC-OPEN-03, then DEC-OPEN-01 (by ~13-Nov-2026).
+1. DEC-OPEN-02 and DEC-OPEN-03 (ANSWERED 2-Nov-2026: D84, D85), then DEC-OPEN-01 (asked again 2-Nov-2026;
+   pending; as early as possible, well before ~13-Nov-2026).
 2. DEC-OPEN-08 (by ~13-Nov-2026).
-3. DEC-OPEN-04; DEC-OPEN-05; DEC-OPEN-07.
+3. DEC-OPEN-04 and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a); DEC-OPEN-05;
+   DEC-OPEN-07.
 4. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
-5. The rest as time allows.
+5. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
+6. The rest as time allows.
 
 ## 1.3 Summary
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
 |---|---|---|---|---|---|
-| DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022, TASK-057, TASK-053 | ~13-Nov-2026 | yes (port to Node) |
-| DEC-OPEN-02 | Risk-free rate | owner + desk | TASK-022 | ~13-Nov-2026 | partly (re-ask the desk; no value) |
-| DEC-OPEN-03 | Sortino definition | owner + desk | TASK-022 | ~13-Nov-2026 | no |
+| DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022, TASK-057, TASK-053 | as soon as possible (before step 10 of the Oct cycle, about 13-17-Nov-2026) | yes (port to Node) |
+| DEC-OPEN-02 | Risk-free rate | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D84) | n/a (answered) |
+| DEC-OPEN-03 | Sortino definition | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D85) | n/a (answered) |
 | DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | before TASK-020 | no |
 | DEC-OPEN-05 | Two client items in the export | owner + compliance | TASK-032 | - | no |
 | DEC-OPEN-06 | File the true 30-Apr Monitor | owner | TASK-035 | - | no |
-| DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | before the Oct bake (optional) | yes (MOD-01: clear them) |
+| DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | before the Oct bake | yes (MOD-01: clear them) |
 | DEC-OPEN-08 | The 8 scheme renames | owner | TASK-024 | ~13-Nov-2026 | partly (check the Motilal one) |
 | DEC-OPEN-09 | Bond 3Y/5Y: band top or band average | owner | TASK-027 | - | documented next step only |
 | DEC-OPEN-10 | Segregated side-pocket records | owner | TASK-028 | - | yes (drop and tighten) |
@@ -78,14 +88,16 @@ The Oct-2026 MF cycle runs about 13-17-Nov-2026, so four decisions have an impli
 | DEC-OPEN-26 | Request the outgoing owner's chat export | owner | TASK-073 | time-sensitive | no |
 | DEC-OPEN-27 | Source of the PMS/AIF benchmark rows | owner (+ desk) | TASK-065 | - | no |
 | DEC-OPEN-28 | Which dashboard "the portfolio dashboard" meant | owner | - | - | not applicable (a question) |
+| DEC-OPEN-29 | Public-repository hygiene: old-repository locators, staff identities | owner (+ compliance) | TASK-075 | after DEC-OPEN-13 | yes (a) |
 
 ## 1.4 The open decisions
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
 Decider: owner. First asked: 27-Oct-2026 12:28 UTC by MOD-01 ("Should I rebuild the risk-ratio and NAV
-workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); unanswered. Deadline:
-~13-Nov-2026. Unblocks: TASK-022, TASK-057, TASK-053. Related: KNOWN_ISSUES B8, A22, C10; D43.
+workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); unanswered. Asked again by
+MOD-02 on 2-Nov-2026 with the buttons "Yes, rebuild them" / "Desk will provide"; pending. Deadline: as soon as
+possible (see section 1.2). Unblocks: TASK-022, TASK-057, TASK-053. Related: KNOWN_ISSUES B8, A22, C10; D43.
 
 - **The problem.** Every month the dashboard shows risk numbers for about 1,088 funds (how bumpy a fund's
   returns were, and how much return it gave for that bumpiness: Sharpe, Sortino and similar ratios). They
@@ -106,6 +118,10 @@ workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); u
   (a script in the outgoing owner's toolchain) and someone downloads five Nifty index files by hand (B8).
   (b) The Python route becomes production and D43 is revisited.
   (c) No engineering; the October data depends on the desk.
+- **Update 2-Nov-2026.** With D84 (Rf 4.5%) and D85 (textbook Sortino) decided (Rf: for now), option (a) can be
+  proven by reproducing the live September workbook and RISK_MATRIX exactly; option (b) now also needs the
+  Python tool changed (it implements June's Sortino and a different 3-year start). The build must be merged
+  before step 10 of the October cycle or the October risk table keeps "30 Sep 2026".
 - **Benefits and disadvantages.** (a) In our control, tested, same language as the other monthly tools; costs
   engineering time before mid-November and a monthly manual download. (b) Less new code, but unvalidated,
   differs from the live definition, and does not remove the need for a NAV maker. (c) No build work, but
@@ -117,62 +133,22 @@ workbook tools in-house?", buttons "Yes, rebuild them" / "Desk will provide"); u
 - **Risks and reversibility.** Reversible: nothing changes on the page until a built table is merged. The risk is
   a wrong table reaching client decks; the regression test in option (a) is the guard.
 - **Documented recommendation (not a decision).** Option (a): port the core toolchain to Node in `tools/` with a
-  Sep-2026 regression test; decide DEC-OPEN-02 and DEC-OPEN-03 first, and keep today's risk-free rate and
-  Sortino definition until they are decided (KNOWN_ISSUES B8; `docs/PROJECT_STATE.md` next steps; MOD-01,
-  27-Oct-2026). No separate rationale is written down; the option's own guard is the regression test that must
-  reproduce the live workbook (B8).
+  Sep-2026 regression test; decide DEC-OPEN-02 and DEC-OPEN-03 first (both decided 2-Nov-2026: D84, D85), and
+  keep today's risk-free rate and Sortino definition until they are decided (KNOWN_ISSUES B8;
+  `docs/PROJECT_STATE.md` next steps; MOD-01, 27-Oct-2026). No separate rationale is written down; the option's
+  own guard is the regression test that must reproduce the live workbook (B8).
 - **Record the answer as.** A new `Dnn` that amends D43; update B8; set TASK-022 (and TASK-057, TASK-053) from
   BLOCKED to PLANNED. Originating chat: MOD-01 (retired); MOD-02 relays the answer to the chat it assigns to
   TASK-022.
 
-### DEC-OPEN-02 Which risk-free rate the risk ratios use
+### DEC-OPEN-02 Which risk-free rate the risk ratios use - ANSWERED 2-Nov-2026: moved to section 1.6 (D84)
 
-Decider: owner + desk (DESK-15). Asked by MOD-01: 19-Oct-2026 (as a desk question) and 27-Oct-2026.
-Deadline: ~13-Nov-2026 (before the TASK-022 build). Unblocks: TASK-022. Related: C11; D58 (Open).
-
-- **The problem.** Risk ratios compare a fund's return with a "risk-free" return (what a very safe investment
-  pays). The calculation uses 4.5%, typed into the code. Nobody has confirmed where 4.5% came from (it is
-  called a "standing desk convention"); the old operating manual notes the 91-day Treasury Bill at about 5.26%.
-- **Why a decision is needed.** The rate changes Sharpe, Sortino, Treynor and Jensen alpha for every fund. A new
-  builder (DEC-OPEN-01) has to use one documented value.
-- **Options.** (a) Confirm 4.5%. (b) Use the desk's house rate (for example a Treasury Bill rate), as the desk
-  states it.
-- **What each changes.** (a) Nothing changes. (b) Every ratio changes on the next build.
-- **Benefits and disadvantages.** (a) Continuity with past months, but the number stays unconfirmed. (b) Matches
-  the house convention, but this month's ratios will not be directly comparable with earlier months (INFERRED).
-- **Impact on existing functionality.** The Portfolio Matrix on screen and in the deck, from the next build.
-- **Maintenance.** One documented constant in the builder; whether and when it is reviewed is for the owner to
-  set (no rule exists).
-- **Risks and reversibility.** Reversible: re-run the build with another rate.
-- **Documented recommendation (not a decision).** "Re-ask the desk for the house rate before the next risk build"
-  (KNOWN_ISSUES C11). No value is recommended.
-- **Record the answer as.** A new `Dnn` that closes D58 (D58's status then changes from Open to Superseded by
-  the new entry); update C11; note the value in TASK-022's acceptance.
-
-### DEC-OPEN-03 Which Sortino definition to use
-
-Decider: owner + desk (DESK-16). Asked: 27-Oct-2026 by MOD-01. Deadline: ~13-Nov-2026. Unblocks: TASK-022.
-Related: C35, A22.
-
-- **The problem.** The Sortino ratio measures return per unit of "bad" bumpiness (only the down moves). The
-  live history uses two different formulas: June used a semi-deviation formula; August and September used the
-  textbook formula. Nobody approved the change. The results differ by 0.04 on average and up to 0.27.
-- **Why a decision is needed.** The new builder must implement exactly one formula.
-- **Options.** (a) Keep the textbook formula (what the live table shows now). (b) Go back to June's
-  semi-deviation formula (what `tools/build_risk_matrix.py` implements).
-- **What each changes.** The Sortino values in the risk table and the deck; nothing else.
-- **Benefits and disadvantages.** (a) No change from what clients see today. (b) Matches the earlier months and
-  the Python tool, but changes today's numbers (INFERRED).
-- **Impact on existing functionality.** The Sortino column only.
-- **Maintenance.** One formula, documented and tested in the builder.
-- **Risks and reversibility.** Reversible (re-run).
-- **Documented recommendation (not a decision).** No recommendation documented.
-- **Record the answer as.** A new `Dnn`; update C35; put the formula in TASK-022's acceptance (and TASK-057).
+### DEC-OPEN-03 Which Sortino definition to use - ANSWERED 2-Nov-2026: moved to section 1.6 (D85)
 
 ### DEC-OPEN-04 The PMS date label (31-Jul data shown as "31st August 2026")
 
-Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-025. Related: B1 (P2), C26, C30; DESK-01;
-REQ-PPT-64.
+Decider: owner. Asked: 27-Oct-2026 by MOD-01. Deadline: needed before TASK-020 if the desk will not send the PMS
+files (TASK-020 Dep). Unblocks: TASK-025. Related: B1 (P2), C26, C30; DESK-01; REQ-PPT-64.
 
 - **The problem.** The PMS returns on the page, in Excel and in the deck are July data, but the label says
   "31st August 2026" (`DATA_DATES.pms`, grep `DATA_DATES` in `site/index.html`). The label makes the numbers
@@ -235,7 +211,8 @@ Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-035. Related: B9.
 
 ### DEC-OPEN-07 The 13 JioBlackRock Regular records, and very young funds
 
-Decider: owner. First asked: 19-Oct-2026 11:14 UTC by MOD-01 (repeated 21-Oct). Unblocks: TASK-023, and the
+Decider: owner. First asked: 19-Oct-2026 11:14 UTC by MOD-01 (repeated 21-Oct). Deadline: needed before the Oct
+bake, so that TASK-023 and TASK-067 can ship with it (C20 and C43 are P1). Unblocks: TASK-023, and the
 treatment rule for TASK-067. Related: C20 (P1), C16, C43; D81.
 
 - **The problem.** Twelve JioBlackRock "Regular" plans started in August 2026, but they show 3-month, 6-month
@@ -313,9 +290,10 @@ Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-027. Related: C37, 
 Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-028. Related: C39, C24, C40.
 
 - **The problem.** When a debt fund has a bad bond, it can put that bond in a separate "side pocket". Four such
-  side-pocket records (2 Franklin, 2 UTI) are in the fund list. They have almost no money, no returns and no
-  expected-return band, yet a user can pick them into a client proposal. The two UTI ones slip through because
-  the parser skips only names containing "segregated portfolio".
+  side-pocket records (2 Franklin, 2 UTI) are in the fund list. They have almost no money and no returns; the
+  two UTI ones also have no expected-return band (the two Franklin ones carry bands), yet a user can pick them
+  into a client proposal. The two UTI ones slip through because the parser skips only names containing
+  "segregated portfolio".
 - **Why a decision is needed.** Removing records from the fund list is a data change the owner approves.
 - **Options.** (a) Drop the four and widen the parser skip to any "segregated" name, at both places in the
   parser. (b) Leave them.
@@ -385,7 +363,7 @@ R1, opened at the transfer (16-Oct-2026); re-checked 28-Oct-2026. Unblocks: TASK
 - **The problem.** When we copied the project, we removed client names from our copy of the history (D64). The
   outgoing owner's original repository is still public, and its history still holds the unredacted file
   (VERIFIED 28-Oct-2026). The old site is built from that repository. Anyone could read it, and could link our
-  clean history back to it.
+  name-redacted history (which still holds de-identified figures, R1) back to it.
 - **Why a decision is needed.** Only the outgoing owner can change their repository; the owner has to ask them, and
   decide with compliance whether anyone must be told.
 - **Options.** Ask the outgoing owner to: (1) make the repository private, delete it, or purge the file from its
@@ -404,6 +382,8 @@ R1, opened at the transfer (16-Oct-2026); re-checked 28-Oct-2026. Unblocks: TASK
   and (3).
 - **Record the answer as.** Update R1 (and R7); record what was asked and when in TASK-033; a new `Dnn` only for
   a notification decision.
+- **Related 2-Nov-2026.** Our own public documents carry the exact locators of the old repository and the
+  client-data file (SEC-01); see DEC-OPEN-29.
 
 ### DEC-OPEN-14 When and how the old site is retired
 
@@ -469,7 +449,7 @@ REQ-PPT-125.
 - **The problem.** For bonds, AIFs and some PMS, the "1Y/3Y/5Y return" fields hold expected figures (a yield or
   the middle of an IRR band), not past performance. Since D83 the deck marks them with `*`, but the screen and
   the Excel export still show them as if they were track record. Also, 14 AIF mid-points no longer match their
-  fund's current band, and one PMS 1-year figure (Alchemy) is stale.
+  fund's current band, and one AIF 1-year figure (Alchemy Long Term Ventures Fund, 18.3%) is stale.
 - **Why a decision is needed.** How the data says "this is expected, not achieved" is a data-model choice, and
   the 14 mid-points need the desk.
 - **Options.** (a) Store a basis per period (for example a `ret_basis` field) so the screen and Excel can mark
@@ -508,10 +488,13 @@ Asked: 16-Oct-2026 by MOD-01. Unblocks: TASK-036. Related: R9; D63, D68; REQ-024
 
 ### DEC-OPEN-18 Keep the repository and site public long-term
 
-Decider: owner. Raised: `docs/PROJECT_STATE.md` next steps. Related: R2 (Accepted), D60.
+Decider: owner. Raised: `docs/PROJECT_STATE.md` next steps. Related: R1, R2 (Accepted), D60, D64.
 
 - **The problem.** On 16-Oct the owner chose a public repository with free GitHub Pages (D60). The fund list,
-  rationales and IRR bands are readable by anyone. No client data is in the repo.
+  rationales and IRR bands are readable by anyone. No client names, client files or workbooks are in the repo
+  (checked 2-Nov-2026). The pushed history still holds de-identified figures from the sample portfolio in the
+  Portfolio Review build spec (family and per-client CMV totals, one holding's value and weights, the largest
+  AMC's share; KNOWN_ISSUES R1). They stay publicly readable while this repository is public.
 - **Why a decision is needed.** D60 was taken for the transfer; whether it holds long-term was left open.
 - **Options.** (a) Keep it public (D60). (b) A private repository with Pages (needs a paid GitHub plan), or another
   host.
@@ -595,9 +578,14 @@ REQ-PPT-93. Related: C34, B7; D30.
 Decider: owner. Raised: 28-Oct-2026 handover fact sheets. Unblocks: TASK-059, TASK-060, TASK-061, TASK-062.
 Related: E12.
 
-- **The problem.** Old, finished work is lying around: 25 merged branches on GitHub, 26 merged local branches, 3
-  extra worktrees (all clean) and one stash from 19-Oct. The release docs say to merge with `--delete-branch`, but
-  no merge since PR #7 did, and the repository setting `delete_branch_on_merge` is off.
+- **The problem.** Old, finished work is lying around: 26 merged branches on GitHub (origin), 28 merged local
+  branches besides `main`, 4 extra worktrees (clean when last checked) and one stash from 19-Oct. The release
+  docs say to merge with `--delete-branch`, but no merge since PR #3 did, and the repository setting
+  `delete_branch_on_merge` is off. Update 2-Nov-2026: one of the 4 worktrees is new (its HEAD was written on
+  2-Nov-2026 at 13:13 IST, 20 seconds before the MOD-02 session was created; it is clean, has no commits of its
+  own and nothing uses it; the desktop app probably created it, INFERRED). The three NB sessions are now
+  archived, and their two worktrees show a detached HEAD (INFERRED: the app released them); both are clean and
+  their branches still exist.
 - **Why a decision is needed.** Deleting things needs the owner's agreement (the handover prompt forbids discarding
   work without a safe plan). The stash is the risky one: applying it would put old September data back.
 - **Options.** (a) Clean up in order: worktrees, then local branches, then remote branches; export the stash as a
@@ -728,7 +716,8 @@ Decider: owner. Asked: 21-Oct-2026 14:00 UTC by MOD-01; no reply. Related: REQ-0
 - **The problem.** On 21-Oct the owner asked for "the final link for the portfolio dashboard". MOD-01 gave this
   dashboard's link and asked whether the owner meant the separate Portfolio Review Dashboard (whose link MOD-01
   does not have).
-- **Why a decision is needed.** To close REQ-054 with the right link.
+- **Why a decision is needed.** To confirm REQ-054 (already VERIFIED COMPLETE with this dashboard's link) or, if
+  the owner meant the sister project, to note that its link is out of scope.
 - **Options.** (a) This dashboard: https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ (already
   given). (b) The Portfolio Review Dashboard: out of this project's scope; its own chats hold its link.
 - **What each changes.** Nothing in this repository.
@@ -737,11 +726,52 @@ Decider: owner. Asked: 21-Oct-2026 14:00 UTC by MOD-01; no reply. Related: REQ-0
 - **Documented recommendation (not a decision).** Not applicable (a question to the owner).
 - **Record the answer as.** Update REQ-054's evidence; no `Dnn`.
 
+### DEC-OPEN-29 What our public documents may say about the old repository, and which staff details stay public
+
+Decider: owner (+ compliance for the client-data part). Raised: 2-Nov-2026 by MOD-02 from the security review of
+PR #29 (SEC-01 to SEC-05). Unblocks: TASK-075. Related: R1, R12, DEC-OPEN-13, DEC-OPEN-18; D60, D64.
+
+- **The problem.** Our repository is public. Its documents give the exact address of the outgoing owner's old
+  repository and old site, the name of the file that holds client names and values, and the commit that holds
+  it, and that file is still publicly readable there (R1). Anyone reading our documents therefore gets a
+  ready-made map to it: the old address is on 23 lines in 13 files (14 of those lines were added by PR #29), the
+  file name on 21 lines in 10 files and the old commit id on 46 lines in 21 files (SEC-01). Separately, the
+  public history shows several e-mail addresses, one of them a staff member's full name with a company address
+  (SEC-02); two tracked files carry one person's full name and a name-based company address, three lines in all
+  (SEC-03); and `.gitignore` has no guard for some archive and key file types (SEC-04). The registers also
+  carry session identifiers, local tool paths and exact detail of open weaknesses (SEC-05). Nothing secret or
+  client-identifying was added by PR #29.
+- **Why a decision is needed.** Most of the fix is an ordinary documents change, but it changes what the project
+  says in public, so it is the owner's call (and compliance's for the client-data part). The history cannot be
+  changed without rewriting published history, a force-push, which only the owner may order (CLAUDE.md "Never").
+- **Options.** (a) Keep status words in public documents; move the exact addresses, the file name and the
+  commit id into a local-only note; replace the names and the address in the three tracked lines with role
+  words; add `.gitignore` guard rails for `*.tar *.gz *.tgz *.bz2 *.xz *.docm *.pem *.key *.p12 *.pfx *.sqlite *.db *.env id_rsa* credentials*.json .npmrc`;
+  leave the history alone. (b) Do (a) and also rewrite the public history: large and risky, advised against,
+  and it needs the owner's explicit instruction. (c) Leave everything as it is: the information is already
+  public.
+- **What each changes.** (a) About 13 documents and `.gitignore`. It does not fix R1: only the outgoing owner's
+  purge (DEC-OPEN-13) does. (b) As (a), and every commit id changes. (c) Nothing.
+- **Benefits and disadvantages.** (a) Our documents stop pointing readers at the old repository and the file, and
+  the staff details in the three lines go; quick, cheap and reversible, but it removes nothing that is already
+  public, and the exact locators are no longer in the registers (INFERRED). (b) The staff addresses and the
+  locators would also leave our history, but it is large and risky, every commit id and clone changes, and it
+  does nothing about the old repository (INFERRED). (c) No work, but the map stays and grows each time a
+  document repeats the address (INFERRED).
+- **Impact on existing functionality.** None on the dashboard.
+- **Maintenance.** Keep the local-only note with the other local-only items (TASK-070). New documents refer to
+  the old repository by role words, not by address (INFERRED).
+- **Risks and reversibility.** (a) is reversible in git. (b) is not.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026: option (a), and press the R1 purge
+  (DEC-OPEN-13), because it is the real fix.
+- **Record the answer as.** A new `Dnn`; update R1 and R12; set TASK-075 to PLANNED.
+
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
-   chat ID)` and set its status from BLOCKED to SUPERSEDED (by Dnn). Do not delete the entry: move it to section 1.6.
-2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D84 on 28-Oct-2026):
+   chat ID)` and set its status from BLOCKED to ANSWERED (and name the Dnn). Do not delete the entry: move it to
+   section 1.6.
+2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D86 on 2-Nov-2026):
    Context, Decision, Rationale, Alternatives, Consequences, Source (the owner's message, date and chat). Add it to
    the index table there. If the wording is MOD-02's summary of the owner's answer, the owner confirms it.
    (Small filing answers such as DEC-OPEN-06 need no `Dnn`; the entry says so.)
@@ -756,7 +786,61 @@ Decider: owner. Asked: 21-Oct-2026 14:00 UTC by MOD-01; no reply. Related: REQ-0
 
 ## 1.6 Decided (closed) open decisions
 
-None yet (28-Oct-2026).
+Decided so far: DEC-OPEN-02 (D84), DEC-OPEN-03 (D85).
+
+### DEC-OPEN-02 Which risk-free rate the risk ratios use
+
+Decider: owner + desk (DESK-15). Asked by MOD-01: 19-Oct-2026 (as a desk question) and 27-Oct-2026.
+Deadline: before the October workbooks are produced, and well before ~13-Nov-2026. The TASK-022 build may start
+earlier with today's 4.5% kept as a parameter (`docs/handover/NEW_BUILD_HANDOVER_2026-10-28_v1.md` section
+5.2). Unblocks: TASK-022. Related: C11; D58 (Open).
+
+Answer: 'Keep 4.5% for now' (a button offered by MOD-02; 2-Nov-2026 08:02 UTC, MOD-02 chat) -> D84; D58 stays
+Open for the desk confirmation (DESK-15). Status: ANSWERED. (The "Record the answer as" line below is the plan
+made before the answer; D58 was not closed.)
+
+- **The problem.** Risk ratios compare a fund's return with a "risk-free" return (what a very safe investment
+  pays). The calculation uses 4.5%, typed into the code. Nobody has confirmed where 4.5% came from (it is
+  called a "standing desk convention"); the old operating manual notes the 91-day Treasury Bill at about 5.26%.
+- **Why a decision is needed.** The rate changes Sharpe, Sortino, Treynor and Jensen alpha for every fund. A new
+  builder (DEC-OPEN-01) has to use one documented value.
+- **Options.** (a) Confirm 4.5%. (b) Use the desk's house rate (for example a Treasury Bill rate), as the desk
+  states it.
+- **What each changes.** (a) Nothing changes. (b) Every ratio changes on the next build.
+- **Benefits and disadvantages.** (a) Continuity with past months, but the number stays unconfirmed. (b) Matches
+  the house convention, but this month's ratios will not be directly comparable with earlier months (INFERRED).
+- **Impact on existing functionality.** The Portfolio Matrix on screen and in the deck, from the next build.
+- **Maintenance.** One documented constant in the builder; whether and when it is reviewed is for the owner to
+  set (no rule exists).
+- **Risks and reversibility.** Reversible: re-run the build with another rate.
+- **Documented recommendation (not a decision).** "Re-ask the desk for the house rate before the next risk build"
+  (KNOWN_ISSUES C11). No value is recommended.
+- **Record the answer as.** A new `Dnn` that closes D58 (D58's status then changes from Open to Superseded by
+  the new entry); update C11; note the value in TASK-022's acceptance.
+
+### DEC-OPEN-03 Which Sortino definition to use
+
+Decider: owner + desk (DESK-16). Asked: 27-Oct-2026 by MOD-01. Deadline: before the October workbooks are
+produced, and well before ~13-Nov-2026. The TASK-022 build may start earlier with today's textbook Sortino
+formula kept as a parameter (`docs/handover/NEW_BUILD_HANDOVER_2026-10-28_v1.md` section 5.2). Unblocks:
+TASK-022. Related: C35, A22.
+
+Answer: 'Keep textbook' (a button offered by MOD-02; 2-Nov-2026 08:52 UTC, MOD-02 chat) -> D85. Status: ANSWERED.
+
+- **The problem.** The Sortino ratio measures return per unit of "bad" bumpiness (only the down moves). The
+  live history uses two different formulas: June used a semi-deviation formula; August and September used the
+  textbook formula. Nobody approved the change. The results differ by 0.04 on average and up to 0.27.
+- **Why a decision is needed.** The new builder must implement exactly one formula.
+- **Options.** (a) Keep the textbook formula (what the live table shows now). (b) Go back to June's
+  semi-deviation formula (what `tools/build_risk_matrix.py` implements).
+- **What each changes.** The Sortino values in the risk table and the deck; nothing else.
+- **Benefits and disadvantages.** (a) No change from what clients see today. (b) Matches the earlier months and
+  the Python tool, but changes today's numbers (INFERRED).
+- **Impact on existing functionality.** The Sortino column only.
+- **Maintenance.** One formula, documented and tested in the builder.
+- **Risks and reversibility.** Reversible (re-run).
+- **Documented recommendation (not a decision).** No recommendation documented.
+- **Record the answer as.** A new `Dnn`; update C35; put the formula in TASK-022's acceptance (and TASK-057).
 
 ---
 
@@ -764,8 +848,8 @@ None yet (28-Oct-2026).
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D83 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D84**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D85 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D86**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -782,8 +866,8 @@ before acting on it.
 | D48 | One hybrid predicate for all four analytics gates | Active | CLAUDE.md rule 8 |
 | D49 | PMS/AIF look-through is written in two places | Active | A29, TASK-068 |
 | D50 | SIF Monitor baked into the SIF sibling; always /100 | Active | CLAUDE.md rule 4 |
-| D58 | Rf = 4.5%, pending desk confirmation | Open | = DEC-OPEN-02 |
-| D60 | Public repository on free GitHub Pages (owner, 16-Oct-2026) | Active | no client data anywhere in the repo; DEC-OPEN-18 |
+| D58 | Rf = 4.5%, pending desk confirmation | Open | = DEC-OPEN-02 (owner kept 4.5% for now: D84; desk confirmation open) |
+| D60 | Public repository on free GitHub Pages (owner, 16-Oct-2026) | Active | no client names or files in the repo (R1: de-identified sample figures remain in pushed history); DEC-OPEN-18 |
 | D61 | Monthly updates publish automatically once every check passes (owner, 16-Oct-2026) | Active | never yet exercised; data corrections are not covered |
 | D62 | Repository reorganised into `site/`, `tools/`, `tools/lib/`, `docs/` | Active | repository layout |
 | D63 | Pages built by GitHub Actions from `site/`, behind a parity gate | Active | Gate D; no branch protection (R9, DEC-OPEN-17) |
@@ -806,18 +890,20 @@ before acting on it.
 | D81 | Publish the C19 re-run; keep blank-cell values; hold the C20 G-Sec record (owner, 21-Oct-2026) | Active | DEC-OPEN-07 |
 | D82 | The PowerPoint export lays out every native slide through one measured design system (owner, 22-Oct-2026) | Active | CLAUDE.md rule 10; C44, C45 are exceptions |
 | D83 | The deck marks an expected 1Y/3Y/5Y figure with `*` (owner, 22-Oct-2026) | Active | C28; DEC-OPEN-16 |
+| D84 | Rf stays 4.5% for now (owner, 2-Nov-2026) | Active | TASK-022 builder constant; D58 stays Open (DESK-15) |
+| D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active | TASK-022 builder formula; tools/build_risk_matrix.py implements June's form |
 
 ## 2.2 Owner decisions made in conversation, not yet recorded as a D-number
 
 These were approved by the owner but live only in chat transcripts. TASK-074 records them in
-`docs/DECISIONS.md` from D84, with wording the owner confirms. Until then, this table is the record.
+`docs/DECISIONS.md` from D86, with wording the owner confirms. Until then, this table is the record.
 
 | When (UTC) | Decision (owner's words or act) | Where it lives today | Label |
 |---|---|---|---|
 | 15-Oct-2026 14:36 | Stage A before Stage B: "Stop after establishing the baseline" | master prompt (transcript); honoured (REQ-007) | VERIFIED (words) |
 | 16-Oct-2026 13:09 | "Start fixing all the issues that you have identified and tell me the impact of that pre and post fixing" (fix programme authorised) | transcript; KNOWN_ISSUES introduction and CHANGELOG describe the work, not the decision | VERIFIED (words) |
 | 16-Oct-2026 13:09 | Export-prompt constraints: capture all data that may be needed in future; say nothing about deleting the existing dashboard; zips over Teams, not OneDrive | only as text inside `docs/handover/DATA_EXTRACTION_PROMPT.md` | VERIFIED (words) |
-| 16-Oct-2026 13:09 | The old dashboard is deleted only "after full testing has been done on the new build" | transcript only; not in R7 or `docs/DEPLOYMENT.md` | VERIFIED (words) |
+| 16-Oct-2026 13:09 | The old dashboard is deleted only "after full testing has been done on the new build" | transcript (16-Oct-2026 13:09 UTC); since the 28-Oct package also KNOWN_ISSUES R7, REQ-049, TASK-034, DEC-OPEN-14 and DEC-OPEN-24; not yet in `docs/DEPLOYMENT.md` (E14) or `docs/DECISIONS.md` (TASK-074) | VERIFIED (words) |
 | 16-Oct-2026 ~13:09 | Started the card "Fix the three P1 tool risks before the next refresh" (worktree session NB-01) | transcript only | INFERRED (act) |
 | 21-Oct-2026 ~05:51 | Started the card "Small tool and UI follow-ups from the 19-Oct fixes" (NB-02) | transcript only | INFERRED (act) |
 | 22-Oct-2026 14:30 | Chose "New session" for "Fix and standardise the proposal PowerPoint export" (NB-03) | transcript only | VERIFIED (act) |
@@ -838,3 +924,5 @@ recommendation alone.
 | Date | Change | By |
 |---|---|---|
 | 28-Oct-2026 | Log created: DEC-OPEN-01..DEC-OPEN-28 (all BLOCKED on the owner); index of load-bearing D-numbers; conversation-only approved decisions listed for TASK-074. | MOD-01 |
+| 2-Nov-2026 | DEC-OPEN-02 answered ("Keep 4.5% for now") = D84; DEC-OPEN-03 answered ("Keep textbook") = D85; both moved to section 1.6. | MOD-02 |
+| 2-Nov-2026 | TASK-016 audit corrections: s2.2 row 4, DEC-OPEN-18 and the D60 row (F-01, F-02), deadlines for DEC-OPEN-01/-02/-03 (F-03), F-04..F-08, F-11; DEC-OPEN-29 added. | MOD-02 |
