@@ -807,9 +807,10 @@ Re-check a value with the commands in this file before relying on it; the code a
 | K35 | Package branch | `handover/mod-01-to-mod-02-20261028`, created and merged by MOD-01. Its merge SHA and PR number are not known yet: write "the merge of `handover/mod-01-to-mod-02-20261028`". | package_design | PLANNED |
 
 Update 2-Nov-2026: K04, K08, K09, K15, K24, K25, K27, K29 and K35 changed; their current values are in section 19.6.
-K07 and K19 are corrected in place above. K20 (D84 and D85 were taken on 2-Nov-2026, next free D86), K21 (REQ-PPT-150
+K07 and K19 are corrected in place above. K20 (D84, D85 and D86 were taken on 2-Nov-2026, next free D87), K21 (REQ-PPT-150
 and the REQ-063..095 statuses were updated; the current counts are in the requirements register) and K33 (DEC-OPEN-02 and
-DEC-OPEN-03 are decided; only DEC-OPEN-08 is due about 13-Nov-2026, DEC-OPEN-01 is needed well before it) also moved.
+DEC-OPEN-03 are decided; only DEC-OPEN-08 is due about 13-Nov-2026;
+DEC-OPEN-01 answered 2-Nov-2026 (D86); DEC-OPEN-30 and -31 are the decisions needed early) also moved.
 
 ### A.2 Site-content states (canonical labels S0-S7, from integration.md 1b)
 

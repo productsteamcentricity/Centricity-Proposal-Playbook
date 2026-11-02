@@ -1,14 +1,17 @@
 # Project state
 
 _Last updated: 2-Nov-2026 - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
-PR #30 (`32172f5`) is now on `main` (merged 2-Nov-2026 12:20 UTC), with PR #29 (`f5c2431`) before it;
-`verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
+PR #31 (`c0fb2dd`, docs only; merged 2-Nov-2026 14:41 UTC) is now the latest merge, after PR #30 (`32172f5`,
+12:20 UTC) and PR #29 (`f5c2431`); `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
 unchanged from 28-Oct. ARC-01's first review (GO WITH CONDITIONS) and a security review found no secret
 or client name in the package. 77 audit findings (P2 17, P3 60) are recorded in
 [`update-log/2026-11-02_task-016-validation.md`](update-log/2026-11-02_task-016-validation.md) and the
 register errors corrected (PR #30). The owner decided D84 (the risk-free rate stays 4.5% for now) and D85
-(the textbook Sortino formula). Next is the widened TASK-018 docs PR, which gates every OPS and NB launch;
-TASK-018 is proposed to the owner as sub-chat GOV-01 and TASK-064 (browser acceptance) as EX-01.
+(the textbook Sortino formula), then answered DEC-OPEN-01 (D86: the NAV and risk-ratio inputs come from the
+MF Screener data pack, MOD-02's reading INFERRED; analysis in
+[`update-log/2026-11-02_datapack-feasibility.md`](update-log/2026-11-02_datapack-feasibility.md)).
+The owner started GOV-01 (TASK-018, the widened docs PR, which gates every OPS and NB launch) and EX-01
+(TASK-064, browser acceptance, read-only) on 2-Nov-2026; no claim for GOV-01 is in force yet.
 No `site/` or `tools/` change._
 
 _Previous update: 30-Oct-2026 - the Moderator handover package (MOD-01 -> MOD-02, dated 28-Oct-2026) is
@@ -140,8 +143,8 @@ site of the 4-fund check gives 23 slides, no layout warning, console clean.
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #30 -> `32172f5` (2-Nov-2026), docs only; Actions run 41443940610 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before it: PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
-| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `32172f5` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
+| Latest merge | PR #31 -> `c0fb2dd` (2-Nov-2026 14:41 UTC), docs only; Actions push run 41464361000 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before it: PR #30 -> `32172f5` (2-Nov-2026), docs only; Actions run 41443940610 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before that: PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
+| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `c0fb2dd` (`site/` and `tools/` identical to `32172f5`; SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -236,7 +239,7 @@ every owner message, and checked against the code (record:
   [`project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`](project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md).
 - **Registers:** tasks TASK-001–074, requirements REQ-001–095 and REQ-PPT-01–153, open owner
   decisions DEC-OPEN-01–28 ([`project-control/DECISION_LOG.md`](project-control/DECISION_LOG.md)).
-  These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-077, DEC-OPEN-29.
+  These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-078, DEC-OPEN-29 to DEC-OPEN-33, D86, C46.
 - **Git in this folder:** On 28-Oct: OneDrive is not running and 229 `.git` files are cloud-only, so never
   `git checkout` / `git switch` here (R6; CLAUDE.md "Project control"). On 2-Nov OneDrive is running but the
   folder is not pinned and 228 of 568 are still cloud-only; the rule stays.
@@ -271,19 +274,46 @@ every owner message, and checked against the code (record:
   `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
   states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
   the chat runs; whether a Guardian pre-check applies.
-- **Gate E for PR #30:** the owner confirms the wording of D84 and D85 (the Moderator's summary of the
-  two button answers). GOV-01 (TASK-018) and EX-01 (TASK-064) are proposed to the owner as cards
-  (QUEUED); nothing runs until the owner starts them.
+- **Gate E for PR #30 and for D86 (still pending):** the owner confirms the wording of D84, D85 and D86 (the
+  Moderator's summaries of the owner's answers). Gate E for D86 also asks the owner to confirm the reading
+  (MOD-02's, INFERRED; Q1 in `update-log/2026-11-02_datapack-feasibility.md`): that "get it from the MF
+  dashboard" means the Screener's monthly data pack (JSON and CSV zips; not Excel) shared by the owner each
+  month. The owner started GOV-01 (TASK-018, its own worktree) and EX-01 (TASK-064, read-only, shared checkout,
+  no branch, no commit) on 2-Nov-2026; no GOV-01 claim is in force yet (its contract and the Guardian pre-check
+  come first).
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
-  - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the October risk matrix;
-    Rf C11 and Sortino C35 decided 2-Nov-2026: D84, D85);
+  - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
+    pending and still blocks the October risk matrix;
   - the PMS label (B1);
   - what to do with the client items found in the export, with compliance, and whether to tell the
     outgoing owner (R8).
   - Answered 2-Nov-2026: the risk-free rate stays 4.5% for now (D84; the desk's confirmation, DESK-15, is
-    still asked) and the Sortino formula stays the textbook one (D85). Still open: who builds NAV Data and
-    Fund Risk Ratios (DEC-OPEN-01, needed well before 13-Nov: the producer must be merged before step 10 of
-    the October cycle, otherwise the October risk table keeps '30 Sep 2026').
+    still asked); the Sortino formula stays the textbook one (D85) (the MF dashboard pack cannot honour it:
+    C46, DEC-OPEN-30); and who builds NAV Data and Fund Risk
+    Ratios (DEC-OPEN-01, D86): the owner pointed to the Centricity MF Screener and said the owner will share
+    its files every month. MOD-02's reading (INFERRED): the two workbooks are not rebuilt in-house; from the
+    October cycle the Portfolio Matrix is fed from the Screener's data pack. B8 stays open until one month is
+    verified on that route; TASK-022 is re-scoped.
+- **Follow-on decisions after D86 (opened 2-Nov-2026):** the pack's definitions differ from the live table
+  (C46), so four owner decisions are open: DEC-OPEN-30 (which Sortino form the October matrix uses; needed by
+  about 6-Nov), DEC-OPEN-31 (the other changes; about 9-Nov), DEC-OPEN-32 (written permission to use the
+  Screener's computed ratios in the public page and in client decks, and to describe the pack's contract in this public repository; before the
+  first apply) and
+  DEC-OPEN-33 (whether the PROVISIONAL October pack may be used if the final one is not ready; about
+  11-Nov). TASK-078: the owner asks the dashboard team (the final 15-Oct pack, the permission, the fields
+  the pack lacks). October timeline (INFERRED): the build (TASK-022, risk class HIGH) can start only after
+  the widened TASK-018 merges and must be merged before step 10 of the October cycle (about 13-17 Nov);
+  if it is not merged when step 10 is reached, the cycle runs without step 10 and the risk table keeps
+  '30 Sep 2026'.
+- **Statements still describing the pre-answer state**, to be fixed by TASK-018 and TASK-022 (update-log
+  T5), not in this change: the `CLAUDE.md` headline (B8 sentence), `docs/MONTHLY_UPDATE_PROCESS.md` and the
+  inbox README (rows 12 and 17), the TASK-022 line in
+  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, `docs/INPUT_FILES.md` (rows 12 and 17 and the
+  sections about them), `docs/HANDOVER.md` section 5,
+  `docs/project-control/ARCHITECTURE_AND_DEPENDENCY_MAP.md` (the B8 and risk-route lines),
+  `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` (statements about who builds the workbooks,
+  outside K20 and K33, which this change fixes), `docs/update-log/2026-10-23_handover-export.md` (the second
+  copy of the B8 sentence) and the handover snapshots (corrected through the errata table only).
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
   earlier values (Run 3) so it does not mix the Regular inception with the Direct plan's figures.
@@ -314,12 +344,15 @@ The full, dependency-ordered plan is in
 handover; where this list and the register differ, the register wins.
 
 **First (done 2-Nov-2026):** MOD-02 validated the handover (TASK-016). **Now:** the widened TASK-018 docs PR
-(GOV-01), then the owner decision session (DEC-OPEN-01 first, then -08, -04, -05, -07, -13/-14/-24, -29),
-TASK-064 (EX-01, read-only) in parallel, and TASK-017 (the owner pins the folder).
+(GOV-01), then the owner decision session (DEC-OPEN-30 and -31 first, about 6-Nov and 9-Nov, then -32 and -33,
+then -08, -04, -05, -07, -13/-14/-24, -29), TASK-064 (EX-01, read-only) in parallel, and TASK-017 (the owner
+pins the folder).
 
-0. Owner: decide who builds the NAV Data and Fund Risk Ratios workbooks before the October cycle
-   (B8; Rf C11 and Sortino C35 are decided, 2-Nov-2026: D84, D85). The recommended route is porting the
-   outgoing owner's toolchain to Node in `tools/`, with a Sep-2026 regression test. Also decide the PMS
+0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
+   before the first apply, PROVISIONAL pack about 11-Nov) and send the asks of TASK-078 to the MF dashboard
+   team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
+   TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
+   without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS
    label (B1) and the export's client items (R8). Keep OneDrive running, and this folder on "Always keep
    on this device" (R6).
 1. Owner: decide C20 (13 JioBlackRock Regular records); then release the held G-Sec record and apply

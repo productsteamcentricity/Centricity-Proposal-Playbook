@@ -78,6 +78,7 @@ and 7 of 7 live SHA-256).
 ## 3. Last verified baseline
 
 **`main` = `origin/main` = `32172f5` (PR #30; PR #29 `f5c2431` before it; site content S7) - VERIFIED COMPLETE at parity level (2-Nov-2026).**
+Held at `32172f5` for the S7 content: PR #31 (`c0fb2dd`, 2-Nov-2026) changed documents only (`site/` and `tools/` identical); its release record and the Gate B / Gate D rows of the D86 records change set are added with the next register update.
 Full browser acceptance of S7 is **IMPLEMENTED NOT FULLY VERIFIED** (TASK-064).
 
 | Check | Result | Evidence |

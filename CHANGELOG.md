@@ -67,6 +67,14 @@ security-reviewer ran before the push; details in INTEGRATION_AND_REGRESSION_LOG
 Released as PR #30 (merge `32172f5`, 2-Nov-2026 12:20 UTC); Actions run 41443940610 (verify + publish)
 succeeded and 7 of 7 live files equal `site/`.
 
+Later on 2-Nov-2026 (docs only; no `site/`, `tools/` or `.github/` change): PR #31 (record of the PR #30 release;
+GOV-01 and EX-01 proposed) was released (merge `c0fb2dd`, 2-Nov-2026 14:41 UTC; Actions push run 41464361000,
+verify + publish, succeeded; live files 7 of 7 verified). This change (PR number to be added at release) records
+the owner's answer to DEC-OPEN-01 as D86 (the NAV and risk-ratio inputs of the Portfolio Matrix come from the MF
+Screener data pack; MOD-02's reading of the answer, INFERRED), opens DEC-OPEN-30 to -33 for the definition
+changes, re-scopes TASK-022, adds TASK-078 and KNOWN_ISSUES C46 (A22, B8, C10, C11 and C35 carry notes) and the
+analysis record `docs/update-log/2026-11-02_datapack-feasibility.md`.
+
 ## 2026-10-30 — Moderator handover package MOD-01 → MOD-02 and project-control registers (docs only)
 
 No `site/` or `tools/` change. Branch `handover/mod-01-to-mod-02-20261028`; package dated 28-Oct-2026.
