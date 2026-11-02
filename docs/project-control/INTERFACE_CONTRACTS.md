@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (package writer W-architecture) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (package writer W-architecture); MOD-02 (updates of 2-Nov-2026) |
 | Status | Authoritative for the shared interfaces of the code at `2b2a397` (data blocks, `blocklib`, page APIs, tool CLI, `verify_page`/CI, the PowerPoint design system). Narrative overview: [`docs/ARCHITECTURE.md`](../ARCHITECTURE.md). Dependencies and blast radius: [`ARCHITECTURE_AND_DEPENDENCY_MAP.md`](ARCHITECTURE_AND_DEPENDENCY_MAP.md). |
 | Supersedes | nothing (first version) |
-| Next review | when MOD-02 validates the package (TASK-016); after that, in the same PR as any change to a contract below (section 1, step 7) |
+| Next review | when the widened TASK-018 PR merges; after that, in the same PR as any change to a contract below (section 1, step 7) |
 
 ## 0. How to read this file
 
@@ -63,7 +63,7 @@ repository.
 7. **Record in the same PR:** update the contract text here and add a row to section 10. If a decision in
    [`docs/DECISIONS.md`](../DECISIONS.md) fixes the contract (for example D42 bake = upload, D72 tool
    contract, D80 Monitor sheets, D82 design system), the change needs the owner's approval and a new
-   decision number there (next free: D84).
+   decision number there (next free: D86; Update 2-Nov-2026, D84 and D85 were taken that day).
 8. **If compatibility cannot be established, do not merge.** Record the problem in
    [`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md) and investigate.
 
@@ -132,9 +132,9 @@ PMS/AIF schemes), so "every key in MASTER" is not an invariant for them.
 
 | Block (line) | Shape | Readers | Contract notes |
 |---|---|---|---|
-| live `BENCHMARKS` (~L2960; dead map ~L1238) | `{sub_category: [index names]}` | `benchmarksFor` -> Excel, deck, screen | The IRR sibling sets `"Offshore Funds"` to a description **string**, not an array; all three readers wrap a non-array in an array (~L4093, ~L5193, ~L7923). Tolerated, VERIFIED. The SIF sibling adds `"Hybrid SIF": ["NIFTY 50 - TRI"]` if missing. Effective 61 keys. |
-| `RATIONALE` (~L1290) | `{sub_category: text}` (JS, not JSON) | Excel, deck rationale cards, UI | siblings 4-5 add "Offshore Funds", "Hybrid SIF" |
-| `LIQUIDITY_MAP` (~L1365) | `{product_class: [Open/Close Ended, note]}` (15 keys) | `classifyLiquidity` | IRR sibling adds "Offshore Funds"; SIF sibling "SIF" if missing |
+| live `BENCHMARKS` (~L2960; dead map ~L1238) | `{sub_category: [index names]}` | `benchmarksFor` -> Excel, deck, screen | The IRR sibling sets `"Offshore Funds"` to a description **string**, not an array; all three readers wrap a non-array in an array (~L4093, ~L5193, ~L7923). Tolerated, VERIFIED. The SIF sibling would add `"Hybrid SIF": ["NIFTY 50 - TRI"]` only if missing; today the literal already holds `["CRISIL Hybrid 50+50 Moderate Index"]`, which is what the page uses (Correction 2-Nov-2026: the addition is dormant). Effective 61 keys. |
+| `RATIONALE` (~L1290) | `{sub_category: text}` (JS, not JSON) | Excel, deck rationale cards, UI | sibling 4 adds "Offshore Funds"; sibling 5 would add "Hybrid SIF" only if missing (dormant, Correction 2-Nov-2026: the page literal already has it, ~L1359) |
+| `LIQUIDITY_MAP` (~L1365) | `{product_class: [Open/Close Ended, note]}` (15 keys) | `classifyLiquidity` | IRR sibling adds "Offshore Funds"; SIF sibling "SIF" if missing (dormant, Update 2-Nov-2026: the page literal already has "SIF", ~L1375) |
 | `AMC_PREFIXES` (~L1383) | `[[prefix, AMC]]` (41) | `getAMC` (fallback: first word of the name, C31) | - |
 | `RISK_PROFILES`, `STRATEGY_OPTIONS`, `DEFAULT_STRATEGIES` (~L2932-2942) | JS config; equity bands in percent (`eq_min`, `eq_max`) | `H.computeRiskProfile`, `H.defaultStrategy` | - |
 | `PMS_BENCHMARK_PERF`, `PMS_BM_FOR_SUB` (~L3057, ~L3060) | `{index: {r1m..r5y, si}}`; `{sub_category: [index]}` | `pmsBenchmarkPerfFor` (~L3069) -> screen ~L7934, Excel ~L4099, deck ~L5200 | Values unchanged since 20-May-2026 while the tools refresh `PMS_PERFORMANCE.benchmarks` instead (C41, DEC-OPEN-27). |
@@ -260,7 +260,7 @@ after it. The SIF sibling adds `parseSif` (`window.REFRESH = window.REFRESH || {
 
 | Parser | Signature | Returns | Side effects | Consumers |
 |---|---|---|---|---|
-| `parseMfMonitor` (~L3312) | `async (file, opts?)`; `file` = `{name, arrayBuffer()}`; `opts.asOn` | `{ok:true, updated, newFunds, asOn, skipped:[{sheet,name,reason}], unclassified:{sheet:n}, emptySheets:[sheet], sheetRows:{sheet:n}, monitorNames:[name], message}` or `{ok:false, error}` | non-null merge into MASTER by exact name (a blank cell never clears a value); new funds only from `SHEET_MAP` sheets; refresh-only sheets update existing records only and never override a mapped sheet's row; replaces `MF_BENCHMARK_PERF[sheet]` when benchmark rows are found; sets `DATA_DATES.performance` (picker > file name > in-file date) | UI upload; `bake_month.js:149-171` reads `skipped`, `unclassified`, `emptySheets`, `monitorNames` and FAILS if `unclassified` is absent or non-zero; `parser_refresh_only.test` (18) |
+| `parseMfMonitor` (~L3312) | `async (file, opts?)`; `file` = `{name, arrayBuffer()}`; `opts.asOn` | `{ok:true, updated, newFunds, asOn, skipped:[{sheet,name,reason}], unclassified:{sheet:n}, emptySheets:[sheet], sheetRows:{sheet:n}, monitorNames:[name], message}` or `{ok:false, error}` | non-null merge into MASTER by exact name (a blank cell never clears a value); new funds only from `SHEET_MAP` sheets; refresh-only sheets update existing records only and never override a mapped sheet's row; replaces `MF_BENCHMARK_PERF[sheet]` when benchmark rows are found; sets `DATA_DATES.performance` (picker > file name > in-file date) | UI upload; `bake_month.js:149-171` reads `skipped`, `emptySheets` and `monitorNames`; `bake_month.js:216-222` reads `unclassified` and FAILS if it is absent or non-zero (Correction 2-Nov-2026: line ranges); `parser_refresh_only.test` (18) |
 | `parseMfMonitorDirect` (~L3517) | `async (file, opts?)` | `{ok, message}` or `{ok:false, error}` (also when 0 rows match) | merges into DIRECT_PERF by Regular name; m-cap split taken whole (blank = 0); sets `DATA_DATES.performance` | UI only; tools use `tools/lib/direct_perf.js` (A7) |
 | `parseAnalytics` (~L3629) | `async (file, kind)`, `kind` in equity, hybrid, debt | `{ok, count, asOn, message}` | merges: replaces per scheme, keeps schemes absent this month (they go stale; the bake lists them) | UI card (unreachable, C12); `bake_month`, `merge_analytics`, `fill_variant_analytics`: **do not delete** |
 | `parseBonds` (~L3779) | `async (file)` | `{ok, updated, newBonds, asOn, message}` | pushes new Bonds rows with a hard-coded 0.085-0.095 band | UI only (card unreachable, C12) |
@@ -326,7 +326,7 @@ empty MASTER). `bake_month` runs none.
 | `linkIdcwToGrowth()` | defined ~L1462, run ~L1474: aliases IDCW analytics keys to their `(G)` name when missing | page at load; adds 0 today: every IDCW key's `(G)` name already exists (28 equity and 3 hybrid are identical baked copies; the 3 debt `(G)` entries hold their own data) | as above |
 | UI -> helper globals | `__SELECTED_LOGO`, `__EQ_EXCLUDE`, `__DB_EXCLUDE` set by `App` (~L9131-9133) | `loadLogoData`, scoped aggregator defaults | rename all producers and consumers together |
 | Upload status | rail handlers treat `{ok, message}` / `{ok:false, error}` and then call `onDataChanged`, which slices `window.MASTER` back into React state | every REFRESH parser | a parser must keep the `ok` / `message` / `error` keys |
-| Share link `#p=` | `base64url(JSON {c: corpus, u: unit, r: riskProfile, s: [{n: fund name, p: pct, st?: strategy}]})`; encoder in UI block 1 (~L7306-7320), decoder `loadFromHash` (~L8894); names resolved through `H.resolveFundName` | anyone opening a link | **links already sent must keep decoding**: never rename or drop a key; add keys only as optional |
+| Share link `#p=` | `base64url(JSON {c: corpus, u: unit, r: riskProfile, s: [{n: fund name, p: pct, st?: strategy}]})`; the encoder `buildUrl` (~L7306, `btoa` ~L7318) is dead code inside the unrendered `SharePanel_REMOVED` (~L7298; listed as dead code in `ARCHITECTURE_AND_DEPENDENCY_MAP.md` section 5.5), so the page creates no new links today (Correction 2-Nov-2026); only the decoder `loadFromHash` (~L8894, called ~L9100) is live; names resolved through `H.resolveFundName` | anyone opening a link | **links already sent must keep decoding**: never rename or drop a key; add keys only as optional |
 | Allocation sheet | download: sheet "Allocation", headers `Asset Class, Product Class, Instrument Name, % Total, Amount (Cr.)` plus a TOTAL row; upload: tolerant header match, names via `H.resolveFundName` (~L6604-6660) | owner round-trip | keep the headers readable by the upload |
 | Preview server | `.claude/serve.js`: only `site/`, host 127.0.0.1, port `PORT` or 8080; `.claude/launch.json` config "playbook" | `verify-dashboard` skill, browser checks | never serve the repo root (D66) |
 
@@ -334,14 +334,14 @@ empty MASTER). `bake_month` runs none.
 
 ## 5. Tool CLI contract (D72)
 
-### 5.1 Rules every tool follows (VERIFIED in code and by `tool_inputs.test.js`)
+### 5.1 Rules every tool follows (VERIFIED in code on 28-Oct-2026; `tool_inputs.test.js` guards only part of the Exit 2 rule, see that row)
 
 | Rule | Detail |
 |---|---|
 | Dry run by default | writes only with `--apply`. Exceptions: `verify_page.js` never writes; `build_risk_matrix.py` always writes its fourth argument (a `.js` outside `site/`, else exit 2); `tools/lib/reck_parse.js` run as a command always writes its second argument |
 | Exit 0 | every gate passed (a dry run would write; `--apply` wrote) |
 | Exit 1 | a gate failed, in the dry run too; `--apply` then writes nothing |
-| Exit 2 | usage or input error: unknown flag, stray word, value flag without a value, bad `--as-on`, missing or duplicate input, missing `--html` (or `--sibling` / `--js` / `--dir`); checked before anything is read; prints the `Usage: node tools/...` line. 43 cases in `tools/test/tool_inputs.test.js`; the test also fails when a new top-level tool has no case |
+| Exit 2 | usage or input error: unknown flag, stray word, value flag without a value, bad `--as-on`, missing or duplicate input, missing `--html` (or `--sibling` / `--js` / `--dir`); checked before anything is read; prints the `Usage: node tools/...` line or, for a bad `--as-on` in `bake_month` and `merge_analytics`, a `***` reason only (Correction 2-Nov-2026). 43 cases in `tools/test/tool_inputs.test.js` cover only two of the conditions above: an input path that does not exist (21 cases: source file, folder, or the `--dir` / `--monitor` / `--expense` / `--hybrid` / `--slides` value) and an `--html` (or `--sibling`) page that does not exist (22 cases). Each must exit 2 with a Usage line and no stack trace, and every case otherwise passes valid flags. The test also fails when a new top-level tool has no case. Unknown flag, stray word, value flag without a value, bad `--as-on`, a second input, and a missing `--html` on `merge_pms_performance` / `pin_pms_alias` / `merge_reckoner` have no automated test (KNOWN_ISSUES A32, TASK-076). Hand-probed on 2-Nov-2026: 25 of 25 tools exit 2 on an unknown flag and on a stray word; the 6 `--as-on` tools on a bad label; the 3 tools without `--html` (Correction 2-Nov-2026) |
 | Gate lines | `GATE <name>: PASS` or `GATE <name>: *** FAIL ...`; `CHECK`, `WARN` and count lines never fail a run. Exceptions: `fold_duplicate_names` omits the `GATE` prefix; a few checks only print (e.g. `merge_pms_aif_analytics.js:191-192` prints `*** unresolved` without failing) |
 | Writes | built in memory, written once through `blocklib` (atomic per file; a two-file write is two renames) |
 | Owner-only overrides | `--accept-drops <n>` (`merge_reckoner`), `--allow-coverage-drop` (`merge_direct_equity_returns`), `--allow-shrink` (`rekey_sif_analytics`), `--allow-layout-change` (`merge_aif_performance`) |
@@ -430,7 +430,7 @@ manual dispatch; `permissions: contents: read`; actions pinned to full SHAs; `pe
 |---|---|
 | `verify` / Six-file deploy set is present | `test -s site/<f>` for `index.html` and the five siblings |
 | `verify` / Unit tests | Node 24; `npm ci --no-audit --no-fund`; `node tools/test/run.js` exits 0 |
-| `verify` / Parity gate | `node tools/verify_page.js site` with `pipefail`, then exact-line greps: no `MISSING SIBLING`; `duplicate MASTER names    0`; `file ends </html>         yes`; `script errors (excluding the CDN globals): 0`; the `CENTRICITY_SELECT` line's second field equals the number after `MASTER: ` |
+| `verify` / Parity gate | `node tools/verify_page.js site` with `pipefail`, then greps: no line containing `MISSING SIBLING` (`grep -q`, a substring match) and exact-line matches (`grep -qx`) for `duplicate MASTER names    0`; `file ends </html>         yes`; `script errors (excluding the CDN globals): 0`; then an equality test (awk, sed and a shell test) that the `CENTRICITY_SELECT` line's second field equals the number after `MASTER: ` (Correction 2-Nov-2026) |
 | `publish` | `needs: verify`; only when the event is not a PR and the ref is `refs/heads/main` (a push to `main` or a manual run on `main`); uploads `site/` and deploys to the `github-pages` environment. Merge = publish within minutes; `main` has no branch protection (R9) |
 
 Coupling: the greps match `verify_page.js` labels **including their padding** (four spaces after
@@ -503,16 +503,16 @@ together (VERIFIED).
 | `REFRESH` return shape | `bake_month.js:156-171, 216-222`; UI handlers (`ok` / `message` / `error`) | `parser_refresh_only.test`; the bake FAILS if `unclassified` is missing |
 | Parser code or load-time code in `index.html` | rehearse with `--old-site` (A27); treat as a data change; keep the marker comment used by `parser_refresh_only.test.js` | tests; rehearsal |
 | Sibling order or script tags | keep June -> IRR -> SIF, all after `window.REFRESH = REFRESH` and MASTER; `verify_page`, `pptx_layout.test`, `rekey_sif_analytics`, `fold_index_funds` assume this order; CI six-file list | CI six-file step; `MISSING SIBLING` |
-| Folding a sibling into `index.html` (C1, TASK-045) | every tool that reads or writes that sibling (`rename_schemes`, `fold_duplicate_names`, `rekey_sif_analytics`, `merge_sif_monitor`, `merge_pms_aif_analytics`, `add_reckoner_funds`, `split_sif_add_mld`), the 12 legacy SIF rows, the CI file list, `verify_page`, docs | CI |
+| Folding a sibling into `index.html` (C1, TASK-045) | every tool that reads or writes that sibling (`rename_schemes`, `fold_duplicate_names`, `rekey_sif_analytics`, `merge_sif_monitor`, `merge_pms_aif_analytics`, `add_reckoner_funds`, `split_sif_add_mld`, `fold_index_funds` (report only; Update 2-Nov-2026)), the 12 legacy SIF rows, the CI file list, `verify_page`, docs | CI |
 | `DATA_DATES` key or label style | `blocklib.setDataDate` / `checkAsOn`, the two anchored lines and their regexes (`merge_risk_matrix.js:241`, `merge_sif_monitor.js:125-126`), the 29 page readers, `dataAsOf` | blocklib test; tool gates |
 | `verify_page.js` printed labels | `.github/workflows/pages.yml` greps; `docs/TESTING.md` section 1; `docs/PROJECT_STATE.md` | CI fails |
-| Tool flags or exit behaviour | `tools/test/tool_inputs.test.js` cases; `tools/README.md` section 3; `docs/MONTHLY_UPDATE_PROCESS.md`; the `monthly-update` skill | `tool_inputs.test` (also fails when a tool has no case) |
+| Tool flags or exit behaviour | `tools/test/tool_inputs.test.js` cases; `tools/README.md` section 3; `docs/MONTHLY_UPDATE_PROCESS.md`; the `monthly-update` skill | `tool_inputs.test` catches only a new top-level tool with no case and a regression of the missing-path / bad-`--html` exit 2. Exits for unknown flag, stray word, value-less flag, bad `--as-on` and absent `--html` are unguarded (A32, TASK-076): hand-probe them or add cases (Correction 2-Nov-2026) |
 | `blocklib` write semantics | all 24 writing tools; `blocklib.test.js`; the backup rule | blocklib test |
 | Design-system constants (`DS`, the `TXT` table) | every `buildDeck` slide; `pptx_layout.test.js` frame checks (`DS.X`, `DS.R`, `DS.FOOT`, `DS.STAMP_H`); `check_pptx_bounds.js` `FOOT = 7.08` | layout test; manual render |
 | An `H` single predicate | the predicate only; never re-inline it at a consumer | review only (no automated guard) |
 | `pins.json` names | all four loaders; the `trailing_space` lists | loaders exit 1 on an edge-space mismatch |
 | `EXPORTS` signatures | `App` callers; `pptx_layout.test.js` (`exportPpt`, `exportTabSlide`, `_ds`) | layout test |
-| Share-link payload keys (`c, u, r, s[n, p, st]`) | encoder and `loadFromHash` together, plus decoding of links already sent | none |
+| Share-link payload keys (`c, u, r, s[n, p, st]`) | `loadFromHash` (and `buildUrl` in `SharePanel_REMOVED` if it is ever revived), plus decoding of links already sent (Correction 2-Nov-2026) | none |
 | CDN versions | forbidden without the owner; `xlsx` must equal `package.json` 0.18.5; SRI hashes on the script tags | none |
 | `PMS_BENCHMARK_PERF` source (C41) | whichever source DEC-OPEN-27 picks: `pmsBenchmarkPerfFor` and its three readers, or a tool that writes the static literal; `merge_aif_performance` / `merge_pms_performance` if `.benchmarks` becomes the source | none today |
 
@@ -552,3 +552,4 @@ reconstructed from git (VERIFIED commits) so the successor knows which contracts
 | 21-Oct-2026 | `tools/dev/rehearse.js` CLI | `--old-site <dir>` seeds the old side from another `site/` | PR #23 (code inside merge commit `18abff3`) | NB-02 | `docs/TESTING.md` | A27 |
 | 22-Oct-2026 | `EXPORTS`, deck layout | design system `DS` / `TXT` / `planTable` / `drawTable` / `contentSlide`; `_ds` test hook; `window.__PPTX_LAYOUT`; `*` marker via `H.isExpectedReturn` | PR #26, `625fdd5`, merge `5d39821` | NB-03 | `pptx_layout.test.js`; `check_pptx_bounds.js`; OPERATING_MANUAL | D82, D83 |
 | 28-Oct-2026 | (this file) | Version 1 written; no interface changed | merge of `handover/mod-01-to-mod-02-20261028` | MOD-01 | - | baseline `2b2a397` |
+| 2-Nov-2026 | (this file) | Version 2: description corrections only (tool CLI guard in 5.1 and section 8, share-link encoder, dormant sibling additions, parity-gate greps, `parseMfMonitor` consumer lines, ripple list); no interface or code changed | this PR (branch `docs/mod-02-validation-20261102`) | MOD-02 | - | TASK-016 audit findings interfaces-architecture:D-01 to D-03 and D-09 to D-12 in `docs/update-log/2026-11-02_task-016-validation.md` |

@@ -18,6 +18,52 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-02 - MOD-02 validates the handover package (TASK-016); registers and records brought up to date (docs only)
+
+No `site/`, `tools/`, `.github/` or package-file change. The live files are unchanged (7 of 7 equal `site/`).
+`main` at `f5c2431` (PR #29) was validated on 2-Nov-2026: `verify_page`, `npm test` (903 checks), the live
+files and CI (60 of 60 runs) agree with the 28-Oct-2026 baseline.
+
+### Added
+- `docs/update-log/2026-11-02_task-016-validation.md`: the record of the validation and of the register
+  audit: 77 findings (P2 17 corrected or assigned, P3 60 listed), ARC-01's first review (GO WITH
+  CONDITIONS) and a security review of PR #29 (0 BLOCKER, 5 warnings).
+- `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`: section 19, the refresh of 2-Nov-2026
+  (OneDrive running but the folder not pinned, 228 of 568 `.git` files cloud-only, a fifth worktree,
+  29 PRs, 60 CI runs).
+- `docs/handover/README.md`: section 1.1, errata (ERR-1 to ERR-8) to the 28-Oct-2026 snapshot documents, which stay
+  as written.
+- Owner decisions D84 (the risk-free rate stays 4.5% for now; D58 stays open for the desk's confirmation)
+  and D85 (the textbook Sortino formula); new ids DEC-OPEN-29, TASK-075 to TASK-077, KNOWN_ISSUES A32, E17
+  and R12, INC-18 and INC-19.
+
+### Changed
+- Registers and records brought up to date: CHAT_REGISTRY (MOD-01 retired, MOD-02 and ARC-01 active),
+  ACTIVE_CHANGE_REGISTER (TASK-015 released), TASK_REGISTER (015 and 016 done, 075-077 new, 018 widened),
+  INTEGRATION_AND_REGRESSION_LOG (PR #29 entry, baseline `f5c2431`, 17-check validation record, INC-18,
+  INC-19), REPOSITORY_AND_ENVIRONMENT_STATE (section 19), DECISION_LOG and DECISIONS (D84, D85,
+  DEC-OPEN-29), KNOWN_ISSUES (A32, E17, R12; R1 and R6 updates; P3 fixes), the REQUIREMENTS register
+  (REQ-023, REQ-PPT-150, REQ-063..095 statuses), INTERFACE_CONTRACTS and ARCHITECTURE wording.
+- `docs/PROJECT_STATE.md`: the validation, the ARC-01 conditions and the decisions of 2-Nov-2026.
+- `docs/handover/README.md` (version 3) and `docs/handover/continuations/README.md`: the MOD-01 -> MOD-02
+  successor prompt is a historical snapshot; MOD-02 has been ACTIVE since 2-Nov-2026.
+
+### Fixed
+- Register errors found by the audit (all in documents): the 28-Oct start-up check time (07:12:58-07:13:25
+  UTC, not "about 08:55"); the "about 13-Nov-2026" deadline for DEC-OPEN-01, -02 and -03 (13-Nov is the
+  start of the October cycle; only DEC-OPEN-08 is due then); "No client data is in the repo" (de-identified
+  sample figures remain in the public history, R1); the owner's "old site only after full testing"
+  condition said to be "not in R7"; REQ-023 ("no contrary evidence": three branch deletions on
+  16-Oct-2026); REQ-PPT-150 (now IMPLEMENTED NOT FULLY VERIFIED); the INC-11 count; the
+  `tool_inputs.test.js` coverage claim.
+
+The rule documents that contradict each other (ARC-01 findings guardian-gate-b:D-01 to D-07 and D-14) are not
+changed here: they are the widened TASK-018, which must merge before any `/monthly-update` run, tool `--apply`
+or OPS or NB launch.
+
+Risk class Material (records plus decisions D84 and D85); ARC-01 DIFF REVIEW (GO WITH CONDITIONS) and
+security-reviewer ran before the push; details in INTEGRATION_AND_REGRESSION_LOG section 11.
+
 ## 2026-10-30 — Moderator handover package MOD-01 → MOD-02 and project-control registers (docs only)
 
 No `site/` or `tools/` change. Branch `handover/mod-01-to-mod-02-20261028`; package dated 28-Oct-2026.

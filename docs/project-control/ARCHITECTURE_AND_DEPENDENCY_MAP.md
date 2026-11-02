@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (package writer W-architecture) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (package writer W-architecture); MOD-02 (updates of 2-Nov-2026) |
 | Status | Authoritative for the dependency, ownership and blast-radius view of the code at `2b2a397`. The narrative overview stays in [`docs/ARCHITECTURE.md`](../ARCHITECTURE.md); field-level contracts are in [`INTERFACE_CONTRACTS.md`](INTERFACE_CONTRACTS.md). |
 | Supersedes | nothing (first version) |
-| Next review | when MOD-02 validates the package (TASK-016); after that, in the same PR as any change to the deploy set, a sibling script, a data block's writer, `tools/lib/`, `tools/verify_page.js` or `.github/workflows/pages.yml` |
+| Next review | when the widened TASK-018 PR merges (TASK-016 validated the package on 2-Nov-2026); after that, in the same PR as any change to the deploy set, a sibling script, a data block's writer, `tools/lib/`, `tools/verify_page.js` or `.github/workflows/pages.yml` |
 
 ## 0. Read this first
 
@@ -18,7 +18,10 @@
   [`ACTIVE_CHANGE_REGISTER.md`](ACTIVE_CHANGE_REGISTER.md) and
   [`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md).
 - **Baseline.** `2b2a397` = `origin/main` = PR #28 merge (27-Oct-2026, docs only). `site/` last changed in
-  `5d39821` (PR #26, 22-Oct-2026). Code and git win over documents; section 8 lists the disagreements found.
+  `5d39821` (PR #26, 22-Oct-2026). Update 2-Nov-2026: `origin/main` is now `f5c2431` (PR #29: documents,
+  `CLAUDE.md` and one agent file, nothing under `site/`, `tools/` or `.github/`); `site/` and `tools/` are
+  byte-identical to `2b2a397`, so the code statements below refer to unchanged code.
+  Code and git win over documents; section 8 lists the disagreements found.
 - **Line numbers drift.** Every `Lnnnn` for `site/index.html` is as of `2b2a397`. Each table gives a grep
   anchor: re-derive with `Grep -n -o "<anchor>" site/index.html` before citing. Never Read the file whole
   (12.8 MB, single lines of up to 5.8 MB; CLAUDE.md rule 2).
@@ -31,10 +34,11 @@
   1,205; RISK_MATRIX 1,088; 0 duplicates; 0 script errors); `node tools/test/run.js` 5 of 5 files, 903
   checks, 0 failed; greps of the script tags, block prefixes, predicate definitions, the
   `pmsBenchmarkPerfFor` readers, the three sibling sources, the `blocklib` exports, `verify_page.js:90-96`
-  and `pages.yml`. MOD-01 VERIFIED the app starting in a browser on 28-Oct-2026 (~08:55 UTC; in-browser
-  MASTER 7,682, `window.H` / `REFRESH` / `EXPORTS` present, all three sibling markers set, 0 console
-  errors). **Not run** for this version: building a proposal and exporting in the browser, a PowerPoint
-  COM render (TASK-064 is the full acceptance pass).
+  and `pages.yml`. MOD-01 VERIFIED the app starting in a browser on 28-Oct-2026 07:12:58-07:13:25 UTC (the
+  earlier ~08:55 UTC was wrong; Correction 2-Nov-2026), with in-browser MASTER 7,682, `window.H` / `REFRESH` /
+  `EXPORTS` present, all three sibling markers set and 0 console errors. **Not run** for this version:
+  building a proposal and exporting in the browser, a PowerPoint COM render (TASK-064 is the full acceptance
+  pass).
 
 ---
 
@@ -67,7 +71,7 @@ VERIFIED). This table adds the grep anchor and the dependants.
 | CDN libraries: React and ReactDOM 18.3.1 (unpkg), Chart.js 4.4.0, xlsx 0.18.5, pptxgenjs 3.12.0 (jsDelivr), each with SRI | L1224-1228 | `<script src="https://` | UI, exports; absent in every Node vm (verify_page, tests, bake) |
 | `CENTRICITY_LOGO`, `DIRECT_PERF` (1,689), `LOGO_PRESETS` | L1229-1231 | `^window\.DIRECT_PERF = ` | `H.toDirect`, logo loader, Direct-plan switch |
 | Siblings 1-2 | L1232-1233 | `<script src="Centricity_` | `buildDeck` (EXTRA_SLIDES), `parsePMSHoldings` (PMS_AIF_TERMS) |
-| Config literals: dead `BENCHMARKS` map (L1238), `RATIONALE`, `LIQUIDITY_MAP` (15), `AMC_PREFIXES` (41), `getAMC` | L1234-1433 | `^window\.RATIONALE = ` | UI, exports; siblings 4-5 add keys |
+| Config literals: dead `BENCHMARKS` map (L1238), `RATIONALE`, `LIQUIDITY_MAP` (15), `AMC_PREFIXES` (41), `getAMC` | L1234-1433 | `^window\.RATIONALE = ` | UI, exports; sibling 4 adds keys; sibling 5 only if missing (dormant today) |
 | `MASTER` baseline: 7,672 records on one 2.86 MB line | L1434 | `window\.MASTER = \[` (the line starts with `<script>`) | every section, KPI and export; most tools |
 | `EQUITY_ANALYTICS` (1,203), `HYBRID_ANALYTICS` (264), `DEBT_ANALYTICS` (511), empty `BONDS` / `PMS_HOLDINGS`, `CENTRICITY_SELECT` (178) | L1435-1440 | `window\.EQUITY_ANALYTICS = ` | look-through, overlap, Select popover, `verify_page` |
 | `MF_BENCHMARK_PERF` (47 Monitor sheets) | L1444 | `^window\.MF_BENCHMARK_PERF = ` | `mfBenchmarkPerfFor` (screen, Excel, deck) |
@@ -108,9 +112,11 @@ dependency facts that matter for impact review:
 
 - Local-only, gitignored, never committed: `monthly-updates/` (inputs per data month), `backups/`
   (pre-refresh snapshots of the six files), `handover-archive/` (the outgoing owner's export).
-- Three extra git worktrees are registered on merged commits (two under `.claude/worktrees/`). Their files
-  are older copies of the repo and show up in a Grep of `.claude/`: exclude `.claude/worktrees/` when
-  searching for consumers. State: [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md).
+- Three extra git worktrees (Update 2-Nov-2026: four; the new one is unused; see
+  REPOSITORY_AND_ENVIRONMENT_STATE section 19.3) are registered on merged commits (two under
+  `.claude/worktrees/`; the new one is there too). Their files are older copies of the repo and show up in a
+  Grep of `.claude/`: exclude `.claude/worktrees/` when searching for consumers. State:
+  [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md).
 - The repository lives inside OneDrive (R6, DEC-OPEN-19). Never `git checkout` / `git switch` in the main
   checkout (CLAUDE.md "Project control").
 
@@ -216,7 +222,7 @@ assignment, not from the `__*_APPLIED` markers (section 3.4).
 |---|---|---|
 | Siblings 3-5 load after L1434-L3942 | they mutate MASTER and EQUITY_ANALYTICS, write into the **live** `BENCHMARKS` (re-assigned at L2960) and extend `REFRESH` (replaced at L3942); loaded earlier, those assignments would wipe their entries and `parseSif` | yes (order VERIFIED; consequence INFERRED) |
 | IRR (#4) after June (#3) | `NEW_GIFT` contains the 4 "(Outbound)" offshore rows that #4 removes by base name; run the other way round, #3 would re-add them beside the 4 Offshore records | yes (VERIFIED: the 4 rows are listed) |
-| SIF (#5) after IRR (#4) | documented as avoiding a "fund-name collision" | UNCERTAIN: today 0 IRR keys are SIF names and `OFF_BASE` matches no SIF, so swapping would change nothing (INFERRED). Keep the order. |
+| SIF (#5) after IRR (#4) | documented as avoiding a "fund-name collision" | UNCERTAIN (Correction 2-Nov-2026): no IRR key equals a `var SIF` display name and `OFF_BASE` matches no SIF, but 8 IRR keys equal a SIF workbook name (`sif_raw`) and the SIF sibling removes 14 IRR-keyed rows; running SIF first would most likely give the same final MASTER (INFERRED), though `__IRR_OFFSHORE_APPLIED.irr` would then read 2,051 instead of 2,065 (INFERRED). Keep the order. |
 | Siblings 1-2 in `<head>` | read only at user action (`parsePMSHoldings`, `buildDeck`) | no hard constraint (INFERRED) |
 
 Tools that execute siblings use the same order: `verify_page` and `pptx_layout.test` (all five),
@@ -446,7 +452,7 @@ owned; `docs/KNOWN_ISSUES.md` is authoritative for each entry.
 | 3 | `docs/ARCHITECTURE.md` does not say that the bake captures the `applyPmsPerformance` / `linkIdcwToGrowth` load-time mutations | 35 baseline records carry `_pms_source` (section 5.3; mechanism INFERRED) | E15 |
 | 4 | `docs/OPERATING_MANUAL.md` top sections: siblings at L836/L837/L4189-4191, MASTER L1031, counts 7452 -> 7460, SIF 12 -> 28, June mutates `DATA_DATES` | siblings ~L1232-1233 / ~L5525-5527, MASTER ~L1434, 7,672 -> 7,682, SIF 30, June no longer touches `DATA_DATES` | E1 (manual kept as history; its Errata correct it) |
 | 5 | `docs/OPERATING_MANUAL.md` Traps: "Equity SIF (15)", "Hybrid SIF (13)", "array of 28"; "fixed six-bucket vocabulary" (then lists seven); the sibling's delete filter matches `/SIF$/` | 16 / 14 / 30; 7 credit buckets; the delete filter uses the three exact classes plus a normalised-name match (only `parseSif` and `rekey_sif_analytics.js` use `/SIF$/`; same effect today) | E1 (not separately logged) |
-| 6 | `docs/OPERATING_MANUAL.md`: "#5 must load after #4, otherwise a fund-name collision" | no IRR-owned name is a SIF name today | UNCERTAIN; keep the order (section 3.1) |
+| 6 | `docs/OPERATING_MANUAL.md`: "#5 must load after #4, otherwise a fund-name collision" | 0 IRR keys equal a SIF display name; 8 equal a `sif_raw` workbook name (Correction 2-Nov-2026) | UNCERTAIN; keep the order (section 3.1) |
 | 7 | `docs/PRD.md` 6.1, `tools/README.md` and the `merge_aif_performance.js` header imply PMS benchmark rows are refreshed monthly (`PMS_PERFORMANCE.benchmarks`) | nothing in the page reads `PMS_PERFORMANCE.benchmarks`; screen (~L7934), Excel (~L4099) and deck (~L5200) read the static `PMS_BENCHMARK_PERF` (~L3057) through `pmsBenchmarkPerfFor` (~L3069). Example: NIFTY 50 TRI 1M 0.075 static vs -0.011 in the monthly block | C41 (EXISTING DEFECT, client-facing); DEC-OPEN-27; TASK-065 |
 | 8 | `CLAUDE.md` invariants "top-10 Direct Equity by market cap are Large Cap" and "`DATA_DATES.sif` is not -" | neither is checked by `verify_page.js` (hard failures `:90-96`) or `pages.yml`; only inside `merge_de_universe.js:135-137`, `merge_direct_equity_returns.js:185-188` and `merge_sif_monitor.js` gates. Both hold on 28-Oct-2026 | A31; TASK-042 |
 | 9 | `docs/DEPLOYMENT.md` diagram: verify = "six files present + verify_page parity gate"; live-check loop hashes 6 files | verify also runs `npm ci` + `node tools/test/run.js` (`pages.yml:43-46`); 7 files are published (incl. `robots.txt`) | E14 |
@@ -498,7 +504,7 @@ change) and record the answers in the change-impact contract that the task's PR 
 | `EXPORTS` / the deck | `pptx_layout.test` (in `npm test`); a PowerPoint COM render (`tools/dev/render_pptx.ps1`) + `node tools/dev/check_pptx_bounds.js`; in the browser `window.__PPTX_LAYOUT.warnings` empty after a real export |
 | `window.H` predicates or aggregators | the `verify-dashboard` skill in the browser (analytics, credit, overlap tabs) plus a deck export |
 | `tools/lib/blocklib.js` | `blocklib.test` (in `npm test`); a dry run and `--apply` of one tool on a disposable copy of `site/` |
-| A tool's CLI or exit codes | `tool_inputs.test` (in `npm test`); update `tools/README.md` section 3 |
+| A tool's CLI or exit codes | `tool_inputs.test.js` (in `npm test`; missing-input exits only, and it fails when a new top-level tool has no case; the rest of the CLI contract has no automated test: A32), so hand-probe unknown flag, stray word, value-less flag and bad `--as-on`; update `tools/README.md` section 3 (Correction 2-Nov-2026) |
 | `verify_page.js` output or `pages.yml` | both in the same PR; a PR run of the `verify` job must pass |
 | UI only | the `verify-dashboard` skill (`qa-verifier`), browser console clean |
 
@@ -516,3 +522,4 @@ change) and record the answers in the change-impact contract that the task's PR 
 | Version | Date | Chat | Change | Code baseline |
 |---|---|---|---|---|
 | 1 | 28-Oct-2026 | MOD-01 | First version, built from the 28-Oct-2026 architecture investigation and re-checked by the writer (section 0) | `2b2a397` |
+| 2 | 2-Nov-2026 | MOD-02 | Corrections from the TASK-016 audit (`docs/update-log/2026-11-02_task-016-validation.md`): the `tool_inputs.test` guard described as missing-input exits only (section 9 step 7; A32), the SIF-after-IRR premise (section 3.1 and section 8 row 6), the 28-Oct start-up check time (section 0), the extra worktree count (section 1.4). No dependency, writer, reader or risk changed | `f5c2431` (`site/` and `tools/` identical to `2b2a397`) |

@@ -275,7 +275,7 @@ Newest last. The status column uses the chat statuses; update it when the succes
 
 | Date | From -> To | Scenario | Tasks | Branch | Handover document | Successor prompt | Status |
 |---|---|---|---|---|---|---|---|
-| 28-Oct-2026 | MOD-01 -> MOD-02 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-015 (package), TASK-016 (validation by MOD-02) | `handover/mod-01-to-mod-02-20261028` | [`../MASTER_HANDOVER_2026-10-28_v1.md`](../MASTER_HANDOVER_2026-10-28_v1.md) | [`MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Issued 28-Oct-2026; MOD-01 HANDOVER REQUIRED; MOD-02 QUEUED until the owner starts it |
+| 28-Oct-2026 | MOD-01 -> MOD-02 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-015 (package), TASK-016 (validation by MOD-02) | `handover/mod-01-to-mod-02-20261028` | [`../MASTER_HANDOVER_2026-10-28_v1.md`](../MASTER_HANDOVER_2026-10-28_v1.md) | [`MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 ACTIVE since 2-Nov-2026 |
 
 No sub-chat continuation has been needed so far: NB-01, NB-02 and NB-03 each finished their task and
 are COMPLETED (`docs/project-control/CHAT_REGISTRY.md`).

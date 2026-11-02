@@ -1,12 +1,22 @@
 # Project state
 
-_Last updated: 30-Oct-2026 — the Moderator handover package (MOD-01 → MOD-02, dated 28-Oct-2026) is
+_Last updated: 2-Nov-2026 - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
+PR #29 (`f5c2431`) is on `main`; `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
+unchanged from 28-Oct. ARC-01's first review (GO WITH CONDITIONS) and a security review found no secret
+or client name in the package. 77 audit findings (P2 17, P3 60) are recorded in
+[`update-log/2026-11-02_task-016-validation.md`](update-log/2026-11-02_task-016-validation.md) and the
+register errors corrected (effective when the docs PR from branch `docs/mod-02-validation-20261102`
+merges). The owner decided D84 (the risk-free rate stays 4.5% for now) and D85 (the textbook Sortino
+formula). Next is the widened TASK-018 docs PR, which gates every OPS and NB launch.
+No `site/` or `tools/` change._
+
+_Previous update: 30-Oct-2026 - the Moderator handover package (MOD-01 -> MOD-02, dated 28-Oct-2026) is
 added: `docs/handover/` (master, workstream and Guardian handovers, bootstrap and successor prompts)
 and `docs/project-control/` (chat, task, requirement, decision, change and integration registers), plus
 the `integration-guardian` agent. No `site/` or `tools/` change. The reconstruction found 22 new issues
 (A29–A31, C41–C45, E6–E16, R9–R11), among them C43 (P1: a since-inception value of 297,765% reaches
 the screen, Excel and the deck) and C41 (PMS/AIF benchmark rows use a static list no tool updates).
-Who coordinates: [`project-control/CHAT_REGISTRY.md`](project-control/CHAT_REGISTRY.md).
+Who coordinates: [`project-control/CHAT_REGISTRY.md`](project-control/CHAT_REGISTRY.md)._
 
 _Previous update: 27-Oct-2026 — the outgoing owner's handover export (23-Oct-2026) is ingested: verified,
 extracted, 32 desk files filed into `monthly-updates/` (one held), findings recorded
@@ -52,6 +62,11 @@ plan's date, and one legacy "Mutual Funds" record). Detail: `docs/update-log/202
 Run 2.
 
 ## Latest verification
+
+2-Nov-2026 (MOD-02, `main` `f5c2431`): `verify_page` output identical to the block below, exit 0; `npm test` 5 of
+5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 60 of 60 green; the page starts in
+the built-in browser (MASTER 7,682, three sibling flags, 0 console messages; no proposal built, nothing
+exported: full acceptance TASK-064 still due).
 
 `node tools/verify_page.js site` on 21-Oct-2026 on this change (PR #18, Sep Run 3), as on 19-Oct-2026
 at `main` `1e48781`, `6dc08ef` and `8e187ae`: identical, unchanged from the handover figures, exits 0:
@@ -124,8 +139,8 @@ site of the 4-fund check gives 23 slides, no layout warning, console clean.
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #26 → `5d39821` (22-Oct-2026), the last merge that changed `site/` (PowerPoint design system, D82–D83); Actions run 39806564591 (verify + publish) succeeded. Before it: PR #22 → `fb9cbd6`; PR #18 → `f37fa01` published Sep-2026 Run 3 |
-| Live status | 22-Oct-2026: the six deploy files and `robots.txt` on the live site equal `main` `5d39821` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
+| Latest merge | PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
+| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `f5c2431` (SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -203,14 +218,14 @@ It surfaced:
 The Git repo also hit OneDrive cloud-only placeholders in `.git/objects/pack/` while OneDrive was not
 running: `git checkout` failed with "mmap failed" (R6).
 
-## Moderator handover and project control (28–30-Oct-2026)
+## Moderator handover and project control (28-Oct to 2-Nov-2026)
 
 On the owner's instruction (27/28-Oct-2026), MOD-01, the chat that ran the project from 15-Oct, handed
 over to a new Moderator chat, MOD-02. The package was reconstructed from the code, git, the 28 PRs and
 every owner message, and checked against the code (record:
 [`handover/MASTER_HANDOVER_2026-10-28_v1.md`](handover/MASTER_HANDOVER_2026-10-28_v1.md)).
 - **Checks on 28-Oct-2026:** `verify_page` unchanged (counts in "Latest verification"); `npm test` 5 of
-  5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 58 of 58 runs green; the
+  5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 58 of 58 runs green (60 of 60 on 2-Nov-2026); the
   page starts in a browser with MASTER 7,682, the three sibling flags set and no console errors. No
   proposal was built and nothing was exported in a browser: the full acceptance check last ran on
   21-Oct, before PR #26 (TASK-064).
@@ -220,17 +235,48 @@ every owner message, and checked against the code (record:
   [`project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`](project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md).
 - **Registers:** tasks TASK-001–074, requirements REQ-001–095 and REQ-PPT-01–153, open owner
   decisions DEC-OPEN-01–28 ([`project-control/DECISION_LOG.md`](project-control/DECISION_LOG.md)).
-- **Git in this folder:** OneDrive is not running and 229 `.git` files are cloud-only, so never
-  `git checkout` / `git switch` here (R6; CLAUDE.md "Project control").
+  These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-077, DEC-OPEN-29.
+- **Git in this folder:** On 28-Oct: OneDrive is not running and 229 `.git` files are cloud-only, so never
+  `git checkout` / `git switch` here (R6; CLAUDE.md "Project control"). On 2-Nov OneDrive is running but the
+  folder is not pinned and 228 of 568 are still cloud-only; the rule stays.
+- **2-Nov-2026 (TASK-016):**
+  - Validation: MOD-02 checked the package against the repository. `site/` and `tools/` are unchanged;
+    `verify_page`, `npm test` (903 checks), the 7 live files and CI (60 of 60) agree with 28-Oct; the page
+    starts in a browser (MASTER 7,682, three sibling flags, 0 console messages). 77 findings (P1 0, P2 17,
+    P3 60), all in documents, are recorded in
+    [`update-log/2026-11-02_task-016-validation.md`](update-log/2026-11-02_task-016-validation.md); the
+    register errors are corrected.
+  - ARC-01's review of PR #29: GO WITH CONDITIONS, risk MEDIUM. No `/monthly-update` run, no tool `--apply`
+    and no OPS or NB sub-chat launch before the widened TASK-018 PR merges; until then every launch packet
+    states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
+    the chat runs; whether a Guardian pre-check applies.
+  - Security review of PR #29: 0 BLOCKER, 5 warnings. No secret, client name, person name or e-mail address
+    was added. SEC-01 (P2): the public registers are a finding aid to the unredacted client specification
+    that is still public at the outgoing owner's repository (R1); SEC-02 to SEC-05 are P3.
+  - OneDrive: running since 11:47 IST on 2-Nov, folder not pinned, 228 of 568 `.git` files still
+    cloud-only (`project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` section 19.2); TASK-017 is in progress
+    with the owner.
+  - A fifth worktree (`.claude/worktrees/investment-proposal-dashboard-c68580`) exists and is unused. NB-01,
+    NB-02 and NB-03 are now archived (probably by the owner); their two worktrees are on a detached HEAD (no work lost).
+  - Owner decisions: D84 (the risk-free rate stays 4.5% for now) and D85 (the textbook Sortino formula).
+  - New ids: TASK-075 to TASK-077, DEC-OPEN-29, KNOWN_ISSUES A32, E17 and R12, INC-18 and INC-19.
 
 ## In progress / blockers
 
-- **Owner decisions from the handover export (P1):**
+- **ARC-01 conditions (2-Nov-2026):** the widened TASK-018 PR (rule documents) must merge before any
+  `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
+  states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
+  the chat runs; whether a Guardian pre-check applies.
+- **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8; this blocks the October risk matrix;
-    decide Rf C11 and Sortino C35 first);
+    Rf C11 and Sortino C35 decided 2-Nov-2026: D84, D85);
   - the PMS label (B1);
   - what to do with the client items found in the export, with compliance, and whether to tell the
     outgoing owner (R8).
+  - Answered 2-Nov-2026: the risk-free rate stays 4.5% for now (D84; the desk's confirmation, DESK-15, is
+    still asked) and the Sortino formula stays the textbook one (D85). Still open: who builds NAV Data and
+    Fund Risk Ratios (DEC-OPEN-01, needed well before 13-Nov: the producer must be merged before step 10 of
+    the October cycle, otherwise the October risk table keeps '30 Sep 2026').
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
   earlier values (Run 3) so it does not mix the Regular inception with the Direct plan's figures.
@@ -260,13 +306,15 @@ The full, dependency-ordered plan is in
 [`project-control/TASK_REGISTER.md`](project-control/TASK_REGISTER.md) and section 13 of the master
 handover; where this list and the register differ, the register wins.
 
-**First:** MOD-02 validates the handover against the repository (TASK-016) and takes over as
-Moderator; the owner starts OneDrive and sets this folder to "Always keep on this device" (TASK-017).
+**First (done 2-Nov-2026):** MOD-02 validated the handover (TASK-016). **Now:** the widened TASK-018 docs PR
+(GOV-01), then the owner decision session (DEC-OPEN-01 first, then -08, -04, -05, -07, -13/-14/-24, -29),
+TASK-064 (EX-01, read-only) in parallel, and TASK-017 (the owner pins the folder).
 
 0. Owner: decide who builds the NAV Data and Fund Risk Ratios workbooks before the October cycle
-   (B8; Rf C11, Sortino C35). The recommended route is porting the outgoing owner's toolchain to
-   Node in `tools/`, with a Sep-2026 regression test. Also decide the PMS label (B1) and the export's
-   client items (R8). Keep OneDrive running, and this folder on "Always keep on this device" (R6).
+   (B8; Rf C11 and Sortino C35 are decided, 2-Nov-2026: D84, D85). The recommended route is porting the
+   outgoing owner's toolchain to Node in `tools/`, with a Sep-2026 regression test. Also decide the PMS
+   label (B1) and the export's client items (R8). Keep OneDrive running, and this folder on "Always keep
+   on this device" (R6).
 1. Owner: decide C20 (13 JioBlackRock Regular records); then release the held G-Sec record and apply
    the decision to all 13 in one reviewed change.
 2. Desk: confirm the two Mirae FoFs whose September returns sit far above their underlying ETFs
@@ -279,7 +327,7 @@ Moderator; the owner starts OneDrive and sets this folder to "Always keep on thi
 3b. Desk: confirm the unit of the Centricity Select alpha (`KNOWN_ISSUES.md` C23: the popover may show
    it 100 times too large). (C22, the long unflagged matrix slide, is fixed by PR #26.)
 3c. Owner/desk, after PR #26: how the data should carry expected returns (C28: a per-period basis, or
-   clear periods a fund has no history for; the 12 stale mid-points; the Alchemy 1Y); the Disclaimer
+   clear periods a fund has no history for; the 14 stale mid-points; the Alchemy 1Y); the Disclaimer
    source slide's layout (C34); whether fund pages like the reference deck's (fund narrative, alpha
    avenues, fee slabs) are wanted — the portal does not hold that content for every fund.
 4. September-2026 catch-up, when the "October 2026" Reckoner is released (the last was applied on

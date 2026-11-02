@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (writer W-state) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (writer W-state, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026, TASK-016) |
 | Status | Authoritative - the record of every merge to `main`, the baseline chain, incidents and the current live-site parity |
-| Supersedes | none (first version; integration evidence was spread over `CHANGELOG.md`, `docs/PROJECT_STATE.md`, PR bodies and update logs, which stay as they are) |
-| Next review | at every merge to `main` (Gate D, by the Moderator or `release-manager`); first by MOD-02 in TASK-016 |
+| Supersedes | Version 1 of 28-Oct-2026 (updated in place; it stays in git history). The source documents listed in version 1 (`CHANGELOG.md`, `docs/PROJECT_STATE.md`, PR bodies and update logs) stay as they are. |
+| Next review | at every merge to `main` (Gate D, by the Moderator or `release-manager`) |
 
 Labels: **VERIFIED** (checked with a command or a cited record), **INFERRED** (reasoned from a named source),
 **UNCERTAIN**, **UNKNOWN**. Times are UTC unless marked IST (UTC+5:30). PR numbers are GitHub PRs of
@@ -30,7 +30,7 @@ and [`ACTIVE_CHANGE_REGISTER.md`](ACTIVE_CHANGE_REGISTER.md); regression-risk ca
   files equal `site/`, and whose `verify_page` and `npm test` results are recorded. Any recovery returns to it.
 - A **site-content state** (S0, S1, ...) changes only when the bytes of `site/` change. Docs-only and
   tools-only merges keep the state; they still move the baseline SHA.
-- Incidents keep the `INC-nn` numbers below; a new incident takes the next number (INC-18).
+- Incidents keep the `INC-nn` numbers below; a new incident takes the next number (INC-20; INC-18 and INC-19 were added on 2-Nov-2026).
 - Gate meanings (A implementation report, B Guardian review, C independent verification, D controlled
   integration, E acceptance) are defined in [`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`](FILE_OWNERSHIP_AND_CHANGE_CONTROL.md)
   and summarised in the section 10 template. Before 28-Oct-2026 there was no Guardian (ARC-01) and no
@@ -49,9 +49,9 @@ and [`ACTIVE_CHANGE_REGISTER.md`](ACTIVE_CHANGE_REGISTER.md); regression-risk ca
 | Baseline deploy blobs | all 8 root files identical between `72e1f1e` and `862e40b`: index.html `60106a8e04...`, ExtraSlides `b649397745...`, PMS_AIF_Terms `6636bbed4f...`, June `a918b32f0d...`, IRR `e2272de2a8...`, SIF `d65f9fee8f...`, robots `7d4da722ab...`, legacy Risk_Matrix `fe3826e8e4...` | `git rev-parse <commit>:<file>` |
 | Baseline index.html | SHA-256 `5872958ddacd728b...`, 12,827,311 B = PRD section 2.3 = the old live site today | sha256 of `git show 862e40b:index.html`; old-site download 28-Oct |
 | Transfer baseline | `25e71a3` = PR #1 merge (16-Oct-2026 07:15): files moved to `site/`, `tools/`, `docs/`; `site/` bytes identical to `862e40b`; first publish run 38866042211 (8 live files = `site/`). `bf20c08` = PR #2 merge (post-transfer record). | `docs/REPLICATION_REPORT.md` section 7; CHANGELOG 16-Oct entry |
-| Current `main` | `2b2a397` = `origin/main` = PR #28 merge (27-Oct-2026 12:27, docs only) | `git rev-parse HEAD origin/main` (28-Oct) |
+| Current `main` | `f5c2431` = `origin/main` = PR #29 merge (30-Oct-2026 07:46:59Z, docs and one agent definition only) (28-Oct-2026: `2b2a397` = PR #28 merge) | `git rev-parse HEAD origin/main` (2-Nov-2026) |
 
-### 2.2 Site-content states on `main` (VERIFIED with `git rev-parse <merge>:site/<file>` across all 28 first-parent merges)
+### 2.2 Site-content states on `main` (VERIFIED with `git rev-parse <merge>:site/<file>` across all 28 first-parent merges on 28-Oct-2026; #29 added 2-Nov-2026)
 
 Every merge not listed as changing a state left `site/` byte-identical.
 
@@ -64,47 +64,52 @@ Every merge not listed as changing a state left `site/` byte-identical.
 | S4 | `f37fa01` (#18) ... `0cb7e95` (#20) | Data: Sep-2026 Run 3 - 214 MASTER records to 30-Sep figures; JioBlackRock G-Sec record held (C20) | `0f36545677` / `a7a874960f19696c` | unchanged | hash equals update log Run 3; financial-data review 3,758 field checks, 0 mismatches; backup `backups/2026-10-19_pre-c19-rebake/`; owner approval 21-Oct-2026 05:51 |
 | S5 | `75538de` (#21) | Page code: Portfolio Matrix slide shrinks when a fund is flagged (C17) | `dc34440da9` / `683af0d40556f933` | unchanged | PowerPoint COM measurement (25 funds: 7.87" -> 6.64"); unflagged `slide1.xml` identical to main |
 | S6 | `fb9cbd6` (#22) ... `83f777c` (#25) | Page code: Select popover dagger and note (C18) | `620153b807` / `51d2428091bdc9ad` | unchanged | browser check (real and simulated flag); **live acceptance 21-Oct-2026 on `1523bbc` / `882160c`: all 7 areas PASS** (`docs/PROJECT_STATE.md:92-97` at `2b2a397`) |
-| S7 (current) | `5d39821` (#26) -> `5bcce88` (#27) -> `2b2a397` (#28) | Page code: PowerPoint design system (D82) and `*` expected-return marker (D83) | `39337935b7` / `916f2455eebaf236` | unchanged | `pptx_layout.test.js` about 800 checks; real exports (3/4/8/15/30/45 instruments) rendered in PowerPoint and bounds-checked; owner go-ahead 22-Oct 15:36:58; after merge: run 39806564591, live 7/7 = `site/`, live 4-fund export 23 slides, no layout warning |
+| S7 (current) | `5d39821` (#26) -> `5bcce88` (#27) -> `2b2a397` (#28) -> `f5c2431` (#29) | Page code: PowerPoint design system (D82) and `*` expected-return marker (D83) | `39337935b7` / `916f2455eebaf236` | unchanged | `pptx_layout.test.js` about 800 checks; real exports (3/4/8/15/30/45 instruments) rendered in PowerPoint and bounds-checked; owner go-ahead 22-Oct 15:36:58; after merge: run 39806564591, live 7/7 = `site/`, live 4-fund export 23 slides, no layout warning |
 
 Since the baseline only `index.html` and `Centricity_SIF_Refresh.js` changed. `Centricity_ExtraSlides.js`,
 `Centricity_PMS_AIF_Terms.js`, `Centricity_June_Refresh.js`, `Centricity_IRR_Offshore.js` and `robots.txt`
 are still the baseline blobs (VERIFIED). `git diff --stat 862e40b 2b2a397 -- site/` shows only additions
 because the files moved directory. The next state that changes `site/` becomes **S8**.
+Update 2-Nov-2026: `site/` is byte-identical from `5d39821` through `f5c2431` (VERIFIED 2-Nov-2026: tree objects
+and 7 of 7 live SHA-256).
 
 ---
 
 ## 3. Last verified baseline
 
-**`main` = `origin/main` = `2b2a397` (site content S7) - VERIFIED COMPLETE at parity level.**
+**`main` = `origin/main` = `f5c2431` (site content S7) - VERIFIED COMPLETE at parity level (2-Nov-2026).**
 Full browser acceptance of S7 is **IMPLEMENTED NOT FULLY VERIFIED** (TASK-064).
 
 | Check | Result | Evidence |
 |---|---|---|
-| CI on the commit | push run 40503943213: `verify` success 12:28:08Z, `publish` success 12:29:03Z; deployment 7358413557 to `github-pages` for `2b2a397` | `gh run view`, `gh api .../deployments` |
-| Live = working tree = HEAD | 7 of 7 published files identical by SHA-256 (section 7) | download of 28-Oct-2026 ~05:52 |
-| `node tools/verify_page.js site` | exit 0; MASTER 7682; Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; 0 duplicates; ends `</html>`; 0 script errors. Full output in [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md) section 13 | run 28-Oct-2026 by the fact-sheet investigators and again by this writer at ~07:53 (identical) |
-| `npm test` | exit 0; 5 of 5 files, 903 checks, 0 failures (blocklib 34, dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43) | run 28-Oct-2026 (`node tools/test/run.js`) |
-| App startup in a browser | VERIFIED 28-Oct-2026 at `2b2a397` (`preview_start playbook`): React root rendered, in-browser MASTER 7,682, `window.H`/`REFRESH`/`EXPORTS` present, all three sibling flags set, 0 console errors | MOD-01 startup check (see REPOSITORY_AND_ENVIRONMENT_STATE section 13.4) |
-| Full browser acceptance (TESTING.md section 3, all areas, Excel opened in Office) | **not run on S7.** Last full pass: S6, 21-Oct-2026 (7 areas PASS). After PR #26 only the live 4-fund deck export was checked (22-Oct: 23 slides, no layout warning) | `docs/PROJECT_STATE.md:92-109` at `2b2a397`; TASK-064 |
-| Repo health | `git status` clean before the package; `git fsck --connectivity-only` passes; historical and stash blob reads partly fail with `mmap failed` (R6, not a code defect) | REPOSITORY_AND_ENVIRONMENT_STATE section 14 |
+| CI on the commit | push run 41022201456: `verify` success 07:47:18Z, `publish` success 07:48:12Z; deployment 7433347919 to `github-pages` for `f5c2431`; PR run 41022108264: `verify` success 07:46:26Z, `publish` skipped | `gh run view`, `gh api .../deployments` (2-Nov-2026) |
+| Live = working tree = HEAD | 7 of 7 published files identical by SHA-256 (section 7.2) | MOD-02 download of 2-Nov-2026 about 07:47Z; the integration auditor again about 08:05Z |
+| `node tools/verify_page.js site` | exit 0; output identical to the 28-Oct run: MASTER 7682; Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; 0 duplicates; ends `</html>`; 0 script errors. Full output of the 28-Oct run in [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md) section 13 | run by MOD-02 on 2-Nov-2026 |
+| `npm test` | exit 0; 5 of 5 files, 903 checks, 0 failures (blocklib 34, dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43) | run by MOD-02 on 2-Nov-2026 (same counts on 28-Oct-2026, `node tools/test/run.js`) |
+| App startup in a browser | VERIFIED 2-Nov-2026 at `f5c2431` (MOD-02, `preview_start playbook`, built-in browser): MASTER 7,682, `window.H`/`REFRESH`/`EXPORTS` present, all three sibling flags set, 0 console messages (also after a reload with the console reader attached). No proposal was built and nothing was exported | MOD-02 start-up check (section 11, TASK-016 table row 14); the 28-Oct-2026 check at `2b2a397`: REPOSITORY_AND_ENVIRONMENT_STATE section 13.4 |
+| Full browser acceptance (TESTING.md section 3, all areas, Excel opened in Office) | **not run on S7** (TASK-064 still due on 2-Nov-2026). Last full pass: S6, 21-Oct-2026 (7 areas PASS). After PR #26 only the live 4-fund deck export was checked (22-Oct: 23 slides, no layout warning) | `docs/PROJECT_STATE.md:92-109` at `2b2a397`; TASK-064 |
+| Repo health | `git status` clean; `git fsck --connectivity-only --no-dangling` exit 0; stash patch readable (1,408,451 bytes); historical blob reads still fail with `mmap failed` on some blobs (5 of 11 in the audit; R6, not a code defect) | MOD-02 and the TASK-016 audit, 2-Nov-2026; REPOSITORY_AND_ENVIRONMENT_STATE section 14 |
 
 Recovery points if a later merge breaks the site:
 
 | Kind of change | Return to | How |
 |---|---|---|
-| Page code, tools or docs | `2b2a397` (S7) | revert the bad merge in a new PR (section 9) |
+| Page code, tools or docs | `f5c2431` (S7) | revert the bad merge in a new PR (section 9) |
 | Monthly data refresh | the pre-refresh backup that the refresh itself must create in `backups/<date>_<tag>/` (CLAUDE.md rule 3) | restore the six deploy files on a branch, PR, merge (section 9) |
 | Existing backups | `backups/2026-10-19_pre-sep-corrections/` = S1 deploy files (before PR #13; index.html `c572f90c964c274a`, SIF `1ea7fa77a0381f51`); `backups/2026-10-19_pre-c19-rebake/` = S3 (before PR #18; index.html `ef6984fdaf03db05`, SIF `a2a515535462dc6e`). Both are older than S7: restoring them would undo later page code. Use them only for their data blocks. | VERIFIED: SHA-256 of the backup files, 28-Oct-2026, against section 2.2 |
 
 Last baseline with a **full** documented browser acceptance pass: **S6** (`1523bbc` / `882160c`, 21-Oct-2026).
 
+Previous baseline (28-Oct-2026): `2b2a397` (S7).
+
 ---
 
-## 4. Per-PR integration table (#1-#28)
+## 4. Per-PR integration table (#1-#29)
 
-All 28 PRs are MERGED (VERIFIED, `gh pr list --state all`). Every PR's own `verify` check was SUCCESS and its
-`publish` job SKIPPED by design (publish runs only on `main`); every one of the 28 post-merge push runs on
-`main` had `verify` = success and `publish` = success (VERIFIED job by job with `gh run view`). All merges
+All 29 PRs are MERGED (VERIFIED, `gh pr list --state all`, recounted 2-Nov-2026). Every PR's own `verify`
+check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 29
+post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
+`gh run view`; recounted from all 120 jobs on 2-Nov-2026). All merges
 went through the `productsteamcentricity` account (the gh login the Claude sessions use); no PR reviews are
 recorded on GitHub. Chat attribution: [`CHAT_REGISTRY.md`](CHAT_REGISTRY.md) (VERIFIED from transcripts).
 
@@ -132,7 +137,7 @@ written down at the time.
 | #15 | 19-Oct 07:44 | `1e48781` / 39217928070 | fix/tools-cli-cleanup | NB | MOD-01 | Strict CLI in six MF-chain tools; no-break-space escapes; unused `fs` dropped | tools 9; +32/-3 | SUCCESS 07:44:16Z | not recorded | part A25, F2; D72 |
 | #16 | 19-Oct 08:35 | `6dc08ef` / 39223845546 | docs/post-handover-fixes | GOV (+EX) | MOD-01 | Docs aligned with #3-#15 (about 300 claims checked, 60 corrections); outgoing-owner data-export prompt | docs 14 incl. new `docs/handover/DATA_EXTRACTION_PROMPT.md`, `docs/handover/README.md`; tools/README; skill; CHANGELOG; CLAUDE.md; +1586/-461 | SUCCESS 08:34:23Z | n/a (docs) | D72-D79 recorded; O: C16, C17, C18, C19 (P1); fixed INC-03 (docs), INC-04, INC-05 |
 | #17 | 19-Oct 10:59 | `8e187ae` / 39241367691 | fix/c19-refresh-only-sheets | NB | MOD-01 | Page parser refreshes the four unmapped Monitor sheets; an unknown sheet fails the bake (C19 code) | site: index.html (parser); tools bake_month, rename_schemes (comment), README; test/parser_refresh_only.test.js (new); docs 9; skill; CHANGELOG; CLAUDE.md; +616/-126 | SUCCESS 10:59:09Z | not recorded; byte control on scratch copies (old chain = live) | **S3.** C19 code; D80; O: C20, C21, A27; C15 widened; C16 rewritten (INC-07); C19 restated 225 -> 215 (INC-06) |
-| #18 | 21-Oct 05:57 | `f37fa01` / 39552476334 | data/2026-09-c19-refresh | OPS | MOD-01 | Sep-2026 Run 3: 214 stale funds to 30-Sep figures; G-Sec record held | site: index.html (MASTER data); docs 4; CHANGELOG; CLAUDE.md; +183/-70 | SUCCESS 05:56:28Z (two PR runs: `d362384` 19-Oct, `7fc9571` 21-Oct) | not recorded at merge; covered by the 21-Oct live acceptance (#25) | **S4.** C19 data (fixed, INC-02); D81; C20 stays open; held for the owner 19 -> 21-Oct (D61 auto-publish not applied to a correction); owner approval 21-Oct 05:51; PR body still opens "Draft" (INC-03 note) |
+| #18 | 21-Oct 05:57 | `f37fa01` / 39552476334 | data/2026-09-c19-refresh | OPS | MOD-01 | Sep-2026 Run 3: 214 stale funds to 30-Sep figures; G-Sec record held | site: index.html (MASTER data); docs 4; CHANGELOG; CLAUDE.md; +183/-70 | SUCCESS 05:56:28Z (two PR runs: `d362384` 19-Oct, `7fc9571` 21-Oct) | 7 of 7 = `main` by SHA-256, posted as a comment on PR #18 on 21-Oct-2026 05:58Z (95 s after the merge; index.html `a7a874960f19696c`); also covered by the 21-Oct live acceptance (#25). Correction 2-Nov-2026 | **S4.** C19 data (fixed, INC-02); D81; C20 stays open; held for the owner 19 -> 21-Oct (D61 auto-publish not applied to a correction); owner approval 21-Oct 05:51; PR body still opens "Draft" (INC-03 note) |
 | #19 | 21-Oct 06:06 | `699978b` / 39553400442 | fix/missing-input-exit-2 | NB | NB-02 | Missing source or bad `--html` exits 2 in every tool | tools 19 (18 tools incl. verify_page, README); test/tool_inputs.test.js (new); docs 7; CHANGELOG; +172/-29 | SUCCESS 06:06:05Z | not recorded per PR | D72 exception closed (INC-11); branch head `aa83993` is a sync merge |
 | #20 | 21-Oct 06:15 | `0cb7e95` / 39554347346 | fix/atomic-rename-retry | NB | NB-02 | `writeFileAtomic` retries EPERM/EBUSY/EACCES renames (6.3 s), always removes the temp file | lib/blocklib.js; test/blocklib.test.js; tools/README; docs 5; CHANGELOG; +126/-18 | SUCCESS 06:14:27Z | not recorded per PR | R6 mitigated, still open (INC-01 fix); A8; D72 |
 | #21 | 21-Oct 06:24 | `75538de` / 39555213348 | fix/c17-matrix-footnote | NB | NB-02 | Long Portfolio Matrix slide shrinks above the dagger footnote when a fund is flagged | site: index.html (deck code); docs 2; CHANGELOG; +70/-8 | SUCCESS 06:23:26Z | not recorded per PR; COM measurement 25 funds 7.87" -> 6.64" | **S5.** C: C17; O: C22 (INC-08) |
@@ -143,23 +148,24 @@ written down at the time.
 | #26 | 22-Oct 15:37 | `5d39821` / 39806564591 | feat/pptx-design-system | NB | NB-03 | PowerPoint design system: measured layout, continuation slides, page numbers, `*` on expected returns | site: index.html (export section + `H.isExpectedReturn`); tools/README; test/pptx_layout.test.js (new); dev/render_pptx.ps1, dev/check_pptx_bounds.js (new); docs 8 incl. new `docs/proposal-output-format-audit.md`; CHANGELOG; CLAUDE.md rule 10; +1639/-540 | SUCCESS 15:36:12Z | 7/7 = `site/` after run 39806564591; live 4-fund export 23 slides, no layout warning (recorded by #27) | **S7.** D82, D83; C: C22; O: C28-C34. Owner go-ahead 22-Oct 15:36:58, after the montage and sample deck were sent (15:36:08 / 15:36:10) |
 | #27 | 22-Oct 15:41 | `5bcce88` / 39807185096 | docs/release-pr26 | GOV | NB-03 | Record the #26 release | docs 2 (DECISIONS, PROJECT_STATE); CHANGELOG; +16/-18 | SUCCESS 15:40:40Z | records #26 | D82/D83 marked owner-approved |
 | #28 | 27-Oct 12:27 | `2b2a397` / 40503943213 | docs/handover-export-ingestion (origin only) | EX (+GOV) | MOD-01 | Ingest the outgoing owner's 23-Oct export: verified, 32 desk files filed locally, findings logged; no `site/` or `tools/` change | docs 6 incl. new `docs/update-log/2026-10-23_handover-export.md`; CHANGELOG; CLAUDE.md; +742/-132 | SUCCESS 12:27:27Z | not recorded at merge; 28-Oct parity check 7/7 (section 7) | O: B8 (P1), B9, C35-C40, A28, R8 (P1); C: B3; corrected B1, B2, B7, C5, C6, C11, C19, C20, C23, C24, C28, R1, R6 (INC-14, INC-15) |
-| PENDING | - | - | `handover/mod-01-to-mod-02-20261028` | GOV | MOD-01 | **PENDING - not merged when this log was written.** The MOD-01 -> MOD-02 handover package (docs, `.claude/agents/integration-guardian.md`; no `site/` or `tools/` change). MOD-02 replaces this line in TASK-016 with the real PR number, merge SHA, push run, CI result and live check, and adds a section 11 entry (MOD-01 makes no repository change after the merge, [`CHAT_REGISTRY.md`](CHAT_REGISTRY.md)). | - | - | - | TASK-015 |
+| #29 | 30-Oct-2026 07:46 | `f5c2431` / 41022201456 | handover/mod-01-to-mod-02-20261028 | GOV | MOD-01 | MOD-01 -> MOD-02 Moderator handover package, project-control registers, integration-guardian agent definition; no `site/` or `tools/` change | docs 25 (docs/handover 10 = 9 new + README; docs/project-control 12 new; KNOWN_ISSUES, PROJECT_STATE, docs/README); `.claude/agents/integration-guardian.md` (new); CHANGELOG; CLAUDE.md; 28 files, +9675/-42; none under site/, tools/, .github/, package.json, package-lock.json | SUCCESS 07:46:26Z | not recorded at merge; 7 of 7 = `site/` on 2-Nov-2026 (MOD-02 about 07:47Z; auditor about 08:05Z) | TASK-015, TASK-016; KNOWN_ISSUES +22 entries (A29-A31, C41-C45, E6-E16, R9-R11); site stays S7; no Gate A/B/security-reviewer record before the 58 s merge (INC-19) |
 
 ### 4.1 Totals (VERIFIED)
 
-- 28 PRs, 16-Oct to 27-Oct-2026; 0 open PRs and 0 open issues on 28-Oct.
-- `main` has 143 commits; 69 since `862e40b` = 38 non-merge commits + 28 PR merges + 3 other merges
+- 29 PRs, 16-Oct to 30-Oct-2026; 0 open PRs and 0 open issues on 2-Nov-2026 (28-Oct-2026: 28 PRs, none open).
+- `main` has 145 commits; 71 since `862e40b` = 39 non-merge commits + 29 PR merges + 3 other merges
   (`18abff3` = PR #23's A27 implementation committed as a merge commit; `75256ea` = sync inside #22;
   `aa83993` = sync inside #19). **0 revert commits** (`git log -i --grep=revert 862e40b..main` empty).
 - PRs that changed `site/`: #1 (move only), #12, #13, #17, #18, #21, #22, #26. Data-changing PRs: #13 and #18 only.
 - PRs that waited for an explicit owner approval: #18 (held about 43 h; D81) and #26 (D82, D83). All others
-  merged on green CI, typically 1-4 minutes after opening.
+  merged on green CI, typically 1-4 minutes after opening (#29: 58 seconds).
 - Owner acceptance (Gate E) of the new build as a whole has **not** been given: the owner's condition for
   retiring the old site is "after full testing of the new build", and the criteria are undecided (DEC-OPEN-24).
 
 ### 4.2 Integration topology (VERIFIED, merge-tree comparison of each PR head with `main`)
 
-- 25 of 28 PR heads were up to date with `main` when merged (merge tree = head tree).
+- 26 of 29 PR heads were up to date with `main` when merged (merge tree = head tree; #29's head is a direct
+  child of `2b2a397`).
 - **#4, #9 and #11 merged with heads one merge behind `main`** (missing #3, #8 and #10). Their file sets were
   disjoint from the missing merges, so there was no textual conflict; the combined trees were verified only by
   the post-merge push runs, which passed (38907668110, 39211909034, 39212734282). #8/#9 and #10/#11 merged
@@ -172,10 +178,12 @@ written down at the time.
 
 ## 5. Pending integrations
 
-| Item | State on 28-Oct-2026 | Who records it |
+| Item | State on 2-Nov-2026 | Who records it |
 |---|---|---|
-| Merge of `handover/mod-01-to-mod-02-20261028` (the package) | PLANNED: branch created and merged by MOD-01 after the `verify` check; no SHA or PR number exists yet | MOD-02 in TASK-016 (MOD-01 makes no repository change after the merge) |
-| Any other branch, PR or task | none: 0 open PRs, every branch merged, no coding chat active | - |
+| Merge of `handover/mod-01-to-mod-02-20261028` (the package) | DONE: PR #29, merge `f5c2431` (30-Oct-2026 07:46:59Z); recorded in section 4 and section 11 by MOD-02 (TASK-016) | MOD-02 in TASK-016 |
+| `docs/mod-02-validation-20261102` (TASK-016 registers and records) | IN PROGRESS: docs-only PR from MOD-02 (branch created with `git branch` from `origin/main` and committed through a temporary index; verify, then merge) | MOD-02 after the merge (section 4 row and section 11 entry) |
+| TASK-018 (widened): rule-document consistency PR | PLANNED: GOV-01 in its own worktree; Material: contract + ARC-01 DIFF REVIEW + security-reviewer; gates every OPS and NB launch (section 11, TASK-016 record, ARC-01 conditions) | the Moderator after the merge (section 4 row and section 11 entry) |
+| Any other branch, PR or task | none: 0 open PRs | - |
 
 ---
 
@@ -183,8 +191,8 @@ written down at the time.
 
 ### 6.1 Incident list
 
-Summary: **no production regression caused by a new-build PR has been found** (0 reverts; 58 of 58 CI runs
-green; every recorded live check after a `site/` change matched). What was found after merge: inherited
+Summary: **no production regression caused by a new-build PR has been found** (0 reverts; 60 of 60 CI runs
+green (2-Nov-2026); every recorded live check after a `site/` change matched). What was found after merge: inherited
 defects discovered later, documentation and PR-text claims that were wrong, a harness blind spot, and
 OneDrive/git environment incidents.
 
@@ -200,15 +208,17 @@ OneDrive/git environment incidents.
 | INC-08 | 19-21-Oct | Known limit at #12: dagger footnote overlaps a Portfolio Matrix slide with about 22+ funds (C17). #21's fix then logged C22 (unflagged long matrix overflows; same at baseline) | #12 limitation; C22 inherited | Cosmetic, client deck | C17 fixed in #21; C22 fixed in #26 (D82) | Render layout changes in PowerPoint and measure them | VERIFIED COMPLETE |
 | INC-09 | 21-Oct | #21 placed the C22 summary row out of order | Doc slip | None | Fixed in #22 | - | VERIFIED COMPLETE |
 | INC-10 | 19-21-Oct | **A27:** `rehearse.js` seeded both sides from the new `site/`, so page-code changes always showed IDENTICAL; rehearsal could not discriminate #12 or #17 (C19 was checked by hand) | Harness blind spot (inherited design) | None found | #23 `--old-site`; retro-check on C19: data DIFFER, MASTER only, 223 records (215 + 8 renames) as expected | Rehearse page-code changes with `rehearse.js --old-site <old site/>` | VERIFIED COMPLETE |
-| INC-11 | 16-21-Oct | D72 contract had an exception: 23 of 43 missing-path cases crashed with ENOENT (exit 1) | Inherited, plus #7-#11 scope | Exit codes could mislead under D61 auto-publish | #19: 43 of 43 exit 2 (`tools/test/tool_inputs.test.js`) | A contract needs a test that enumerates every tool | VERIFIED COMPLETE |
+| INC-11 | 16-21-Oct | Correction 2-Nov-2026 (integration-ci-live:D1): D72 contract had an exception: run against `main` before #19 (`f37fa01`), the 43 cases of `tools/test/tool_inputs.test.js` gave 18 exits with code 1 instead of 2 (14 of them ENOENT stack traces); the other 25 already exited 2 (16 with the usage line). PR #19's body and `CHANGELOG.md:231` (at `f5c2431`) give 23 of 43 as passing on `main`; that figure was not reproduced. | Inherited, plus #7-#11 scope | Exit codes could mislead under D61 auto-publish | #19: 43 of 43 exit 2 (`tools/test/tool_inputs.test.js`) | A contract needs a test that enumerates every tool | VERIFIED COMPLETE |
 | INC-12 | 19-Oct | #7 added a temporary 1-day inception allowance to `rename_schemes.js` for the A6 transition | Planned transition code | None | Removed in #14 after #13 corrected the dates (2,070 of 2,072 exact) | Remove transition code in a planned follow-up PR | VERIFIED COMPLETE (planned rollback) |
 | INC-13 | 21-Oct (live acceptance) | C24-C27 surfaced. C24 as corrected on 28-Oct: three screen paths (Section 1 tile, Section 5 Future Value, Section 6.1 Live Output) count no-band instruments as 0%, while Section 4 and the deck GRAND TOTAL exclude them | Inherited ("same code at `handover-baseline`") | Existing behaviour | Logged in #25; decision DEC-OPEN-15, task TASK-026 | Acceptance checks find inherited defects; log them, do not fix silently | EXISTING DEFECT |
 | INC-14 | 24-25-Oct (export ingestion) | **B1:** PMS performance labelled "31st August 2026" is 31-Jul data; docs before #28 overstated it as 31-Aug | Inherited mislabel | Client-facing label one month ahead of the data | Recorded in #28; DEC-OPEN-04, TASK-025 | Verify "as on" labels against file contents | EXISTING DEFECT |
 | INC-15 | 24-Oct | **R8 (P1):** two client items inside the outgoing owner's export | Outgoing owner's export | None published; kept in git-ignored `handover-archive/` | Owner + compliance decide (DEC-OPEN-05, TASK-032); never push `upstream/*` or `--mirror` | Treat every received archive as possibly holding client data | BLOCKED (owner + compliance) |
-| INC-16 | 25-Oct-2026 | `git checkout` back to `main` aborted with "fatal: mmap failed: Invalid argument" and left tracked files truncated (CLAUDE.md 0 bytes) or deleted. Cause: `.git` pack files were OneDrive cloud-only placeholders while OneDrive.exe was not running. Context: NB-03 had worked in the shared main checkout and left it on `feat/pptx-design-system` | Environment (R6) plus process (a coding chat in the shared checkout) | None: files restored from git blobs; everything was already on `origin` (`docs/KNOWN_ISSUES.md` R6) | Branch switch done without `checkout` (`git cat-file` + `update-ref` + `symbolic-ref`); rule since: sessions sharing the folder leave it on `main`, coding sub-chats use their own worktree | Never `checkout`/`switch` in the OneDrive main checkout (procedures: REPOSITORY_AND_ENVIRONMENT_STATE section 14) | **Still present 28-Oct** (mmap errors on historical and stash blobs; 229 `.git` files cloud-only). EXISTING DEFECT (R6; TASK-017, DEC-OPEN-19) |
+| INC-16 | 25-Oct-2026 | `git checkout` back to `main` aborted with "fatal: mmap failed: Invalid argument" and left tracked files truncated (CLAUDE.md 0 bytes) or deleted. Cause: `.git` pack files were OneDrive cloud-only placeholders while OneDrive.exe was not running. Context: NB-03 had worked in the shared main checkout and left it on `feat/pptx-design-system` | Environment (R6) plus process (a coding chat in the shared checkout) | None: files restored from git blobs; everything was already on `origin` (`docs/KNOWN_ISSUES.md` R6) | Branch switch done without `checkout` (`git cat-file` + `update-ref` + `symbolic-ref`); rule since: sessions sharing the folder leave it on `main`, coding sub-chats use their own worktree | Never `checkout`/`switch` in the OneDrive main checkout (procedures: REPOSITORY_AND_ENVIRONMENT_STATE section 14) | **Still present 28-Oct** (mmap errors on historical and stash blobs; 229 `.git` files cloud-only). EXISTING DEFECT (R6; TASK-017, DEC-OPEN-19). Update 2-Nov-2026: OneDrive.exe is running since 11:47 IST but the folder is not pinned; 228 of 568 `.git` files are still cloud-only (229 at 13:29 IST); 5 of 11 historical blob reads (index.html and SIF) still fail with mmap; `git fsck --connectivity-only` exit 0. Still present; TASK-017 not met; the no-checkout rule stays. |
 | INC-17 | 16-19-Oct | #4, #9, #11 merged one merge behind `main`; combined trees tested only by the post-merge push runs | Process (rapid parallel merges) | None (all push runs green; disjoint files) | none needed | Sync a branch with `main` before merging when `main` moved (as #22 did); one merge at a time (Gate D) | Observation |
+| INC-18 | 2-Nov-2026 | An audit sub-agent (the issues-code auditor of the TASK-016 workflow) created an empty untracked file probe_sib.js in the repo root through a mistyped `cat > probe_sib.js` before writing its real script to its scratch folder; the other auditors and the Guardian noticed it. | Process: a read-only audit sub-agent breached its read-only rule (agent types without a Write tool can still write through Bash) | None: 0 bytes, untracked, never staged; MOD-02 removed that one file and `git status` is clean | Removed by MOD-02 after the workflow finished (cause read from the sub-agent's transcript) | Run `git status` after every workflow that fans out in the shared checkout; tell sub-agents to `cd` into their scratch folder before writing helper scripts; nobody runs `git clean` | VERIFIED COMPLETE |
+| INC-19 | 30-Oct-2026 (found 2-Nov-2026 by ARC-01) | PR #29 was merged 58 s after it was opened with no recorded Gate A report (the PR body has no TASK-015, no head SHA, no contract), no Guardian review (the agent did not exist yet; pre-declared) and no security-reviewer result, although the registers planned a security-reviewer run before the push. | Process (the merge came 58 s after the PR opened; no branch protection, R9) | None: docs and one agent file only; ARC-01 and security-reviewer ran post-merge on 2-Nov-2026 and found no secret, client name or user path | Gate A reconstructed and Gate B recorded in section 11 (PR #29 entry); security-reviewer run on `git diff 2b2a397 f5c2431` (0 BLOCKER, 5 warnings); the rule-document conflicts the review found go to TASK-018 (E17) | A merge needs its gate record before it happens; `main` has no protection, so the Moderator keeps the gate | Observation (corrected in the registers) |
 
-### 6.2 Audit notes (no incident ID; found on 28-Oct-2026)
+### 6.2 Audit notes (no incident ID; found on 28-Oct-2026 and 2-Nov-2026)
 
 - **PR #23's code lives only in merge commit `18abff3`** (the PR head; parents `fb9cbd6` = #22 merge and
   `75538de` = #21 merge; `git diff --stat fb9cbd6 18abff3` = 6 files, +135/-37 incl. `tools/dev/rehearse.js`).
@@ -222,6 +232,8 @@ OneDrive/git environment incidents.
   hashes 6 files although 7 are published (`robots.txt`).
 - `docs/PROJECT_STATE.md:141` (at `2b2a397`) attributes D72 and D79 to PR #7: #7 implemented the behaviour; the decision
   entries were written in #16 (informational).
+- TASK-016 audit of 2-Nov-2026: 77 findings, details and dispositions in
+  `docs/update-log/2026-11-02_task-016-validation.md`.
 
 ### 6.3 Process lessons
 
@@ -241,10 +253,16 @@ OneDrive/git environment incidents.
    files relied on post-merge CI only (INC-17).
 9. Scripts that contain escapes must be written to files with the Write tool, not piped to `node -` or a
    heredoc (Node 24 stdin and the tool layer decode `\uXXXX` and `\\`).
+10. After a workflow that fans out read-only sub-agents in the shared checkout, run `git status`; a sub-agent can
+    create a stray file (INC-18).
+11. A merge to `main` waits for its Gate A/B record and a security-reviewer pass; a 58-second merge left none
+    (INC-19).
 
 ---
 
 ## 7. Current live-site parity check
+
+### 7.1 28-Oct-2026 (history; the current check is 7.2)
 
 **Date:** 28-Oct-2026, about 05:52 UTC. **Method:** each published file downloaded from
 https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ with `curl --compressed`, SHA-256 with
@@ -273,19 +291,40 @@ All HTTP 200. **Result: 7 of 7 MATCH (VERIFIED).**
 - How to repeat: the loop in [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md)
   section 18 (all 7 files; `docs/DEPLOYMENT.md:44-49` still lists 6, E14).
 
+### 7.2 2-Nov-2026
+
+**Date:** 2-Nov-2026, about 07:47 UTC (MOD-02) and about 08:05 UTC (the integration auditor of the TASK-016
+workflow). **Method:** the 7-file curl loop of [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md)
+section 18, SHA-256 with `sha256sum`, compared with the working tree `site/` (HEAD = `f5c2431`).
+**Result: 7 of 7 MATCH (VERIFIED)**: the same SHA-256 and bytes as the 28-Oct-2026 table in 7.1 (`site/` did not
+change between `2b2a397` and `f5c2431`).
+
+- Not published: `Centricity_Risk_Matrix.js` returns HTTP 404 (archived, D78).
+- `index.html` headers: `Last-Modified: Fri, 30 Oct 2026 07:47:47 GMT` (all 7 files; the PR #29 publish re-deployed
+  identical bytes; the 27-Oct header in 7.1 belonged to the `2b2a397` deployment).
+- **Old site (VERIFIED 2-Nov-2026):** still HTTP 200 and still serves the 14-Oct baseline `index.html` (blob `60106a8e`
+  = `862e40b:index.html`). The upstream repository is still public, last push 14-Oct-2026 10:37Z (R1 open).
+- How to repeat: as in 7.1 (the loop in [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md)
+  section 18).
+
 ---
 
 ## 8. CI history (VERIFIED, `gh run list --limit 200`, `gh run view`)
 
-- Workflow "Verify and publish dashboard" (`.github/workflows/pages.yml`): **58 runs, 58 success** (30
-  pull_request, 28 push). No failed, cancelled or re-run workflow in the repository's history.
-- Latest `github-pages` deployments: 7358413557 (`2b2a397`, 27-Oct), 7256623949 (`5bcce88`), 7256527240 (`5d39821`).
+- Workflow "Verify and publish dashboard" (`.github/workflows/pages.yml`): **60 runs, 60 success** (31
+  pull_request, 29 push) on 2-Nov-2026 (28-Oct-2026: 58 runs, 30 + 28). No failed, cancelled or re-run workflow in
+  the repository's history (`run_attempt` 1 for all 60; `run_number` 1..60 contiguous; 120 jobs: `verify` 60
+  success, `publish` 29 success + 31 skipped).
+- Latest `github-pages` deployments: 7433347919 (`f5c2431`, 30-Oct), 7358413557 (`2b2a397`, 27-Oct), 7256623949
+  (`5bcce88`), 7256527240 (`5d39821`).
 - What CI does and does not check: [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md)
   section 11. Gaps that matter for regressions: a broken sibling only logs `console.error` and passes (A30);
   two CLAUDE.md invariants are not enforced (A31); the deck bounds check is manual (REQ-PPT-129); no browser test.
 
 | Run | Created (UTC) | Event | Head | Conclusion |
 |---|---|---|---|---|
+| 41022201456 | 30-Oct 07:47:01 | push main | `f5c2431` (#29) | success (verify + publish) |
+| 41022108264 | 30-Oct 07:46:06 | pull_request | `7cc3946` | success (verify; publish skipped) |
 | 40503943213 | 27-Oct 12:27:52 | push main | `2b2a397` (#28) | success (verify + publish) |
 | 40503856131 | 27-Oct 12:27:11 | pull_request | `11d5c0a` | success |
 | 39807185096 | 22-Oct 15:41:24 | push main | `5bcce88` (#27) | success (verify + publish) |
@@ -313,7 +352,7 @@ All HTTP 200. **Result: 7 of 7 MATCH (VERIFIED).**
    - If git cannot read the needed objects (mmap, R6), clone `origin` into a folder outside OneDrive and do
      the revert there.
    - Never discard unrelated work to repair a regression.
-5. **Record** the incident as INC-18 (or the next number) in section 6.1, update section 3, notify dependent
+5. **Record** the incident as INC-20 (or the next number) in section 6.1, update section 3, notify dependent
    tasks, and log the root cause in `docs/KNOWN_ISSUES.md`.
 
 ---
@@ -360,5 +399,90 @@ Entry for section 11:
 
 ## 11. Integration entries from 28-Oct-2026 on
 
-None yet. The first entry is the merge of `handover/mod-01-to-mod-02-20261028` (section 5), written by MOD-02
-in TASK-016.
+### PR #29 - Docs: Moderator handover package MOD-01 -> MOD-02 and project-control registers (30-Oct-2026)
+
+| Field | Value |
+|---|---|
+| Task / requirement / decision IDs | TASK-015 (the package), TASK-016 (its validation); REQ-063 to REQ-095; 22 new KNOWN_ISSUES entries (A29-A31, C41-C45, E6-E16, R9-R11); DEC-OPEN-01 to DEC-OPEN-28 listed, none decided at the merge |
+| Chat and worktree | MOD-01; the main checkout, files written there and committed through a temporary index (no worktree) |
+| Branch | `handover/mod-01-to-mod-02-20261028` (still on origin and locally; merged) |
+| Base SHA (origin/main when the branch was cut) | `2b2a39757342437c73921802775197701dbca2aa` (merge-base; one commit on the branch) |
+| Head SHA at merge | `7cc3946cab14eda482145db7b1fd097b9410861f` (committed 30-Oct-2026 07:45:41Z) |
+| Merge SHA / push run / deployment id | `f5c24311867a66a4b7a945236439eda64ea2470b` / 41022201456 / 7433347919 |
+| Files changed | 28 (22 new, 6 modified), +9675/-42: `.claude/agents/integration-guardian.md` (new); `CHANGELOG.md`, `CLAUDE.md` (modified; three CLAUDE.md edits: two repository-map rows, step 2 branch patterns, the new "Project control" section); `docs/KNOWN_ISSUES.md`, `docs/PROJECT_STATE.md`, `docs/README.md`, `docs/handover/README.md` (modified); 9 new files in `docs/handover/`; 12 new files in `docs/project-control/`. No `site/`, `tools/`, `tools/lib/`, `.github/`, `package.json` or `package-lock.json` file. |
+| Site-content state | unchanged (S7): index.html blob `39337935b7`, SHA-256 `916f2455eebaf236...`; no other `site/` file changed |
+| Gate A - implementation report | RECONSTRUCTED by MOD-02 on 2-Nov-2026: task TASK-015; chat MOD-01; base `2b2a397`; head `7cc3946`; merge `f5c2431`; 28 files; tests claimed in the PR text (`verify_page`, `npm test` 5/5 and 903, live 7/7, browser start-up; checks re-run on 28/30-Oct per the PR text); contract: ACTIVE_CHANGE_REGISTER section 2 (condensed below). The PR body itself holds no TASK id, no head SHA, no contract and no deviations field (INC-19). |
+| Gate B - Guardian review (ARC-01) | DIFF REVIEW run post-merge by MOD-02 on 2-Nov-2026 (first use of ARC-01; the agent did not exist at merge time, pre-declared): verdict GO WITH CONDITIONS, risk MEDIUM. Ownership and interface checks proven: `site/` and `tools/` tree objects identical between base and merge; `.github/`, `package.json`, `package-lock.json`, `.gitignore` and `.gitattributes` untouched; the agent file well-formed and consistent with the other eight. 8 MAJOR and 11 MINOR findings, all in documents (E17); conditions recorded in `docs/update-log/2026-11-02_task-016-validation.md` and in ACTIVE_CHANGE_REGISTER; the fixes go to TASK-018 (widened), which gates every OPS and NB launch (section 5). |
+| Gate C - independent verification | CI push run 41022201456 `verify` job: unit tests 5 of 5 files (903 checks, 0 failed); parity gate counts identical to the `2b2a397` numbers; MOD-02 re-ran `verify_page`, `npm test` and the live 7/7 check on 2-Nov-2026 (identical). No deck or parser change, so no browser, PowerPoint or rehearsal check applied. |
+| Gate D - integration | PR run 41022108264 (`verify` success 07:46:26Z, `publish` skipped); merged by `productsteamcentricity` 07:46:59Z, 33 s after `verify`, 58 s after opening (07:46:01Z); push run 41022201456 `verify` success, `publish` success; deployment 7433347919 success 07:48:13Z; live 7 of 7 SHA-256 = `site/` on 2-Nov-2026 (about 07:47Z and 08:05Z, section 7.2); one PR at a time: yes. security-reviewer: NOT RUN before the push; run by MOD-02 on 2-Nov-2026 on `git diff 2b2a397 f5c2431`: 0 BLOCKER, 5 warnings (SEC-01 P2; SEC-02..SEC-05 P3); no secret, e-mail, client name, person name or user path was added. |
+| Baseline update | yes (section 3 now `f5c2431`) |
+| Gate E - acceptance | pending (the owner has not accepted the new build as a whole; TASK-064) |
+| Dependent tasks notified | none depend on the merge's content; MOD-02 started 2-Nov-2026; sub-chats: none active |
+| Regressions found after merge | none in production; documentation findings in the TASK-016 record (E17, INC-19) |
+| Rollback | `git revert -m 1 f5c24311867a66a4b7a945236439eda64ea2470b` in a new PR (docs only; `site/` unaffected) |
+
+**Contract of TASK-015** (condensed from ACTIVE_CHANGE_REGISTER section 2 at release; risk class Material):
+objective = a complete, verified handover package; preserve = all of `site/` and `tools/` byte-identical, existing
+KNOWN_ISSUES ids, PROJECT_STATE as the single state document; intended changes = new handover documents and
+registers, a "Project control" section and two repository-map rows in CLAUDE.md, two rows in `docs/README.md`, the
+integration-guardian agent, 22 new KNOWN_ISSUES entries, CHANGELOG and PROJECT_STATE entries; no data, schema, CI,
+package or library change; no financial rule changed; non-goals = no code or data change, no clean-up of branches,
+worktrees or the stash, no repository-settings change; required tests = `verify_page`, `npm test`, CI `verify`,
+security-reviewer, ASCII and ID/link checks; rollback = revert the merge.
+
+### TASK-016 - validation of the MOD-01 -> MOD-02 package (2-Nov-2026)
+
+| # | Check | Command | Result | Verdict |
+|---|---|---|---|---|
+| 1 | Sync | `git fetch origin` (exit 0); `git status -sb`; `git rev-parse --abbrev-ref HEAD`; `git rev-parse HEAD origin/main` | `## main...origin/main`, clean; `main`; both `f5c24311867a66a4b7a945236439eda64ea2470b` | VERIFIED |
+| 2 | Package merge | `git log origin/main --merges --oneline --grep "handover/mod-01-to-mod-02-20261028"`; `gh pr view 29 --json state,mergedAt,mergeCommit,headRefOid,statusCheckRollup` | `f5c2431` = PR #29, head `7cc3946`, created 30-Oct-2026 07:46:01Z, merged 07:46:59Z; PR run 41022108264 verify success, publish skipped; push run 41022201456 success | VERIFIED |
+| 3 | Nothing newer | `git log origin/main --oneline -8` | tip `f5c2431`; no commit after PR #29 | VERIFIED |
+| 4 | gh target and open PRs | `gh repo set-default --view`; `gh pr list --state open` | productsteamcentricity/Centricity-Proposal-Playbook; none | VERIFIED |
+| 5 | Code and data unchanged | `git diff --stat 2b2a397 origin/main -- site/ tools/` | empty; whole tree 28 files, +9675/-42 | VERIFIED |
+| 6 | Parity counts | `node tools/verify_page.js site` | exit 0; identical to 28-Oct (MASTER 7682; Select 178/178; PMS 692 / AIF 12 / benchmarks 4; ALIAS 27 (4 null); EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; TERMS 73; EXTRA_SLIDES 6; DATA_DATES unchanged; 0 duplicates; ends `</html>`; PMS with perf 23 of 27; 0 script errors) | VERIFIED |
+| 7 | Unit tests | `npm test` | exit 0; 5 of 5 files, 903 checks (34+10+18+798+43), 0 failures | VERIFIED |
+| 8 | Live parity | the 7-file curl loop (REPOSITORY_AND_ENVIRONMENT_STATE section 18) | 7 of 7 MATCH (`index.html` 12,864,963 B, `916f2455...62ce3`); `Centricity_Risk_Matrix.js` 404; `index.html` Last-Modified 30-Oct-2026 07:47:47 GMT | VERIFIED |
+| 9 | CI | `gh run list --limit 100 --json conclusion` | 60 runs, 60 success | VERIFIED |
+| 10 | Object store | `git fsck --connectivity-only --no-dangling`; `git stash show -p --include-untracked stash@{0}` (size only) | exit 0; patch readable, 1,408,451 bytes (= the 28-Oct export) | VERIFIED |
+| 11 | OneDrive | `Get-Process OneDrive`; attribute scan of `.git`; Pinned attribute | running since 11:47 IST; folder not pinned; 228 of 568 `.git` files Offline (229 at 13:29 IST); TASK-017 acceptance not met | VERIFIED (deviation from 28-Oct) |
+| 12 | Branches, worktrees, stash | `git branch --no-merged main`; `git worktree list`; `git stash list`; branch counts | no unmerged branch; 5 worktrees (the 4 documented + new `investment-proposal-dashboard-c68580`, unused); 1 stash; 29 local / 27 origin branches | VERIFIED (deviations recorded) |
+| 13 | Sessions | `list_sessions` (including archived) and `get_session self` | as in CHAT_REGISTRY except: NB-01..03 archived (isArchived true; by the owner: INFERRED); MOD-02 started; 3 new external sessions | VERIFIED (deviations recorded) |
+| 14 | Page start-up | `preview_start playbook` in the built-in browser; reload with the console reader attached | MASTER 7,682; `window.H`/`REFRESH`/`EXPORTS`; 3 sibling flags; Select 178; DATA_DATES as recorded; 0 console messages | VERIFIED (no proposal built, nothing exported) |
+| 15 | Register audit | workflow `validate-handover-registers` (10 auditors, 17 skeptics) | 77 discrepancies: P1 0, P2 17, P3 60; no P2 refuted | VERIFIED |
+| 16 | Guardian | ARC-01 DIFF REVIEW of TASK-015 | GO WITH CONDITIONS, MEDIUM | VERIFIED |
+| 17 | Security | security-reviewer on `git diff 2b2a397 f5c2431` | 0 BLOCKER; 5 warnings (1 P2, 4 P3) | VERIFIED |
+
+**NOT RUN:** full browser acceptance and exports (TASK-064); Excel opened in Office; PowerPoint render; messaging a
+running sub-chat (SendMessage) and start_session cards (not tested by MOD-02 yet); MOD-01's transcripts; contents of
+the local-only folders (R8, R10, R11); history-dependent claims (C41 "20-May-2026" date); the owner's confirmation of
+MOD-01's final report.
+
+**Deviations from the 28-Oct snapshot (none blocks work):** OneDrive running but unpinned; fifth worktree; NB
+sessions archived and two worktrees detached; new external sessions and the name collision; 60 CI runs; stray file
+(INC-18).
+
+**Disposition of the 77 findings:** P2 register corrections applied in this docs PR (decisions:F-01, F-02, F-03;
+requirements:D01 = REQ-023 and requirements:D02 = REQ-PPT-150; integration-ci-live:D1 = INC-11; interfaces-architecture:D-01;
+package-consistency:D-01 = the K07 start-up time); the eight ARC-01 MAJOR findings go to TASK-018 (widened) and gate
+OPS/NB launches; SEC-01..SEC-05 go to DEC-OPEN-29 and TASK-075; the 60 P3 findings are dispositioned in the
+update-log (appendix A; the ones not applied go to TASK-018 or TASK-077). Detail:
+`docs/update-log/2026-11-02_task-016-validation.md`.
+
+### Owner decisions recorded 2-Nov-2026
+
+On 2-Nov-2026 the owner answered in chat MOD-02: DEC-OPEN-02 (risk-free rate) "Keep 4.5% for now" (about 08:02 UTC)
+is **D84**, and D58 stays Open for the desk's confirmation (DESK-15); DEC-OPEN-03 (Sortino definition) "Keep
+textbook" (about 08:53 UTC) is **D85**. DEC-OPEN-01 (who makes the NAV Data and Fund Risk Ratios workbooks) was asked
+and is pending. Records: [`DECISION_LOG.md`](DECISION_LOG.md) and [`../DECISIONS.md`](../DECISIONS.md).
+
+### Gates for the TASK-016 docs PR (branch docs/mod-02-validation-20261102, 2-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Risk class | Material (FILE_OWNERSHIP_AND_CHANGE_CONTROL section 7: the PR records decisions and states standing restrictions, although no code, data, CI or rule document changes) |
+| Material items | (a) D84 and D85 in `docs/DECISIONS.md`; (b) the standing restriction "never git merge or git pull in the main checkout" stated in TASK_REGISTER, REPOSITORY_AND_ENVIRONMENT_STATE 19.2, KNOWN_ISSUES R6 and the regression index (CLAUDE.md is changed by TASK-018); (c) work gates and order: no `/monthly-update`, tool `--apply` or OPS/NB launch before TASK-018; TASK-018 no longer waits for TASK-017; TASK-062's export may run before TASK-017; (d) errata ERR-5 and ERR-6 in `docs/handover/README.md` re-scope the TASK-017 hold ahead of TASK-018; (e) the sub-chat title rule (CHAT_REGISTRY rule 11); (f) the meanings of VERIFIED COMPLETE in REQUIREMENTS sections 2 and 5; (g) decision status ANSWERED (DECISION_LOG 1.5) and the upstream-refs note in ACTIVE_CHANGE_REGISTER section 5 |
+| Gate A - implementation report | the PR description |
+| Gate B - Guardian review (ARC-01) | ARC-01 DIFF REVIEW of the first draft of this branch (a local commit, folded into the single commit of this PR before the push): GO WITH CONDITIONS (conditions C1-C8, applied as wording changes before the push); security-reviewer on the first draft: 0 BLOCKER, 3 warnings (W-1 the old repository's tip commit id added on two lines: removed; W-2 the `.gitignore` pattern list widened to `*.env`, `id_rsa*`, `credentials*.json`, `.npmrc`; W-3 pointers already tracked as DEC-OPEN-29 and TASK-075); security-reviewer re-run on the second draft: 0 BLOCKER, 4 low warnings, SAFE TO PUSH (session ids of the other project's sessions and a workflow run id shortened or dropped; exact positions of three personal-data lines moved to a local-only note; pointers that act as a finding aid accepted, the locators and the data being already public, removal is DEC-OPEN-29 and TASK-075; the intermediate commit that carried the old tip id folded away) |
+| Gate C - independent verification | `verify_page` and `npm test` identical (run by ARC-01 and MOD-02); added-lines, link and table scans clean |
+| Gate D - integration | PR number and merge SHA are added at the next register update |
+| Gate E - acceptance | pending (the owner confirms the D84 and D85 wording) |

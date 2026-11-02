@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (handover package, TASK-015) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026) |
 | Status | Authoritative for task state (what work exists, who owns it, what blocks it) |
-| Supersedes | nothing (first version; task numbers did not exist before 28-Oct-2026) |
-| Next review | MOD-02 at TASK-016, then at every status change |
+| Supersedes | Version 1 of 28-Oct-2026 (updated in place; it stays in git history) |
+| Next review | at every status change |
 
 ## 1. What this file is, and what it is not
 
@@ -28,12 +28,18 @@ with a stable `TASK-nnn` ID. It is the coordination record that survives chat re
 Code and git win over this file. A task is VERIFIED COMPLETE only when the evidence column names a
 merged PR or commit and the check that verified it.
 
+**Effective date of the 2-Nov-2026 entries.** Entries dated 2-Nov-2026 in this version (TASK-015 and
+TASK-016 VERIFIED COMPLETE, TASK-017 IN PROGRESS, TASK-018 widened, TASK-075..077, the counts) take effect
+when the docs PR that carries them merges (branch `docs/mod-02-validation-20261102`); the PR number and
+the merge SHA are added at the next register update. Until then `origin/main` still shows the
+30-Oct-2026 state.
+
 ## 2. How to add or update a task
 
 1. **Search first.** Before adding a task, search this file for the KNOWN_ISSUES ID, REQ ID or key words.
    If the owner repeats a request, update the existing task (add the new date and source to its
    evidence line). Never open a second task for the same work.
-2. **New task = next free number.** Next free on 28-Oct-2026: **TASK-075**. Numbers are never reused,
+2. **New task = next free number.** Next free on 2-Nov-2026: **TASK-078**. Numbers are never reused,
    renumbered or recycled, even when a task is dropped (mark it SUPERSEDED and say by what).
 3. **Every task records:** title (imperative), workstream (EX, NB, OPS, GOV), status, priority, owner
    chat, depends on, blocked by, acceptance criteria, evidence or next step, related REQ / KNOWN_ISSUES /
@@ -56,49 +62,59 @@ merged PR or commit and the check that verified it.
    "How every change is made" requires.
 9. The register is edited only by the Moderator (or a chat it names), on a `docs/` branch, through a PR.
 
-## 3. Key facts the tasks rely on (28-Oct-2026)
+## 3. Key facts the tasks rely on (28-Oct-2026; refreshed 2-Nov-2026)
 
 | Fact | Value | Label |
 |---|---|---|
-| Code and data baseline | `main` = `origin/main` = `2b2a397` (PR #28 merge, 27-Oct-2026); last site change `5d39821` (PR #26) | VERIFIED |
-| `node tools/verify_page.js site` | exit 0; MASTER 7,682; Centricity Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; RISK_MATRIX 1,088; EQUITY_ANALYTICS 1,205; 0 duplicates; 0 script errors | VERIFIED 28-Oct |
-| `npm test` | 5 of 5 files, 903 checks, 0 failures | VERIFIED 28-Oct |
-| Live site | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ ; 7 of 7 published files SHA-256 identical to `site/` | VERIFIED 28-Oct |
-| App startup in a browser | 28-Oct ~08:55 UTC, `preview_start playbook` at `2b2a397`: page renders, in-browser MASTER 7,682, three sibling flags set, 0 console errors. No proposal built and no export run. | VERIFIED |
+| Code and data baseline | `main` = `origin/main` = `f5c2431` (PR #29 merge, 30-Oct-2026, docs only; `site/` and `tools/` byte-identical to `2b2a397`, the 28-Oct baseline); last site change `5d39821` (PR #26) | VERIFIED 2-Nov |
+| `node tools/verify_page.js site` | exit 0; MASTER 7,682; Centricity Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; RISK_MATRIX 1,088; EQUITY_ANALYTICS 1,205; 0 duplicates; 0 script errors | VERIFIED 28-Oct and 2-Nov |
+| `npm test` | 5 of 5 files, 903 checks, 0 failures | VERIFIED 28-Oct and 2-Nov |
+| Live site | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ ; 7 of 7 published files SHA-256 identical to `site/` | VERIFIED 28-Oct and 2-Nov |
+| App startup in a browser | 28-Oct-2026 07:12:58-07:13:25 UTC (the earlier "~08:55 UTC" was wrong: `REPOSITORY_AND_ENVIRONMENT_STATE.md` section 13.4), `preview_start playbook` at `2b2a397`: page renders, in-browser MASTER 7,682, three sibling flags set, 0 console errors; repeated 2-Nov-2026 by MOD-02 at `f5c2431`: MASTER 7,682, three sibling flags set, 0 console messages. No proposal built and no export run. | VERIFIED |
 | Last full 7-area browser acceptance | 21-Oct-2026 on site state S6 (before PR #26) | VERIFIED (doc record) |
-| OneDrive | OneDrive.exe not running; repo folder not pinned; 229 of 519 `.git` files cloud-only; historical and stash blob reads fail with `mmap failed` | VERIFIED 28-Oct |
-| Monthly inbox | `monthly-updates/00_INBOX/` holds only its README: no desk file has arrived | VERIFIED 28-Oct |
-| Calendar | Sep-2026 Reckoner catch-up due now; Oct-2026 MF cycle ~13-17-Nov-2026; Oct-2026 Reckoner cycle ~20-28-Nov-2026; implied decision deadline ~13-Nov-2026 for DEC-OPEN-01/02/03/08 | INFERRED (documented cadence) |
+| OneDrive | 28-Oct: OneDrive.exe not running; repo folder not pinned; 229 of 519 `.git` files cloud-only; historical and stash blob reads fail with `mmap failed`. 2-Nov-2026: OneDrive.exe running since 11:47 IST, folder still not pinned, 228 of 568 `.git` files cloud-only, historical blob reads still fail with `mmap failed`; `git fsck --connectivity-only` exit 0 | VERIFIED 28-Oct and 2-Nov |
+| Monthly inbox | `monthly-updates/00_INBOX/` holds only its README on 28-Oct and on 2-Nov-2026: no desk file has arrived | VERIFIED 28-Oct and 2-Nov |
+| Calendar | Sep-2026 Reckoner catch-up due now; Oct-2026 MF cycle ~13-17-Nov-2026; Oct-2026 Reckoner cycle ~20-28-Nov-2026; implied decision deadline ~13-Nov-2026 for DEC-OPEN-01/02/03/08. Correction 2-Nov-2026: DEC-OPEN-01, -02 and -03 were due "by about 13-Nov" in the 28-Oct text, but that date is the START of the Oct cycle; DEC-OPEN-02 and -03 were answered 2-Nov (D84, D85); DEC-OPEN-01 is needed well before 13-Nov (`DECISION_LOG.md` section 1.2); only DEC-OPEN-08 is due about 13-Nov | INFERRED (documented cadence) |
+| ARC-01 conditions (2-Nov-2026) | no `/monthly-update`, no tool `--apply` and no OPS or NB sub-chat before the widened TASK-018 PR merges; launch packets state: no checkout / switch / merge / pull in the main checkout, no `--delete-branch`, where the chat runs, whether a Guardian pre-check applies | VERIFIED (ARC-01 report) |
 
-**Never `git checkout` or `git switch` in the OneDrive main checkout** until TASK-017 passes (R6: a
-checkout on 25-Oct truncated tracked files). Create branches with `git branch <new> <base>` and work in a
-worktree. This overrides the `git switch` lines still in `.claude/skills/monthly-update/SKILL.md` and
-`docs/MONTHLY_UPDATE_PROCESS.md` (KNOWN_ISSUES E7, fixed by TASK-018).
+**Never `git checkout` or `git switch` in the OneDrive main checkout, and never `git merge` or
+`git pull`,** until TASK-017 passes (R6: a checkout on 25-Oct truncated tracked files; merge and pull were
+added on 2-Nov-2026 by ARC-01 finding D-01). Create branches with `git branch <new> <base>` and work in a
+worktree. This overrides the `git switch` and `git pull --ff-only` lines still in
+`.claude/skills/monthly-update/SKILL.md` and `docs/MONTHLY_UPDATE_PROCESS.md` (KNOWN_ISSUES E7 and E17,
+fixed by TASK-018). (CLAUDE.md names only checkout and switch until TASK-018 changes it).
 
 ## 4. Start here: order of work for MOD-02 (dependency order)
 
-1. **TASK-016** validate the package against the repo. No checkout/switch.
-2. **TASK-017** (owner) restore OneDrive health. Gate for every later `git checkout`/`git switch`,
-   history read and tool `--apply` run; read-only checks (`git fetch`, `verify_page`, `npm test`, the
-   live site) and docs-only commits through the temporary index may run before it.
-3. **TASK-064** full browser acceptance on the live build (Workstream A first, REQ-071). Uses the live
-   site only, so it can run while TASK-017 is pending.
-4. **Owner decision session** ([`DECISION_LOG.md`](DECISION_LOG.md)), in this order: DEC-OPEN-02 and -03,
-   then -01 (by ~13-Nov-2026); -08 (by ~13-Nov-2026); -04; -05; -07; -13 / -14 / -24; then the rest.
-5. **TASK-019** (owner) send the desk request pack (Appendix A), PMS, Reckoner, Fund Manager and
+1. **TASK-016** validate the package against the repo. DONE 2-Nov-2026 (VERIFIED COMPLETE; section 7).
+2. **TASK-018** (widened) rule-document consistency PR (docs only), launched as GOV-01 in its own
+   worktree: the gate for every `/monthly-update`, tool `--apply` and OPS / NB launch (ARC-01
+   condition). Material: contract + ARC-01 DIFF REVIEW + `security-reviewer`.
+3. **TASK-017** (owner) restore OneDrive health: OneDrive is running; pin the folder ("Always keep on
+   this device") and let it hydrate; MOD-02 verifies. Gate for every later `git checkout` /
+   `git switch` / `git merge` / `git pull` in the main checkout, history read and tool `--apply` run;
+   read-only checks (`git fetch`, `verify_page`, `npm test`, the live site) and docs-only commits
+   through the temporary index may run before it.
+4. **TASK-064** full browser acceptance on the live build (Workstream A first, REQ-071): EX-01
+   (proposed) or MOD-02; read-only; may start now; uses the live site and the preview.
+5. **Owner decision session** ([`DECISION_LOG.md`](DECISION_LOG.md)): DEC-OPEN-02 and -03 DONE
+   2-Nov-2026 (D84, D85); DEC-OPEN-01 asked 2-Nov, needed well before 13-Nov; then -08 (by about
+   13-Nov); -04 and -11; -05; -07; -13 / -14 / -24; -25, then -26; -29; then the rest.
+6. **TASK-019** (owner) send the desk request pack (Appendix A), PMS, Reckoner, Fund Manager and
    Analytics first.
-6. **TASK-018** docs-consistency PR (docs only), once TASK-017 passes.
 7. **Housekeeping** once the owner agrees (DEC-OPEN-22): TASK-061 (worktrees) -> TASK-060 (local
    branches) -> TASK-059 (remote branches); TASK-062 exports the stash patch before any drop.
-8. **TASK-020** Sep-2026 Reckoner catch-up when DESK-01/02 arrive (fold in TASK-025 and the C5 pin of
-   TASK-029 if decided by then).
-9. **TASK-022** NAV / risk-ratio producer after DEC-OPEN-01/02/03, regression-tested against Sep-2026,
-   ideally before step 11.
-10. **TASK-023** C20 change after DEC-OPEN-07, before or with the October bake.
+8. **TASK-020** Sep-2026 Reckoner catch-up. Steps 12-15 start when DESK-01 and DESK-02 arrive; steps 9
+   and 16 also need DESK-03 and DESK-04, so TASK-020 stays BLOCKED until all four are in the inbox
+   (fold in TASK-025 and the C5 pin of TASK-029 if decided by then; not before item 2).
+9. **TASK-022** NAV / risk-ratio producer after DEC-OPEN-01, regression-tested against Sep-2026,
+   ideally before step 11. Rf = 4.5% (D84) and the textbook Sortino (D85) are decided (Rf: for now); blocked only by
+   DEC-OPEN-01 (not before item 2).
+10. **TASK-023** C20 change after DEC-OPEN-07, before or with the October bake (not before item 2).
 11. **TASK-021** Oct-2026 MF cycle ~13-17-Nov-2026 with TASK-024 (renames); risk matrix only if TASK-022
-    is ready.
+    is ready (not before item 2).
 12. Oct-2026 Reckoner cycle ~20-28-Nov-2026 (not yet a task: MOD-02 registers it with the next free
-    number when it schedules it).
+    number when it schedules it) (not before item 2).
 13. **TASK-032 / TASK-033 / TASK-034** as the owner and the outgoing owner act; the old site is retired
     only after the owner signs the full-test checklist.
 14. Remaining follow-through tasks as decisions land; engineering backlog only on request.
@@ -124,10 +140,10 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-012 | Live acceptance check, 7 areas | EX | VERIFIED COMPLETE | - | MOD-01 | Done |
 | TASK-013 | PowerPoint design system | NB | IMPLEMENTED NOT FULLY VERIFIED | - | NB-03 | Done |
 | TASK-014 | Ingest the outgoing owner's export | EX | VERIFIED COMPLETE | - | MOD-01 | Done |
-| TASK-015 | Produce the MOD-01 -> MOD-02 handover package | GOV | IN PROGRESS | P1 | MOD-01 | G |
-| TASK-016 | MOD-02 validates the package | GOV | PLANNED | P1 | MOD-02 | G |
-| TASK-017 | Restore OneDrive health | OPS | NOT STARTED | P1 | owner; MOD-02 verifies | R |
-| TASK-018 | Docs-consistency PR (E6-E15 and corrections) | GOV | NOT STARTED | P2 | MOD-02 | R |
+| TASK-015 | Produce the MOD-01 -> MOD-02 handover package | GOV | VERIFIED COMPLETE | - | MOD-01 | Done |
+| TASK-016 | MOD-02 validates the package | GOV | VERIFIED COMPLETE | - | MOD-02 | Done |
+| TASK-017 | Restore OneDrive health | OPS | IN PROGRESS | P1 | owner (machine setting); MOD-02 verifies | R |
+| TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gates OPS/NB) | GOV | PLANNED | P1 | MOD-02 assigns (GOV-01) | R |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
 | TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED | P1 | MOD-02 assigns (OPS-01) | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | PLANNED | P1 | MOD-02 assigns | R |
@@ -168,12 +184,12 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-056 | Fix the stale `.gitattributes` comment | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-057 | Validate or retire `build_risk_matrix.py` | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-058 | SheetJS upgrade (page and tools together) | NB | NOT STARTED | P3 | MOD-02 assigns (owner instruction only) | O |
-| TASK-059 | Delete the 25 merged branches on origin | GOV | NOT STARTED | P3 | MOD-02 | H |
-| TASK-060 | Delete the 26 merged local branches | GOV | NOT STARTED | P3 | MOD-02 | H |
-| TASK-061 | Remove the 3 extra worktrees | GOV | NOT STARTED | P3 | MOD-02 | H |
+| TASK-059 | Delete the 26 merged branches on origin | GOV | NOT STARTED | P3 | MOD-02 | H |
+| TASK-060 | Delete the 28 merged local branches (incl. 3 `claude/*`) | GOV | NOT STARTED | P3 | MOD-02 | H |
+| TASK-061 | Remove the 4 extra worktrees, then prune | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-062 | Export, then drop `stash@{0}` | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-063 | Retention rule for `backups/` | GOV | UNKNOWN / NEEDS INVESTIGATION | P3 | MOD-02 | H |
-| TASK-064 | Full browser acceptance on the live build | EX | PLANNED | P1 | MOD-02 (or EX-01) | R |
+| TASK-064 | Full browser acceptance on the live build | EX | PLANNED | P1 | EX-01 (proposed) or MOD-02 | R |
 | TASK-065 | PMS/AIF benchmark rows from the decided source | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-066 | 12 unreachable RISK_MATRIX keys; effective-MASTER key check | NB | NOT STARTED | P2 | MOD-02 assigns | E |
 | TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | NOT STARTED | P1 | MOD-02 assigns | E |
@@ -184,10 +200,13 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-072 | Fresh-clone setup test | GOV | NOT STARTED | P3 | MOD-02 assigns | G |
 | TASK-073 | Outgoing-owner claude.ai export and history summary | EX | BLOCKED | P2 | owner (request); MOD-02 (reconcile) | O |
 | TASK-074 | Record conversation-only owner decisions as D-numbers | GOV | PLANNED | P2 | MOD-02 | G |
+| TASK-075 | Public-repository hygiene PR (SEC-01..05, R12) | GOV | BLOCKED | P2 | MOD-02 assigns | O |
+| TASK-076 | Extend `tool_inputs.test.js` to the whole CLI contract (A32) | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
+| TASK-077 | TASK-016 audit corrections backlog (P3 wording, snapshot errata) | GOV | PLANNED | P2 | MOD-02 assigns (docs-keeper) | G |
 
-Counts (28-Oct-2026): 74 tasks. Completed history 14 (13 VERIFIED COMPLETE, 1 IMPLEMENTED NOT FULLY
-VERIFIED). Open 60: BLOCKED 23, NOT STARTED 28, PLANNED 6, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 1.
-By group: R 6, O 18, D 7, E 16, H 7, G 6.
+Counts (2-Nov-2026): 77 tasks. Completed history 16 (15 VERIFIED COMPLETE, 1 IMPLEMENTED NOT FULLY
+VERIFIED). Open 61: BLOCKED 24, NOT STARTED 27, PLANNED 7, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 1.
+By group: R 6, O 19, D 7, E 17, H 7, G 5.
 
 ## 6. Open tasks
 
@@ -198,24 +217,32 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 ### 6.1 Before the next refresh (R)
 
 #### TASK-017 Restore OneDrive health before any checkout, history read or `--apply` run
-- WS OPS | Status NOT STARTED | P1 | Owner: owner (machine setting); MOD-02 verifies | Dep: - | Blk: owner action
+- WS OPS | Status IN PROGRESS | P1 | Owner: owner (machine setting); MOD-02 verifies | Dep: - | Blk: owner action
+- Progress 2-Nov-2026 (VERIFIED): OneDrive.exe running since 11:47 IST; folder not pinned; 228 of 568
+  `.git` files Offline; `git fsck --connectivity-only` exit 0; no read from `pack-631ec788` has been
+  confirmed to succeed (historical blob reads still fail with `mmap failed`).
+  Open: pin the folder and let it hydrate.
 - Accept: OneDrive.exe running; repo folder set to "Always keep on this device"; 0 files with the Offline
   attribute under the repo, including `.git/objects/pack/`; `git fsck --connectivity-only` exit 0; a
   `git cat-file -p` of an object stored in `pack-631ec788...` succeeds; result logged in
   `docs/PROJECT_STATE.md` and `REPOSITORY_AND_ENVIRONMENT_STATE.md`.
-- Next: owner starts OneDrive and pins the folder; MOD-02 runs the attribute scan and the two git checks.
-  Until it passes: no `git checkout`/`git switch`, no `--apply` runs.
+- Next: owner pins the folder (OneDrive is already running) and lets it hydrate; MOD-02 re-runs the scan
+  (`REPOSITORY_AND_ENVIRONMENT_STATE.md` section 18) and the two git checks. Until it passes: no
+  `git checkout`/`git switch`/`git merge`/`git pull` in the main checkout, no `--apply` runs.
 - Rel: R6, E10, R11; DEC-OPEN-19; INC-16.
 
 #### TASK-064 Full browser acceptance pass on the current live build (site state S7)
-- WS EX | Status PLANNED | P1 | Owner: MOD-02 (or a new EX-01) | Dep: TASK-016 | Blk: -
+- WS EX | Status PLANNED | P1 | Owner: EX-01 (proposed to the owner 2-Nov-2026) or MOD-02 | Dep: TASK-016 | Blk: -
 - Accept: the `verify-dashboard` skill run against the live URL; all 11 checks of `docs/TESTING.md`
   section 3 PASS (the 21-Oct pass grouped its work into 7 areas, `docs/PROJECT_STATE.md`); a proposal built end to end; PowerPoint export with `window.__PPTX_LAYOUT.warnings`
   empty; Excel export opened in Microsoft Excel (never done so far); browser console clean; a draft
   full-test checklist for the owner (input to DEC-OPEN-24); results recorded in `docs/PROJECT_STATE.md`
   and `INTEGRATION_AND_REGRESSION_LOG.md`.
-- Next: run after TASK-016. Startup alone was VERIFIED on 28-Oct (no export); the last 7-area pass was
-  21-Oct on S6, before PR #26.
+- Next: may start now (read-only; it needs neither TASK-017 nor the TASK-018 PR); exports go to
+  `_testdata/acceptance-2026-11/` (git-ignored: `.gitignore` line 56) or `monthly-updates/<month>/_review/`
+  (ignored through `monthly-updates/*`), never to tracked folders; a bare `_review/` at the repository
+  root is NOT ignored. Startup alone was VERIFIED on 28-Oct and again on
+  2-Nov-2026 (no export); the last 7-area pass was 21-Oct on S6, before PR #26.
 - Rel: REQ-019, REQ-049, REQ-071; R7; DEC-OPEN-24; TASK-034.
 
 #### TASK-019 Owner sends the desk request pack DESK-01..DESK-23 (DESK-24 optional)
@@ -227,23 +254,35 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   ready-to-send list. Order: DESK-01, -02, -03, -04 first (they block TASK-020).
 - Rel: B1, B2, B4-B7, C4-C6, C11, C23, C24, C26, C27, C31, C33, C35, C38.
 
-#### TASK-018 Docs-consistency PR (docs only)
-- WS GOV | Status NOT STARTED | P2 | Owner: MOD-02 | Dep: TASK-016; TASK-017 (for the branch wording) | Blk: -
-- Accept: fix KNOWN_ISSUES E6-E15 and every correction in the 28-Oct KNOWN_ISSUES list that the package
-  did not already make (C24 paths, C17 `NOTE_Y`/`mk`, B8 stale sentence, A2 exit code, C39 two parser
-  sites, C28 count 14, stale line references in C1/R5/C10/C12, E2 PRD `fl`, R6/R7 additions); the
-  OneDrive-safe branch procedure replaces `git switch` in `.claude/skills/monthly-update/SKILL.md` and
-  `docs/MONTHLY_UPDATE_PROCESS.md`; `docs/HANDOVER.md` section 5/8 and `monthly-updates/00_INBOX/README.md`
-  rows 12/17 match B8; release docs match the decided branch rule (DEC-OPEN-22). Every changed statement
-  agrees with the code (for example every tool exits 2 on a missing input: `tools/merge_reckoner.js:45-46`);
-  docs-only PR merged with `verify` green; `site/` unchanged.
-- Next: after TASK-017, one `docs/` branch from `origin/main`, created with `git branch` in a worktree.
-- Rel: E6-E15; A2, B8, C17, C24, C28, C39, R6, R7; REQ-028, REQ-041.
+#### TASK-018 Docs-consistency PR, widened 2-Nov-2026 (docs only; Material)
+- WS GOV | Status PLANNED | P1 | Owner: MOD-02 assigns (GOV-01 in its own worktree) | Dep: TASK-016 (done when the docs PR from branch `docs/mod-02-validation-20261102` merges) | Blk: -
+- Accept: (a) the ARC-01 conditions of 2-Nov-2026: CLAUDE.md "Project control" and "Never" widened to
+  `git checkout` / `git switch` / `git merge` / `git pull` and `--delete-branch`; one Guardian pre-check
+  rule everywhere; one risk class for a routine monthly refresh, and Gate B named in CLAUDE.md; the
+  TASK-017 `--apply` hold stated once or dropped; one worktree-before-TASK-017 rule; launch-packet
+  field 12 reworded; `--delete-branch` overridden in `release-manager.md`, the monthly-update skill and
+  the process doc (KNOWN_ISSUES E17; update-log ids `guardian-gate-b:D-01` .. `D-07` and `D-14`);
+  (b) the original E6-E15 and 28-Oct corrections: fix KNOWN_ISSUES E6-E15 and every correction in the
+  28-Oct KNOWN_ISSUES list that the package did not already make (C24 paths, C17 `NOTE_Y`/`mk`, B8 stale
+  sentence, A2 exit code, C39 two parser sites, C28 count 14, stale line references in C1/R5/C10/C12, E2
+  PRD `fl`, R6/R7 additions); the OneDrive-safe branch procedure replaces `git switch` in
+  `.claude/skills/monthly-update/SKILL.md` and `docs/MONTHLY_UPDATE_PROCESS.md`; `docs/HANDOVER.md`
+  sections 5 and 8; `monthly-updates/00_INBOX/README.md` rows 12/17 match B8; release docs match the
+  decided branch rule (DEC-OPEN-22); `docs/DEVELOPMENT_SETUP.md` agent count 9; the MINOR ARC-01 items
+  listed in the update-log; every changed statement agrees with the code (for example every tool exits 2
+  on a missing input: `tools/merge_reckoner.js:45-46`); contract (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 6 template) + ARC-01 DIFF REVIEW (expected GO) + `security-reviewer` before the push;
+  docs-only PR merged with `verify` green; `site/` unchanged; the Moderator checks each condition by
+  grep before Gate D.
+- Next: launched as GOV-01 after that docs PR has merged (one `docs/` branch from `origin/main`, created
+  with `git branch` in its own worktree); the launch packet carries the ARC-01 conditions.
+- Rel: E6-E15, E17; A2, B8, C17, C24, C28, C39, R6, R7; REQ-028, REQ-041; INC-19.
 
 #### TASK-020 Sep-2026 Reckoner catch-up: `/monthly-update September 2026`
-- WS OPS | Status BLOCKED | P1 | Owner: MOD-02 assigns (proposed OPS-01) | Dep: TASK-017; TASK-018
-  advisable; DEC-OPEN-04 if no PMS file comes; DEC-OPEN-11 before process steps 14/14a | Blk: DESK-01,
-  DESK-02, DESK-03, DESK-04 (inbox empty on 28-Oct, VERIFIED)
+- WS OPS | Status BLOCKED | P1 | Owner: MOD-02 assigns (proposed OPS-01) | Dep: TASK-017; not before
+  the widened TASK-018 PR merges (ARC-01 condition); DEC-OPEN-04 if no PMS file comes; DEC-OPEN-11 before
+  process steps 14/14a | Blk: DESK-01, DESK-02, DESK-03, DESK-04 (inbox empty of desk files on 28-Oct and
+  2-Nov, VERIFIED)
 - Inputs: the "October 2026" Monthly Investment Reckoner deck, `PMS_Scheme_Performance` as on 30-Sep-2026,
   Fund Manager Data as on 30-Sep-2026, latest PMS & AIF Analytics (process steps 9, 12, 13, 14, 14a, 15,
   16, 17 of `docs/MONTHLY_UPDATE_PROCESS.md`).
@@ -257,26 +296,34 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 
 #### TASK-021 Oct-2026 MF cycle: `/monthly-update October 2026` (data 31-Oct-2026), ~13-17-Nov-2026
 - WS OPS | Status PLANNED | P1 | Owner: MOD-02 assigns | Dep: TASK-017; TASK-024 before step 1 `--apply`;
-  TASK-022 (otherwise the Portfolio Matrix keeps "30 Sep 2026") | Blk: DESK-23, DESK-05, DESK-03
+  TASK-022 (otherwise the Portfolio Matrix keeps "30 Sep 2026"); not before the widened TASK-018 PR
+  merges (ARC-01 condition) | Blk: DESK-23, DESK-05, DESK-03
 - Accept: renames applied or rejected per the owner (TASK-024); every gate passes; the bake lines are read
   (not-merged list, WARN lines, CHECK count about 42, the unrecognised-sheet FAIL gate); step 9 runs after
   the bake; SIF analytics included or the gap logged; `docs/update-log/2026-10_Oct-2026.md` written; live
   check passes. Publishes automatically when every check passes (D61).
-- Next: confirm DEC-OPEN-08 and DEC-OPEN-01 by ~13-Nov-2026; ask the owner to request DESK-23 after 31-Oct.
+- Next: confirm DEC-OPEN-08 by ~13-Nov-2026 and DEC-OPEN-01 well before it (the producer build must merge
+  before step 10 of the cycle; `DECISION_LOG.md` section 1.2); ask the owner to request DESK-23 after 31-Oct.
 - Rel: A6, A14, B4, B5, C8, C15, C19, C21, C40; D46, D61, D80; REQ-044.
 
 ### 6.2 Waiting for an owner decision (O)
 
 #### TASK-022 Build the producer of NAV Data (#17) and Fund Risk Ratios & 3Y Rolling (#12)
-- WS NB | Status BLOCKED | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-02 and DEC-OPEN-03, then DEC-OPEN-01;
-  TASK-070 (the outgoing owner's toolchain is a local-only copy) | Blk: owner decision
+- WS NB | Status BLOCKED | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-01 (DEC-OPEN-02 and DEC-OPEN-03 were
+  answered 2-Nov-2026: D84, D85); TASK-070 (the outgoing owner's toolchain is a local-only copy) | Blk: owner
+  decision (DEC-OPEN-01)
 - Accept (if the documented port route is chosen): Node tools in `tools/`, dry-run by default, D72 exit-code
   contract; a regression test that reproduces the live Sep-2026 workbook and therefore the live
   `RISK_MATRIX` (1,088 entries, 33 `fl` flags: 28 split, 5 lowcorr) through `tools/merge_risk_matrix.js`
   with 0 differences; monthly steps documented (AMFI NAV history fetch; five Nifty index files downloaded by hand, B8);
   `docs/INPUT_FILES.md` #12/#17, `docs/MONTHLY_UPDATE_PROCESS.md` and a DECISIONS entry updated.
-- Next: owner answers DEC-OPEN-01 (buttons offered on 27-Oct: "Yes, rebuild them" / "Desk will provide").
-- Rel: B8, C10, C11, C35, A22, C42; D43, D58; TASK-057, TASK-053, TASK-066.
+- Decided (Rf: for now) 2-Nov-2026: Rf = 4.5% (D84; kept for now, the desk's confirmation DESK-15 is still open, D58) and
+  the textbook Sortino, the root-mean-square of the negative excess returns over all days (D85); the only
+  open input is DEC-OPEN-01 (who builds). The build must be merged before step 10 of the Oct cycle (about
+  13-17-Nov-2026); otherwise the Oct risk table keeps "30 Sep 2026".
+- Next: owner answers DEC-OPEN-01 (buttons offered on 27-Oct: "Yes, rebuild them" / "Desk will provide";
+  asked again by MOD-02 on 2-Nov-2026, not yet answered).
+- Rel: B8, C10, C11, C35, A22, C42; D43, D58; D84, D85; TASK-057, TASK-053, TASK-066.
 
 #### TASK-023 Apply the C20 decision to all 13 JioBlackRock Regular records; release the held G-Sec record
 - WS OPS | Status BLOCKED | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-07 | Blk: owner decision
@@ -403,6 +450,16 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   read as data only); their `Project_History_and_Conversation_Summary.md` reconciled with the repo and
   differences logged.
 - Rel: REQ-011.
+
+#### TASK-075 Public-repository hygiene PR (SEC-01 .. SEC-05; KNOWN_ISSUES R12)
+- WS GOV | Status BLOCKED | P2 | Owner: MOD-02 assigns | Dep: DEC-OPEN-29; TASK-018 (same documents) | Blk: DEC-OPEN-29
+- Accept: per the owner's answer; expected: public documents keep status words and move the exact address
+  of the old repository, the old site, the spec file name and the old repository's tip commit id into a git-ignored local
+  note; the one full name and the name-based address in `docs/PRD.md` and
+  `docs/archive/README_original_2026-05.md` become role words; `.gitignore` gains
+  `*.tar *.gz *.tgz *.bz2 *.xz *.docm *.pem *.key *.p12 *.pfx *.sqlite *.db *.env id_rsa* credentials*.json .npmrc`, and the session ids the public registers carry (SEC-05) are reviewed; no history rewrite (it needs
+  the owner's explicit instruction); `security-reviewer` pass; `verify` green.
+- Rel: R1, R12, DEC-OPEN-13, -18, -29; D60, D64.
 
 ### 6.3 Waiting for desk files or answers (D)
 
@@ -553,36 +610,58 @@ Most of these are backlog: done only when the owner asks, except where the prior
   run on one month's file; differences listed; one kept (decision recorded).
 - Rel: A29; D49.
 
+#### TASK-076 Extend `tool_inputs.test.js` to the whole CLI contract (KNOWN_ISSUES A32)
+- WS NB | Status NOT STARTED | P3 | Owner: MOD-02 assigns (on request) | Dep: - | Blk: -
+- Accept: cases for an unknown flag, a stray word, a value flag without a value, a bad or missing
+  `--as-on`, and a missing `--html` on `merge_pms_performance.js`, `pin_pms_alias.js` and
+  `merge_reckoner.js`, for every top-level tool where the rule applies; the `npm test` count updated in
+  every doc that quotes 903 (`INTERFACE_CONTRACTS.md` 5.1 wording corrected in the TASK-016 PR).
+- Rel: A32, D72, TASK-042.
+
 ### 6.5 Housekeeping (H)
 
-All repository-hygiene steps need the owner's agreement (DEC-OPEN-22) and TASK-017 first. Never
+All branch and worktree clean-up steps need the owner's agreement (DEC-OPEN-22) and TASK-017 first;
+TASK-062 only exports the patch and may run before TASK-017 (the export reads current objects:
+`git stash show -p --include-untracked stash@{0}` was readable on 2-Nov-2026, VERIFIED). Never
 `git checkout`/`git switch` to do them.
 
-#### TASK-061 Remove the 3 extra worktrees, then prune
+#### TASK-061 Remove the 4 extra worktrees, then prune
 - WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: TASK-017; DEC-OPEN-22 | Blk: owner OK
-- Worktrees (all clean, on merged commits): `.claude/worktrees/adoring-boyd-7028f6`
+- Worktrees (4, all clean, on merged commits): `.claude/worktrees/adoring-boyd-7028f6`
   (`fix/a27-rehearse-old-site` `18abff3`), `.claude/worktrees/focused-wright-d50bee`
   (`fix/reckoner-drop-gates` `fe060d5`), `%USERPROFILE%\AppData\Local\Temp\cpp-old` (detached `bf20c08`,
-  made 16-Oct for the PR #3 rehearsal).
+  made 16-Oct for the PR #3 rehearsal), and the new `.claude/worktrees/investment-proposal-dashboard-c68580`.
+- Changes since 28-Oct (2-Nov-2026): `adoring-boyd-7028f6` and `focused-wright-d50bee` now show a detached
+  HEAD (INFERRED: the owner archived NB-01 and NB-02 and the app released their branches; the HEAD change
+  was logged at 13:32:29 IST; both are clean and `fix/a27-rehearse-old-site` and `fix/reckoner-drop-gates`
+  still exist). The new `investment-proposal-dashboard-c68580` is unused: detached at `f5c2431`, clean, no
+  commits of its own (INFERRED: created by the desktop app at the start of MOD-02's chat on 2-Nov-2026).
 - Accept: removed with the desktop app's clean-up or `git worktree remove <path>`; `git worktree prune`
   also clears the stale admin dirs `cpp-main` and `wtdocs`; `git worktree list` shows only the main checkout.
 - Rel: E11.
 
-#### TASK-060 Delete the 26 merged local branches (including the 2 `claude/*`)
-- WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: TASK-061; DEC-OPEN-22 | Blk: owner OK
+#### TASK-060 Delete the 28 merged local branches (including the 3 `claude/*`)
+- WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: TASK-061 (section 4 order; see the note); DEC-OPEN-22 | Blk: owner OK
+- Scope (2-Nov-2026): the 28 non-main local branches, all merged: the 26 documented +
+  `handover/mod-01-to-mod-02-20261028` + `claude/investment-proposal-dashboard-c68580` (3 are `claude/*`
+  session branches).
 - Accept: `git branch -d` (never `-D`) on each; `git branch --no-merged main` stays empty.
+- Note: TASK-060 no longer needs the two NB worktrees removed first, because their branches are released
+  (both worktrees show a detached HEAD); once the owner agrees, `fix/a27-rehearse-old-site` and
+  `fix/reckoner-drop-gates` can be deleted with `git branch -d`.
 
-#### TASK-059 Delete the 25 merged branches on origin
-- WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: DEC-OPEN-22; TASK-061 | Blk: owner OK
-- Accept: the 25 merged feature branches (PRs #4-#28) deleted on origin; `main` untouched; the rule for
+#### TASK-059 Delete the 26 merged branches on origin
+- WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: DEC-OPEN-22; TASK-060 | Blk: owner OK
+- Accept: the 26 merged feature branches (PRs #4-#29) deleted on origin; `main` untouched; the rule for
   future merges recorded (DEC-OPEN-22) and the release docs match it (E12).
 - Rel: E12.
 
 #### TASK-062 Export `stash@{0}` to `backups/`, then drop it after the owner agrees
 - WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: DEC-OPEN-22 | Blk: owner OK
 - Accept: `git stash show -p --include-untracked stash@{0}` written to `backups/<date>_stash-export/` (it
-  exported all 26 files, 1,408,451 bytes, on 28-Oct); owner agrees; `git stash drop`. Never apply it:
-  it would revert Sep-2026 page data.
+  exported all 26 files, 1,408,451 bytes, on 28-Oct; readable again on 2-Nov-2026, 1,408,451 bytes,
+  VERIFIED); the export may run before TASK-017; owner agrees; `git stash drop`. Never apply it: it
+  would revert Sep-2026 page data.
 - Rel: REPOSITORY_AND_ENVIRONMENT_STATE (stash analysis).
 
 #### TASK-063 Retention rule for `backups/`
@@ -607,33 +686,13 @@ All repository-hygiene steps need the owner's agreement (DEC-OPEN-22) and TASK-0
 
 ### 6.6 Governance (G)
 
-#### TASK-015 Produce the MOD-01 -> MOD-02 handover package
-- WS GOV | Status IN PROGRESS | P1 | Owner: MOD-01 | Dep: - | Blk: -
-- Scope: `docs/handover/` (master, workstream and Guardian handovers, bootstrap prompt, templates,
-  continuations), `docs/project-control/` (registers), `.claude/agents/integration-guardian.md`, new
-  KNOWN_ISSUES entries (A29-A31, C41-C45, E6-E16, R9-R11), and the CLAUDE.md, `docs/README.md`,
-  `CHANGELOG.md`, `docs/PROJECT_STATE.md` updates; no change to `site/` or `tools/`.
-- Accept: committed on `handover/mod-01-to-mod-02-20261028`, PR opened, `verify` green, merged; the merge
-  of `handover/mod-01-to-mod-02-20261028` on `origin/main`; MOD-01's final report given to the owner.
-- Next: MOD-01 reports the merge SHA and PR number to the owner when merged; MOD-02 records them here
-  at TASK-016 (step D8 of the successor prompt) and sets VERIFIED COMPLETE.
-- Rel: REQ-063..REQ-095.
-
-#### TASK-016 MOD-02 validates the package against the repo before assigning work
-- WS GOV | Status PLANNED | P1 | Owner: MOD-02 | Dep: TASK-015 | Blk: -
-- Accept: `git fetch`; `origin/main` = the merge of `handover/mod-01-to-mod-02-20261028` or newer; 0 open
-  PRs; `node tools/verify_page.js site` output equals section 3; `npm test` 903 checks, 0 failures;
-  registers spot-checked against code and git (at least: 5 tasks, 5 KNOWN_ISSUES rows, 3 decisions); any
-  difference corrected in a `docs/` PR; result recorded in `INTEGRATION_AND_REGRESSION_LOG.md` and here.
-- Next: the owner starts MOD-02 with
-  `docs/handover/continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`.
-- Rel: REQ-071, REQ-072, REQ-081.
-
 #### TASK-074 Record the conversation-only owner decisions as D-numbers
 - WS GOV | Status PLANNED | P2 | Owner: MOD-02 | Dep: TASK-015 | Blk: -
 - Accept: each approved decision listed in `DECISION_LOG.md` section 2.2 recorded in `docs/DECISIONS.md` from
-  D84, wording confirmed by the owner; the old-site retirement condition added to KNOWN_ISSUES R7 and
-  `docs/DEPLOYMENT.md`.
+  D86 (D84 and D85 are used by the 2-Nov-2026 answers), wording confirmed by the owner; the old-site
+  retirement condition added to KNOWN_ISSUES R7 and `docs/DEPLOYMENT.md`. The R7 part is already recorded
+  (KNOWN_ISSUES R7 status line and corrected block); only `docs/DEPLOYMENT.md` and `docs/DECISIONS.md` still
+  lack the full-testing condition (audit finding decisions F-01).
 - Rel: REQ-049, REQ-058; R7.
 
 #### TASK-071 Move memory-only procedures and side-session-note traps into repo docs
@@ -644,6 +703,13 @@ All repository-hygiene steps need the owner's agreement (DEC-OPEN-22) and TASK-0
   receiver workflow.
 - Accept: each item documented in a tracked doc (OPERATING_MANUAL, DEVELOPMENT_SETUP or TESTING); E16 closed.
 - Rel: E16.
+
+#### TASK-077 TASK-016 audit corrections backlog (P3 wording and snapshot errata)
+- WS GOV | Status PLANNED | P2 | Owner: MOD-02 assigns (docs-keeper) | Dep: TASK-018 | Blk: -
+- Accept: every P3 item of the appendix in `docs/update-log/2026-11-02_task-016-validation.md` applied or
+  rejected with a reason; the dated 28-Oct snapshot documents carry errata through `docs/handover/README.md`
+  instead of rewrites; links and ids re-checked.
+- Rel: update-log appendix; INC-19.
 
 #### TASK-054 Correct PRD facts (E2); rewrite or retire runbooks and specs (E3)
 - WS GOV | Status NOT STARTED | P2 | Owner: MOD-02 | Dep: - | Blk: -
@@ -658,7 +724,7 @@ All repository-hygiene steps need the owner's agreement (DEC-OPEN-22) and TASK-0
   recorded in `docs/DEVELOPMENT_SETUP.md` and `docs/PROJECT_STATE.md`.
 - Rel: REQ-034; R6.
 
-## 7. Completed history (TASK-001..TASK-014, chronological)
+## 7. Completed history (TASK-001..TASK-016, chronological)
 
 | ID | Title | WS | Status | Owner chat | Evidence (PR, merge SHA) | Related |
 |---|---|---|---|---|---|---|
@@ -676,6 +742,8 @@ All repository-hygiene steps need the owner's agreement (DEC-OPEN-22) and TASK-0
 | TASK-012 | Live acceptance check of the new site: 7 areas PASS on S6; C24-C27 logged (21-Oct) | EX | VERIFIED COMPLETE | MOD-01 | PR #25 `83f777c`; `docs/PROJECT_STATE.md` "Latest verification" | REQ-019, REQ-056; C24-C27; INC-13 |
 | TASK-013 | PowerPoint design system (measured layout, continuation slides, page numbers, `*` marker) and its release record (22-Oct) | NB | IMPLEMENTED NOT FULLY VERIFIED (merged, published, live 7/7; spec residuals listed per REQ-PPT item) | NB-03 | PR #26 `5d39821` (owner go-ahead 22-Oct 15:36:58 UTC after the montage and sample deck were sent), PR #27 `5bcce88`; `docs/proposal-output-format-audit.md` | REQ-057..REQ-060, REQ-PPT-01..153; D82, D83; C22 closed; C28-C34 opened |
 | TASK-014 | Ingest the outgoing owner's 23-Oct export: 2,720 files verified, 32 desk files filed locally, findings logged; no `site/`/`tools/` change (23-27-Oct) | EX | VERIFIED COMPLETE (follow-ups open) | MOD-01 | PR #28 `2b2a397`; `docs/update-log/2026-10-23_handover-export.md` | REQ-061, REQ-011; B3 closed; B8, B9, C35-C40, A28, R8 opened; INC-14, INC-15 |
+| TASK-015 | Produce the MOD-01 -> MOD-02 handover package: master and workstream handovers, bootstrap prompt, successor prompt, project-control registers, the integration-guardian agent, 22 new KNOWN_ISSUES entries (27-30-Oct) | GOV | VERIFIED COMPLETE | MOD-01 | PR #29 `f5c2431` (head `7cc3946`, merged 30-Oct-2026 07:46:59Z; verify green; Gate A reconstructed and Gate B by ARC-01 on 2-Nov-2026, INC-19). VERIFIED COMPLETE because every git-verifiable acceptance item is met (PR merged, verify green, merge on origin/main, no site/ or tools/ change); the REQ-063..095 statuses record each requirement's own verification state (19 IMPLEMENTED NOT FULLY VERIFIED, 3 IN PROGRESS); MOD-01's final report to the owner is chat-only and cannot be verified from git | REQ-063..REQ-095; E17, INC-19 |
+| TASK-016 | MOD-02 validates the package against the repository (2-Nov-2026) | GOV | VERIFIED COMPLETE | MOD-02 | validation record `docs/update-log/2026-11-02_task-016-validation.md` and `INTEGRATION_AND_REGRESSION_LOG.md` section 11: 17 checks, 77 audit findings (P2 17, all confirmed; P3 60); corrections in the docs PR from branch `docs/mod-02-validation-20261102` | REQ-071, REQ-072, REQ-081 (REQ-071 stays IN PROGRESS until TASK-064); INC-18, INC-19 |
 
 TASK-013 stays IMPLEMENTED NOT FULLY VERIFIED until the residual REQ-PPT items are verified or carried by
 their own tasks (TASK-038, TASK-069, TASK-031, DEC-OPEN-23); see the REQ-PPT table in
@@ -683,14 +751,14 @@ their own tasks (TASK-038, TASK-069, TASK-031, DEC-OPEN-23); see the REQ-PPT tab
 
 ## 8. Appendix A. Desk requests (scope of TASK-019; the owner sends every request)
 
-Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every row: UNKNOWN on 28-Oct-2026.
+Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every row: UNKNOWN on 28-Oct and still on 2-Nov-2026.
 
 | ID | Request | Blocks / affects |
 |---|---|---|
 | DESK-01 | `PMS_Scheme_Performance` as on 31-Aug-2026 and 30-Sep-2026 (#14) | blocks PMS steps 12-13 (B1); TASK-020 |
 | DESK-02 | "October 2026" Monthly Investment Reckoner deck (#15, final issue) | blocks steps 14, 14a, 15 (B2); TASK-020 |
-| DESK-03 | Fund Manager Data as on 30-Sep-2026 (then 31-Oct) (#11) | step 9 (B5, C15) |
-| DESK-04 | Latest PMS & AIF Analytics (#16) | step 16 (B6) |
+| DESK-03 | Fund Manager Data as on 30-Sep-2026 (then 31-Oct) (#11) | step 9 (B5, C15); TASK-020 |
+| DESK-04 | Latest PMS & AIF Analytics (#16) | step 16 (B6); TASK-020 |
 | DESK-05 | Equity and Hybrid Analytics including SIF / long-short schemes (#3-#4) | B4, C8 |
 | DESK-06 | Current Exit Load & Expected IRR Return Range (P4) | C24, C6, C38, B7; TASK-026 |
 | DESK-07 | Current SIF Master List (P3) | B7 |
@@ -701,8 +769,8 @@ Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every 
 | DESK-12 | Mosaic Multiyield Series I retired or closed; Series II | C4; TASK-029 |
 | DESK-13 | AMC of Prism Hybrid Long-Short Fund and of Magnum Equity Ex-Top 100 Long-Short SIF (+ IRR bands) | C6, C38, C24; TASK-029 |
 | DESK-14 | Unit and period of the Select alpha | C23; TASK-030 |
-| DESK-15 | Risk-free house rate | C11; DEC-OPEN-02 |
-| DESK-16 | Sortino definition (with the owner) | C35; DEC-OPEN-03 |
+| DESK-15 | Risk-free house rate | C11; DEC-OPEN-02 (Rf kept at 4.5%, D84; desk confirmation still open, D58) |
+| DESK-16 | Sortino definition (with the owner) | C35; DEC-OPEN-03 (answered 2-Nov: D85) |
 | DESK-17 | Mirae Asset S&P 500 Top 50 ETF FoF and NYSE FANG+ ETF FoF September returns | check before a client deck uses them |
 | DESK-18 | Why 4 unmatured Debt ETFs are absent from the Sep Monitor | C19 follow-up |
 | DESK-19 | BHARAT Bond FoF Apr-2030: Direct = Regular, true? | C27 |
@@ -717,3 +785,10 @@ Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every 
 | Date | Task(s) | Change | Evidence | By |
 |---|---|---|---|---|
 | 28-Oct-2026 | TASK-001..TASK-074 | Register created; historical work numbered first (TASK-001..014), handover governance next (015-016), open work after (017-074). Statuses as in section 5. | fact sheets of 28-Oct-2026; `verify_page` and `npm test` re-run 28-Oct | MOD-01 |
+| 2-Nov-2026 | TASK-015 | IN PROGRESS -> VERIFIED COMPLETE | PR #29 merged 30-Oct-2026 07:46:59Z, merge `f5c2431`; CI green; ARC-01 review 2-Nov | MOD-02 |
+| 2-Nov-2026 | TASK-016 | PLANNED -> VERIFIED COMPLETE | record in `INTEGRATION_AND_REGRESSION_LOG.md` section 11 and `docs/update-log/2026-11-02_task-016-validation.md` | MOD-02 |
+| 2-Nov-2026 | TASK-017 | NOT STARTED -> IN PROGRESS | OneDrive.exe running since 11:47 IST; folder not pinned; 228 of 568 Offline | MOD-02 |
+| 2-Nov-2026 | TASK-018 | NOT STARTED -> PLANNED; scope widened; P2 -> P1 | ARC-01 conditions of 2-Nov-2026 (E17) | MOD-02 |
+| 2-Nov-2026 | TASK-022 | stays BLOCKED; Rf and Sortino decided (Rf: for now) | D84, D85 (DEC-OPEN-02, DEC-OPEN-03 answered); DEC-OPEN-01 pending | MOD-02 |
+| 2-Nov-2026 | TASK-059, TASK-060, TASK-061 | counts updated (26 / 28 / 4) | `git branch` and `git worktree list`, 2-Nov-2026 | MOD-02 |
+| 2-Nov-2026 | TASK-075, TASK-076, TASK-077 | created | TASK-016 audit (SEC-01..05; interfaces D-01; P3 backlog) | MOD-02 |

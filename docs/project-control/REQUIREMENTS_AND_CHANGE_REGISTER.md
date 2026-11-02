@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 (handover package, TASK-015) |
+| Version | 2 |
+| Date | 2-Nov-2026 |
+| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026) |
 | Status | Authoritative for what the owner asked for and how each request stands |
 | Supersedes | nothing (first version; requirement IDs did not exist before 28-Oct-2026) |
-| Next review | MOD-02 at TASK-016, then whenever the owner gives a new requirement |
+| Next review | when the widened TASK-018 PR merges, then whenever the owner gives a new requirement |
 
 ## 1. What this file is
 
@@ -41,17 +41,28 @@ evidence.
 - **Status words:** VERIFIED COMPLETE, IMPLEMENTED NOT FULLY VERIFIED (shortened to INFV only in the
   counts below), IN PROGRESS, PLANNED, BLOCKED, NOT STARTED, EXISTING DEFECT, UNKNOWN / NEEDS
   INVESTIGATION, SUPERSEDED.
+- **Meaning of VERIFIED COMPLETE (Update 2-Nov-2026).** VERIFIED COMPLETE = the request as literally worded
+  is met; an unconfirmed interpretation is listed in section 6.
+- **Date of the evidence (Update 2-Nov-2026).** Evidence cells are as of 28-Oct-2026 unless they carry a
+  2-Nov-2026 mark; for example "28 PRs" means PRs #1-#28 (PR #29 was merged on 30-Oct-2026).
 - **No client data.** Fund and scheme names are public product names. Client names, investor data and the
   owner's account e-mail are never written here.
 
-## 3. Counts (28-Oct-2026)
+## 3. Counts (28-Oct-2026, updated 2-Nov-2026)
+
+Update 2-Nov-2026: statuses of REQ-063..REQ-095 updated after PR #29 (`f5c2431`); REQ-PPT-150 corrected (C44).
+The table below is the count after these updates. On 28-Oct-2026 it read REQ 49 VERIFIED COMPLETE / 10 INFV /
+35 IN PROGRESS / 1 PLANNED / 0 BLOCKED and REQ-PPT 118 / 34 / 0 / 0 / 1. `MASTER_HANDOVER_2026-10-28_v1.md`,
+`NEW_BUILD_HANDOVER_2026-10-28_v1.md` and `REPOSITORY_AND_ENVIRONMENT_STATE.md` (K21) still quote the 28-Oct
+counts: they are dated snapshots and were not edited.
 
 | Set | Total | VERIFIED COMPLETE | INFV | IN PROGRESS | PLANNED | BLOCKED |
 |---|---|---|---|---|---|---|
-| REQ-001..REQ-095 | 95 | 49 | 10 | 35 | 1 | 0 |
-| REQ-PPT-01..REQ-PPT-153 | 153 | 118 | 34 | 0 | 0 | 1 |
+| REQ-001..REQ-095 | 95 | 60 | 29 | 5 | 1 | 0 |
+| REQ-PPT-01..REQ-PPT-153 | 153 | 117 | 35 | 0 | 0 | 1 |
 
-REQ by workstream: GOV 58, EX 25, NB 8, OPS 4. All REQ-PPT items are NB. Next free IDs: **REQ-096**,
+REQ by workstream: GOV 58, EX 25, NB 8, OPS 4 (unchanged). The 5 REQ rows still IN PROGRESS are REQ-006,
+REQ-045, REQ-068, REQ-071 and REQ-094. All REQ-PPT items are NB. Next free IDs: **REQ-096**,
 **REQ-PPT-154**.
 
 ## 4. Requirements REQ-001..REQ-095
@@ -87,14 +98,14 @@ rule every chat follows).
 | REQ-020 | s6.4 | Baseline completion criteria, including a durable technical handover package. | EX | VERIFIED COMPLETE | Handover, replication report and state docs exist. | `docs/HANDOVER.md`, `docs/REPLICATION_REPORT.md`, `docs/PROJECT_STATE.md` | PR #1 | TASK-001 |
 | REQ-021 | s7.1, s7.3 | GitHub transfer as a controlled operation; sanitised migration if history holds sensitive material; never claim history preserved without verifying. | EX | VERIFIED COMPLETE | History migrated without the sensitive lines; checked. | git history, tag `handover-baseline` | D64; 74 commits migrated; tag -> `862e40b`, the sanitised equivalent of upstream `72e1f1e` | TASK-001 |
 | REQ-022 | s7.2 | Remotes: `origin` = the owner's repo, `upstream` = the original; verify URLs before pushing. | EX | VERIFIED COMPLETE | Push to upstream impossible. | git config | `git remote -v`; upstream push URL disabled | TASK-001 |
-| REQ-023 | s7.3, s13 | Never force-push, destructively reset, rewrite shared history, delete branches or replace the repo as a shortcut. | GOV | IMPLEMENTED NOT FULLY VERIFIED | No such operation on shared history. | git, GitHub | CLAUDE.md "Never"; no contrary evidence (a negative cannot be proven) | standing |
+| REQ-023 | s7.3, s13 | Never force-push, destructively reset, rewrite shared history, delete branches or replace the repo as a shortcut. | GOV | IMPLEMENTED NOT FULLY VERIFIED | No such operation on shared history. | git, GitHub | Correction 2-Nov-2026: CLAUDE.md "Never" covers force-push and rewriting published history only (not reset, delete branches or replace the repo); `release-manager.md:33` bars deleting "branches others use". GitHub activity API, 2-Nov-2026: 0 force_push events; main = branch_creation at `862e40b` then 29 pr_merge events, before/after chain gap-free to `f5c2431`; 0 non-merge commits on main (first-parent line) since `handover-baseline`. Delete branches: contrary evidence exists - the head branches of PRs #1-#3 (`setup/transfer-baseline`, `docs/post-transfer-state`, `fix/foundation-blocklib-verify`) were deleted 2-3 s after each merge on 16-Oct-2026 (head_ref_deleted events; E12 attributes it to `gh pr merge --delete-branch`, which the release docs still prescribe). Whether that breaches the rule is the owner's call (DEC-OPEN-22). Resets: this clone's reflog shows 16 reset entries (10 fast-forwards to origin/main, 5 no-ops, 1 move to the sanitised history on 16-Oct before origin existed); other clones and worktrees are not visible. | standing |
 | REQ-024 | s7.4, s11 | One branch per change; clear names and commits; tests before push; PRs; follow branch protection; verify the final SHA and PR state. | GOV | VERIFIED COMPLETE | Every change goes through a PR and the `verify` check. | `.github/workflows/pages.yml` | D68; 28 PRs merged; verify gate. Branch protection not configured (DEC-OPEN-17) | standing; TASK-036 |
-| REQ-025 | s8.1-8.2 | After the baseline, a practical architecture: clear boundaries, single responsibility, centralised business rules, no duplication, reproducible dependencies. | NB | IMPLEMENTED NOT FULLY VERIFIED | Shared libraries and single predicates; duplications removed. | `tools/lib/`, `site/` | `docs/ARCHITECTURE.md`; `tools/lib` (D72); CLAUDE.md rule 8. C1 deferred; A7, C29 open | TASK-039, TASK-045, TASK-046 |
+| REQ-025 | s8.1-8.2 | After the baseline, a practical architecture: clear boundaries, single responsibility, centralised business rules, no duplication, reproducible dependencies. | NB | IMPLEMENTED NOT FULLY VERIFIED | Shared libraries and single predicates; duplications removed. | `tools/lib/`, `site/` | `docs/ARCHITECTURE.md`; `tools/lib` (D72); CLAUDE.md rule 8. C1 deferred; C29 open; A7 partly fixed (PR #7), the page's Direct uploader is still a separate parser | TASK-039, TASK-045, TASK-046 |
 | REQ-026 | s8.3 | Financial-domain standards (units, scale, dates, provenance, no silent substitution, totals); a financial reviewer examines material changes to calculations or data. | GOV | VERIFIED COMPLETE | Rules written; reviewer used on data changes. | `.claude/agents/financial-data-reviewer.md`, CLAUDE.md rules 4-6 | reviews on PR #18 (3,758 field checks, 0 mismatches, D81) and D83 | standing |
 | REQ-027 | s9.1-9.2 | A focused CLAUDE.md and documentation set adapted to the project; no empty placeholders. | GOV | VERIFIED COMPLETE | The doc set exists; one fact in one place. | `docs/` | `docs/README.md` doc map | TASK-001 |
 | REQ-028 | s9.3 | Keep PROJECT_STATE, DECISIONS, CHANGELOG, KNOWN_ISSUES and HANDOVER current, updated inside the change that makes them stale. | GOV | IMPLEMENTED NOT FULLY VERIFIED | Each PR updates the docs it makes stale. | docs | CHANGELOG entry per PR; drift found 28-Oct (KNOWN_ISSUES E7-E15) | standing; TASK-018 |
 | REQ-029 | s10.1 | Reusable specialist agents for roles A-H under `.claude/agents/`. | GOV | VERIFIED COMPLETE | Eight agent files. | `.claude/agents/` | 8 files (archaeologist, architect, financial reviewer, implementation, QA, security, docs, release) | TASK-001 |
-| REQ-030 | s10.2 | Orchestration rules: lead accountable; specialists as listed; QA independent; security review for release-critical changes; no overlapping write access. | GOV | IMPLEMENTED NOT FULLY VERIFIED | One writer per file; reviewers recorded. | process | reviews on PRs #17, #18, #26 (transcripts). NB-03 shared the main checkout with MOD-01 (lesson R6) | REQ-074, REQ-075 |
+| REQ-030 | s10.2 | Orchestration rules: lead accountable; specialists as listed; QA independent; security review for release-critical changes; no overlapping write access. | GOV | IMPLEMENTED NOT FULLY VERIFIED | One writer per file; reviewers recorded. | process | reviews on PRs #17, #18, #26 (transcripts). NB-03 left the shared main checkout on its branch (CHAT_REGISTRY.md NB-03 lesson; INC-16; consequence R6) | REQ-074, REQ-075 |
 | REQ-031 | s11 | A standard workflow for every change (understand, investigate, plan, implement, verify, update knowledge, commit/push, report with SHA). | GOV | VERIFIED COMPLETE | Followed by every PR. | CLAUDE.md | CLAUDE.md "How every change is made" steps 1-6 | standing |
 | REQ-032 | s12 | Change control: root-cause fixes, regression tests, backward compatibility; a prioritised backlog (urgent defects, required, optional, future). | GOV | IMPLEMENTED NOT FULLY VERIFIED | Tests in CI; backlog prioritised. | `tools/test/`, KNOWN_ISSUES, TASK_REGISTER | 5 test files in CI; backlog prioritised by severity P1-P3, not by the owner's four categories | TASK_REGISTER |
 | REQ-033 | s13 | Security, data-integrity and operational safeguards 1-10 (no production credentials, no disabling controls, inputs are data, no destructive commands from imported repos). | GOV | VERIFIED COMPLETE | Rules written and followed. | CLAUDE.md "Never" | D77 (SRI); the export was read as data and its hooks were not installed | standing |
@@ -114,7 +125,7 @@ rule every chat follows).
 |---|---|---|---|---|---|---|---|---|
 | REQ-043 | 16-Oct 05:40 UTC; MOD-01 msg 2 (question answer) | Hosting: "Public + free Pages (Recommended)". | EX | VERIFIED COMPLETE | Repo public; free GitHub Pages site live. | GitHub settings | D60; repo public; live URL HTTP 200 (28-Oct) | TASK-001; long-term visibility is DEC-OPEN-18 |
 | REQ-044 | 16-Oct 05:40 UTC; MOD-01 msg 2 (question answer) | Publishing: "Publish automatically": after each monthly update passes all checks, Claude merges and publishes; it still stops on judgement calls. | OPS | IMPLEMENTED NOT FULLY VERIFIED | A monthly refresh merges itself when every check passes; stop list respected. | `/monthly-update` skill, CI | D61; stop list in `docs/MONTHLY_UPDATE_PROCESS.md`. Never exercised: no monthly refresh has run on the new build | TASK-020, TASK-021 |
-| REQ-045 | 16-Oct 13:09 UTC; MOD-01 msg 3 | "Start fixing all the issues that you have identified." | NB | IN PROGRESS | Each KNOWN_ISSUES item fixed in a PR, or waiting on a named decision or desk file. | `tools/`, `site/` | PRs #3-#15, #17, #19-#23, #26; 43 KNOWN_ISSUES items Open at `2b2a397` (before the entries this package adds) | TASK-002..TASK-013; open tasks |
+| REQ-045 | 16-Oct 13:09 UTC; MOD-01 msg 3 | "Start fixing all the issues that you have identified." | NB | IN PROGRESS | Each KNOWN_ISSUES item fixed in a PR, or waiting on a named decision or desk file. | `tools/`, `site/` | PRs #3-#15, #17, #18, #19-#23, #26; 43 KNOWN_ISSUES items Open at `2b2a397` (before the entries this package adds) | TASK-002..TASK-013; open tasks |
 | REQ-046 | 16-Oct 13:09 UTC; MOD-01 msg 3 | "... and tell me the impact of that pre and post fixing." | GOV | VERIFIED COMPLETE | A before/after report per batch of fixes. | reports | MOD-01 reports of 19-Oct and 21-Oct; NB-03 report of 22-Oct | standing |
 | REQ-047 | 16-Oct 13:09 UTC; MOD-01 msg 3 | A prompt for the previous owner to extract data from their Claude build that "captures all of the data that may not be required immediately but may be required in the future". | EX | VERIFIED COMPLETE | Prompt written; export received. | `docs/handover/DATA_EXTRACTION_PROMPT.md` | PR #16, PR #24; export received 23-Oct | TASK-008 |
 | REQ-048 | 16-Oct 13:09 UTC; MOD-01 msg 3 | "Don't mention anything about deleting the existing Proposal dashboard" in that prompt. | EX | VERIFIED COMPLETE | The prompt is silent on retirement. | same | `DATA_EXTRACTION_PROMPT.md:20` (only "never modify, move, rename or delete anything in the original locations") | TASK-008 |
@@ -145,47 +156,54 @@ rule every chat follows).
 
 ### 4.5 Owner's handover master prompt of 27-Oct-2026 15:25 UTC (MOD-01 msg 11), re-issued unchanged 28-Oct-2026 05:33 UTC: "Project handover, multi-chat orchestration, codebase integrity and automatic context recovery"
 
-All are IN PROGRESS: the deliverable is the handover package (TASK-015, MOD-01), validated by MOD-02
+All were IN PROGRESS on 28-Oct-2026: the deliverable is the handover package (TASK-015, MOD-01), validated by MOD-02
 (TASK-016). Default acceptance for each row: the named file exists on `main` after the merge of
 `handover/mod-01-to-mod-02-20261028`, and TASK-016 finds it consistent with the repo and git.
 Verification evidence for every row: pending until TASK-016 records its result (the only verified fact on
 28-Oct is the REQ-063 one stated in its row).
 
+Update 2-Nov-2026: PR #29 was merged on 30-Oct-2026 (`f5c2431`), so the first condition is met for every row.
+After the TASK-016 audit, 11 rows are VERIFIED COMPLETE (REQ-063, 076, 079, 080, 081, 082, 084, 085, 089, 090,
+091), 19 are IMPLEMENTED NOT FULLY VERIFIED (REQ-064, 065, 066, 067, 069, 070, 072, 073, 074, 075, 077, 078,
+083, 086, 087, 088, 092, 093, 095: consistency with the repo checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077, or the evidence is
+conversation-only or machine state) and 3 stay IN PROGRESS (REQ-068, REQ-071, REQ-094). This table has no
+evidence column: the dated clause on each changed row is in its "Behaviour / acceptance" cell.
+
 | ID | Src | Requirement (close to the owner's words) | WS | Status | Behaviour / acceptance (beyond the default) | Affected components | Task / chat |
 |---|---|---|---|---|---|---|---|
-| REQ-063 | s1 | "Stop all current implementation, feature development, refactoring, bug fixing, deployment ... immediately." The only objective is a complete, verified handover package; do not finish features or modify business logic. | GOV | IN PROGRESS | No commit to `site/` or `tools/` after `2b2a397` until MOD-02 resumes work (VERIFIED on 28-Oct). Pauses REQ-006, REQ-045 and OPS work. | `site/`, `tools/` | TASK-015 / MOD-01 |
-| REQ-064 | s1 | Capture the original project and requirements, the source and destination repositories, the existing dashboard's actual replication status and the new build's actual implementation status. | GOV | IN PROGRESS | - | `docs/handover/MASTER_HANDOVER_2026-10-28_v1.md`, `EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`, `NEW_BUILD_HANDOVER_2026-10-28_v1.md` | TASK-015 |
-| REQ-065 | s1, s3 | Capture every material improvement the owner suggested, with implemented, partial, planned and blocked status; "Do not omit a requested improvement merely because it has not yet been implemented." | GOV | IN PROGRESS | Every request in this file, implemented or not. | this file | TASK-015 |
-| REQ-066 | s1, s4 | Capture uncommitted code, active branches, worktrees and incomplete tasks; distinguish working tree, last commit and last push; identify overlapping changes by several chats. | GOV | IN PROGRESS | - | `REPOSITORY_AND_ENVIRONMENT_STATE.md` | TASK-015 |
-| REQ-067 | s1 | Capture architecture decisions, dependencies and shared interfaces; existing defects, technical debt and outstanding decisions. | GOV | IN PROGRESS | - | `ARCHITECTURE_AND_DEPENDENCY_MAP.md`, `INTERFACE_CONTRACTS.md`, `KNOWN_ISSUES_AND_REGRESSION_RISKS.md`, `DECISION_LOG.md` | TASK-015 |
+| REQ-063 | s1 | "Stop all current implementation, feature development, refactoring, bug fixing, deployment ... immediately." The only objective is a complete, verified handover package; do not finish features or modify business logic. | GOV | VERIFIED COMPLETE | No commit to `site/` or `tools/` after `2b2a397` until MOD-02 resumes work (VERIFIED on 28-Oct). Pauses REQ-006, REQ-045 and OPS work. (2-Nov-2026: PR #29 f5c2431 merged; site/tools unchanged; the pause on REQ-006 and REQ-045 stays until MOD-02 lifts it) | `site/`, `tools/` | TASK-015 / MOD-01 |
+| REQ-064 | s1 | Capture the original project and requirements, the source and destination repositories, the existing dashboard's actual replication status and the new build's actual implementation status. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; acceptance is consistency with the repo, checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077) | `docs/handover/MASTER_HANDOVER_2026-10-28_v1.md`, `EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`, `NEW_BUILD_HANDOVER_2026-10-28_v1.md` | TASK-015 |
+| REQ-065 | s1, s3 | Capture every material improvement the owner suggested, with implemented, partial, planned and blocked status; "Do not omit a requested improvement merely because it has not yet been implemented." | GOV | IMPLEMENTED NOT FULLY VERIFIED | Every request in this file, implemented or not. (2-Nov-2026: PR #29 f5c2431 merged; audit requirements:D01-D09 handled here, D05 question still open) | this file | TASK-015 |
+| REQ-066 | s1, s4 | Capture uncommitted code, active branches, worktrees and incomplete tasks; distinguish working tree, last commit and last push; identify overlapping changes by several chats. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; REPOSITORY_AND_ENVIRONMENT_STATE was the 28-Oct machine state) | `REPOSITORY_AND_ENVIRONMENT_STATE.md` | TASK-015 |
+| REQ-067 | s1 | Capture architecture decisions, dependencies and shared interfaces; existing defects, technical debt and outstanding decisions. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; acceptance is consistency with the repo, checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077) | `ARCHITECTURE_AND_DEPENDENCY_MAP.md`, `INTERFACE_CONTRACTS.md`, `KNOWN_ISSUES_AND_REGRESSION_RISKS.md`, `DECISION_LOG.md` | TASK-015 |
 | REQ-068 | s2.1-2.4 | Operating principles: code, git and test evidence establish state; never discard, reset, clean, stash or force-push without a safe plan; label verified / inferred / uncertain / unknown; no project information may live only in a conversation. | GOV | IN PROGRESS | Repeats REQ-010, REQ-023; extends REQ-003. | all package documents | standing; TASK-071 (memory-only knowledge) |
-| REQ-069 | s3 | Investigate all available materials (both repos, PRD, chat history, historical files, code, CLAUDE.md, agents, docs, branches, dependencies, tests, deployment, changelogs, issue registers, suggested improvements); no indiscriminate scanning. | GOV | IN PROGRESS | Done through the 28-Oct fact sheets (session scratch, not committed). | - | TASK-015 |
-| REQ-070 | s5 | Use the nine status definitions consistently; never infer success from a file's presence or another chat's claims. | GOV | IN PROGRESS | - | all package documents | standing |
+| REQ-069 | s3 | Investigate all available materials (both repos, PRD, chat history, historical files, code, CLAUDE.md, agents, docs, branches, dependencies, tests, deployment, changelogs, issue registers, suggested improvements); no indiscriminate scanning. | GOV | IMPLEMENTED NOT FULLY VERIFIED | Done through the 28-Oct fact sheets (session scratch, not committed). (2-Nov-2026: PR #29 f5c2431 merged; the evidence is uncommitted session fact sheets) | - | TASK-015 |
+| REQ-070 | s5 | Use the nine status definitions consistently; never infer success from a file's presence or another chat's claims. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; acceptance is consistency with the repo, checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077) | all package documents | standing |
 | REQ-071 | s6 | Two workstreams: A existing dashboard first, B new build second. Sequence: validate the handover, complete the existing-dashboard verification, record its baseline, reassess the new build, resume improvements in dependency order, continue integration and release. Do not roll back legitimate new-build work. | GOV | IN PROGRESS | MOD-02 runs TASK-016 and TASK-064 before new-build work. | `TASK_REGISTER.md` s4 | TASK-016, TASK-064 / MOD-02 |
-| REQ-072 | s7, s16 | The next conversation is the Master Project Moderator (MOD-02), the owner's primary contact, owning project-wide coordination (decompose, assign, track, integrate, explain, relay, manage context transfers). | GOV | IN PROGRESS | - | `CHAT_REGISTRY.md`, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`, successor prompt | TASK-015, TASK-016 |
-| REQ-073 | s8 | Establish ARC-01, Codebase Integrity & Integration Guardian: reviews real diffs, ripple effects, ownership conflicts, interface compatibility, tests; reports to the Moderator; makes no product decisions. | GOV | IN PROGRESS | - | `.claude/agents/integration-guardian.md`, `docs/handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md` | TASK-015 |
-| REQ-074 | s9 | Isolated development: verify the actual filesystem arrangement; prefer git worktrees with dedicated branches; otherwise a single-writer policy. | GOV | IN PROGRESS | Coding sub-chats use their own worktree; at most one writer per shared file. | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` | TASK-015 |
-| REQ-075 | s10 | Maintain `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` and `ACTIVE_CHANGE_REGISTER.md` with the listed fields per task. | GOV | IN PROGRESS | - | those two files | TASK-015 |
-| REQ-076 | s11 | A 12-item change-impact contract before every material implementation; Guardian review for material or high-risk ones. | GOV | IN PROGRESS | - | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, Guardian agent | TASK-015 |
-| REQ-077 | s12 | Maintain `INTERFACE_CONTRACTS.md`; coordinate consumers before changing a shared interface. | GOV | IN PROGRESS | - | `INTERFACE_CONTRACTS.md` | TASK-015 |
-| REQ-078 | s13 | Integration gates A-E (implementation report, Guardian review, independent verification, controlled integration, acceptance tracked separately from deployment); an integration log; targeted recovery. | GOV | IN PROGRESS | - | `INTEGRATION_AND_REGRESSION_LOG.md` | TASK-015 |
-| REQ-079 | s14, s28 | A controlled successor-chat handover in 12 steps; never pretend to create or rename a chat; make the transfer copy-and-paste for the owner. | GOV | IN PROGRESS | - | `docs/handover/continuations/README.md` | TASK-015 |
-| REQ-080 | s15 | Initiate a context transfer on: three compactions, owner-reported lost context, inability to reconstruct tasks, missing details, approaching risk, need for a new specialist, retirement, Moderator replacement; prefer proactive handover; do not invent a compaction count. | GOV | IN PROGRESS | MOD-01 had two compactions (19-Oct, 27-Oct); it hands over because the owner ordered a new Moderator. | `docs/handover/continuations/README.md`, bootstrap prompt | TASK-015 |
-| REQ-081 | s16 | Two successor scenarios: a sub-chat continues from its actual task branch; a Moderator successor inherits everything and validates against the repo before assigning work. | GOV | IN PROGRESS | This handover is the Moderator scenario with a clean tree. | `docs/handover/continuations/README.md` | TASK-015, TASK-016 |
-| REQ-082 | s17 | Continuation-branch procedure with 8 pre-checks and names such as `handover/mod-01-to-mod-02-YYYYMMDD`; record the parent branch and source SHA. | GOV | IN PROGRESS | Branch `handover/mod-01-to-mod-02-20261028` from `2b2a397`. | git | TASK-015 |
-| REQ-083 | s18 | Preserve uncommitted work: cases A-D (checkpoint commit; inventory and private patch for mixed or sensitive changes; stop on ownership conflicts; maximum safe package when git is unsafe). | GOV | IN PROGRESS | Tree was clean before the package (no work-in-progress checkpoint needed). | git | TASK-015 |
-| REQ-084 | s19 | Verify the continuation branch (exists, correct base, contents, no unrelated changes, handover present, honest test status); push when safe; verify the remote SHA. | GOV | IN PROGRESS | - | git, GitHub | TASK-015 |
-| REQ-085 | s20 | A copy-ready successor prompt file with sections A-J; no placeholders unless unavoidable and explained. | GOV | IN PROGRESS | - | `docs/handover/continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md` | TASK-015 |
-| REQ-086 | s21 | The owner's handover message with the 10 listed items (stop notice, successor name, branch, paths, URLs, local-only changes, exact prompt, exact action). | GOV | IN PROGRESS | - | MOD-01's final report | TASK-015 |
-| REQ-087 | s22 | `CHAT_REGISTRY.md` with names `[CHAT-ID] \| [WORKSTREAM] \| [RESPONSIBILITY] \| [STATUS]`, the listed statuses and fields; never invent an inaccessible chat's status. | GOV | IN PROGRESS | - | `CHAT_REGISTRY.md` | TASK-015 |
-| REQ-088 | s23 | Task and change registers with stable IDs; update existing records rather than duplicate; approved decisions separate from recommendations; record the original requirement, behaviour, acceptance, status, components, evidence and owner. | GOV | IN PROGRESS | - | `TASK_REGISTER.md`, this file, `DECISION_LOG.md`, the other registers | TASK-015 |
-| REQ-089 | s24 | The document structure under `docs/handover/` and `docs/project-control/`; follow repository conventions where better suited; no empty templates. | GOV | IN PROGRESS | `docs/PROJECT_STATE.md` stays the single state document; `docs/project-control/README.md` points to it (no duplicate). | `docs/handover/`, `docs/project-control/` | TASK-015 |
-| REQ-090 | s25 | Dated, versioned handovers that never silently overwrite earlier ones; the index states which is authoritative. | GOV | IN PROGRESS | - | `docs/handover/README.md` | TASK-015 |
-| REQ-091 | s26 | The Moderator's 12-step process for every new requirement (context, workstream, dependencies, ownership, Guardian, acceptance criteria, decomposition, assignment, launch packet, tracking, gates, records). | GOV | IN PROGRESS | Applied through section 7 of this file. | `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` | TASK-015 |
-| REQ-092 | s27 | Decision escalation in plain language ("approximately at the level of a 10-year-old"): problem, why, options, effects, pros and cons, impact, maintenance, risk, reversibility, recommendation; record the decision; prepare the relay message; never claim it was sent. | GOV | IN PROGRESS | - | `DECISION_LOG.md` | TASK-015 |
-| REQ-093 | s29 | Safety: no secrets or client data in handovers or prompts; preserve uncommitted work; nothing of uncertain ownership staged; no destructive or force operations; never invent permissions or success. | GOV | IN PROGRESS | Repeats REQ-018, REQ-023. | all package documents | standing |
-| REQ-094 | s30 | A completeness check of the package (17 items) and consistency between the master handover and supporting files. | GOV | IN PROGRESS | - | the package | TASK-015, TASK-016 |
-| REQ-095 | s31, final directive | The final report A-G; "commit and push the documentation safely where authorised, and provide the exact next steps. Then stop." | GOV | IN PROGRESS | - | git, MOD-01's final report | TASK-015 |
+| REQ-072 | s7, s16 | The next conversation is the Master Project Moderator (MOD-02), the owner's primary contact, owning project-wide coordination (decompose, assign, track, integrate, explain, relay, manage context transfers). | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; CHAT_REGISTRY at f5c2431 still said MOD-02 QUEUED, not created) | `CHAT_REGISTRY.md`, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`, successor prompt | TASK-015, TASK-016 |
+| REQ-073 | s8 | Establish ARC-01, Codebase Integrity & Integration Guardian: reviews real diffs, ripple effects, ownership conflicts, interface compatibility, tests; reports to the Moderator; makes no product decisions. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; ARC-01 is a subagent only; its first review, of PR #29, was GO WITH CONDITIONS) | `.claude/agents/integration-guardian.md`, `docs/handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md` | TASK-015 |
+| REQ-074 | s9 | Isolated development: verify the actual filesystem arrangement; prefer git worktrees with dedicated branches; otherwise a single-writer policy. | GOV | IMPLEMENTED NOT FULLY VERIFIED | Coding sub-chats use their own worktree; at most one writer per shared file. (2-Nov-2026: PR #29 f5c2431 merged; rule documented; TASK-017 acceptance not yet met) | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` | TASK-015 |
+| REQ-075 | s10 | Maintain `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` and `ACTIVE_CHANGE_REGISTER.md` with the listed fields per task. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; ACTIVE_CHANGE_REGISTER at f5c2431 still held the TASK-015 claim) | those two files | TASK-015 |
+| REQ-076 | s11 | A 12-item change-impact contract before every material implementation; Guardian review for material or high-risk ones. | GOV | VERIFIED COMPLETE | (2-Nov-2026: PR #29 f5c2431 merged; 12-row contract in FILE_OWNERSHIP section 6 and the Guardian agent file) | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, Guardian agent | TASK-015 |
+| REQ-077 | s12 | Maintain `INTERFACE_CONTRACTS.md`; coordinate consumers before changing a shared interface. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; acceptance is consistency with the repo, checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077) | `INTERFACE_CONTRACTS.md` | TASK-015 |
+| REQ-078 | s13 | Integration gates A-E (implementation report, Guardian review, independent verification, controlled integration, acceptance tracked separately from deployment); an integration log; targeted recovery. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; the integration log at f5c2431 still said the merge was PENDING) | `INTEGRATION_AND_REGRESSION_LOG.md` | TASK-015 |
+| REQ-079 | s14, s28 | A controlled successor-chat handover in 12 steps; never pretend to create or rename a chat; make the transfer copy-and-paste for the owner. | GOV | VERIFIED COMPLETE | (2-Nov-2026: PR #29 f5c2431 merged; 12-step table in continuations/README.md section 3) | `docs/handover/continuations/README.md` | TASK-015 |
+| REQ-080 | s15 | Initiate a context transfer on: three compactions, owner-reported lost context, inability to reconstruct tasks, missing details, approaching risk, need for a new specialist, retirement, Moderator replacement; prefer proactive handover; do not invent a compaction count. | GOV | VERIFIED COMPLETE | MOD-01 had two compactions (19-Oct, 27-Oct); it hands over because the owner ordered a new Moderator. (2-Nov-2026: PR #29 f5c2431 merged; 8 triggers and the compaction-count rule in continuations/README.md section 1) | `docs/handover/continuations/README.md`, bootstrap prompt | TASK-015 |
+| REQ-081 | s16 | Two successor scenarios: a sub-chat continues from its actual task branch; a Moderator successor inherits everything and validates against the repo before assigning work. | GOV | VERIFIED COMPLETE | This handover is the Moderator scenario with a clean tree. (2-Nov-2026: PR #29 f5c2431 merged; both scenarios in continuations/README.md section 2) | `docs/handover/continuations/README.md` | TASK-015, TASK-016 |
+| REQ-082 | s17 | Continuation-branch procedure with 8 pre-checks and names such as `handover/mod-01-to-mod-02-YYYYMMDD`; record the parent branch and source SHA. | GOV | VERIFIED COMPLETE | Branch `handover/mod-01-to-mod-02-20261028` from `2b2a397`. (2-Nov-2026: PR #29 f5c2431 merged; head 7cc3946 has parent 2b2a397 and the branch name matches) | git | TASK-015 |
+| REQ-083 | s18 | Preserve uncommitted work: cases A-D (checkpoint commit; inventory and private patch for mixed or sensitive changes; stop on ownership conflicts; maximum safe package when git is unsafe). | GOV | IMPLEMENTED NOT FULLY VERIFIED | Tree was clean before the package (no work-in-progress checkpoint needed). (2-Nov-2026: PR #29 f5c2431 merged; the clean tree of 28-Oct cannot be re-derived) | git | TASK-015 |
+| REQ-084 | s19 | Verify the continuation branch (exists, correct base, contents, no unrelated changes, handover present, honest test status); push when safe; verify the remote SHA. | GOV | VERIFIED COMPLETE | (2-Nov-2026: PR #29 f5c2431 merged; origin/main = f5c2431, verify success, no site/ or tools/ file in the diff) | git, GitHub | TASK-015 |
+| REQ-085 | s20 | A copy-ready successor prompt file with sections A-J; no placeholders unless unavoidable and explained. | GOV | VERIFIED COMPLETE | (2-Nov-2026: PR #29 f5c2431 merged; the successor prompt has sections A-J) | `docs/handover/continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md` | TASK-015 |
+| REQ-086 | s21 | The owner's handover message with the 10 listed items (stop notice, successor name, branch, paths, URLs, local-only changes, exact prompt, exact action). | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; MOD-01's final report exists only in chat) | MOD-01's final report | TASK-015 |
+| REQ-087 | s22 | `CHAT_REGISTRY.md` with names `[CHAT-ID] \| [WORKSTREAM] \| [RESPONSIBILITY] \| [STATUS]`, the listed statuses and fields; never invent an inaccessible chat's status. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; heading format matches, statuses were pre-merge) | `CHAT_REGISTRY.md` | TASK-015 |
+| REQ-088 | s23 | Task and change registers with stable IDs; update existing records rather than duplicate; approved decisions separate from recommendations; record the original requirement, behaviour, acceptance, status, components, evidence and owner. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; ids contiguous at merge: REQ 1-95, REQ-PPT 1-153, TASK 1-74, DEC-OPEN 1-28, D1-83) | `TASK_REGISTER.md`, this file, `DECISION_LOG.md`, the other registers | TASK-015 |
+| REQ-089 | s24 | The document structure under `docs/handover/` and `docs/project-control/`; follow repository conventions where better suited; no empty templates. | GOV | VERIFIED COMPLETE | `docs/PROJECT_STATE.md` stays the single state document; `docs/project-control/README.md` points to it (no duplicate). (2-Nov-2026: PR #29 f5c2431 merged; structure present; project-control/README.md links ../PROJECT_STATE.md) | `docs/handover/`, `docs/project-control/` | TASK-015 |
+| REQ-090 | s25 | Dated, versioned handovers that never silently overwrite earlier ones; the index states which is authoritative. | GOV | VERIFIED COMPLETE | (2-Nov-2026: PR #29 f5c2431 merged; handover/README.md states the authoritative package) | `docs/handover/README.md` | TASK-015 |
+| REQ-091 | s26 | The Moderator's 12-step process for every new requirement (context, workstream, dependencies, ownership, Guardian, acceptance criteria, decomposition, assignment, launch packet, tracking, gates, records). | GOV | VERIFIED COMPLETE | Applied through section 7 of this file. (2-Nov-2026: PR #29 f5c2431 merged; MODERATOR_BOOTSTRAP_PROMPT section 6 has the 12 steps) | `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` | TASK-015 |
+| REQ-092 | s27 | Decision escalation in plain language ("approximately at the level of a 10-year-old"): problem, why, options, effects, pros and cons, impact, maintenance, risk, reversibility, recommendation; record the decision; prepare the relay message; never claim it was sent. | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; acceptance is consistency with the repo, checked in the TASK-016 audit of 2-Nov-2026; residual items in TASK-077) | `DECISION_LOG.md` | TASK-015 |
+| REQ-093 | s29 | Safety: no secrets or client data in handovers or prompts; preserve uncommitted work; nothing of uncertain ownership staged; no destructive or force operations; never invent permissions or success. | GOV | IMPLEMENTED NOT FULLY VERIFIED | Repeats REQ-018, REQ-023. (2-Nov-2026: PR #29 f5c2431 merged; 0 secret or e-mail matches; security-reviewer post-merge: 0 blockers, 5 warnings) | all package documents | standing |
+| REQ-094 | s30 | A completeness check of the package (17 items) and consistency between the master handover and supporting files. | GOV | IN PROGRESS | (2-Nov-2026: stays IN PROGRESS: it is the TASK-016 completeness and consistency check; it becomes VERIFIED COMPLETE when the TASK-016 docs PR has merged and the owner has confirmed the corrected registers at Gate E) | the package | TASK-015, TASK-016 |
+| REQ-095 | s31, final directive | The final report A-G; "commit and push the documentation safely where authorised, and provide the exact next steps. Then stop." | GOV | IMPLEMENTED NOT FULLY VERIFIED | (2-Nov-2026: PR #29 f5c2431 merged; commit-and-push half verified by PR #29; final report exists only in chat) | git, MOD-01's final report | TASK-015 |
 
 ### 4.6 Relationships between requirements
 
@@ -227,6 +245,11 @@ in `site/index.html` at `2b2a397`.
 
 Items marked IMPLEMENTED NOT FULLY VERIFIED with no task in the last column have no open task; they become a
 task only if the owner asks.
+
+**Status rule (Update 2-Nov-2026).** A row is VERIFIED COMPLETE when its own criterion is met, even if a
+related item carries an open residual; the residual stays in the Residual / follow-up cell. REQ-PPT-150
+("one design system throughout") is IMPLEMENTED NOT FULLY VERIFIED because its own criterion is not met for
+two tables (C44).
 
 ### 5.1 Primary objectives and audit
 
@@ -275,7 +298,7 @@ task only if the owner asks.
 | REQ-PPT-31 | B10 | Do not shrink all text indiscriminately | VERIFIED COMPLETE | 8pt floor, then continue at 9pt | - |
 | REQ-PPT-32 | B overflow | Continuation slides with repeated headers and a continuation label | VERIFIED COMPLETE | `planTable`; "(i/n)" titles | - |
 | REQ-PPT-33 | B overflow | Category context across splits; never drop rows, totals or columns | VERIFIED COMPLETE | "(continued)" context row; GRAND TOTAL on every page | GRAND TOTAL repeats the whole-proposal figure on each page (PRD s9.2 choice) |
-| REQ-PPT-34 | B | Works for more or fewer instruments | VERIFIED COMPLETE | tests with 3, 6, 8, 15, 30, 45 instruments | - |
+| REQ-PPT-34 | B | Works for more or fewer instruments | VERIFIED COMPLETE | tests with 3, 6, 7, 15, 30 and 45 instruments (rule-picked from MASTER, so sizes can move with the data) | - |
 
 ### 5.4 Group C: Investment Options rationale
 
@@ -411,7 +434,7 @@ task only if the owner asks.
 | REQ-PPT-122 | 7.8 | Document data-mapping defects separately | VERIFIED COMPLETE | C28-C33 | - |
 | REQ-PPT-123 | 7.9 | Totals and chart data reconcile | IMPLEMENTED NOT FULLY VERIFIED | same aggregation functions | amounts and chart caches not re-checked |
 | REQ-PPT-124 | 7.10 | Data-driven; no fixed positions as the general solution | IMPLEMENTED NOT FULLY VERIFIED | measured layout | C44 fixed geometry (TASK-069); deliberate caps (12 AMC bars, Top 10/18/20) |
-| REQ-PPT-125 | D83, audit | Mark expected 1Y/3Y/5Y figures with `*` and a note | VERIFIED COMPLETE | `H.isExpectedReturn` ~L1955 | screen and Excel do not mark them (C28, TASK-031) |
+| REQ-PPT-125 | D83, audit | Mark expected 1Y/3Y/5Y figures with `*` and a note | VERIFIED COMPLETE | `H.isExpectedReturn` ~L1955 | screen and Excel do not mark them (C28, TASK-031). Update 2-Nov-2026: open question (audit requirements:D05): did the 22-Oct spec (Phase 4) also ask for screen and Excel (the spec is only in MOD-01's transcript)? If yes, add REQ-PPT-154 as BLOCKED (DEC-OPEN-16, TASK-031, C28); if no, the NEW_BUILD_HANDOVER row's source should read "D83 follow-up" |
 
 ### 5.13 Stages and validation (spec sections 8-9)
 
@@ -451,7 +474,7 @@ task only if the owner asks.
 | REQ-PPT-147 | 12 | Dense text structured | VERIFIED COMPLETE | REQ-PPT-35..42 | - |
 | REQ-PPT-148 | 12 | Tables use their space well | IMPLEMENTED NOT FULLY VERIFIED | REQ-PPT-04, REQ-PPT-62 | - |
 | REQ-PPT-149 | 12 | Missing data transparent | VERIFIED COMPLETE | REQ-PPT-06, REQ-PPT-125 (with the REQ-PPT-67/71 caveats) | - |
-| REQ-PPT-150 | 12 | One design system throughout | VERIFIED COMPLETE | REQ-PPT-13..21, REQ-PPT-100..114 | - |
+| REQ-PPT-150 | 12 | One design system throughout | IMPLEMENTED NOT FULLY VERIFIED | REQ-PPT-13..21, REQ-PPT-100..114 | Correction 2-Nov-2026 (was VERIFIED COMPLETE): Construct and Net Asset Allocation tables bypass planTable/drawTable (C44, TASK-069); chart and card helpers are inline code (REQ-PPT-108, REQ-PPT-109) |
 | REQ-PPT-151 | 12 | Every slide rendered and inspected | IMPLEMENTED NOT FULLY VERIFIED | REQ-PPT-128 | TASK-064 re-checks an export on the live build |
 | REQ-PPT-152 | 12 | No clipping, overlap or overflow | IMPLEMENTED NOT FULLY VERIFIED | REQ-PPT-129 | - |
 | REQ-PPT-153 | 12 | Works for different portfolio compositions | VERIFIED COMPLETE | REQ-PPT-131 | - |
@@ -467,12 +490,15 @@ order. Rejected layout approaches are listed in D82 and D83.
 | REQ-049 "full testing" before retiring the old site | No record that the team tested real proposals on the new link; "full testing" is undefined (DEC-OPEN-24). |
 | REQ-054 "portfolio dashboard" link | Which dashboard the owner meant (DEC-OPEN-28). |
 | REQ-034 clean setup reproducible | No recorded fresh-clone run (TASK-072). |
-| REQ-023 no force-push | A negative cannot be proven from the repo or the GitHub API; no contrary evidence. |
+| REQ-023 force-push, reset, delete branches | Force-push and history rewrite: the activity API shows 0 force_push events and a gap-free main chain, so only other clones and worktrees are unverifiable. Delete branches: 3 recorded deletions (head branches of PRs #1-#3, 16-Oct-2026; E12, DEC-OPEN-22), so "no contrary evidence" does not hold for that clause. Local resets show only in each clone's reflog. |
 | REQ-030 agent orchestration per change | Which reviewers ran on each PR is recorded only in transcripts (PRs #17, #18, #26). |
 | REQ-011 chat-history review | How much of the export's transcripts and history summary was reconciled (TASK-073). |
 | REQ-019 parity limits | Excel export never opened in Excel; browsers other than the built-in Chromium untested (TASK-064). |
 | REQ-044 auto-publish | Never exercised; the first monthly cycle on the new build has not run (TASK-020, TASK-021). |
 | REQ-042 "the data for whatever changes" | Whether the owner expected source workbooks on GitHub; current practice (records only, D65) not confirmed with the owner. |
+
+Update 2-Nov-2026: statuses of REQ-063..REQ-095 updated after PR #29 (`f5c2431`); REQ-PPT-150 corrected (C44).
+Correction 2-Nov-2026: the REQ-023 row above is corrected; it had said "no contrary evidence" (audit requirements:D01).
 
 ## 7. Change requests: how a new requirement is recorded
 
@@ -507,3 +533,4 @@ When the owner gives a new requirement, request or file (MODERATOR_BOOTSTRAP_PRO
 | Date | Change | By |
 |---|---|---|
 | 28-Oct-2026 | Register created from the 28-Oct-2026 requirement and PowerPoint fact sheets: REQ-001..REQ-095 and REQ-PPT-01..REQ-PPT-153. REQ-PPT-140 set to VERIFIED COMPLETE (files were sent before the go-ahead). | MOD-01 |
+| 2-Nov-2026 | Version 2 (TASK-016): REQ-063..REQ-095 re-statused after PR #29 (`f5c2431`): 11 VERIFIED COMPLETE, 19 IMPLEMENTED NOT FULLY VERIFIED, 3 left IN PROGRESS (REQ counts 60 / 29 / 5 / 1). REQ-PPT-150 set to IMPLEMENTED NOT FULLY VERIFIED (C44; REQ-PPT counts 117 / 35 / 0 / 0 / 1). REQ-023 evidence and its section 6 row corrected. Wording fixes on REQ-025, REQ-030, REQ-045 and REQ-PPT-34; open question recorded on REQ-PPT-125. Status rules added to sections 2 and 5. Findings requirements:D01-D09 are in `docs/update-log/2026-11-02_task-016-validation.md`. | MOD-02 |

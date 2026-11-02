@@ -8,8 +8,9 @@ data fixes of 16–19-Oct-2026 (PRs #3–#15) and the small fixes of 21-Oct-2026
 closed or narrowed most A, C, R, E and F items; each item's
 status and section say which PR and what is left. A29–A31, C41–C45, R9–R11 and E6–E16 were found on
 28-Oct-2026 during the MOD-01 handover reconstruction (fact sheets checked against the code at
-`2b2a397`, re-checked 30-Oct-2026); the same pass corrected several older entries, each change marked
-"corrected 28-Oct-2026".
+`2b2a397`, re-checked 30-Oct-2026); the same pass corrected several older entries, each correction
+marked "corrected 28-Oct-2026" (C20, C40 and E5 carry a dated note instead). A32, E17 and R12 were
+found on 2-Nov-2026 in the TASK-016 audit of the handover registers.
 
 **How to use this file**
 
@@ -104,7 +105,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
       Ex-Top 100 SIF (C6, C38); the unit and period of the Select alpha (C23); and the Rf house rate
       (C11).
 11. **From the MOD-01 handover reconstruction (28-Oct-2026):**
-    - after the MF bake, scan `si` for outliers: the bake has no bound, and one ETF shows 297,765%
+    - after the MF bake, scan `si` for outliers: the bake has no bound, and one ETF shows ~297,765%
       (C43, P1; decide with C20);
     - check by hand the two invariants that `verify_page.js` and CI do not enforce: the top-10 Direct
       Equity by market cap are "Large Cap", and `DATA_DATES.sif` is not "—" (A31);
@@ -114,6 +115,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
       and the inbox README say (E8, B8);
     - the AIF step's benchmark refresh reaches no page: PMS/AIF benchmark rows stay static until the
       owner decides their source (C41).
+12. E17: do not run `/monthly-update` or any tool `--apply`, and do not start an OPS or NB
+    sub-chat, until the widened TASK-018 docs PR has merged (ARC-01 condition, 2-Nov-2026).
 
 ## Summary
 
@@ -150,6 +153,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A29 | Two PMS/AIF holdings parsers (the page's Section 7 upload and the look-through tool); whether they agree is unknown | Tools: PMS/AIF | P2 | Open (needs investigation) | — | `REFRESH.parsePMSHoldings`, `site/index.html:3824`; `tools/merge_pms_aif_analytics.js:95-140` |
 | A30 | A sibling that fails is invisible to `verify_page.js` and CI (try/catch with `console.error` only) | Verification | P2 | Open | **Affects** (check the console when a sibling changes) | sibling `try`/`catch`; `tools/verify_page.js:28-32`, `:90-96` |
 | A31 | Two CLAUDE.md invariants (top-10 Direct Equity "Large Cap"; `DATA_DATES.sif` not "—") are not enforced by `verify_page.js` or CI | Verification | P2 | Open | **Affects** (check both by hand) | `tools/verify_page.js:90-96`; `.github/workflows/pages.yml:47-61` |
+| A32 | `tool_inputs.test.js` covers only part of the tool CLI contract | Verification | P3 | Open (engineering) | - | `tools/test/tool_inputs.test.js` |
 | B1 | No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label | Inputs | P2 | Open (desk) | **Blocks** PMS step | `site/index.html:1451` |
 | B2 | Live Sep-2026 Reckoner deck not in the pack | Inputs | P2 | Partly fixed 25-Oct-2026 (handover export: archive copy filed); Oct-2026 deck open (desk) | **Blocks** Reckoner and AIF steps | `monthly-updates/2026-08_Aug-2026/` |
 | B3 | Sep market deck in the pack is the superseded first issue | Inputs | P2 | Closed 25-Oct-2026 (handover export: final issue filed) | — | `monthly-updates/2026-09_Sep-2026/` |
@@ -201,7 +205,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C40 | `rename_schemes.js` "new to MASTER" counts rows the bake never adds | Tools | P3 | Open | — | `tools/rename_schemes.js` (count line) |
 | C41 | PMS/AIF benchmark rows (screen, Excel, deck) show static values held since 20-May-2026; the monthly `PMS_PERFORMANCE.benchmarks` is never read | UI/data | P2 | Open (owner decision: source and refresh) | **Affects** (the AIF step's benchmark refresh reaches no page) | `window.PMS_BENCHMARK_PERF`, `site/index.html:3057`; `pmsBenchmarkPerfFor` `:3069`; readers `:4099`, `:5200`, `:7934` |
 | C42 | 12 RISK_MATRIX keys name rows the SIF sibling removes at load; no effective SIF has a risk row | Data | P2 | Open | **Affects** the next risk build (B8) | `tools/merge_risk_matrix.js:141-143`; `site/Centricity_SIF_Refresh.js:27-54` |
-| C43 | `UTI BSE India Sector Leaders ETF` shows a since-inception return of 297,765% (`si` 2977.646); the MF bake has no `si` bound | Data | P1 | Open (owner decision, with C20) | **Affects** (scan `si` after the bake) | MASTER `si`; `tools/bake_month.js:194-228`; readers `site/index.html:4063-4072`, `:5151-5154`, `:7844` |
+| C43 | `UTI BSE India Sector Leaders ETF` shows a since-inception return of ~297,765% (`si` 2977.646); the MF bake has no `si` bound | Data | P1 | Open (owner decision, with C20) | **Affects** (scan `si` after the bake) | MASTER `si`; `tools/bake_month.js:194-228`; readers `site/index.html:4063-4072`, `:5151-5154`, `:7844` |
 | C44 | Construct and Net Asset Allocation slides draw their tables with `slide.addTable` at fixed positions, not `drawTable` | UI | P3 | Open | — | `buildDeck`, `site/index.html:4720-4773`, `:4784-4825` |
 | C45 | Analytics `listTable` tables (Top Underlying Holdings, Top Issuers) draw only their first page | UI | P2 | Open (latent) | — | `buildDeck`, `site/index.html:5055-5057`, `:5102-5104` |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
@@ -215,6 +219,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | R9 | `main` has no branch protection and no rulesets; "merge only after verify" is a convention | Repo | P2 | Open (owner decision) | — | GitHub settings (`gh api .../branches/main`: `protected` false) |
 | R10 | A likely copy of the client reference deck sits in `%TEMP%\x\ref.pptx`, outside the repo | Security | P2 | Open (owner decision) | — | `%USERPROFILE%\AppData\Local\Temp\x\ref.pptx` (local only) |
 | R11 | Single local copies with unknown cloud backup (B8 toolchain, deck evidence, `monthly-updates/`, `backups/`) | Repo | P2 | Open (owner) | — | `handover-archive/`, `_testdata/`, `%TEMP%\x\`, `monthly-updates/`, `backups/` |
+| R12 | The public repository carries staff identities, one name and address in three lines, and a thin `.gitignore` guard rail | Security | P3 | Open (owner) | - | public commit metadata; `docs/PRD.md`; `docs/archive/README_original_2026-05.md`; `.gitignore` |
 | E1 | Operating manual keeps stale statements as history | Docs | P3 | Accepted | — | `docs/OPERATING_MANUAL.md` → Errata |
 | E2 | PRD contains wrong tool and hosting facts | Docs | P3 | Open | — | `docs/PRD.md` §2, §5, §11, §13, §14 |
 | E3 | Runbooks and specs are out of date | Docs | P2 | Open | **Affects** (if followed) | `docs/runbooks/`, `docs/specs/` |
@@ -226,11 +231,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | E9 | The skill says Reckoner-cycle tools exit 1 on a missing file; every tool exits 2 | Docs | P3 | Open | — | `.claude/skills/monthly-update/SKILL.md:39-40` |
 | E10 | OneDrive guidance assumes "Always keep on this device" with OneDrive running, and omits the checkout hazard | Docs | P3 | Open | — | `docs/DEVELOPMENT_SETUP.md:46`; `docs/MONTHLY_UPDATE_PROCESS.md:28`; `docs/HANDOVER.md` §8 |
 | E11 | `docs/TESTING.md` names the rehearsal worktree `C:/t/cpp-old`; the real leftover is in `%TEMP%` | Docs | P3 | Open | — | `docs/TESTING.md:100-110` |
-| E12 | Release docs prescribe `gh pr merge --delete-branch`; no merge since PR #7 used it | Docs | P3 | Open (owner decision) | — | `.claude/agents/release-manager.md:24`; `SKILL.md:69`; `docs/MONTHLY_UPDATE_PROCESS.md:246` |
+| E12 | Release docs prescribe `gh pr merge --delete-branch`; no merge after PR #3 used it | Docs | P3 | Open (owner decision) | - | `.claude/agents/release-manager.md:24`; `SKILL.md:69`; `docs/MONTHLY_UPDATE_PROCESS.md:246` |
 | E13 | Stale records in `docs/PROJECT_STATE.md` (PR #23 merge, latest merge, verification date, C24 and C28 wording) | Docs | P3 | Open | — | `docs/PROJECT_STATE.md` at `2b2a397`: `:48`, `:119`, `:170`, `:240-246` |
 | E14 | `docs/DEPLOYMENT.md`: live check hashes 6 of the 7 published files; diagram omits the unit tests; retirement condition missing | Docs | P3 | Open | — | `docs/DEPLOYMENT.md:10`, `:14-24`, `:44-49` |
 | E15 | `docs/ARCHITECTURE.md`: stale line references; the bake's capture of load-time mutations is not described | Docs | P3 | Open | — | `docs/ARCHITECTURE.md:31-32`, `:44-49` |
 | E16 | Project knowledge held only outside the repo (memory notes, desktop-app side-session notes) | Docs | P2 | Open | — | `%USERPROFILE%\.claude\projects\<slug>\memory\`; side-session notes |
+| E17 | The rule documents contradict each other on gates, risk class, worktrees and git commands | Docs | P2 | Open (Moderator; TASK-018) | **Affects** every OPS and NB launch | `CLAUDE.md`; `.claude/skills/monthly-update/SKILL.md:20`, `:69`; `docs/MONTHLY_UPDATE_PROCESS.md:145`, `:246`; `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`; `docs/handover/` |
 | F1 | Usage text shows pre-move commands | Tools | P3 | Closed 19-Oct-2026 (PRs #7–#12) | — | every tool's usage string |
 | F2 | Unused code in tools | Tools | P3 | Partly fixed 19-Oct-2026 (PRs #8, #10, #11, #15) | — | `tools/merge_bond_list.js:114`; `tools/lib/pptx.js:9` |
 | F3 | Browser request for `favicon.ico` returns 404 | Site | P3 | Partly fixed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:3` |
@@ -1050,6 +1056,21 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   `pages.yml` greps in one PR.
 - **Related:** A23, A30, D57, D63; TASK-042.
 
+### A32. tool_inputs.test.js covers only part of the tool CLI contract
+**P3 | Open (engineering) | -**
+
+- **What (found 2-Nov-2026, TASK-016 audit, interfaces-architecture D-01):**
+  `tools/test/tool_inputs.test.js` holds 43 cases over all 25 tools: 18 "missing source", 21 "bad
+  `--html`", 1 "bad `--sibling`", 2 "missing folder" and 1 "bad folder". None exercises an unknown
+  flag, a stray word, a flag without a value, a bad or missing `--as-on`, or a missing `--html` on
+  `merge_pms_performance.js`, `pin_pms_alias.js` and `merge_reckoner.js`.
+- **Evidence:** all 25 tools behave correctly today (checked by hand, 2-Nov-2026).
+- **Impact:** a regression in the strict CLI parsing would not fail `npm test` or CI.
+  INTERFACE_CONTRACTS section 5.1 and ARCHITECTURE section 9 named the test as the guard for these
+  rules; their wording is corrected.
+- **Suggested fix:** extend the test (TASK-076).
+- **Related:** A23, A30, A31; TASK-076.
+
 ---
 
 ## B. Monthly-cycle gaps at handover
@@ -1164,7 +1185,9 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   Its outputs are byte-identical to the Aug and Sep workbooks we hold.
 - **Impact:** the desk will not send these files, so the Oct-2026 risk matrix has no producer.
   The repo's only alternative, `tools/build_risk_matrix.py`, is unvalidated (A22), and it differs on
-  Sortino (C35) and on the start of the 3-year window. Rf 4.5% is hard-coded in both (C11).
+  Sortino (C35) and on the start of the 3-year window. Rf 4.5% is the default of the `--rf` argument
+  in `build_risk_matrix.py` and is hard-coded in the in-house C# toolchain (C11; corrected
+  2-Nov-2026).
 - **Options (owner):**
   - port the core of the toolchain (about 12 scripts) to Node in `tools/`, with a Sep-2026 regression
     test that must reproduce the live workbook;
@@ -1311,6 +1334,10 @@ in-house (B8), and Rf = 0.045 is hard-coded there too (export `Metrics.cs:27`, `
 Sharpe, Sortino, Treynor and Jensen alpha, so Rf shapes the live RISK_MATRIX. The outgoing owner's
 notes call it a "standing desk convention", not taken from any file; its source is unverified.
 Re-ask the desk for the house rate before the next risk build.
+
+**Update 2-Nov-2026:** the owner kept Rf = 4.5% for now (D84, the answer to DEC-OPEN-02), so the
+risk-ratio builder (TASK-022) uses it as one documented constant. Where 4.5% comes from, and whether the
+desk uses another house rate (DESK-15), is still unconfirmed, so D58 and this entry stay open.
 
 ### C12. Dead code kept for parity
 **P3 · Accepted · —**
@@ -1497,14 +1524,14 @@ the new bake lines)**
   three-month-old returns under a current date in the app, the Excel and the deck. 13 names have no
   MASTER record. (The first count, 225 of 233, counted rows, not funds.) Control: on mapped sheets
   1,880 of 1,906 MASTER funds equal September's figure.
-- **Blank cells keep old values** (non-null merge, `:3414-3415`; mapped debt sheets already do this:
+- **Blank cells keep old values** (non-null merge, `:3437-3438`; mapped debt sheets already do this:
   Sep-2026 kept 43 `mod_duration`, 13 `avg_maturity` and 1 `ytm`). After the re-run, 10
   `mod_duration` values (7 Edelweiss and 3 Tata Debt ETFs), 2 `avg_maturity` values (DSP SDL Plus
   G-Sec Jun 2028 and Sep 2027) and the C16 fund's r3m / r6m stay at pre-September values, and 7
   records show `mod_duration` above `avg_maturity` (e.g. Tata Nifty G-Sec Dec 2026: Avg M 0.14, Mod D
   0.44; across MASTER such records go from 17 to 24). They are not September figures. The owner kept
   them under the existing rule on 21-Oct-2026 (D81); the G-Sec fund's r3m / r6m are covered by its
-  hold (C16, C20).
+  hold (C16, C20). (The non-null merge cite was `:3414-3415`; corrected 2-Nov-2026.)
 - **Debt ETFs absent from the Sep Monitor** (in the bake's CHECK, kept as they are): 7 matured by
   their name date (Jul / Sep 2026); 4 are absent though not matured: Baroda BNP Paribas NIFTY SDL
   Dec 2026, Axis NBFC-HFC Jun 2027, Axis Fin Svcs Sep 2027, Bandhan 10:90 Gilt+SDL Dec 2029. Ask the
@@ -1523,9 +1550,9 @@ waiting for this decision and held the G-Sec record instead)
   Aug-2026 (`prev_name` = the `(G)-Direct Plan` name). Their Regular plans launched in Aug-2026
   (inception 2026-08-17 for 11 of them, 2026-08-27 for Short Duration), but they still carry the
   Direct plan's r3m / r6m / r1y from before that launch, because a blank Monitor cell never overwrites
-  a value (non-null merge, `site/index.html:3414-3415`). Live today, e.g. JioBlackRock Liquid
-  Fund-Reg(G) r1y 6.458%, Overnight r1y 5.334%, Nifty Smallcap 250 r6m 13.969% (checked in the
-  embedded MASTER, 19-Oct-2026).
+  a value (non-null merge, `site/index.html:3437-3438`, corrected 2-Nov-2026). Live today, e.g.
+  JioBlackRock Liquid Fund-Reg(G) r1y 6.458%, Overnight r1y 5.334%, Nifty Smallcap 250 r6m 13.969%
+  (checked in the embedded MASTER, 19-Oct-2026).
 - The bake also stores the Monitor's annualised since-inception return for funds about six weeks old
   (JioBlackRock Large Cap si −45.35%).
 - The C16 G-Sec fund would join the same pattern once refreshed, so it is held at its earlier values
@@ -1537,7 +1564,8 @@ waiting for this decision and held the G-Sec record instead)
   values, labelled. Apply the decision to all 13 records in one reviewed change and release the held
   G-Sec record with it.
 - **Related (added 28-Oct-2026):** C43 is the same young-fund family: `UTI BSE India Sector Leaders
-  ETF`, launched 15-Sep-2026, shows a since-inception return of 297,765%. Decide it with this item.
+  ETF`, launched 15-Sep-2026, carries `si` = 2977.646195, which the screen and the deck print as
+  297764.62% (wording corrected 2-Nov-2026). Decide it with this item.
 
 ### C21. Taxonomy oddities on the Monitor's ETF and FoF sheets
 **P3 · Open · —**
@@ -1756,6 +1784,12 @@ most fields" does not hold for Sortino, or for SD in such months.
 **Decision (owner/desk):** accept the textbook Sortino or return to June's. Align whichever builder
 is adopted (B8) before it is used.
 
+**Update 2-Nov-2026:** the owner chose the textbook formula (D85, the answer to DEC-OPEN-03). The builder
+(TASK-022) implements exactly that formula; `tools/build_risk_matrix.py` still implements June's form (and
+the different 3-year start) and must be changed before it is ever used. June's Sortino values are not
+comparable with later months. This entry stays open until the builder exists and reproduces the live
+September table.
+
 ### C36. Select popover ratios are May-2026 values and carry no date
 **P3 · Open (owner) · —**
 
@@ -1802,6 +1836,10 @@ The parser skips only names containing "segregated portfolio" (`site/index.html:
 UTI rows are parsed every month. The outgoing owner's notes flagged this trap. (Corrected
 28-Oct-2026: the same test sits at two places in `REFRESH.parseMfMonitor`, `site/index.html:3347`
 and `:3415`; a fix must change both.)
+
+**Correction 2-Nov-2026 (TASK-016 audit, finding F-04 on DEC-OPEN-10):** the two Franklin side
+pockets carry IRR bands; only the two UTI records have none, so "no IRR band" above is right for the
+two UTI rows only.
 
 **Decision (owner):** drop the four records, and tighten the skip to any "segregated" name (at both
 places), in a `fix/` branch.
@@ -1875,13 +1913,14 @@ as at `2b2a397`; re-find them with the grep pattern given.
   B8 producer.
 - **Related:** A15, A26, B8, C1, D43, D74; TASK-066.
 
-### C43. A two-week-old ETF shows a since-inception return of 297,765%
+### C43. A two-week-old ETF shows a since-inception return of ~297,765%
 **P1 · Open (owner decision, with C20) · Affects every MF bake (scan `si` for outliers)**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** the MASTER record
   `UTI BSE India Sector Leaders ETF` (Mutual Fund / Index Fund, inception 15-Sep-2026) carries
-  `si` = 2977.646195, that is 297,765% (MASTER returns are decimals). It is the only record outside
-  Direct Equity with |`si`| above 300%. The MF bake has no bound on `si` (its gates,
+  `si` = 2977.646195, which the screen and the deck print as 297764.62% (the Excel cell holds the raw
+  decimal 2977.646195; MASTER returns are decimals; wording corrected 2-Nov-2026). It is the only
+  record outside Direct Equity with |`si`| above 300%. The MF bake has no bound on `si` (its gates,
   `tools/bake_month.js:194-228`: sandbox errors, duplicates, shrinking blocks, Direct coverage,
   unrecognised sheets), while the SIF Monitor merge refuses any return beyond ±300%
   (`tools/merge_sif_monitor.js:135`, `:141`).
@@ -1898,6 +1937,19 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **Decision (owner) and fix:** treat very young funds' since-inception values with the C20 rule
   (DEC-OPEN-07), then add an `si` bound to the MF bake's gates.
 - **Related:** C16, C20, D81; DEC-OPEN-07, TASK-067.
+- **Update 2-Nov-2026 (TASK-016 audit, issues-code):** the screen and the deck print 297764.62% (the
+  Excel cell holds the raw 2977.646195), so "297,765%" is a rounded figure; two other very young
+  funds also carry absurd annualised since-inception values below any +-300% bound: Shriram Gold ETF
+  Passive FOF-Reg(G) (inception 2026-09-28, `si` 107.21%) and Mirae Asset BSE Information Technology
+  Index Fund-Reg(G) (inception 2026-09-25, `si` -68.94%), so a +-300% bound in the bake would not
+  catch them (the young-fund rule of C20 / DEC-OPEN-07 would); the Portfolio Weighted row averages
+  `si` across the bucket (`site/index.html:7949-7953`, deck `:5204-5208`): with the ETF at 5% and five
+  normal funds at 19% each the page's formula gives 14897.14% instead of 9.37%, so hiding the ETF's
+  own row would not remove the distortion; other `si` consumers: `exportMaster`
+  (`Centricity_Master_Data.xlsx`, ~`:4235`), the Regular/Direct field list (~`:2619`, `:3545`) and the
+  benchmark rows (~`:4086-4105`, `:7783`, `:7804`); the record is `product_class` "Mutual Fund"
+  (`sub_category` "Index Fund"), not "ETF", and lands in the "Equity MF" sheet. Re-derive line numbers
+  with Grep before relying on them.
 
 ### C44. Construct and Net Asset Allocation slides draw their tables outside the design system
 **P3 · Open · —**
@@ -1974,6 +2026,11 @@ as at `2b2a397`; re-find them with the grep pattern given.
   git pack (R8). The repo zip at the root of `handover-archive/`, received 14-Oct, is the unredacted
   GitHub download too. Both are local and git-ignored. Whether to delete them from this machine is the
   owner's call, with compliance (R8).
+- **Update 2-Nov-2026:** unchanged. The upstream repository is still public and not archived, its
+  last push is 14-Oct-2026, the file is still in its tree and the old Pages site still answers HTTP
+  200 for it. Our own public documents carry the exact locators (the upstream address on 23 lines in
+  13 files, the commit id on 46 lines in 21 files, the file name on 21 lines in 10 files, counted at
+  `f5c2431`; PR #29 added 14, 23 and 6 of those lines): see DEC-OPEN-29 and R12.
 
 ### R2. Public repo and site; `robots.txt` ineffective
 **P2 · Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) · —**
@@ -2071,7 +2128,13 @@ regenerate it outside `site/`.
   stash's blobs with `git cat-file` fails, while reads of the current tree and
   `git fsck --connectivity-only` work, and `git stash show -p --include-untracked stash@{0}` still
   exports the whole stash. Until OneDrive is running and the folder is pinned,
-  never `git checkout` or `git switch` here (CLAUDE.md, "Project control"; E7, E10).
+  never `git checkout` or `git switch`, merge or pull here (see E17; CLAUDE.md, "Project control";
+  E7, E10) (CLAUDE.md is changed by TASK-018).
+- **Seen again 2-Nov-2026 (MOD-02):** OneDrive.exe is running since 11:47 IST but the folder is not
+  pinned; 228 of 568 `.git` files are cloud-only (8 pack files, 219 loose objects, 1 other; 229 at
+  13:29 IST); historical blob reads still fail with mmap (5 of 11 tested);
+  `git fsck --connectivity-only` exit 0. TASK-017 acceptance is not met (only "OneDrive running" and
+  "fsck exit 0" hold); the no-checkout, no-switch, no-merge, no-pull rule stays.
 - **Workaround:** Keep OneDrive running. Set the folder to "Always keep on this device"; pause OneDrive sync during tool runs
   and git operations; verify with Node on the real Windows path. If a write still fails with `EPERM`
   after its retries, check the file is unchanged and re-run the step. GitHub (`origin`) is the real backup.
@@ -2176,6 +2239,26 @@ regenerate it outside `site/`.
   toolchain and the deck evidence to a controlled, backed-up place (never into git: they may hold
   client or vendor data).
 - **Related:** B8, R6, R8, R10; TASK-070.
+
+### R12. The public repository carries staff identities, one name and address in three lines, and a thin .gitignore guard rail
+**P3 | Open (owner) | -**
+
+- **What (found 2-Nov-2026, security review of PR #29; none of it was added by PR #29):**
+  - (SEC-02) The public history exposes author and committer addresses: the GitHub noreply form plus
+    three other mailboxes (two personal or team Gmail accounts and one staff member's full name with a
+    company address).
+  - (SEC-03) One person's full name appears twice in `docs/PRD.md` and a name-based company address
+    once in `docs/archive/README_original_2026-05.md` (three lines in all; the exact lines are in the
+    local-only note `handover-archive/SEC-03_positions_2026-11-02.txt`).
+  - (SEC-04) `.gitignore` has no rule for
+    `*.tar *.gz *.tgz *.bz2 *.xz *.docm *.pem *.key *.p12 *.pfx *.sqlite *.db *.env id_rsa* credentials*.json .npmrc`;
+    a file at `docs/handover/archive.tar.gz` would not be ignored (none exists today); nothing of
+    those types is tracked.
+  - (SEC-05) The public registers carry session ids, local tool paths and exact detail of open
+    weaknesses (R8, R9, R10): none is a secret, but together they map the weakest controls.
+- **Decision and fix:** DEC-OPEN-29; fix TASK-075. No history rewrite without the owner's explicit
+  instruction.
+- **Related:** R1, R2, R8, R9, R10; DEC-OPEN-29, TASK-075.
 
 ---
 
@@ -2355,7 +2438,7 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
   (never `checkout`/`switch`); make TESTING.md tell the reader to note the path used.
 - **Related:** E12; DEC-OPEN-22, TASK-061.
 
-### E12. Release docs prescribe `gh pr merge --delete-branch`; practice since PR #7 does not use it
+### E12. Release docs prescribe `gh pr merge --delete-branch`; no merge after PR #3 used it
 **P3 · Open (owner decision) · —**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
@@ -2363,14 +2446,18 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
   `docs/MONTHLY_UPDATE_PROCESS.md:246` say `gh pr merge <PR> --merge --delete-branch`. Only PRs
   #1–#3 were merged with it (PR #7 passed `--delete-branch=false`; later merges passed nothing;
   checked in the session transcripts), and the repository's `delete_branch_on_merge` is false, so
-  the 25 merged feature branches remain on `origin` (26 branches with `main`, `gh api`,
-  30-Oct-2026).
+  the 25 merged feature branches (26 after PR #29) remain on `origin` (26 branches with `main`,
+  `gh api`, 30-Oct-2026).
 - **Impact:** docs and practice disagree; the branch list keeps growing.
 - **Who sees it:** maintainers.
-- **Decision (owner):** which is the rule from now on, and whether to delete the 25 (DEC-OPEN-22).
+- **Decision (owner):** which is the rule from now on, and whether to delete the merged branches (DEC-OPEN-22).
   Changing `delete_branch_on_merge` is a repository setting: only on the owner's explicit
   instruction.
 - **Related:** R9, D68; DEC-OPEN-22, TASK-059.
+- **Corrected 2-Nov-2026 (TASK-016 audit, issues-structure D-05):** the title said "practice since
+  PR #7 does not use it", which left PRs #4-#6 open and rested on session transcripts. GitHub shows
+  the head branches of PRs #1-#3 deleted and those of PRs #4-#29 all still present, so no merge after
+  PR #3 used `--delete-branch`.
 
 ### E13. Stale records in `docs/PROJECT_STATE.md`
 **P3 · Open · —**
@@ -2394,8 +2481,9 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
 **P3 · Open · —**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
-  - the live-check loop (`docs/DEPLOYMENT.md:44-49`) hashes the six deploy files, but seven are
-    published (`robots.txt` too; `publish` uploads all of `site/`);
+  - the live-check loop (`docs/DEPLOYMENT.md:44-49`) hashes the six deploy files, and so does the
+    `release-manager` definition (`.claude/agents/release-manager.md:29`, "SHA-256 of all six", added
+    2-Nov-2026), but seven are published (`robots.txt` too; `publish` uploads all of `site/`);
   - the release diagram (`:14-24`) shows `verify` as "six files present + verify_page parity gate";
     the job also runs `npm ci` and the unit tests (`.github/workflows/pages.yml:43-46`);
   - `:10` frames the old site's retirement as the outgoing owner's act and omits the owner's
@@ -2450,6 +2538,40 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
 - **Suggested fix:** move the procedures into the repo docs (OPERATING_MANUAL, TESTING,
   DEVELOPMENT_SETUP).
 - **Related:** E10, R6, R11; DEC-OPEN-19, TASK-071, TASK-037.
+
+### E17. The rule documents contradict each other on gates, risk class, worktrees and git commands
+**P2 | Open (Moderator; TASK-018) | Affects every OPS and NB launch**
+
+OPS and NB = the operations and new-build sub-chats; ARC-01 = the integration-guardian reviewer (see
+`docs/project-control/CHAT_REGISTRY.md`).
+
+- **What (found 2-Nov-2026 by ARC-01, first review: the DIFF REVIEW of TASK-015, verdict GO WITH
+  CONDITIONS):** the documents that tell a session how to work disagree with each other. The numbers
+  are the update-log ids guardian-gate-b:D-01 to D-07 and D-14.
+  - (1) CLAUDE.md "Project control" overrides only `git switch`, but the monthly-update skill
+    (`SKILL.md:20`) and the process doc (`MONTHLY_UPDATE_PROCESS.md:145`) also run
+    `git pull --ff-only`; the rule must cover checkout, switch, merge and pull (E7 and
+    `docs/handover/README.md` repeat the gap).
+  - (2) The Guardian pre-check is defined two ways: FILE_OWNERSHIP_AND_CHANGE_CONTROL says a pre-check
+    of the contract for a high-risk change only; CLAUDE.md, the bootstrap, the agent text and others
+    say for material or high-risk work.
+  - (3) Bootstrap 7.2 says docs-only changes need no contract; the gate file makes CLAUDE.md, agents,
+    skills and rule-changing documents material.
+  - (4) A routine monthly refresh is HIGH in the agent text and the Guardian handover but Material in
+    the gate file, and an owner-typed `/monthly-update` never meets Gate B.
+  - (5) The TASK-017 "no `--apply`" hold exists only in the registers and NEW_BUILD_HANDOVER.
+  - (6) `NEW_BUILD_HANDOVER:201` and `EXISTING_DASHBOARD_HANDOVER:406` say TASK-017 gates any
+    worktree or branch, while CLAUDE.md and the others allow `git branch <new> origin/main` and a
+    worktree at current `origin/main`.
+  - (7) Bootstrap launch-packet field 12 tells every sub-chat to run `git switch -c <branch>`, which
+    must never happen in the shared main checkout.
+  - (14) `--delete-branch` is still prescribed by `release-manager.md:24`, `SKILL.md:69` and
+    `MONTHLY_UPDATE_PROCESS.md:246` and is not overridden.
+- **Condition (ARC-01):** no `/monthly-update` run, no tool `--apply` and no OPS or NB sub-chat launch
+  until TASK-018 (widened) is merged.
+- **Details:** `docs/update-log/2026-11-02_task-016-validation.md` (ids guardian-gate-b:D-01 to D-07
+  and D-14). The minor items there go to TASK-018 or TASK-077.
+- **Related:** E7, E12, R6; TASK-017, TASK-018, TASK-077.
 
 ---
 
