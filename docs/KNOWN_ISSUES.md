@@ -2446,8 +2446,8 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
   `docs/MONTHLY_UPDATE_PROCESS.md:246` say `gh pr merge <PR> --merge --delete-branch`. Only PRs
   #1–#3 were merged with it (PR #7 passed `--delete-branch=false`; later merges passed nothing;
   checked in the session transcripts), and the repository's `delete_branch_on_merge` is false, so
-  the 25 merged feature branches (26 after PR #29) remain on `origin` (26 branches with `main`,
-  `gh api`, 30-Oct-2026).
+  the merged feature branches remain on `origin`: 25 on 28-Oct-2026, 26 after PR #29 and 27 after PR #30
+  (28 branches with `main`, `gh api`, 2-Nov-2026).
 - **Impact:** docs and practice disagree; the branch list keeps growing.
 - **Who sees it:** maintainers.
 - **Decision (owner):** which is the rule from now on, and whether to delete the merged branches (DEC-OPEN-22).
@@ -2456,7 +2456,7 @@ Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK
 - **Related:** R9, D68; DEC-OPEN-22, TASK-059.
 - **Corrected 2-Nov-2026 (TASK-016 audit, issues-structure D-05):** the title said "practice since
   PR #7 does not use it", which left PRs #4-#6 open and rested on session transcripts. GitHub shows
-  the head branches of PRs #1-#3 deleted and those of PRs #4-#29 all still present, so no merge after
+  the head branches of PRs #1-#3 deleted and those of PRs #4-#30 all still present, so no merge after
   PR #3 used `--delete-branch`.
 
 ### E13. Stale records in `docs/PROJECT_STATE.md`

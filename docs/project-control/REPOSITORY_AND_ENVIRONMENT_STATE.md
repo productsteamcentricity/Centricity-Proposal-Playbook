@@ -575,7 +575,7 @@ git ls-files | wc -l
 
 # Branches, worktrees, stash (sections 5-7)
 git branch --no-merged main                  # expect empty
-git branch -r --no-merged origin/main        # expect only upstream/main
+git branch -r --no-merged origin/main        # prints upstream/HEAD -> upstream/main and upstream/main (the read-only upstream refs): expected
 git for-each-ref --format='%(refname:short) %(objectname:short) %(committerdate:short)' refs/heads
 git worktree list --porcelain
 git worktree prune -n -v                     # dry run only
@@ -670,11 +670,11 @@ the register audit is [`../update-log/2026-11-02_task-016-validation.md`](../upd
 
 ### 19.3 Branches, worktrees and the stash
 
-- Branches: 29 local (28 besides `main`, all merged into `main`): the 26 documented in section 5 besides `main`, plus
-  `handover/mod-01-to-mod-02-20261028` (`7cc3946`) and `claude/investment-proposal-dashboard-c68580` (`f5c2431`). `origin`
-  has 27 branches including `main` (26 merged feature branches and `main`; `git branch -r` also lists the `origin/HEAD`
-  pointer). `git branch --no-merged main` is empty. `upstream/main` is unchanged (tip as in K01); the upstream push URL still
-  reads `DISABLED-read-only-reference`.
+- Branches (after PR #30): 30 local (29 besides `main`, all merged into `main`): the 26 documented in section 5 besides `main`, plus
+  `handover/mod-01-to-mod-02-20261028` (`7cc3946`), `claude/investment-proposal-dashboard-c68580` (`f5c2431`) and
+  `docs/mod-02-validation-20261102` (`1a1b462`). `origin` has 28 branches including `main` (27 merged feature branches
+  and `main`; `git branch -r` also lists the `origin/HEAD` pointer). `git branch --no-merged main` is empty.
+  `upstream/main` is unchanged (tip as in K01); the upstream push URL still reads `DISABLED-read-only-reference`.
 - Worktrees: `git worktree list` shows 5 entries.
 
 | Worktree | HEAD | State | Note |
@@ -717,7 +717,10 @@ and `get_session` on 2-Nov-2026):
 - Desk inbox: `monthly-updates/00_INBOX/` holds only `README.md`. No desk file has arrived; TASK-020 stays BLOCKED; whether
   any desk request was sent is still UNKNOWN (TASK-019).
 
-### 19.5 CI and deployments
+### 19.5 CI and deployments (measured at `f5c2431`, before PR #30)
+
+After PR #30: 62 runs (32 `pull_request` + 30 `push`), 124 jobs, 30 deployments; see
+[`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md) section 8.
 
 | Item | Value |
 |---|---|
@@ -729,7 +732,7 @@ and `get_session` on 2-Nov-2026):
 
 ### 19.6 Changes to the key numbers since 28-Oct (Appendix A)
 
-| K | 28-Oct-2026 value | 2-Nov-2026 value |
+| K | 28-Oct-2026 value | 2-Nov-2026 value (at `f5c2431`, before PR #30) |
 |---|---|---|
 | K04 | `2b2a397` = PR #28 merge | `f5c2431` = `origin/main` = PR #29 merge (30-Oct-2026 07:46:59Z) |
 | K08 | `main` 143 commits; 69 since `862e40b` = 38 non-merge + 28 PR merges + 3 other merges | 145 commits; 71 since `862e40b` = 39 non-merge + 29 PR merges + 3 other merges (`18abff3`, `75256ea`, `aa83993`); 0 revert commits |
@@ -749,6 +752,14 @@ Re-checked on 2-Nov-2026 and unchanged: K05, K11, K12 and K13 (section 19.1).
 The contents and size of the local-only folders (`monthly-updates/` about 446 MB, `backups/`, `handover-archive/`,
 `_testdata/`; only the inbox was listed, section 19.4), the `x` folder under `%TEMP%`, the cloud backup state (R11) and the
 side-session notes.
+
+### Update after PR #30 (2-Nov-2026)
+
+`origin/main` = `32172f5` since PR #30 merged (2-Nov-2026 12:20 UTC). The merge ran without `--delete-branch`, so
+`docs/mod-02-validation-20261102` stays on `origin` and locally (counted in 19.3). Local `main` was advanced to `32172f5`
+with `git update-ref` (old-value guarded) and `git reset -q`; no checkout, switch, merge or pull was run. The working tree
+was clean afterwards (0 status entries) and `git worktree list` still shows 5 entries (unchanged). The values in 19.1,
+19.5 and 19.6 and the worktree table in 19.3 were measured while `main` was `f5c2431`.
 
 ## Appendix A. Key numbers K01-K35 and site states S0-S7 (snapshot of 28-Oct-2026)
 

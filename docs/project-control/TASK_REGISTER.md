@@ -28,11 +28,11 @@ with a stable `TASK-nnn` ID. It is the coordination record that survives chat re
 Code and git win over this file. A task is VERIFIED COMPLETE only when the evidence column names a
 merged PR or commit and the check that verified it.
 
-**Effective date of the 2-Nov-2026 entries.** Entries dated 2-Nov-2026 in this version (TASK-015 and
-TASK-016 VERIFIED COMPLETE, TASK-017 IN PROGRESS, TASK-018 widened, TASK-075..077, the counts) take effect
-when the docs PR that carries them merges (branch `docs/mod-02-validation-20261102`); the PR number and
-the merge SHA are added at the next register update. Until then `origin/main` still shows the
-30-Oct-2026 state.
+**Effective date of the 2-Nov-2026 entries.** Entries dated 2-Nov-2026 that PR #30 carried (TASK-015 and
+TASK-016 VERIFIED COMPLETE, TASK-017 IN PROGRESS, TASK-018 widened, TASK-075..077, the counts) took effect
+when PR #30 merged (2-Nov-2026 12:20 UTC, `32172f5`; branch `docs/mod-02-validation-20261102`). The later
+2-Nov-2026 updates in this file (the PR #30 record, the GOV-01 and EX-01 proposals, the branch counts) take
+effect when the follow-up docs PR that carries them merges.
 
 ## 2. How to add or update a task
 
@@ -66,7 +66,7 @@ the merge SHA are added at the next register update. Until then `origin/main` st
 
 | Fact | Value | Label |
 |---|---|---|
-| Code and data baseline | `main` = `origin/main` = `f5c2431` (PR #29 merge, 30-Oct-2026, docs only; `site/` and `tools/` byte-identical to `2b2a397`, the 28-Oct baseline); last site change `5d39821` (PR #26) | VERIFIED 2-Nov |
+| Code and data baseline | `main` = `origin/main` = `32172f5` (PR #30 merge, 2-Nov-2026, docs only; PR #29 `f5c2431` before it; `site/` and `tools/` byte-identical to `2b2a397`, the 28-Oct baseline); last site change `5d39821` (PR #26) | VERIFIED 2-Nov |
 | `node tools/verify_page.js site` | exit 0; MASTER 7,682; Centricity Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; RISK_MATRIX 1,088; EQUITY_ANALYTICS 1,205; 0 duplicates; 0 script errors | VERIFIED 28-Oct and 2-Nov |
 | `npm test` | 5 of 5 files, 903 checks, 0 failures | VERIFIED 28-Oct and 2-Nov |
 | Live site | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ ; 7 of 7 published files SHA-256 identical to `site/` | VERIFIED 28-Oct and 2-Nov |
@@ -86,7 +86,7 @@ fixed by TASK-018). (CLAUDE.md names only checkout and switch until TASK-018 cha
 
 ## 4. Start here: order of work for MOD-02 (dependency order)
 
-1. **TASK-016** validate the package against the repo. DONE 2-Nov-2026 (VERIFIED COMPLETE; section 7).
+1. **TASK-016** validate the package against the repo. DONE 2-Nov-2026 (PR #30; VERIFIED COMPLETE; section 7).
 2. **TASK-018** (widened) rule-document consistency PR (docs only), launched as GOV-01 in its own
    worktree: the gate for every `/monthly-update`, tool `--apply` and OPS / NB launch (ARC-01
    condition). Material: contract + ARC-01 DIFF REVIEW + `security-reviewer`.
@@ -141,9 +141,9 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-013 | PowerPoint design system | NB | IMPLEMENTED NOT FULLY VERIFIED | - | NB-03 | Done |
 | TASK-014 | Ingest the outgoing owner's export | EX | VERIFIED COMPLETE | - | MOD-01 | Done |
 | TASK-015 | Produce the MOD-01 -> MOD-02 handover package | GOV | VERIFIED COMPLETE | - | MOD-01 | Done |
-| TASK-016 | MOD-02 validates the package | GOV | VERIFIED COMPLETE | - | MOD-02 | Done |
+| TASK-016 | MOD-02 validates the package (PR #30) | GOV | VERIFIED COMPLETE | - | MOD-02 | Done |
 | TASK-017 | Restore OneDrive health | OPS | IN PROGRESS | P1 | owner (machine setting); MOD-02 verifies | R |
-| TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gates OPS/NB) | GOV | PLANNED | P1 | MOD-02 assigns (GOV-01) | R |
+| TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gates OPS/NB) | GOV | PLANNED | P1 | MOD-02 assigns (GOV-01, proposed 2-Nov-2026) | R |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
 | TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED | P1 | MOD-02 assigns (OPS-01) | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | PLANNED | P1 | MOD-02 assigns | R |
@@ -184,8 +184,8 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-056 | Fix the stale `.gitattributes` comment | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-057 | Validate or retire `build_risk_matrix.py` | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-058 | SheetJS upgrade (page and tools together) | NB | NOT STARTED | P3 | MOD-02 assigns (owner instruction only) | O |
-| TASK-059 | Delete the 26 merged branches on origin | GOV | NOT STARTED | P3 | MOD-02 | H |
-| TASK-060 | Delete the 28 merged local branches (incl. 3 `claude/*`) | GOV | NOT STARTED | P3 | MOD-02 | H |
+| TASK-059 | Delete the 27 merged branches on origin | GOV | NOT STARTED | P3 | MOD-02 | H |
+| TASK-060 | Delete the 29 merged local branches (incl. 3 `claude/*`) | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-061 | Remove the 4 extra worktrees, then prune | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-062 | Export, then drop `stash@{0}` | GOV | NOT STARTED | P3 | MOD-02 | H |
 | TASK-063 | Retention rule for `backups/` | GOV | UNKNOWN / NEEDS INVESTIGATION | P3 | MOD-02 | H |
@@ -232,13 +232,14 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 - Rel: R6, E10, R11; DEC-OPEN-19; INC-16.
 
 #### TASK-064 Full browser acceptance pass on the current live build (site state S7)
-- WS EX | Status PLANNED | P1 | Owner: EX-01 (proposed to the owner 2-Nov-2026) or MOD-02 | Dep: TASK-016 | Blk: -
+- WS EX | Status PLANNED | P1 | Owner: EX-01 (proposed to the owner 2-Nov-2026; the owner starts it) or MOD-02 | Dep: TASK-016 | Blk: -
 - Accept: the `verify-dashboard` skill run against the live URL; all 11 checks of `docs/TESTING.md`
   section 3 PASS (the 21-Oct pass grouped its work into 7 areas, `docs/PROJECT_STATE.md`); a proposal built end to end; PowerPoint export with `window.__PPTX_LAYOUT.warnings`
   empty; Excel export opened in Microsoft Excel (never done so far); browser console clean; a draft
   full-test checklist for the owner (input to DEC-OPEN-24); results recorded in `docs/PROJECT_STATE.md`
   and `INTEGRATION_AND_REGRESSION_LOG.md`.
-- Next: may start now (read-only; it needs neither TASK-017 nor the TASK-018 PR); exports go to
+- Next: may start now (read-only; it needs neither TASK-017 nor the TASK-018 PR); it runs read-only in the
+  shared main checkout (no worktree, no branch, no commit); exports go to
   `_testdata/acceptance-2026-11/` (git-ignored: `.gitignore` line 56) or `monthly-updates/<month>/_review/`
   (ignored through `monthly-updates/*`), never to tracked folders; a bare `_review/` at the repository
   root is NOT ignored. Startup alone was VERIFIED on 28-Oct and again on
@@ -255,7 +256,7 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 - Rel: B1, B2, B4-B7, C4-C6, C11, C23, C24, C26, C27, C31, C33, C35, C38.
 
 #### TASK-018 Docs-consistency PR, widened 2-Nov-2026 (docs only; Material)
-- WS GOV | Status PLANNED | P1 | Owner: MOD-02 assigns (GOV-01 in its own worktree) | Dep: TASK-016 (done when the docs PR from branch `docs/mod-02-validation-20261102` merges) | Blk: -
+- WS GOV | Status PLANNED | P1 | Owner: GOV-01 (proposed to the owner 2-Nov-2026; own worktree; MOD-02 assigns the launch) | Dep: TASK-016 (done: PR #30, `32172f5`) | Blk: -
 - Accept: (a) the ARC-01 conditions of 2-Nov-2026: CLAUDE.md "Project control" and "Never" widened to
   `git checkout` / `git switch` / `git merge` / `git pull` and `--delete-branch`; one Guardian pre-check
   rule everywhere; one risk class for a routine monthly refresh, and Gate B named in CLAUDE.md; the
@@ -274,8 +275,23 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   section 6 template) + ARC-01 DIFF REVIEW (expected GO) + `security-reviewer` before the push;
   docs-only PR merged with `verify` green; `site/` unchanged; the Moderator checks each condition by
   grep before Gate D.
-- Next: launched as GOV-01 after that docs PR has merged (one `docs/` branch from `origin/main`, created
-  with `git branch` in its own worktree); the launch packet carries the ARC-01 conditions.
+- Next: launched as GOV-01 when the owner starts the proposed card (PR #30 has merged); one `docs/` branch
+  from `origin/main`, created in its own worktree by the app; the launch packet carries the ARC-01
+  conditions.
+- Scope notes (file survey of 2-Nov-2026):
+  - (1) The exact claimed files (19; 22 at most) are in `ACTIVE_CHANGE_REGISTER.md` section 3.
+  - (2) The three as-received handover documents get errata only (`docs/handover/README.md`), never in-place
+    edits.
+  - (3) The 28-Oct corrections listed in the Accept block are already in `docs/KNOWN_ISSUES.md` as "corrected
+    28-Oct-2026": GOV-01 verifies them and does not redo them; of E13 only one item is left (the PR #23 merge
+    cell in `docs/PROJECT_STATE.md`, which should read `1523bbc`).
+  - (4) Choices GOV-01 must not decide but put in its contract with options and a recommendation: which Guardian
+    pre-check rule (MOD-02 direction: "material or high-risk" everywhere, so only
+    `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` changes); where the TASK-017 `--apply` hold is stated once; the
+    release-doc branch rule (DEC-OPEN-22 is open; interim: no `--delete-branch` anywhere); and the OneDrive-safe
+    branch procedure with ONE wording of the ban trigger.
+  - (5) The Guardian pre-check and DIFF REVIEW run on the branch text, because the PR edits ARC-01's own
+    definition.
 - Rel: E6-E15, E17; A2, B8, C17, C24, C28, C39, R6, R7; REQ-028, REQ-041; INC-19.
 
 #### TASK-020 Sep-2026 Reckoner catch-up: `/monthly-update September 2026`
@@ -640,19 +656,19 @@ TASK-062 only exports the patch and may run before TASK-017 (the export reads cu
   also clears the stale admin dirs `cpp-main` and `wtdocs`; `git worktree list` shows only the main checkout.
 - Rel: E11.
 
-#### TASK-060 Delete the 28 merged local branches (including the 3 `claude/*`)
+#### TASK-060 Delete the 29 merged local branches (including the 3 `claude/*`)
 - WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: TASK-061 (section 4 order; see the note); DEC-OPEN-22 | Blk: owner OK
-- Scope (2-Nov-2026): the 28 non-main local branches, all merged: the 26 documented +
-  `handover/mod-01-to-mod-02-20261028` + `claude/investment-proposal-dashboard-c68580` (3 are `claude/*`
-  session branches).
+- Scope (2-Nov-2026): the 29 non-main local branches, all merged: the 26 documented +
+  `handover/mod-01-to-mod-02-20261028` + `docs/mod-02-validation-20261102` +
+  `claude/investment-proposal-dashboard-c68580` (3 are `claude/*` session branches).
 - Accept: `git branch -d` (never `-D`) on each; `git branch --no-merged main` stays empty.
 - Note: TASK-060 no longer needs the two NB worktrees removed first, because their branches are released
   (both worktrees show a detached HEAD); once the owner agrees, `fix/a27-rehearse-old-site` and
   `fix/reckoner-drop-gates` can be deleted with `git branch -d`.
 
-#### TASK-059 Delete the 26 merged branches on origin
+#### TASK-059 Delete the 27 merged branches on origin
 - WS GOV | Status NOT STARTED | P3 | Owner: MOD-02 | Dep: DEC-OPEN-22; TASK-060 | Blk: owner OK
-- Accept: the 26 merged feature branches (PRs #4-#29) deleted on origin; `main` untouched; the rule for
+- Accept: the 27 merged feature branches (PRs #4-#30) deleted on origin; `main` untouched; the rule for
   future merges recorded (DEC-OPEN-22) and the release docs match it (E12).
 - Rel: E12.
 
@@ -743,7 +759,7 @@ TASK-062 only exports the patch and may run before TASK-017 (the export reads cu
 | TASK-013 | PowerPoint design system (measured layout, continuation slides, page numbers, `*` marker) and its release record (22-Oct) | NB | IMPLEMENTED NOT FULLY VERIFIED (merged, published, live 7/7; spec residuals listed per REQ-PPT item) | NB-03 | PR #26 `5d39821` (owner go-ahead 22-Oct 15:36:58 UTC after the montage and sample deck were sent), PR #27 `5bcce88`; `docs/proposal-output-format-audit.md` | REQ-057..REQ-060, REQ-PPT-01..153; D82, D83; C22 closed; C28-C34 opened |
 | TASK-014 | Ingest the outgoing owner's 23-Oct export: 2,720 files verified, 32 desk files filed locally, findings logged; no `site/`/`tools/` change (23-27-Oct) | EX | VERIFIED COMPLETE (follow-ups open) | MOD-01 | PR #28 `2b2a397`; `docs/update-log/2026-10-23_handover-export.md` | REQ-061, REQ-011; B3 closed; B8, B9, C35-C40, A28, R8 opened; INC-14, INC-15 |
 | TASK-015 | Produce the MOD-01 -> MOD-02 handover package: master and workstream handovers, bootstrap prompt, successor prompt, project-control registers, the integration-guardian agent, 22 new KNOWN_ISSUES entries (27-30-Oct) | GOV | VERIFIED COMPLETE | MOD-01 | PR #29 `f5c2431` (head `7cc3946`, merged 30-Oct-2026 07:46:59Z; verify green; Gate A reconstructed and Gate B by ARC-01 on 2-Nov-2026, INC-19). VERIFIED COMPLETE because every git-verifiable acceptance item is met (PR merged, verify green, merge on origin/main, no site/ or tools/ change); the REQ-063..095 statuses record each requirement's own verification state (19 IMPLEMENTED NOT FULLY VERIFIED, 3 IN PROGRESS); MOD-01's final report to the owner is chat-only and cannot be verified from git | REQ-063..REQ-095; E17, INC-19 |
-| TASK-016 | MOD-02 validates the package against the repository (2-Nov-2026) | GOV | VERIFIED COMPLETE | MOD-02 | validation record `docs/update-log/2026-11-02_task-016-validation.md` and `INTEGRATION_AND_REGRESSION_LOG.md` section 11: 17 checks, 77 audit findings (P2 17, all confirmed; P3 60); corrections in the docs PR from branch `docs/mod-02-validation-20261102` | REQ-071, REQ-072, REQ-081 (REQ-071 stays IN PROGRESS until TASK-064); INC-18, INC-19 |
+| TASK-016 | MOD-02 validates the package against the repository (2-Nov-2026) | GOV | VERIFIED COMPLETE | MOD-02 | validation record `docs/update-log/2026-11-02_task-016-validation.md` and `INTEGRATION_AND_REGRESSION_LOG.md` section 11: 17 checks, 77 audit findings (P2 17, all confirmed; P3 60); corrections in PR #30 (`32172f5`) | REQ-071, REQ-072, REQ-081 (REQ-071 stays IN PROGRESS until TASK-064); INC-18, INC-19 |
 
 TASK-013 stays IMPLEMENTED NOT FULLY VERIFIED until the residual REQ-PPT items are verified or carried by
 their own tasks (TASK-038, TASK-069, TASK-031, DEC-OPEN-23); see the REQ-PPT table in
@@ -792,3 +808,6 @@ Senders by role are in `docs/INPUT_FILES.md` section 1. Sending status of every 
 | 2-Nov-2026 | TASK-022 | stays BLOCKED; Rf and Sortino decided (Rf: for now) | D84, D85 (DEC-OPEN-02, DEC-OPEN-03 answered); DEC-OPEN-01 pending | MOD-02 |
 | 2-Nov-2026 | TASK-059, TASK-060, TASK-061 | counts updated (26 / 28 / 4) | `git branch` and `git worktree list`, 2-Nov-2026 | MOD-02 |
 | 2-Nov-2026 | TASK-075, TASK-076, TASK-077 | created | TASK-016 audit (SEC-01..05; interfaces D-01; P3 backlog) | MOD-02 |
+| 2-Nov-2026 | TASK-016 | PR #30 merged (`32172f5`); Gate D done; live 7 of 7 | PR #30 merged 2-Nov-2026 12:20 UTC; push run 41443940610 (verify + publish) success; 7 of 7 live files SHA-256-identical to `site/`; Gate E (the owner confirms the D84 and D85 wording) pending | MOD-02 |
+| 2-Nov-2026 | TASK-018, TASK-064 | proposed to the owner as sub-chats GOV-01 and EX-01 (cards); claims and launch packets follow | cards proposed 2-Nov-2026; no session started yet, nothing runs until the owner starts them | MOD-02 |
+| 2-Nov-2026 | TASK-059, TASK-060 | branch counts updated after PR #30 (27 merged branches on origin; 29 non-main local branches) | `git branch` and `gh api`, 2-Nov-2026 | MOD-02 |

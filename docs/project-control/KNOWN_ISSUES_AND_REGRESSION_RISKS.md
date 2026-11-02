@@ -7,7 +7,7 @@
 | Author chat | MOD-01 (version 1, for MOD-02 and ARC-01); MOD-02 (version 2) |
 | Status | Sections 1-3: Historical snapshot (index of `docs/KNOWN_ISSUES.md` at `2b2a397`; newer only: section 1.2, the lines marked "Update 2-Nov-2026" and the wording corrections of 2-Nov-2026); section 4: Authoritative (regression-risk catalogue) |
 | Supersedes | Version 1 of 28-Oct-2026 (kept in git history) |
-| Next review | after the merge of the 2-Nov-2026 documentation update (re-count against `KNOWN_ISSUES.md`: 118 rows, Open 68; the re-count for the merge of `handover/mod-01-to-mod-02-20261028` was done on 2-Nov-2026: 115 rows, Open 65); then after every merge that adds or closes a KNOWN_ISSUES item or changes a gate or test |
+| Next review | after the next merge that adds or closes a KNOWN_ISSUES item or changes a gate or test (re-counted after PR #30, `32172f5`, on 2-Nov-2026: 118 rows, Open 68; the re-count for the merge of `handover/mod-01-to-mod-02-20261028` was done on 2-Nov-2026: 115 rows, Open 65) |
 
 **Which file is authoritative for what.** [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md) is the single register of
 defects: IDs, severity, status, evidence and fixes live there and only there. Sections 1-3 below are a dated index

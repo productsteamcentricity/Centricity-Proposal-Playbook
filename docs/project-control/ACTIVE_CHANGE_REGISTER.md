@@ -19,11 +19,11 @@ read the current version from another worktree: `git fetch origin`, then
 `git show origin/main:docs/project-control/ACTIVE_CHANGE_REGISTER.md`.
 
 **Implementation freeze (update 2-Nov-2026).** The owner stopped all implementation on 27-Oct-2026
-(REQ-063). MOD-02 completed TASK-016 on 2-Nov-2026 (effective when the docs PR from branch
-`docs/mod-02-validation-20261102` merges). ARC-01 (DIFF REVIEW of TASK-015, 2-Nov-2026, GO WITH
-CONDITIONS) requires that no `/monthly-update` run, no tool `--apply` and no OPS or NB sub-chat starts
-until the widened TASK-018 docs PR is merged. Read-only chats (EX-01 for TASK-064) and docs-only GOV
-chats may start. No new claim is granted until the owner directs the next work.
+(REQ-063). MOD-02 completed TASK-016 on 2-Nov-2026 (PR #30, merged 2-Nov-2026 12:20 UTC, `32172f5`).
+ARC-01 (DIFF REVIEW of TASK-015, 2-Nov-2026, GO WITH CONDITIONS) requires that no `/monthly-update`
+run, no tool `--apply` and no OPS or NB sub-chat starts until the widened TASK-018 docs PR is merged.
+Read-only chats (EX-01 for TASK-064) and docs-only GOV chats may start. No new claim is granted until
+the owner directs the next work.
 
 ---
 
@@ -51,8 +51,8 @@ FILE_OWNERSHIP_AND_CHANGE_CONTROL section 5.
 
 | Task | Expected chat | Status | Expected file groups | Note |
 |---|---|---|---|---|
-| TASK-064 Full browser acceptance pass on the current build | MOD-02 or a new EX chat | PLANNED: proposed to the owner as EX-01 (read-only; the base SHA is recorded in the launch packet) | none for the check itself (read-only, browser); then the docs that record the result | Exports go to a local `_review/` folder, never to tracked folders. |
-| TASK-018 Docs-consistency PR | GOV-01 (own worktree) | PLANNED | `docs/KNOWN_ISSUES.md`, `docs/PROJECT_STATE.md`, `docs/MONTHLY_UPDATE_PROCESS.md`, `.claude/skills/monthly-update/SKILL.md`, `docs/HANDOVER.md`, `docs/DEVELOPMENT_SETUP.md`, `docs/DEPLOYMENT.md`, `docs/TESTING.md`, `docs/ARCHITECTURE.md`, `.claude/agents/release-manager.md`, `monthly-updates/00_INBOX/README.md` (tracked), `docs/OPERATING_MANUAL.md`, `docs/PRD.md`, `CLAUDE.md`, `.claude/agents/integration-guardian.md`, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`, `docs/handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md`, `docs/handover/NEW_BUILD_HANDOVER_2026-10-28_v1.md`, `docs/handover/EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`, `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` | Scope widened 2-Nov-2026: KNOWN_ISSUES E6-E15 plus the ARC-01 findings that gate OPS and NB launches (E17). Material (rule documents): contract + ARC-01 DIFF REVIEW + security-reviewer; gates every OPS/NB launch; overlaps TASK-071, TASK-074 and TASK-054 (`docs/PRD.md`). |
+| TASK-064 Full browser acceptance pass on the current build | EX-01 (proposed to the owner 2-Nov-2026; MOD-02 if the owner prefers) | PLANNED: proposed to the owner as EX-01 (read-only; the base SHA is recorded in the launch packet) | none for the check itself (read-only, browser); then the docs that record the result | Exports go to `_testdata/acceptance-2026-11/` (git-ignored) or `monthly-updates/<month>/_review/`, never to a tracked folder; a bare `_review/` at the repository root is NOT ignored. It runs read-only in the shared main checkout (no worktree, no branch, no commit). |
+| TASK-018 Docs-consistency PR, widened (KNOWN_ISSUES E6-E15, E17; ARC-01 conditions) | GOV-01 (proposed to the owner 2-Nov-2026; own worktree) | PLANNED. Becomes an active claim (section 1) once GOV-01 has its branch and worktree and its contract has passed the Guardian pre-check; in force only when that row is merged to `origin/main` | RULE documents: `CLAUDE.md`, `.claude/skills/monthly-update/SKILL.md`, `docs/MONTHLY_UPDATE_PROCESS.md`, `.claude/agents/release-manager.md`, `.claude/agents/integration-guardian.md`, `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`. Errata home (Moderator-owned, granted for this task): `docs/handover/README.md`. Other documents: `docs/DEVELOPMENT_SETUP.md`, `docs/HANDOVER.md`, `docs/TESTING.md`, `docs/ARCHITECTURE.md`, `docs/OPERATING_MANUAL.md`, `docs/PRD.md`, `docs/DEPLOYMENT.md`, `monthly-updates/00_INBOX/README.md` (tracked). Shared state documents every change updates (sync with `origin/main` before the push): `docs/KNOWN_ISSUES.md`, `docs/PROJECT_STATE.md`, `CHANGELOG.md`. Only if the contract asks for it and the Moderator agrees: `docs/DECISIONS.md`, `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` (procedure F, finding D-13), `docs/update-log/2026-10-23_handover-export.md` (the second copy of the B8 sentence). Check only: `docs/handover/continuations/README.md` | Material (rule documents): contract + ARC-01 DIFF REVIEW + security-reviewer; gates every OPS and NB launch. File survey of 2-Nov-2026: 19 files (22 at most). The three as-received handover documents (`NEW_BUILD_HANDOVER_2026-10-28_v1.md`, `EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`, `CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md`) are NOT edited in place: corrections go to the errata in `docs/handover/README.md`; this replaces the earlier 20-file forecast. The 28-Oct corrections named in the task are already in `docs/KNOWN_ISSUES.md`: verify, do not redo. Tasks that overlap this one and hold no claim (sequence them after it): TASK-054, TASK-071, TASK-074, TASK-075, TASK-077; TASK-020 and TASK-021 must not start before it merges. |
 | TASK-020 Sep-2026 Reckoner catch-up | new OPS chat (OPS-01) | BLOCKED (desk files DESK-01..DESK-04) | the whole deploy set; `docs/update-log/`; `CHANGELOG.md`; `docs/PROJECT_STATE.md`; the `CLAUDE.md` headline; `monthly-updates/<month>/`; a new `backups/` folder | Owns all six deploy files for its whole duration. Not before the widened TASK-018 PR merges (ARC-01 condition, 2-Nov-2026). |
 | TASK-021 Oct-2026 MF cycle (about 13-17-Nov-2026) | new OPS chat | PLANNED | as TASK-020, plus TASK-024 (renames) as its step 1 | No other `site/` claim during the cycle. Not before the widened TASK-018 PR merges (ARC-01 condition, 2-Nov-2026). |
 | TASK-075 Public-repository hygiene PR | MOD-02 assigns | BLOCKED (DEC-OPEN-29) | tracked docs that name the old repository, `docs/PRD.md`, `docs/archive/README_original_2026-05.md`, `.gitignore` | Raised 2-Nov-2026 from the security review of PR #29 (SEC-01 to SEC-05; KNOWN_ISSUES R12). Starts only after the owner answers DEC-OPEN-29. `docs/PRD.md` is also in the scope of TASK-018 and TASK-054. |
@@ -68,6 +68,7 @@ merge. The branches still exist locally and on origin (deletion is DEC-OPEN-22).
 
 | Task | Chat | WS | Task branch | PR | Merge (release) commit | Merged (UTC) | Files | Notes |
 |---|---|---|---|---|---|---|---|---|
+| TASK-016 MOD-02 validates the MOD-01 -> MOD-02 package against the repository | MOD-02 | GOV | `docs/mod-02-validation-20261102` | #30 | `32172f5` | 2-Nov-2026 12:20 | the 18 files (`docs/` and `CHANGELOG.md` only; one new file `docs/update-log/2026-11-02_task-016-validation.md`, 17 edited) | Docs only (`site/` and `tools/` unchanged); one commit, head `1a1b462`, base `f5c2431`; PR check `verify` passed; push run on `32172f5` (Actions run 41443940610) passed, verify + publish; live files 7 of 7 equal `site/` (SHA-256, 2-Nov-2026); a Moderator docs PR under rule 9, so no claim row; Gate D done, Gate E (the owner confirms the D84 and D85 wording) pending. The branch exists on origin and locally. |
 | TASK-015 Produce the MOD-01 -> MOD-02 handover package | MOD-01 | GOV | `handover/mod-01-to-mod-02-20261028` | #29 | `f5c2431` | 30-Oct-2026 07:46 | the 28 files (10 under `docs/handover`, 12 under `docs/project-control`, `.claude/agents/integration-guardian.md`, `CLAUDE.md`, `CHANGELOG.md`, `docs/KNOWN_ISSUES.md`, `docs/PROJECT_STATE.md`, `docs/README.md`) | Docs and one agent definition only; head `7cc3946`; verify green; merged 58 s after the PR was opened; claim released at the merge, recorded 2-Nov-2026; Gate A reconstructed and Gate B by ARC-01 on 2-Nov-2026 (`INTEGRATION_AND_REGRESSION_LOG.md` section 11). The branch exists on origin and locally. |
 | TASK-014 Ingest the outgoing owner's 23-Oct export | MOD-01 | EX | `docs/handover-export-ingestion` | #28 | `2b2a397` | 27-Oct-2026 12:27 | `CHANGELOG.md`, `CLAUDE.md`, `docs/INPUT_FILES.md`, `docs/KNOWN_ISSUES.md`, `docs/MONTHLY_UPDATE_PROCESS.md`, `docs/PROJECT_STATE.md`, `docs/handover/README.md`, `docs/update-log/2026-10-23_handover-export.md` | Docs only. Baseline of the package (28-Oct-2026). The branch exists on origin only. |
 | TASK-013 PowerPoint design system: release record | NB-03 | NB | `docs/release-pr26` | #27 | `5bcce88` | 22-Oct-2026 15:41 | `CHANGELOG.md`, `docs/DECISIONS.md`, `docs/PROJECT_STATE.md` | Records the PR #26 publish and live check. |
@@ -79,7 +80,8 @@ merge. The branches still exist locally and on origin (deletion is DEC-OPEN-22).
 
 Older merges (PRs #1-#17) are in [INTEGRATION_AND_REGRESSION_LOG.md](INTEGRATION_AND_REGRESSION_LOG.md)
 and [`CHANGELOG.md`](../../CHANGELOG.md). File lists above are from `git diff --name-only` between
-consecutive merges (VERIFIED, 28-Oct-2026; the TASK-015 row VERIFIED 2-Nov-2026).
+consecutive merges (VERIFIED, 28-Oct-2026; the TASK-015 row VERIFIED 2-Nov-2026; the TASK-016 row
+VERIFIED 2-Nov-2026: 18 files, `git diff --name-status f5c2431 32172f5`).
 
 ---
 
@@ -112,15 +114,16 @@ consecutive merges (VERIFIED, 28-Oct-2026; the TASK-015 row VERIFIED 2-Nov-2026)
 9. **Moderator docs PRs.** A docs PR by the Moderator that edits only the Moderator-owned records and the
    state and decision documents (`docs/PROJECT_STATE.md`, `CHANGELOG.md`, `docs/KNOWN_ISSUES.md`,
    `docs/DECISIONS.md`) and overlaps no active claim needs no claim row; its branch, PR number and merge
-   SHA are recorded in section 4 and in the integration log at release (applied to the TASK-016 PR,
+   SHA are recorded in section 4 and in the integration log at release (applied to PR #30,
    2-Nov-2026).
 
 **MOD-02's first update (done 2-Nov-2026):** TASK-015 moved to section 4 (PR #29, `f5c2431`); its
-contract condensed into the integration log; TASK-016 completed (effective when the docs PR from branch
-`docs/mod-02-validation-20261102` merges; every claim about code, data, tests, CI and the live site
-reproduced; 77 document findings, P1 0 / P2 17 / P3 60, corrected or assigned; deviations and ARC-01
-conditions in the integration log and the update-log). The freeze ends when the owner directs the next
-work (see the freeze paragraph).
+contract condensed into the integration log; TASK-016 completed and released as PR #30 (`32172f5`,
+merged 2-Nov-2026 12:20 UTC; every claim about code, data, tests, CI and the live site reproduced; 77
+document findings, P1 0 / P2 17 / P3 60, corrected or assigned; deviations and ARC-01 conditions in the
+integration log and the update-log). The freeze ends when the owner directs the next work (see the
+freeze paragraph). A follow-up docs PR (2-Nov-2026) records this release and adds the GOV-01 and EX-01
+proposals; its entries take effect when it merges.
 
 **Bootstrap note.** TASK-015 created this register, so its claim is recorded in the same commit as the
 register itself (it could not be on `origin/main` before the work began).

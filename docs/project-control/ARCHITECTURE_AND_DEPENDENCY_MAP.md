@@ -18,9 +18,9 @@
   [`ACTIVE_CHANGE_REGISTER.md`](ACTIVE_CHANGE_REGISTER.md) and
   [`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md).
 - **Baseline.** `2b2a397` = `origin/main` = PR #28 merge (27-Oct-2026, docs only). `site/` last changed in
-  `5d39821` (PR #26, 22-Oct-2026). Update 2-Nov-2026: `origin/main` is now `f5c2431` (PR #29: documents,
-  `CLAUDE.md` and one agent file, nothing under `site/`, `tools/` or `.github/`); `site/` and `tools/` are
-  byte-identical to `2b2a397`, so the code statements below refer to unchanged code.
+  `5d39821` (PR #26, 22-Oct-2026). Update 2-Nov-2026: `origin/main` is now `32172f5` (PR #30: documents only; PR #29
+  `f5c2431` before it); `site/` and `tools/` are byte-identical to `2b2a397`, so the code statements below refer to
+  unchanged code.
   Code and git win over documents; section 8 lists the disagreements found.
 - **Line numbers drift.** Every `Lnnnn` for `site/index.html` is as of `2b2a397`. Each table gives a grep
   anchor: re-derive with `Grep -n -o "<anchor>" site/index.html` before citing. Never Read the file whole
