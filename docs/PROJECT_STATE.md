@@ -1,8 +1,8 @@
 # Project state
 
-_Last updated: 2-Nov-2026 - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
-PR #31 (`c0fb2dd`, docs only; merged 2-Nov-2026 14:41 UTC) is now the latest merge, after PR #30 (`32172f5`,
-12:20 UTC) and PR #29 (`f5c2431`); `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
+_Last updated: 3-Nov-2026 (includes the 2-Nov-2026 update) - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
+PR #32 (`703b975`, docs only: the D86 records; merged 2-Nov-2026 19:50 UTC) is the latest merge before this
+record, after PR #31 (`c0fb2dd`, 14:41 UTC), PR #30 (`32172f5`, 12:20 UTC) and PR #29 (`f5c2431`); `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
 unchanged from 28-Oct. ARC-01's first review (GO WITH CONDITIONS) and a security review found no secret
 or client name in the package. 77 audit findings (P2 17, P3 60) are recorded in
 [`update-log/2026-11-02_task-016-validation.md`](update-log/2026-11-02_task-016-validation.md) and the
@@ -11,7 +11,9 @@ register errors corrected (PR #30). The owner decided D84 (the risk-free rate st
 MF Screener data pack, MOD-02's reading INFERRED; analysis in
 [`update-log/2026-11-02_datapack-feasibility.md`](update-log/2026-11-02_datapack-feasibility.md)).
 The owner started GOV-01 (TASK-018, the widened docs PR, which gates every OPS and NB launch) and EX-01
-(TASK-064, browser acceptance, read-only) on 2-Nov-2026; no claim for GOV-01 is in force yet.
+(TASK-064, browser acceptance, read-only) on 2-Nov-2026. GOV-01's contract passed the Guardian pre-check on
+3-Nov-2026 (GO WITH CONDITIONS); its claim is recorded in `docs/project-control/ACTIVE_CHANGE_REGISTER.md`
+section 1 and is in force from the merge of that record.
 No `site/` or `tools/` change._
 
 _Previous update: 30-Oct-2026 - the Moderator handover package (MOD-01 -> MOD-02, dated 28-Oct-2026) is
@@ -143,8 +145,8 @@ site of the 4-fund check gives 23 slides, no layout warning, console clean.
 | Live URL | https://productsteamcentricity.github.io/Centricity-Proposal-Playbook/ |
 | Baseline tag | `handover-baseline` (= upstream `72e1f1e`, sanitised) |
 | Transfer PR / merge commit | PR #1 → merge `25e71a3` (16-Oct-2026); Actions run 38866042211 (verify + publish) succeeded |
-| Latest merge | PR #31 -> `c0fb2dd` (2-Nov-2026 14:41 UTC), docs only; Actions push run 41464361000 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before it: PR #30 -> `32172f5` (2-Nov-2026), docs only; Actions run 41443940610 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before that: PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
-| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `c0fb2dd` (`site/` and `tools/` identical to `32172f5`; SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
+| Latest merge | PR #32 -> `703b975` (2-Nov-2026 19:50 UTC), docs only (the D86 records); Actions push run 41513729682 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7, checked at the merge); its release row in the registers follows in the next register update. The merge before it: PR #31 -> `c0fb2dd` (2-Nov-2026 14:41 UTC), docs only; Actions push run 41464361000 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before that: PR #30 -> `32172f5` (2-Nov-2026), docs only; Actions run 41443940610 (verify + publish) succeeded; the 7 live files equal `site/` (SHA-256, 7 of 7). The merge before that one: PR #29 -> `f5c2431` (30-Oct-2026), docs and one agent definition only; Actions run 41022201456 (verify + publish) succeeded. The last merge that changed `site/` is PR #26 -> `5d39821` (22-Oct-2026; PowerPoint design system, D82-D83; Actions run 39806564591 succeeded). Before it: PR #22 -> `fb9cbd6`; PR #18 -> `f37fa01` published Sep-2026 Run 3 |
+| Live status | 2-Nov-2026: the six deploy files and `robots.txt` on the live site equal `main` `c0fb2dd` (and `703b975`, PR #32, docs only: see Latest merge) (`site/` and `tools/` identical to `32172f5`; SHA-256, 7 of 7); `Centricity_Risk_Matrix.js` returns 404 (archived, D78) |
 
 ## Completed (Stage A — replication and baseline)
 
@@ -239,7 +241,8 @@ every owner message, and checked against the code (record:
   [`project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`](project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md).
 - **Registers:** tasks TASK-001–074, requirements REQ-001–095 and REQ-PPT-01–153, open owner
   decisions DEC-OPEN-01–28 ([`project-control/DECISION_LOG.md`](project-control/DECISION_LOG.md)).
-  These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-078, DEC-OPEN-29 to DEC-OPEN-33, D86, C46.
+  These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-078, DEC-OPEN-29 to DEC-OPEN-33, D86, C46;
+  3-Nov-2026 addition: DEC-OPEN-34.
 - **Git in this folder:** On 28-Oct: OneDrive is not running and 229 `.git` files are cloud-only, so never
   `git checkout` / `git switch` here (R6; CLAUDE.md "Project control"). On 2-Nov OneDrive is running but the
   folder is not pinned and 228 of 568 are still cloud-only; the rule stays.
@@ -273,14 +276,19 @@ every owner message, and checked against the code (record:
 - **ARC-01 conditions (2-Nov-2026):** the widened TASK-018 PR (rule documents) must merge before any
   `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
   states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
-  the chat runs; whether a Guardian pre-check applies.
+  the chat runs; whether a Guardian pre-check applies. The merge of TASK-018 lifts the ARC-01 condition only.
+  A `/monthly-update` run and any tool `--apply` on the real `site/` also wait for TASK-017 (the owner pins
+  the folder, the cloud-only `.git` files hydrate, MOD-02 records the pass). The Sep catch-up (TASK-020) and
+  the October cycle (about 13-17 Nov) cannot start before that.
 - **Gate E for PR #30 and for D86 (still pending):** the owner confirms the wording of D84, D85 and D86 (the
   Moderator's summaries of the owner's answers). Gate E for D86 also asks the owner to confirm the reading
   (MOD-02's, INFERRED; Q1 in `update-log/2026-11-02_datapack-feasibility.md`): that "get it from the MF
   dashboard" means the Screener's monthly data pack (JSON and CSV zips; not Excel) shared by the owner each
   month. The owner started GOV-01 (TASK-018, its own worktree) and EX-01 (TASK-064, read-only, shared checkout,
-  no branch, no commit) on 2-Nov-2026; no GOV-01 claim is in force yet (its contract and the Guardian pre-check
-  come first).
+  no branch, no commit) on 2-Nov-2026; GOV-01's contract passed the Guardian pre-check (GO WITH CONDITIONS,
+  3-Nov-2026); its claim of 23 files is recorded in `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1 and
+  is in force from the merge of that record; Gate D waits for the owner's answer to DEC-OPEN-34 (who accepts a
+  finished change) and for the owner's yes to the operator-run Gate B in every monthly refresh.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
     pending and still blocks the October risk matrix;
@@ -344,12 +352,14 @@ The full, dependency-ordered plan is in
 handover; where this list and the register differ, the register wins.
 
 **First (done 2-Nov-2026):** MOD-02 validated the handover (TASK-016). **Now:** the widened TASK-018 docs PR
-(GOV-01), then the owner decision session (DEC-OPEN-30 and -31 first, about 6-Nov and 9-Nov, then -32 and -33,
-then -08, -04, -05, -07, -13/-14/-24, -29), TASK-064 (EX-01, read-only) in parallel, and TASK-017 (the owner
-pins the folder).
+(GOV-01), then the owner decision session (DEC-OPEN-34 together with DEC-OPEN-30 first, then -31, -32, -33 and
+the rest in the documented order: -08, -04, -05, -07, -13/-14/-24, -29; -30 and -31 are needed about 6-Nov and
+9-Nov, and -34, who accepts a finished change, before GOV-01's PR reaches Gate D), TASK-064 (EX-01, read-only)
+in parallel, and TASK-017 (the owner pins the folder).
 
-0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
-   before the first apply, PROVISIONAL pack about 11-Nov) and send the asks of TASK-078 to the MF dashboard
+0. Owner: answer DEC-OPEN-30 to -34 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
+   before the first apply, PROVISIONAL pack about 11-Nov, who accepts a finished change, asked together with -30 and needed before GOV-01's PR
+   reaches Gate D, with the owner's yes to the operator-run Gate B) and send the asks of TASK-078 to the MF dashboard
    team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
    TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
    without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS
