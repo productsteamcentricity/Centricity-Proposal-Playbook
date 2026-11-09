@@ -121,7 +121,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
     `git diff --stat origin/main -- CLAUDE.md .claude docs`), the ARC-01 condition on starting OPS or NB
     sub-chats lifts. A `/monthly-update` run and any tool `--apply` on the real `site/` still wait for
     TASK-017: the owner pins the OneDrive folder, the cloud-only `.git` files hydrate and the Moderator
-    records the pass (CLAUDE.md "Project control"). The October MF cycle (about 13-17-Nov-2026) cannot
+    records the pass (CLAUDE.md "Project control"). The October MF cycle (about 13-17 Nov 2026) cannot
     start before that: owner action, well before 13-Nov.
 
 ## Summary

@@ -22,9 +22,9 @@ own the conclusion. Steps:
    `preview_start playbook` serves the folder its project root points to.
 3. Core flow + exports + allocation round-trip + every Live Output tab, as listed in
    `docs/TESTING.md` §3. Save any exported files under `monthly-updates/<current month>/_review/`
-   (never in the repository's tracked folders). In a worktree, `monthly-updates/` and `backups/` hold only
-   README placeholders: use the main checkout's folders by absolute path (the first entry of
-   `git worktree list`), for exports too.
+   (never in the repository's tracked folders).
+   In a worktree, `monthly-updates/` and `backups/` hold only README placeholders: use the main checkout's
+   folders by absolute path (the first entry of `git worktree list`), for exports too.
 4. If the arguments contain `live`: download the 7 published files (the six deploy files and `robots.txt`)
    from the Pages URL in `docs/DEPLOYMENT.md` and compare SHA-256 with `site/`.
 
