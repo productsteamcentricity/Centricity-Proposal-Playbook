@@ -67,7 +67,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 4. Start from a clean git tree, snapshot the six deploy files into the main checkout's `backups/` (an
    absolute path), and keep OneDrive from syncing mid-run (R6). Writes are atomic now (A8) and a rename
    blocked by a sync is retried for about 6 s (PR #20), but a multi-file write is not one transaction. Run
-   the refresh in its own worktree on a `data/<YYYY-MM>` branch (E7, fixed 9-Nov-2026: the skill and the
+   the refresh in its own worktree on a `data/<YYYY-MM>` branch (E7, fixed, effective at the merge: the skill and the
    process doc B1 say how); no `git checkout`, `git switch`, `git merge` or `git pull` in this folder
    (CLAUDE.md, "Project control"). (Added 28-Oct-2026; updated 9-Nov-2026.)
 5. A Bond List run names its desk (`--desk Invictus` or `--desk OneDigital`); the tool refuses an
@@ -113,7 +113,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
     - after any change to a sibling, load the page and check the console for "override failed": a
       failing sibling does not fail `verify_page.js` or CI (A30);
     - do not ask the desk for Fund Risk Ratios (#12) or NAV Data (#17): they are not desk files (B8; E8
-      fixed 9-Nov-2026), and from the October cycle they come from the MF dashboard's data pack (D86; the
+      fixed, effective at the merge), and from the October cycle they come from the MF dashboard's data pack (D86; the
       build is TASK-022);
     - the AIF step's benchmark refresh reaches no page: PMS/AIF benchmark rows stay static until the
       owner decides their source (C41).
@@ -232,18 +232,18 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | E3 | Runbooks and specs are out of date | Docs | P2 | Open | **Affects** (if followed) | `docs/runbooks/`, `docs/specs/` |
 | E4 | Stale comments inside the deploy files | Docs/code | P3 | Closed 19-Oct-2026 (PR #12) | — | — |
 | E5 | Tool comments that contradict the code | Docs/code | P3 | Closed 19-Oct-2026 (PRs #7–#11) | — | — |
-| E6 | Docs call the siblings "idempotent-guarded" by `__..._APPLIED` flags that nothing reads | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `docs/ARCHITECTURE.md:48`; `docs/OPERATING_MANUAL.md:72`; `docs/PRD.md:221` |
-| E7 | The monthly skill and process doc told the operator to `git switch` and `git pull` (R6 hazard) | Docs | P2 | Closed 9-Nov-2026 (TASK-018) | - | `.claude/skills/monthly-update/SKILL.md:20`, `:31`; `docs/MONTHLY_UPDATE_PROCESS.md:145`, `:171` |
-| E8 | `docs/HANDOVER.md` (risk ratios) and the inbox README (Fund Risk Ratios, NAV Data) listed in-house files as files to send (B8) | Docs | P2 | Closed 9-Nov-2026 (TASK-018) | - | `docs/HANDOVER.md` section 5; `monthly-updates/00_INBOX/README.md:58`, `:60` |
-| E9 | The skill said Reckoner-cycle tools exit 1 on a missing file; every tool exits 2 | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `.claude/skills/monthly-update/SKILL.md:39-40` |
-| E10 | OneDrive guidance assumed "Always keep on this device" with OneDrive running, and omitted the checkout hazard | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `docs/DEVELOPMENT_SETUP.md:46`; `docs/MONTHLY_UPDATE_PROCESS.md:28`; `docs/HANDOVER.md` section 8 |
-| E11 | `docs/TESTING.md` names the rehearsal worktree `C:/t/cpp-old`; the real leftover is in `%TEMP%` | Docs | P3 | Partly fixed 9-Nov-2026 (TASK-018) | - | `docs/TESTING.md:100-110` |
-| E12 | Release docs prescribe `gh pr merge --delete-branch`; no merge after PR #3 used it | Docs | P3 | Open (owner decision; docs fixed 9-Nov-2026) | - | `.claude/agents/release-manager.md:24`; `SKILL.md:69`; `docs/MONTHLY_UPDATE_PROCESS.md:246` |
-| E13 | Stale records in `docs/PROJECT_STATE.md` (PR #23 merge, latest merge, verification date, C24 and C28 wording) | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `docs/PROJECT_STATE.md` at `2b2a397`: `:48`, `:119`, `:170`, `:240-246` |
-| E14 | `docs/DEPLOYMENT.md`: live check hashed 6 of the 7 published files; diagram omitted the unit tests; retirement condition missing | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `docs/DEPLOYMENT.md:10`, `:14-24`, `:44-49` |
-| E15 | `docs/ARCHITECTURE.md`: stale line references; the bake's capture of load-time mutations was not described | Docs | P3 | Closed 9-Nov-2026 (TASK-018) | - | `docs/ARCHITECTURE.md:31-32`, `:44-49` |
+| E6 | Docs call the siblings "idempotent-guarded" by `__..._APPLIED` flags that nothing reads | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `docs/ARCHITECTURE.md:48`; `docs/OPERATING_MANUAL.md:72`; `docs/PRD.md:221` |
+| E7 | The monthly skill and process doc told the operator to `git switch` and `git pull` (R6 hazard) | Docs | P2 | Closed (TASK-018, effective at the merge) | - | `.claude/skills/monthly-update/SKILL.md:20`, `:31`; `docs/MONTHLY_UPDATE_PROCESS.md:145`, `:171` |
+| E8 | `docs/HANDOVER.md` (risk ratios) and the inbox README (Fund Risk Ratios, NAV Data) listed in-house files as files to send (B8) | Docs | P2 | Closed (TASK-018, effective at the merge) | - | `docs/HANDOVER.md` section 5; `monthly-updates/00_INBOX/README.md:58`, `:60` |
+| E9 | The skill said Reckoner-cycle tools exit 1 on a missing file; every tool exits 2 | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `.claude/skills/monthly-update/SKILL.md:39-40` |
+| E10 | OneDrive guidance assumed "Always keep on this device" with OneDrive running, and omitted the checkout hazard | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `docs/DEVELOPMENT_SETUP.md:46`; `docs/MONTHLY_UPDATE_PROCESS.md:28`; `docs/HANDOVER.md` section 8 |
+| E11 | `docs/TESTING.md` names the rehearsal worktree `C:/t/cpp-old`; the real leftover is in `%TEMP%` | Docs | P3 | Partly fixed (TASK-018, effective at the merge) | - | `docs/TESTING.md:100-110` |
+| E12 | Release docs prescribe `gh pr merge --delete-branch`; no merge after PR #3 used it | Docs | P3 | Open (owner decision; docs fixed, effective at the merge) | - | `.claude/agents/release-manager.md:24`; `SKILL.md:69`; `docs/MONTHLY_UPDATE_PROCESS.md:246` |
+| E13 | Stale records in `docs/PROJECT_STATE.md` (PR #23 merge, latest merge, verification date, C24 and C28 wording) | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `docs/PROJECT_STATE.md` at `2b2a397`: `:48`, `:119`, `:170`, `:240-246` |
+| E14 | `docs/DEPLOYMENT.md`: live check hashed 6 of the 7 published files; diagram omitted the unit tests; retirement condition missing | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `docs/DEPLOYMENT.md:10`, `:14-24`, `:44-49` |
+| E15 | `docs/ARCHITECTURE.md`: stale line references; the bake's capture of load-time mutations was not described | Docs | P3 | Closed (TASK-018, effective at the merge) | - | `docs/ARCHITECTURE.md:31-32`, `:44-49` |
 | E16 | Project knowledge held only outside the repo (memory notes, desktop-app side-session notes) | Docs | P2 | Open | — | `%USERPROFILE%\.claude\projects\<slug>\memory\`; side-session notes |
-| E17 | The rule documents contradicted each other on gates, risk class, worktrees and git commands | Docs | P2 | Closed 9-Nov-2026 (TASK-018, effective at the merge) | - | `CLAUDE.md`; `.claude/skills/monthly-update/SKILL.md:20`, `:69`; `docs/MONTHLY_UPDATE_PROCESS.md:145`, `:246`; `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`; `docs/handover/` |
+| E17 | The rule documents contradicted each other on gates, risk class, worktrees and git commands | Docs | P2 | Closed (TASK-018, effective at the merge) | - | `CLAUDE.md`; `.claude/skills/monthly-update/SKILL.md:20`, `:69`; `docs/MONTHLY_UPDATE_PROCESS.md:145`, `:246`; `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`; `docs/handover/` |
 | F1 | Usage text shows pre-move commands | Tools | P3 | Closed 19-Oct-2026 (PRs #7–#12) | — | every tool's usage string |
 | F2 | Unused code in tools | Tools | P3 | Partly fixed 19-Oct-2026 (PRs #8, #10, #11, #15) | — | `tools/merge_bond_list.js:114`; `tools/lib/pptx.js:9` |
 | F3 | Browser request for `favicon.ico` returns 404 | Site | P3 | Partly fixed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:3` |
@@ -1221,7 +1221,7 @@ reached, the cycle runs without that step and the page keeps '30 Sep 2026'. This
 closes after one verified month on the pack route (T8 of the plan; analysis record
 `docs/update-log/2026-11-02_datapack-feasibility.md`).
 
-**Corrected 9-Nov-2026 (TASK-018, E8):** the stale lists named above (`docs/HANDOVER.md` section 5 and rows 12
+**Corrected (TASK-018, E8; effective at the merge):** the stale lists named above (`docs/HANDOVER.md` section 5 and rows 12
 and 17 of the inbox README) now say that the two inputs are not desk files, and the export log carries a
 dated correction note.
 
@@ -2413,10 +2413,10 @@ that only prints).
 
 E6–E16 were found on 28-Oct-2026 during the MOD-01 handover reconstruction (re-checked 30-Oct-2026).
 Most are for one docs-consistency change (TASK-018 in `docs/project-control/TASK_REGISTER.md`): it fixes
-E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the owner's rule (DEC-OPEN-22).
+E6-E10, E13-E15 and E17 and E11 in part (effective at the merge); E12 stays open for the owner's rule (DEC-OPEN-22).
 
 ### E6. Docs call the siblings "idempotent-guarded" by flags that nothing reads
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** `docs/ARCHITECTURE.md:48`,
   `docs/OPERATING_MANUAL.md:72` and `docs/PRD.md:221` say each sibling is "idempotent-guarded
@@ -2431,14 +2431,14 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** reword the three docs: re-running is harmless by construction; the flags are
   markers.
 - **Related:** C1, E1, E2, A30.
-- **Fixed 9-Nov-2026 (TASK-018):** `docs/ARCHITECTURE.md` (section 2), `docs/OPERATING_MANUAL.md` and
+- **Fixed (TASK-018, effective at the merge):** `docs/ARCHITECTURE.md` (section 2), `docs/OPERATING_MANUAL.md` and
   `docs/PRD.md` (section 3.3) now say that each sibling sets a marker that no page code reads and that
   re-running one is harmless because it filters out what it owns, then concatenates or assigns
   (`site/Centricity_June_Refresh.js:9`, `:13`; `site/Centricity_IRR_Offshore.js:17`, `:22`, `:24`;
   `site/Centricity_SIF_Refresh.js:44-51`). Checked against the code on 3-Nov-2026.
 
 ### E7. The monthly skill and process doc still tell the operator to `git switch`
-**P2 | Closed 9-Nov-2026 (TASK-018) | -**
+**P2 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   `.claude/skills/monthly-update/SKILL.md:20` (`git switch main`) and `:31`
@@ -2454,14 +2454,14 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** rewrite both docs with the OneDrive-safe branch procedure; decide again once
   OneDrive is healthy (TASK-017).
 - **Related:** R6, E10; TASK-017.
-- **Fixed 9-Nov-2026 (TASK-018):** the skill (steps 0-3, 5, 6, 8, 9) and the process doc (B0-B3, B5, B6,
+- **Fixed (TASK-018, effective at the merge):** the skill (steps 0-3, 5, 6, 8, 9) and the process doc (B0-B3, B5, B6,
   B8, B9) no longer run `git switch` or `git pull`. A refresh runs in its own worktree on `data/<YYYY-MM>`
   (a later run of the same month on `data/<YYYY-MM>-<n>`); `<M>`, the inbox and backups are absolute paths
   in the main checkout; the ban (checkout, switch, merge and pull, with its trigger and check) is stated
   once in CLAUDE.md "Project control".
 
 ### E8. `docs/HANDOVER.md` and the inbox README still list Fund Risk Ratios and NAV Data as files to send
-**P2 | Closed 9-Nov-2026 (TASK-018) | -**
+**P2 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** `docs/HANDOVER.md` §5
   (`:44`; the file is unchanged since `0afaf69`, 16-Oct-2026) lists "risk ratios" among the desk or
@@ -2475,7 +2475,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** mark rows 12 and 17 "made in-house; no producer (B8)" in both files, and leave
   them out of desk requests.
 - **Related:** B8, C11, C35.
-- **Fixed 9-Nov-2026 (TASK-018):** rows 12 and 17 of `monthly-updates/00_INBOX/README.md` and
+- **Fixed (TASK-018, effective at the merge):** rows 12 and 17 of `monthly-updates/00_INBOX/README.md` and
   `docs/HANDOVER.md` section 5 no longer present the two workbooks as desk files; they say where the
   inputs come from since D86 (the MF dashboard; the Moderator reads that as its monthly data pack,
   INFERRED; the build is TASK-022). The same stale sentence in
@@ -2483,7 +2483,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
   dashboard is written in any document (D86).
 
 ### E9. The skill says Reckoner-cycle tools exit 1 on a missing file
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   `.claude/skills/monthly-update/SKILL.md:39-40` says the Reckoner-cycle tools "crash with exit 1 on
@@ -2495,12 +2495,12 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Who sees it:** whoever runs the refresh.
 - **Suggested fix:** a one-line correction in SKILL.md.
 - **Related:** A2, D72.
-- **Fixed 9-Nov-2026 (TASK-018):** the skill says every tool exits 2 on a missing source or `--html`
+- **Fixed (TASK-018, effective at the merge):** the skill says every tool exits 2 on a missing source or `--html`
   path and no longer says the Reckoner-cycle tools exit 1 (`tools/merge_reckoner.js:29`, `:45-46`;
   `tools/test/tool_inputs.test.js`, 43 cases, passes in `npm test`).
 
 ### E10. OneDrive guidance assumes a state that does not hold, and omits the checkout hazard
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   `docs/DEVELOPMENT_SETUP.md:46`, `docs/MONTHLY_UPDATE_PROCESS.md:28`, `docs/HANDOVER.md` §8 (`:70`)
@@ -2513,13 +2513,13 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** state the precondition (OneDrive running, folder pinned, no offline `.git`
   files) and the no-checkout rule, and check it before every refresh (TASK-017).
 - **Related:** R6, R11, E7.
-- **Fixed 9-Nov-2026 (TASK-018):** `docs/DEVELOPMENT_SETUP.md`, `docs/MONTHLY_UPDATE_PROCESS.md` (Part A)
+- **Fixed (TASK-018, effective at the merge):** `docs/DEVELOPMENT_SETUP.md`, `docs/MONTHLY_UPDATE_PROCESS.md` (Part A)
   and `docs/HANDOVER.md` section 8 state the precondition (OneDrive running, folder pinned, no cloud-only
   `.git` file: TASK-017) as the target, not the present state, and point to the ban in CLAUDE.md "Project
   control"; B1 of the process doc points to the same preconditions before every refresh.
 
 ### E11. `docs/TESTING.md` names the rehearsal worktree `C:/t/cpp-old`; the real one is in `%TEMP%`
-**P3 | Partly fixed 9-Nov-2026 (TASK-018) | -**
+**P3 | Partly fixed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** `docs/TESTING.md:100-110`
   documents `git worktree add --detach C:/t/cpp-old main` and its removal. The worktree actually left
@@ -2531,13 +2531,13 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** remove the real worktree with `git worktree remove` and `git worktree prune`
   (never `checkout`/`switch`); make TESTING.md tell the reader to note the path used.
 - **Related:** E12; DEC-OPEN-22, TASK-061.
-- **Fixed 9-Nov-2026 (TASK-018), in part:** `docs/TESTING.md` section 2.3 tells the reader to note the
+- **Fixed (TASK-018, effective at the merge), in part:** `docs/TESTING.md` section 2.3 tells the reader to note the
   path used, names the real leftover (`%USERPROFILE%/AppData/Local/Temp/cpp-old`) and says to remove only
   the worktree created in the same task (never `--force` or `rm -rf`). **Left:** the leftover worktree
   itself, which waits for the owner (DEC-OPEN-22, TASK-061).
 
 ### E12. Release docs prescribe `gh pr merge --delete-branch`; no merge after PR #3 used it
-**P3 | Open (owner decision; docs fixed 9-Nov-2026) | -**
+**P3 | Open (owner decision; docs fixed, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   `.claude/agents/release-manager.md:24`, `.claude/skills/monthly-update/SKILL.md:69` and
@@ -2556,14 +2556,14 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
   PR #7 does not use it", which left PRs #4-#6 open and rested on session transcripts. GitHub shows
   the head branches of PRs #1-#3 deleted and those of PRs #4-#30 all still present, so no merge after
   PR #3 used `--delete-branch`.
-- **Changed 9-Nov-2026 (TASK-018):** `.claude/agents/release-manager.md`, `.claude/skills/monthly-update/SKILL.md`
+- **Changed (TASK-018, effective at the merge):** `.claude/agents/release-manager.md`, `.claude/skills/monthly-update/SKILL.md`
   and `docs/MONTHLY_UPDATE_PROCESS.md` no longer prescribe `--delete-branch`. Every release document gives
   one merge command, `gh pr merge <n> --merge --match-head-commit <sha>`, and CLAUDE.md "Never" bans
   deleting branches, worktrees, tags and the stash without the owner's explicit instruction. Open: the rule
   from now on and whether to delete the merged branches (DEC-OPEN-22).
 
 ### E13. Stale records in `docs/PROJECT_STATE.md`
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction), at `2b2a397`:**
   - the PR #23 row gives its merge as "—" (`:170`); it is `1523bbc`;
@@ -2579,12 +2579,12 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Who sees it:** the owner, MOD-02 and maintainers.
 - **Suggested fix:** correct them in the docs-consistency change.
 - **Related:** A27, C24, C28.
-- **Fixed 9-Nov-2026 (TASK-018):** the PR #23 row of `docs/PROJECT_STATE.md` now gives its merge,
+- **Fixed (TASK-018, effective at the merge):** the PR #23 row of `docs/PROJECT_STATE.md` now gives its merge,
   `1523bbc` (`git log --merges --grep='pull request #23'`). The other items were corrected earlier
   (28-Oct to 2-Nov-2026).
 
 ### E14. `docs/DEPLOYMENT.md`: the live check covers 6 of the 7 published files; other gaps
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   - the live-check loop (`docs/DEPLOYMENT.md:44-49`) hashes the six deploy files, and so does the
@@ -2600,7 +2600,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** add `robots.txt` to the loop, complete the diagram, and record the retirement
   condition (with R7 and DEC-OPEN-24).
 - **Related:** R7, D63, D78; TASK-074.
-- **Fixed 9-Nov-2026 (TASK-018):** the live-check loop in `docs/DEPLOYMENT.md` hashes all 7 published
+- **Fixed (TASK-018, effective at the merge):** the live-check loop in `docs/DEPLOYMENT.md` hashes all 7 published
   files (`robots.txt` added); the `release-manager` definition and the `verify-dashboard` `live` step say 7;
   the text under the release diagram lists the three steps of the `verify` job
   (`.github/workflows/pages.yml:37`, `:43-46`, `:47`) and says `publish` uploads all of `site/` (`:81`);
@@ -2608,7 +2608,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
   table at the top. TASK-074's `docs/DEPLOYMENT.md` half is the same sentence.
 
 ### E15. `docs/ARCHITECTURE.md`: stale line references; the bake's capture of load-time mutations is not described
-**P3 | Closed 9-Nov-2026 (TASK-018) | -**
+**P3 | Closed (TASK-018, effective at the merge) | -**
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):**
   - `docs/ARCHITECTURE.md:44-46` place siblings 3–5 at L5167–5169 (now `site/index.html:5525-5527`)
@@ -2625,7 +2625,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Suggested fix:** refresh the line references (with grep patterns) and add a short "what the bake
   captures" note.
 - **Related:** C1, C28, E1, D55.
-- **Fixed 9-Nov-2026 (TASK-018):** `docs/ARCHITECTURE.md` has re-derived line references (siblings 3-5 at
+- **Fixed (TASK-018, effective at the merge):** `docs/ARCHITECTURE.md` has re-derived line references (siblings 3-5 at
   `site/index.html:5525-5527`, `window.RISK_MATRIX` at `:5533`, the `window.H` helper block ~L1446-2929,
   `window.REFRESH` ~L3177-3944) and a "What the bake captures" paragraph (`tools/bake_month.js:75-114` runs
   every inline block; `:233` writes MASTER back; 35 baseline MASTER records carry `_pms_source`, 34 Equity
@@ -2657,7 +2657,7 @@ E6-E10, E13-E15 and E17 and E11 in part (9-Nov-2026); E12 stays open for the own
 - **Related:** E10, R6, R11; DEC-OPEN-19, TASK-071, TASK-037.
 
 ### E17. The rule documents contradict each other on gates, risk class, worktrees and git commands
-**P2 | Closed 9-Nov-2026 (TASK-018, effective at the merge) | -**
+**P2 | Closed (TASK-018, effective at the merge) | -**
 
 OPS and NB = the operations and new-build sub-chats; ARC-01 = the integration-guardian reviewer (see
 `docs/project-control/CHAT_REGISTRY.md`).
@@ -2689,7 +2689,7 @@ OPS and NB = the operations and new-build sub-chats; ARC-01 = the integration-gu
 - **Details:** `docs/update-log/2026-11-02_task-016-validation.md` (ids guardian-gate-b:D-01 to D-07
   and D-14). The minor items there go to TASK-018 or TASK-077.
 - **Related:** E7, E12, R6; TASK-017, TASK-018, TASK-077.
-- **Fixed 9-Nov-2026 (TASK-018), effective when the PR merges:** (1) the ban on `git checkout`,
+- **Fixed (TASK-018), effective when the PR merges:** (1) the ban on `git checkout`,
   `git switch`, `git merge` and `git pull` in the main checkout, with its trigger and check, is stated in
   CLAUDE.md "Project control" and worded the same where a document repeats it; (2) one pre-check rule,
   "material or high-risk", everywhere; (3) bootstrap 7.2 defers to FILE_OWNERSHIP_AND_CHANGE_CONTROL

@@ -8,7 +8,8 @@ with its trigger and its check, beside one worktree rule, one Guardian pre-check
 criterion for a routine monthly refresh (Gate B inside it) and one merge command without `--delete-branch`. The
 monthly refresh runs in its own worktree and reaches the inbox and the backups of the main checkout by absolute path.
 Gate E is final after the owner's answer to DEC-OPEN-34 of 9-Nov-2026 (D87): the owner accepts client-facing changes
-and anything the owner asked to review; the Moderator records acceptance of the rest on evidence. The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
+and anything the owner asked to review; the Moderator records acceptance of the rest on evidence. The owner also
+approved the operator-run Gate B in every monthly refresh (D88). The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
 has advanced local `main`. It does not lift the TASK-017 hold: a `/monthly-update` run and any tool `--apply` on the
 real `site/` still wait for the owner's OneDrive pin, so the October cycle (about 13-17 Nov) needs that pin well
 before then. PR #33 (`8aeabfc`, docs only: the claim record; merged 2-Nov-2026 21:24 UTC) is the latest merge before
@@ -319,7 +320,7 @@ every owner message, and checked against the code (record:
   is in force from the merge of that record. The owner answered DEC-OPEN-34 on 9-Nov-2026 (the owner accepts
   client-facing changes and anything the owner asked to review; the Moderator records the rest on evidence: D87,
   recorded by the Moderator) and, the same day, approved the operator-run Gate B in every monthly refresh ("Yes,
-  approve"; no new decision number), so no owner answer is left open for GOV-01's PR.
+  approve"; D88), so no owner answer is left open for GOV-01's PR.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
     pending and still blocks the October risk matrix;
@@ -396,7 +397,7 @@ before 13-Nov. The hold is not narrowed: a worktree outside OneDrive still keeps
 
 0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
    before the first apply, PROVISIONAL pack about 11-Nov; DEC-OPEN-34 was answered on 9-Nov-2026, D87; the
-   operator-run Gate B in every monthly refresh was approved the same day) and send the asks of TASK-078 to the MF
+   operator-run Gate B in every monthly refresh was approved the same day, D88) and send the asks of TASK-078 to the MF
    dashboard team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
    TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
    without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS

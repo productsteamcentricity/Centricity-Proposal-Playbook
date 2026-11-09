@@ -149,5 +149,5 @@ Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `v
 Centricity Select 178 (178 in MASTER) · PMS 692 / AIF 12 / benchmarks 4 · RISK_MATRIX 1,088 ·
 EQUITY_ANALYTICS 1,205 · 0 duplicates · 0 script errors. Next due: the Sep-2026 Reckoner catch-up ("October 2026" deck,
 `/monthly-update September 2026`), then the Oct-2026 MF cycle (mid-November). Its Portfolio Matrix
-is to be fed from the MF dashboard's data pack from the October cycle (D86); the build is
-TASK-022, and until it is merged the page keeps '30 Sep 2026' (KNOWN_ISSUES B8, C46).
+is to be fed from the MF dashboard from the October cycle (D86; the data-pack reading is INFERRED); the
+build is TASK-022, and until it is merged the page keeps '30 Sep 2026' (KNOWN_ISSUES B8, C46).

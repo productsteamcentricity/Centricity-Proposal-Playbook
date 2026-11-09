@@ -166,7 +166,8 @@ their mandatory followers, e.g. steps 3–4 after a bake).
      the branch; no file changes; a resumed run is already on its branch).
    - In the main checkout: do not run the refresh here. Create a worktree outside OneDrive and outside
      `C:/t/` (B5 empties that folder): `git worktree add "<short path>" -b <branch> origin/main`, and run
-     every later command from it.
+     every later command from it. If the session cannot work in the new folder, stop: the Moderator starts
+     the refresh as an OPS chat with `use_worktree: true`.
    - No worktree possible: ask the Moderator (FILE_OWNERSHIP_AND_CHANGE_CONTROL.md section 2.2).
 
    Preconditions: CLAUDE.md "Project control".
@@ -283,7 +284,10 @@ The decks are native shapes, so they must be rendered (script in `tools/README.m
 3. Wait for the `verify` check (`gh pr checks <PR> --watch`).
 4. **Gate B.** Run the `integration-guardian` agent, mode DIFF REVIEW. Pass it `git diff --name-status origin/main...HEAD`,
    the `<M>/_review` outputs, base and head SHAs and the time of your last `git fetch origin`, never a
-   summary. Record its verdict and any conditions in the update log and the PR body (no workbook values).
+   summary. Record the verdict, the conditions and the head SHA the Guardian reviewed in the PR body (no
+   workbook values). Adding that record to the update log is the only commit allowed after Gate B (check:
+   `git diff --name-only <reviewed-sha> HEAD` lists only that file). Any other new commit,
+   `gh pr update-branch` or a merge makes a new head: re-run CI and Gate B.
    GO, or GO WITH CONDITIONS that you have met, clears it. A STOP verdict or an unmet condition counts as a
    failed check under D61: stop before merging and ask the owner. A Gate B run by you is weaker than one run
    by the Moderator: you review your own work.

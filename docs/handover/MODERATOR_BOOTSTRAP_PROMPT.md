@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 3-Nov-2026 |
-| Author chat | MOD-01; GOV-01 (TASK-018 update, 3-Nov-2026; Gate E text final 9-Nov-2026, D87) |
+| Date | 9-Nov-2026 |
+| Author chat | MOD-01; GOV-01 (TASK-018 update, 9-Nov-2026) |
 | Status | Authoritative (standing instruction set for every Moderator; the state of a given day lives in the dated handover and successor prompt) |
 | Supersedes | version 1 of 28-Oct-2026 (kept in git history) |
 | Next review | at every Moderator handover |
@@ -231,7 +231,7 @@ long review you may run it as its own read-only session named ARC-01. Use `git l
 | B - Guardian review | `integration-guardian` checked the actual diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk; for a material or high-risk change its contract was pre-checked first (7.2); findings resolved or accepted by you | Guardian -> you |
 | C - Independent verification | `node tools/verify_page.js site` (counts unchanged or explained), `npm test`; for page changes the `verify-dashboard` skill / `qa-verifier` in a browser (`docs/TESTING.md` section 3); for tools the dry-run comparison and the rehearsal harness (`--old-site` for page-code changes); for deck changes a PowerPoint render (`tools/dev/render_pptx.ps1` + `tools/dev/check_pptx_bounds.js`) and `window.__PPTX_LAYOUT.warnings` empty; for data or financial logic `financial-data-reviewer`. Never write PASS for a check that was not run. | you, specialists |
 | D - Controlled integration | One PR at a time; the branch contains current `origin/main`; CI `verify` green; `security-reviewer` done (it runs before every push; you confirm it here); merge (= publish) with `gh pr merge <n> --merge --match-head-commit <head-sha>`, `<head-sha>` from `gh pr view <n> --json headRefOid -q .headRefOid`, and no `--delete-branch` until DEC-OPEN-22 (KNOWN_ISSUES E12); the push run's verify and publish succeed; all 7 published files' SHA-256 equal `site/` (`release-manager` hashes all 7; the loop is in `docs/DEPLOYMENT.md`); record the new baseline; advance local `main` (`REPOSITORY_AND_ENVIRONMENT_STATE.md` 14.4 E) and check that `git diff --stat origin/main -- CLAUDE.md .claude docs` there is empty before any OPS or NB launch or refresh; tell dependent tasks to bring `origin/main` into their branch | you |
-| E - Acceptance | Implementation, review, verification, integration and acceptance are separate states. The owner accepts every client-facing change (what a client or adviser sees: data refresh results, page, deck and Excel changes) and any change the owner asked to review (D87). You record acceptance of the rest (registers, tests, internal documents) on evidence and list those changes in the Moderator's report to the owner. A monthly refresh publishes first (D61) and is accepted afterwards. A task is not accepted because its chat finished. | owner; you record |
+| E - Acceptance | Implementation, review, verification, integration and acceptance are separate states. The owner accepts every client-facing change (what a client or adviser sees: data refresh results, page, deck and Excel changes) and any change the owner asked to review (D87). You record acceptance of the rest (registers, tests, internal documents) on evidence. The Moderator lists the changes it accepted on evidence in its next report to the owner after each merge. A monthly refresh publishes first (D61) and is accepted afterwards. A task is not accepted because its chat finished. | owner; you record |
 
 ### 7.5 Recovery
 
@@ -248,7 +248,8 @@ you. Run it as a bounded OPS task in its own worktree that owns all six deploy f
 process doc say how; the claim and the TASK-017 precondition are in CLAUDE.md "Project control"). D61
 lets a refresh publish when every check passes, Gate B included (a STOP verdict or an unmet condition is a
 failed check; run by the operator it is weaker than a review you run yourself); its stop list still
-applies: ambiguous renames, PMS pins, Reckoner names, odd inputs go to the owner.
+applies: ambiguous renames, PMS pins, Reckoner names, odd inputs go to the owner. If the session cannot
+work in the new folder, stop: the Moderator starts the refresh as an OPS chat with `use_worktree: true`.
 
 ## 8. Starting and briefing sub-chats
 

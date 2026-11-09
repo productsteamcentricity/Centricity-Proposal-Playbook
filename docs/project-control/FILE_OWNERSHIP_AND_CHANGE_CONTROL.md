@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 3-Nov-2026 |
-| Author chat | MOD-01; GOV-01 (TASK-018 update, 3-Nov-2026; Gate E text final 9-Nov-2026, D87) |
+| Date | 9-Nov-2026 |
+| Author chat | MOD-01; GOV-01 (TASK-018 update, 9-Nov-2026) |
 | Status | Authoritative (rules; the Moderator proposes changes, the owner approves those that change publishing or approvals) |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
 | Next review | whenever a rule is found wrong in practice (DEC-OPEN-34, who accepts a finished change, was answered on 9-Nov-2026: D87) |
@@ -81,7 +81,7 @@ records the pass), and again whenever OneDrive is not running or any `.git` file
 | Who | Where | Rules |
 |---|---|---|
 | Moderator (MOD-nn) | the main checkout | Stays on `main`; never `git checkout`, `git switch`, `git merge` or `git pull` (the ban of CLAUDE.md "Project control"; the Moderator's checkout always stays on `main`, bootstrap 7.1, so for it the ban does not lift with TASK-017). Edits only Moderator-owned files and files its own claim covers. Creates branches with `git branch <new> origin/main` and commits by explicit path through a temporary index; brings local `main` up to `origin/main` after a merge with the method in [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md). |
-| Coding sub-chat (any EX, NB, OPS or GOV chat that writes files) | its own git worktree | In the desktop app: started with `start_session` and `use_worktree: true`, which creates `.claude/worktrees/<name>` on a session branch `claude/<name>`. The branch name usually matches the folder name (NB-01, NB-02 and the unused fifth worktree; VERIFIED by their location and the app's worktree marker) but can differ when the app reuses a folder (GOV-01: folder `focused-wright-d50bee`, branch `claude/affectionate-lovelace-f11b67`; VERIFIED 3-Nov-2026). It makes its task branch inside the worktree with `git switch -c <task-branch>` at the starting commit, which rewrites no file (VERIFIED 3-Nov-2026: `git status` was empty after it in GOV-01's worktree). Outside the app: `git worktree add -b <task-branch> <path> origin/main`, run from the main checkout (this does not change the main checkout's branch; INFERRED safe because it reads only the current tree). Use a short path outside OneDrive for such a worktree (`docs/TESTING.md` section 2.3 uses `C:/t/...` for the same reason); avoid `%TEMP%`, which Windows may clean. One task branch per worktree; a new task gets a new worktree cut from current `origin/main`. Never writes in the main checkout or in another chat's worktree. |
+| Coding sub-chat (any EX, NB, OPS or GOV chat that writes files) | its own git worktree | In the desktop app: started with `start_session` and `use_worktree: true`, which creates `.claude/worktrees/<name>` on a session branch `claude/<name>`. The branch name usually matches the folder name (NB-01, NB-02 and the unused fifth worktree; VERIFIED by their location and the app's worktree marker) but can differ when the app reuses a folder (GOV-01: folder `focused-wright-d50bee`, branch `claude/affectionate-lovelace-f11b67`; VERIFIED 3-Nov-2026). It makes its task branch inside the worktree with `git switch -c <task-branch>` at the starting commit, which rewrites no file (VERIFIED 3-Nov-2026: `git status` was empty after it in GOV-01's worktree). Outside the app: `git worktree add -b <task-branch> <path> origin/main`, run from the main checkout (this does not change the main checkout's branch; INFERRED safe because it reads only the current tree). Use a short path outside OneDrive for such a worktree (`docs/TESTING.md` section 2.3 uses `C:/t/...` for the same reason); avoid `%TEMP%`, which Windows may clean. One task branch per worktree; a new task gets a new worktree cut from current `origin/main`. Never writes in the main checkout or in another chat's worktree (one exception: advancing local `main` after its own merge, Gate D step 7). |
 | Read-only work | may share the main checkout | Investigations, `node tools/verify_page.js site`, `npm test` (leaves no files; VERIFIED 28-Oct-2026), tool dry runs without `--apply`, the preview server. It must not create, modify or stage tracked files; output goes to the session scratchpad or to `monthly-updates/<month>/_review/` (local, ignored). |
 | Guardian (ARC-01) | anywhere, read-only | No write tools. |
 | Fallback when no worktree is possible | the main checkout | Only one coding chat at a time (single writer for the whole folder), recorded in ACTIVE_CHANGE_REGISTER. It never switches branches and commits by explicit path through a temporary index. The Moderator keeps its own edits to Moderator-owned files and commits them by explicit path; nobody else writes there meanwhile. |
@@ -157,9 +157,9 @@ but nobody edits it without first claiming it.
    to the claim. It checks the task's dependencies in [TASK_REGISTER.md](TASK_REGISTER.md).
 2. **Classify the change** (section 7). For a material or high-risk change, write the change-impact
    contract (section 6) into the task's entry in ACTIVE_CHANGE_REGISTER and have the Guardian review it
-   (Gate B pre-check) before step 3; the chat that will implement may draft the contract after it is
-   launched (section 6, "Who"). A routine monthly refresh has a standing contract and no per-run pre-check
-   (section 7).
+   (Gate B pre-check) before step 3; the chat that will implement may be started first and draft the contract
+   in a contract phase that edits nothing and holds no claim (as GOV-01 did; section 6, "Who"). A routine
+   monthly refresh has a standing contract and no per-run pre-check (section 7).
 3. **Record the claim.** The Moderator adds the row (task, chat, workstream, worktree, source branch and
    baseline, task branch, files, interfaces, dependencies and overlaps, status) and commits it to `main` in
    a docs PR; several register updates may share one PR. **A claim is in force when it is on
@@ -361,11 +361,13 @@ The operator of the refresh runs Gate B (the Moderator runs it for any other cha
 manual checks of D61, and a STOP verdict or an unmet condition counts as a failed check under D61, which
 then stops and asks: D61's wording and stop list do not change. A Gate B run by the operator is weaker than
 one run by the Moderator, because the operator reviews its own work: it must pass the Guardian
-`git diff --name-status origin/main...HEAD`, the month's `_review` outputs and both SHAs, never a summary, and
-record the verdict and any conditions in the update log and the PR body (no workbook values). The owner
-approved this operator-run Gate B in every monthly refresh on 9-Nov-2026: the Moderator asked in plain words,
-"Do you approve one extra check in every monthly refresh?", and the owner answered "Yes, approve" (no new
-decision number).
+`git diff --name-status origin/main...HEAD`, the month's `_review` outputs and both SHAs, never a summary.
+Record the verdict, the conditions and the head SHA the Guardian reviewed in the PR body (no workbook
+values). Adding that record to the update log is the only commit allowed after Gate B (check:
+`git diff --name-only <reviewed-sha> HEAD` lists only that file). Any other new commit, `gh pr update-branch`
+or a merge makes a new head: re-run CI and Gate B. The owner approved this operator-run Gate B in every
+monthly refresh on 9-Nov-2026: chat answer "Yes, approve" to the question "Do you approve one extra check in
+every monthly refresh?" (recorded as D88).
 
 **Owner approval before the merge** (separate from the Guardian):
 - any judgement call on D61's stop list: an ambiguous rename, a PMS alias pin, a Reckoner name mismatch, a
@@ -389,10 +391,10 @@ change comes before the merge.
 | Gate | What must be true | Commands and evidence | Who |
 |---|---|---|---|
 | A. Implementation report | The task ID, chat, branch, worktree, baseline SHA, head SHA (pushed), files changed, tests actually run with their output, deviations from the contract and open issues are reported. | `git merge-base HEAD origin/main`; `git rev-parse HEAD`; `git ls-remote origin <branch>`; `git diff --name-status origin/main...HEAD`. Written into the PR description ([`docs/DEPLOYMENT.md`](../DEPLOYMENT.md) "Commit and PR conventions") and sent to the Moderator, who copies the fields into ACTIVE_CHANGE_REGISTER. | the implementing chat (`implementation-engineer`; `docs-keeper` for the docs) |
-| B. Guardian review | Diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk reviewed (section 7); no secrets or client data. For a material or high-risk change its contract was pre-checked before the claim (section 4.1). | `integration-guardian` subagent on the actual diff (the operator of a monthly refresh runs it for its own refresh, section 7). | ARC-01 |
+| B. Guardian review | Diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk reviewed (section 7); no secrets or client data. For a material or high-risk change its contract was pre-checked before the claim (section 4.1). | `integration-guardian` subagent on the actual diff (the operator of a monthly refresh runs it for its own refresh, section 7; secrets and client data: `security-reviewer` before every push, confirmed at Gate D). | ARC-01 |
 | C. Independent verification | The checks for the kind of change (table below) ran and passed, run by someone other than the implementer. Each is reported PASS / FAIL / NOT RUN with evidence; a check that was not run is never reported as passed. | see the table below | `qa-verifier` (or the `verify-dashboard` skill), `financial-data-reviewer`, the Moderator |
 | D. Controlled integration | One PR at a time, up to date with `main`, every check green, `security-reviewer` done (it runs before every push, CLAUDE.md "How every change is made", step 6; the Moderator confirms it here), merged, published, live files equal `site/`, local `main` advanced, new baseline recorded, dependants told. | steps below | the Moderator with `release-manager` |
-| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states. The owner accepts every client-facing change (what a client or adviser sees: data refresh results, page, deck and Excel changes) and any change the owner asked to review (D87). The Moderator records acceptance of the rest (registers, tests, internal documents) on evidence and lists those changes in the Moderator's report to the owner. A monthly refresh publishes first (D61) and is accepted afterwards. A task is not accepted because its chat finished. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
+| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states. The owner accepts every client-facing change (what a client or adviser sees: data refresh results, page, deck and Excel changes) and any change the owner asked to review (D87). The Moderator records acceptance of the rest (registers, tests, internal documents) on evidence. The Moderator lists the changes it accepted on evidence in its next report to the owner after each merge. A monthly refresh publishes first (D61) and is accepted afterwards. A task is not accepted because its chat finished. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
 
 **Gate C by kind of change:**
 

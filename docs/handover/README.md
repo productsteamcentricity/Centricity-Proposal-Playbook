@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 4 |
-| Date | 3-Nov-2026 |
-| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 3-Nov-2026) |
+| Date | 9-Nov-2026 |
+| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026) |
 | Status | Authoritative (index of this folder) |
 | Supersedes | version 3 of 2-Nov-2026 |
 | Next review | at every handover (the TASK-016 review was done on 2-Nov-2026) |
@@ -85,9 +85,10 @@ those of the unedited snapshot files.
 
 ### Other documents to read with care
 
-None at the moment. [`../HANDOVER.md`](../HANDOVER.md), `.claude/skills/monthly-update/SKILL.md` and
-[`../MONTHLY_UPDATE_PROCESS.md`](../MONTHLY_UPDATE_PROCESS.md) were corrected by TASK-018 on 3-Nov-2026
-(KNOWN_ISSUES E7, E8, E10): the OneDrive-safe branch procedure replaced the `git switch` and `git pull`
+None, except `docs/INPUT_FILES.md` (rows 12 and 17 and sections 12 and 17), which still describes the state
+before D86 until the Moderator or TASK-022 corrects it. [`../HANDOVER.md`](../HANDOVER.md),
+`.claude/skills/monthly-update/SKILL.md` and [`../MONTHLY_UPDATE_PROCESS.md`](../MONTHLY_UPDATE_PROCESS.md)
+were corrected by TASK-018 (KNOWN_ISSUES E7, E8, E10; effective at the merge): the OneDrive-safe branch procedure replaced the `git switch` and `git pull`
 steps, and the Fund Risk Ratios and NAV Data inputs are no longer listed as desk files. The dated 28-Oct
 snapshot documents above are read together with the errata.
 

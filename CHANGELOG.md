@@ -35,8 +35,9 @@ answers ARC-01's conditions of 2-Nov-2026 (findings D-01 to D-07, D-14 and the m
 - `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`: one criterion (R1, section 7) for a routine monthly
   refresh: Material with a standing contract, Gate B inside the refresh as one of D61's checks (an operator-run
   `integration-guardian` DIFF REVIEW, weaker than one run by the Moderator). The owner approved this extra check in
-  every monthly refresh on 9-Nov-2026: asked in plain words, "Do you approve one extra check in every monthly
-  refresh?", the owner answered "Yes, approve" (no new decision number). Also a Gate D step that advances local
+  every monthly refresh on 9-Nov-2026: chat answer "Yes, approve" to the question "Do you approve one extra check
+  in every monthly refresh?" (recorded as D88). The refresh records the verdict, the conditions and the reviewed
+  head SHA in the PR body; the update-log record is the only commit allowed after Gate B. Also a Gate D step that advances local
   `main` and checks that `git diff --stat origin/main -- CLAUDE.md .claude docs` is empty before any OPS or NB launch.
 - The monthly refresh in its own worktree (the skill and `docs/MONTHLY_UPDATE_PROCESS.md`): the inbox, the month folder
   and the backups of the main checkout addressed by absolute path (`<MAIN>`, the first entry of `git worktree list`),

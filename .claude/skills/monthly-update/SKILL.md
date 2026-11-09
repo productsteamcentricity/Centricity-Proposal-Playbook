@@ -93,11 +93,13 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    `gh pr create --base main --title "<title>" --body-file <file>`, `gh pr checks <PR> --watch`.
    **Gate B:** run the `integration-guardian` agent (DIFF REVIEW) with `git diff --name-status
    origin/main...HEAD`, the `<M>/_review` outputs, both SHAs and the time of your last `git fetch origin`,
-   never a summary; record its verdict and conditions in the update log and the PR body (no workbook
-   values). GO, or GO WITH CONDITIONS you have met, clears it; a STOP verdict or an unmet condition counts
-   as a failed check under D61. (Run by you it is weaker than a Moderator-run Gate B: you review your own
-   work.) Confirm the PR head contains `origin/main` (`gh pr view <PR> --json mergeStateStatus`);
-   `gh pr update-branch <PR>` or a merge makes a new head: re-run CI and Gate B. Merge with
+   never a summary. Record the verdict, the conditions and the head SHA the Guardian reviewed in the PR
+   body (no workbook values). Adding that record to the update log is the only commit allowed after Gate B
+   (check: `git diff --name-only <reviewed-sha> HEAD` lists only that file). Any other new commit,
+   `gh pr update-branch` or a merge makes a new head: re-run CI and Gate B. GO, or GO WITH CONDITIONS you
+   have met, clears it; a STOP verdict or an unmet condition counts as a failed check under D61. (Run by
+   you it is weaker than a Moderator-run Gate B: you review your own work.) Confirm the PR head contains
+   `origin/main` (`gh pr view <PR> --json mergeStateStatus`). Merge with
    `gh pr merge <PR> --merge --match-head-commit <head-sha>` (`<head-sha>` from
    `gh pr view <PR> --json headRefOid -q .headRefOid`; no `--delete-branch` until the owner decides
    DEC-OPEN-22), watch the Pages run by run ID, then confirm the 7 published files' SHA-256 equal `site/`.
