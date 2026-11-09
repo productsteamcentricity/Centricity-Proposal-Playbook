@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 3-Nov-2026 |
-| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026 and 3-Nov-2026) |
+| Date | 9-Nov-2026 |
+| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026 and 9-Nov-2026) |
 | Status | Authoritative for decisions waiting for the owner (DEC-OPEN-nn). Approved decisions: `docs/DECISIONS.md` is authoritative; part 2 here is only an index. |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
 | Next review | each time the owner answers a decision |
@@ -54,17 +54,19 @@ DEC-OPEN-31 answered (update-log T1; the analysis assumed answers by 4-Nov-2026)
 different things. Answering both DEC-OPEN-30 and DEC-OPEN-31 by about 6-Nov-2026 keeps a merge by 13-Nov-2026
 possible (before step 10 of the October cycle, about 13-17-Nov-2026). Answering DEC-OPEN-31 by 9-Nov-2026 at the
 latest means a merge about 16-Nov-2026, which is step 10 itself. The estimate leaves no slack, so the fallback is
-the LIKELY case if TASK-018 (which must merge before the build starts, and cannot reach its Gate D before
-DEC-OPEN-34 is answered) slips or the answers come late: the October cycle runs without step 10 (an absent input
-is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late second run or the November cycle.
+the LIKELY case if TASK-018 (which must merge before the build starts, and cannot reach its Gate D before the
+owner's yes to the operator-run Gate B, given on 9-Nov-2026: D88) slips or the answers come late: the October cycle runs without step 10 (an absent input
+is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late second run or the November cycle. As of 9-Nov-2026
+DEC-OPEN-30 and DEC-OPEN-31 are unanswered and TASK-018 has not merged, so a merge of the bridge by 13-Nov-2026
+is no longer possible: the fallback applies to the October cycle (INFERRED); the build starts when TASK-018 has
+merged and DEC-OPEN-30 and -31 are answered.
 Suggested order for the owner's decision session:
 
-1. DEC-OPEN-30 together with DEC-OPEN-34, then DEC-OPEN-31 (DEC-OPEN-30 and -31 gate the build; about 6-Nov and
-   about 9-Nov-2026). DEC-OPEN-34 (who accepts a finished change) is asked together with DEC-OPEN-30, not later:
-   it gates the merge of GOV-01's PR (TASK-018), which cannot reach Gate D before the answer (about the end of
-   the week of 3-Nov-2026, no date fixed), and that merge gates every OPS and NB launch, including the TASK-022
-   build needed by step 10 of the October cycle (about 13-17-Nov-2026); asking it last adds the slip that this
-   section warns about. DEC-OPEN-01, -02 and -03 are ANSWERED (2-Nov-2026: D86, D84, D85).
+1. DEC-OPEN-30, then DEC-OPEN-31 (DEC-OPEN-30 and -31 gate the build; first due about 6-Nov and about
+   9-Nov-2026: DEC-OPEN-30 is overdue and DEC-OPEN-31 is due about now: see the note above). DEC-OPEN-34 (who
+   accepts a finished change) was ANSWERED on 9-Nov-2026 (D87); the owner's yes to the operator-run Gate B was given
+   the same day (D88); GOV-01's PR (TASK-018) is not merged yet.
+   DEC-OPEN-01, -02 and -03 are ANSWERED (2-Nov-2026: D86, D84, D85).
 2. DEC-OPEN-32 (before the first apply, about 14-16-Nov-2026; INFERRED: it needs people outside this project, so
    it can take longest), then DEC-OPEN-33 (by about 11-Nov-2026, acted on at run time).
 3. DEC-OPEN-08 (by ~13-Nov-2026).
@@ -76,7 +78,7 @@ Suggested order for the owner's decision session:
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-34 exist: 3 are answered (DEC-OPEN-01, -02 and -03; section 1.6) and 31 are
+Entries DEC-OPEN-01 to DEC-OPEN-34 exist: 4 are answered (DEC-OPEN-01, -02, -03 and -34; section 1.6) and 30 are
 open. Next free: DEC-OPEN-35.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
@@ -114,7 +116,7 @@ open. Next free: DEC-OPEN-35.
 | DEC-OPEN-31 | Accepting the other changes the pack brings to the Portfolio Matrix | owner | TASK-022 | ~9-Nov-2026 at the latest (a merge ~16-Nov-2026 is step 10 itself; for a merge by 13-Nov-2026: ~6-Nov-2026); if late, the fallback is likely (section 1.2) | yes (accept all) |
 | DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | before the first apply (~14-16-Nov-2026) | yes (a written yes) |
 | DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
-| DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | asked with DEC-OPEN-30; before GOV-01's PR reaches Gate D (about the end of the week of 3-Nov-2026; no date fixed) | yes (a) |
+| DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | ANSWERED 9-Nov-2026 (D87) | n/a (answered) |
 
 ## 1.4 The open decisions
 
@@ -907,56 +909,14 @@ TASK-021, TASK-022.
 - **Record the answer as.** The owner's yes (or no), quoted in the update log of the October run; no `Dnn` unless
   the owner sets a standing rule for provisional packs.
 
-### DEC-OPEN-34 Who accepts a finished change (Gate E)?
-
-Decider: owner. Raised: 3-Nov-2026 by MOD-02: ARC-01's finding D-12 of the 2-Nov-2026 Gate B review came up again in the
-pre-check of the TASK-018 contract (MOD-02's decision 6 on GOV-01's nine questions). Deadline: before GOV-01's PR reaches Gate D (about the end of the week of 3-Nov-2026; no
-date fixed). Unblocks: TASK-018 Gate D (together with the owner's yes to the operator-run Gate B). Related: `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7, 8 and 10,
-`docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4, D61.
-
-- **The problem.** Every change goes through five gates, A to E. The last one, E, is acceptance: someone confirms
-  that the finished change is what was wanted. Two of our rule documents give different answers about who does
-  that. `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` says the owner accepts changes that clients see and anything the
-  owner asked to review, and the Moderator records acceptance of the rest on evidence. The Moderator's bootstrap
-  prompt says the owner accepts every result. Both agree that a monthly refresh publishes first (D61) and is
-  accepted afterwards. One rule has to stand. In practice the register and decision records of 28-Oct to
-  2-Nov-2026 (PRs #29 to #32; PR #29 also carried an agent definition) were merged on evidence (INFERRED for #29 and #31), as CLAUDE.md allows when the owner has not asked to review first.
-- **Why a decision is needed.** Acceptance is an approval rule, so it is the owner's to choose
-  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10). GOV-01's PR (TASK-018) makes the rule documents agree and
-  has to say one thing here; it cannot reach Gate D (the merge) until the owner has chosen. Its text uses option
-  (a) until then.
-- **Options.** (a) The narrower scope: the owner accepts every client-facing change (what a client or adviser
-  sees: data refresh results, page, deck and Excel changes) and anything the owner asked to review; the Moderator
-  records acceptance of the rest (registers, tests, internal documents) on evidence and lists them in a report
-  from the Moderator to the owner (no such report is defined today; its cadence is set with the answer). (b) The owner accepts every finished change (the form in the Moderator's
-  bootstrap prompt, whose table puts Gate E after the merge): every merged change, pure records included, stays
-  'not accepted' until the owner says yes. The pre-merge approvals of `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
-  section 7 stay as they are under both options.
-- **What each changes.** Either way the two rule documents are made to say the same. (a) The owner sees internal
-  changes only in that report. (b) The owner is asked for a yes on every merged change, pure
-  records included. If the owner picks (b), it is a small text change in GOV-01's PR before the merge.
-- **Benefits and disadvantages.** (a) Faster: the owner's time goes to what clients see; internal changes are
-  accepted without the owner reading each one (INFERRED). (b) The owner sees everything, but the acceptance work
-  lands on the owner for every change, pure records included; merges are not held (INFERRED).
-- **Impact on existing functionality.** None on the dashboard, its data or the monthly run: only the wording of two
-  rule documents and the way a finished change is closed.
-- **Maintenance.** (a) The Moderator's report to the owner lists the changes the Moderator accepted on
-  evidence. (b) The Moderator keeps a list of merged changes not yet accepted (INFERRED).
-- **Risks and reversibility.** Reversible: it is wording in rule documents, changed again by a docs PR with the
-  owner's approval. (a) Internal changes are accepted on the Moderator's evidence, not on the owner's reading
-  (INFERRED). (b) The risk is a growing list of merged changes not yet accepted (INFERRED).
-- **Documented recommendation (not a decision).** MOD-02, 3-Nov-2026 (from the Guardian pre-check): option (a).
-- **Record the answer as.** A new `Dnn` (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10: a change to approvals
-  is recorded as a decision); the matching wording goes into `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8 and
-  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 in GOV-01's PR before it is merged; as far as this decision is concerned, TASK-018 Gate D can then go
-  ahead (it also needs the owner's yes to the operator-run Gate B: `ACTIVE_CHANGE_REGISTER.md` section 1, Blockers).
+### DEC-OPEN-34 Who accepts a finished change (Gate E)? - ANSWERED 9-Nov-2026: moved to section 1.6 (D87)
 
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
    chat ID)` and set its status from BLOCKED to ANSWERED (and name the Dnn). Do not delete the entry: move it to
    section 1.6.
-2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D87 on 2-Nov-2026):
+2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D89 on 9-Nov-2026):
    Context, Decision, Rationale, Alternatives, Consequences, Source (the owner's message, date and chat). Add it to
    the index table there. If the wording is MOD-02's summary of the owner's answer, the owner confirms it.
    (Small filing answers such as DEC-OPEN-06 need no `Dnn`; the entry says so.)
@@ -971,7 +931,7 @@ date fixed). Unblocks: TASK-018 Gate D (together with the owner's yes to the ope
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-34 (D87).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -1097,14 +1057,66 @@ Answer: 'Keep textbook' (a button offered by MOD-02; 2-Nov-2026 08:52 UTC, MOD-0
 - **Note 2-Nov-2026.** The text above was written before DEC-OPEN-01 was answered; read 'builder' as the planned
   bridge tool (D86).
 
+### DEC-OPEN-34 Who accepts a finished change (Gate E)?
+
+Decider: owner. Raised: 3-Nov-2026 by MOD-02: ARC-01's finding D-12 of the 2-Nov-2026 Gate B review came up again in the
+pre-check of the TASK-018 contract (MOD-02's decision 6 on GOV-01's nine questions). Deadline: before GOV-01's PR reaches Gate D (about the end of the week of 3-Nov-2026; no
+date fixed). Unblocks: TASK-018 Gate D (together with the owner's yes to the operator-run Gate B, given 9-Nov-2026: D88). Related: `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7, 8 and 10,
+`docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4, D61.
+Answer: 'Client-facing only' (a button offered by MOD-02, in answer to "Should you accept only client-facing
+changes, with me recording the rest?"; 9-Nov-2026 06:48 UTC, MOD-02 chat) = option (a) -> D87. Status: ANSWERED.
+
+- **The problem.** Every change goes through five gates, A to E. The last one, E, is acceptance: someone confirms
+  that the finished change is what was wanted. Two of our rule documents give different answers about who does
+  that. `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` says the owner accepts changes that clients see and anything the
+  owner asked to review, and the Moderator records acceptance of the rest on evidence. The Moderator's bootstrap
+  prompt says the owner accepts every result. Both agree that a monthly refresh publishes first (D61) and is
+  accepted afterwards. One rule has to stand. In practice the register and decision records of 28-Oct to
+  2-Nov-2026 (PRs #29 to #32; PR #29 also carried an agent definition) were merged on evidence (INFERRED for #29 and #31), as CLAUDE.md allows when the owner has not asked to review first.
+- **Why a decision is needed.** Acceptance is an approval rule, so it is the owner's to choose
+  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10). GOV-01's PR (TASK-018) makes the rule documents agree and
+  has to say one thing here; it cannot reach Gate D (the merge) until the owner has chosen. Its text uses option
+  (a) until then.
+- **Options.** (a) The narrower scope: the owner accepts every client-facing change (what a client or adviser
+  sees: data refresh results, page, deck and Excel changes) and anything the owner asked to review; the Moderator
+  records acceptance of the rest (registers, tests, internal documents) on evidence and lists them in a report
+  from the Moderator to the owner (no such report is defined today; its cadence is set with the answer). (b) The owner accepts every finished change (the form in the Moderator's
+  bootstrap prompt, whose table puts Gate E after the merge): every merged change, pure records included, stays
+  'not accepted' until the owner says yes. The pre-merge approvals of `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 7 stay as they are under both options.
+- **What each changes.** Either way the two rule documents are made to say the same. (a) The owner sees internal
+  changes only in that report. (b) The owner is asked for a yes on every merged change, pure
+  records included. If the owner picks (b), it is a small text change in GOV-01's PR before the merge.
+- **Benefits and disadvantages.** (a) Faster: the owner's time goes to what clients see; internal changes are
+  accepted without the owner reading each one (INFERRED). (b) The owner sees everything, but the acceptance work
+  lands on the owner for every change, pure records included; merges are not held (INFERRED).
+- **Impact on existing functionality.** None on the dashboard, its data or the monthly run: only the wording of two
+  rule documents and the way a finished change is closed.
+- **Maintenance.** (a) The Moderator's report to the owner lists the changes the Moderator accepted on
+  evidence. (b) The Moderator keeps a list of merged changes not yet accepted (INFERRED).
+- **Risks and reversibility.** Reversible: it is wording in rule documents, changed again by a docs PR with the
+  owner's approval. (a) Internal changes are accepted on the Moderator's evidence, not on the owner's reading
+  (INFERRED). (b) The risk is a growing list of merged changes not yet accepted (INFERRED).
+- **Documented recommendation (not a decision).** MOD-02, 3-Nov-2026 (from the Guardian pre-check): option (a).
+- **Record the answer as.** A new `Dnn` (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10: a change to approvals
+  is recorded as a decision); the matching wording goes into `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8 and
+  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 in GOV-01's PR before it is merged; as far as this decision is concerned, TASK-018 Gate D can then go
+  ahead (it also needed the owner's yes to the operator-run Gate B, given 9-Nov-2026: D88; the Blockers cell of
+  `ACTIVE_CHANGE_REGISTER.md` section 1 is updated in the register sweep).
+- **Note 9-Nov-2026.** The owner's answer did not set how often the Moderator reports; MOD-02 sets it in the Gate E
+  text: its next report to the owner after each merge (INFERRED: MOD-02's choice, not the owner's). GOV-01's PR
+  (TASK-018) is to write the final Gate E text (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8 and the bootstrap
+  prompt 7.4) and to cite D87. The owner's yes to the operator-run Gate B in every monthly refresh is a separate
+  approval, given on 9-Nov-2026 (07:34 UTC, MOD-02 chat) and recorded as D88; GOV-01's PR is to cite it.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D86 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D87**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D88 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D89**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1148,11 +1160,13 @@ before acting on it.
 | D84 | Rf stays 4.5% for now (owner, 2-Nov-2026) | Active | the planned bridge tool (TASK-022, not built) is to refuse a pack whose stated Rf is not 4.5% (MOD-02 proposal) |
 | D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active | cannot be met from the pack data: see DEC-OPEN-30 |
 | D86 | NAV and risk-ratio inputs from the MF dashboard (owner, 2-Nov-2026); data-pack reading INFERRED | Active | TASK-022 re-scoped (bridge tool); DEC-OPEN-30 to DEC-OPEN-33 open; D85 cannot be met from the pack |
+| D87 | The owner accepts client-facing changes; the Moderator records acceptance of the rest on evidence (owner, 9-Nov-2026) | Active | Gate E text in FILE_OWNERSHIP section 8 and bootstrap prompt 7.4 (TASK-018, GOV-01's PR) |
+| D88 | Every monthly refresh includes a Guardian diff review (Gate B) run by the refresh operator (owner, 9-Nov-2026) | Active | The refresh rules in CLAUDE.md, the monthly-update skill, the release-manager and integration-guardian agents, the process doc and FILE_OWNERSHIP sections 7 and 8 (TASK-018, GOV-01's PR) |
 
 ## 2.2 Owner decisions made in conversation, not yet recorded as a D-number
 
 These were approved by the owner but live only in chat transcripts. TASK-074 records them in
-`docs/DECISIONS.md` from D87, with wording the owner confirms. Until then, this table is the record.
+`docs/DECISIONS.md` under the next free numbers, with wording the owner confirms. Until then, this table is the record.
 
 | When (UTC) | Decision (owner's words or act) | Where it lives today | Label |
 |---|---|---|---|
@@ -1172,7 +1186,7 @@ These were approved by the owner but live only in chat transcripts. TASK-074 rec
 Recommendations in part 1 stay recommendations until the owner answers. Examples that are easy to mistake for
 decisions: "accept the dashboard's Sortino for October" (DEC-OPEN-30), "move the clone outside OneDrive"
 (DEC-OPEN-19), "require the verify check on main" (DEC-OPEN-17), "one Moderator per project" (DEC-OPEN-25), "clear
-the JioBlackRock pre-launch returns" (DEC-OPEN-07), "who accepts a finished change: option (a)" (DEC-OPEN-34).
+the JioBlackRock pre-launch returns" (DEC-OPEN-07).
 None of them may be implemented on the strength of the recommendation alone.
 
 ## 3. Change log
@@ -1184,3 +1198,5 @@ None of them may be implemented on the strength of the recommendation alone.
 | 2-Nov-2026 | TASK-016 audit corrections: s2.2 row 4, DEC-OPEN-18 and the D60 row (F-01, F-02), deadlines for DEC-OPEN-01/-02/-03 (F-03), F-04..F-08, F-11; DEC-OPEN-29 added. | MOD-02 |
 | 2-Nov-2026 | DEC-OPEN-01 answered (NAV and risk-ratio inputs from the MF dashboard, per the owner; the data-pack reading is INFERRED) = D86; moved to section 1.6. DEC-OPEN-30 to DEC-OPEN-33 added from the pack analysis (the Sortino form; the other changes; permission to show the ratios publicly; use of a PROVISIONAL pack). Order to ask, summary, next-free ids and the load-bearing index updated. | MOD-02 |
 | 3-Nov-2026 | DEC-OPEN-34 opened (Gate E scope; who accepts a finished change) from ARC-01 finding D-12 (Gate B review of 2-Nov-2026), raised again in the pre-check of the TASK-018 contract. | MOD-02 |
+| 9-Nov-2026 | DEC-OPEN-34 answered ("Client-facing only", 06:48 UTC) = D87; moved to section 1.6; the section 1.2 note (the pack bridge cannot merge by 13-Nov-2026, INFERRED), order item 1 and sections 2.1 to 2.3 updated. | MOD-02 |
+| 9-Nov-2026 | D88 recorded: the owner's yes to an operator-run Gate B in every monthly refresh (07:34 UTC; a Guardian finding of 9-Nov-2026, reported in chat). | MOD-02 |
