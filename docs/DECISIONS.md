@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86 sit
-  under the "Risk matrix" heading). IDs are never reused.
+  under the "Risk matrix" heading, D87 and D88 under "Process"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
 - **Fields.** Each entry has Context, Decision, Rationale, Alternatives / supersedes, Consequences and
@@ -119,6 +119,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D84 | 2-Nov-2026 | Rf stays 4.5% for now (owner) | Risk | Active |
 | D85 | 2-Nov-2026 | Sortino stays the textbook formula (owner) | Risk | Active |
 | D86 | 2-Nov-2026 | NAV and risk-ratio inputs from the MF dashboard (owner); data-pack reading INFERRED | Risk | Active |
+| D87 | 9-Nov-2026 | The owner accepts client-facing changes; the Moderator records acceptance of the rest on evidence (owner) | Process | Active |
+| D88 | 9-Nov-2026 | Every monthly refresh includes a Guardian diff review (Gate B) run by the refresh operator (owner) | Process | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1287,6 +1289,60 @@ and the entry says so. "—" means no date is recorded.
   `centricity-dashboard-issues` skill to this project.
 - **Source:** `OPERATING_MANUAL.md:1224-1230`; `docs/PRD.md` §1.
 
+#### D87 - The owner accepts client-facing changes; the Moderator records acceptance of the rest on evidence
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** Every change goes through five gates, A to E; Gate E is acceptance. Two rule documents gave
+  different answers: `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` said the owner accepts changes that clients see and
+  anything the owner asked to review, and the Moderator records acceptance of the rest on evidence; the
+  Moderator's bootstrap prompt said the owner accepts every result. Both agree that a monthly refresh publishes
+  first (D61) and is accepted afterwards.
+- **Decision:** The owner chose the button "Client-facing only", one of two that MOD-02 offered in chat on
+  9-Nov-2026 ("Client-facing only" and "Every change"), in answer to the question "Should you accept only
+  client-facing changes, with me recording the rest?". The owner accepts every client-facing change (what a client
+  or adviser sees: data refresh results, page, deck and Excel changes) and anything the owner asked to review.
+  The Moderator records acceptance of the rest (registers, tests, internal documents) on evidence and lists those
+  changes in its report to the owner.
+- **Rationale:** MOD-02's reading, not stated by the owner: the owner's time goes to what clients see, and internal
+  records are accepted without the owner reading each one (INFERRED).
+- **Alternatives / supersedes:** The owner accepts every result (the bootstrap prompt's earlier text): not chosen.
+- **Consequences (INFERRED, MOD-02's reading):** `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8 and
+  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 will carry one Gate E text once TASK-018 (GOV-01's PR, which is
+  to cite D87) merges; a monthly refresh still publishes first (D61); the pre-merge approvals of
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 are unchanged; the answer did not set how often the Moderator
+  reports (MOD-02 sets it in the Gate E text: its next report to the owner after each merge); reversible by a docs
+  PR with the owner's approval.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-34 (section 1.6); the owner's chat answer of
+  9-Nov-2026 06:48 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner
+  confirms it (DECISION_LOG section 1.5 step 2); MOD-02 plans to ask at TASK-018's Gate E.
+
+#### D88 - Every monthly refresh includes a Guardian diff review (Gate B) run by the refresh operator
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 makes Gate B (a review of the actual diff by the
+  `integration-guardian` agent) one more check of every routine monthly refresh before D61's automatic merge, but
+  the `monthly-update` skill and `docs/MONTHLY_UPDATE_PROCESS.md` did not carry it: the Moderator was to put it in
+  the launch packet of the refresh chat. Whether the refresh operator may start the review itself, with no Moderator
+  in the loop, was not decided. A change to approvals is recorded as a decision (section 10 of the same file).
+- **Decision:** The owner chose the button "Yes, approve" (the other button was "Not yet"; 9-Nov-2026 07:34 UTC,
+  MOD-02 chat) in answer to the question "Do you approve one extra check in every monthly refresh?". MOD-02's text
+  beside the question said, in plain words: from now on every monthly refresh includes one more safety check, where
+  a second Claude "checker" reviews the refresh's changes before they are published; the person running the refresh
+  starts that checker, instead of the Moderator; it is slightly weaker than a review the Moderator runs itself, but
+  it keeps each refresh self-contained.
+- **Rationale:** MOD-02's reading, not stated by the owner: a refresh changes what clients see, and nobody else
+  reads its diff before it publishes (INFERRED).
+- **Alternatives / supersedes:** No extra check: not chosen. A Gate B run by the Moderator for every refresh: not
+  offered (INFERRED: it would need the Moderator at each run). Adds a check under D61; D61 itself is unchanged
+  (publication stays automatic once every check passes).
+- **Consequences (INFERRED, MOD-02's reading):** the extra check is Gate B run by the refresh operator, one of the
+  checks of D61, so a failed check stops the publish; the rule text goes into `CLAUDE.md`, the `monthly-update`
+  skill, the `release-manager` and `integration-guardian` agents, `docs/MONTHLY_UPDATE_PROCESS.md` and
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8 when TASK-018 (GOV-01's PR, which is to cite D88)
+  merges; reversible by a docs PR with the owner's approval.
+- **Source:** the owner's chat answer of 9-Nov-2026 07:34 UTC (MOD-02); a Guardian review reported to MOD-02 in chat
+  on 9-Nov-2026 (to be recorded in `INTEGRATION_AND_REGRESSION_LOG.md`). The wording is MOD-02's summary of the
+  owner's button answer; the owner confirms it (DECISION_LOG section 1.5 step 2); MOD-02 plans to ask at TASK-018's
+  Gate E.
+
 ---
 
 ## Upstream → local commit map
@@ -1338,7 +1394,7 @@ SHA for `git show` in this repository.
 
 ## How to add a decision
 
-1. Take the next free ID (D87 on 2-Nov-2026). Never reuse or renumber an ID, and never delete an entry.
+1. Take the next free ID (D89 on 9-Nov-2026). Never reuse or renumber an ID, and never delete an entry.
 2. Add a row to the index, then the entry under its area heading, with the same fields (Context,
    Decision, Rationale, Alternatives / supersedes, Consequences, Source) in 3–8 lines.
 3. Cite evidence a reader can open: `path:line` in the code and the PR or commit that made the change.
