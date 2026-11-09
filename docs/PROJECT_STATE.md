@@ -318,8 +318,8 @@ every owner message, and checked against the code (record:
   3-Nov-2026); its claim of 23 files is recorded in `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1 and
   is in force from the merge of that record. The owner answered DEC-OPEN-34 on 9-Nov-2026 (the owner accepts
   client-facing changes and anything the owner asked to review; the Moderator records the rest on evidence: D87,
-  recorded by the Moderator), so Gate D waits only for the owner's yes to the operator-run Gate B in every monthly
-  refresh.
+  recorded by the Moderator) and, the same day, approved the operator-run Gate B in every monthly refresh ("Yes,
+  approve"; no new decision number), so no owner answer is left open for GOV-01's PR.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
     pending and still blocks the October risk matrix;
@@ -395,9 +395,9 @@ October MF cycle (item 5, about 13-17 Nov) cannot start before that, so the owne
 before 13-Nov. The hold is not narrowed: a worktree outside OneDrive still keeps its git data in the OneDrive `.git`.
 
 0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
-   before the first apply, PROVISIONAL pack about 11-Nov; DEC-OPEN-34 was answered on 9-Nov-2026, D87), say yes or
-   no to the operator-run Gate B in every monthly refresh (needed before GOV-01's PR reaches Gate D) and send the
-   asks of TASK-078 to the MF dashboard team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
+   before the first apply, PROVISIONAL pack about 11-Nov; DEC-OPEN-34 was answered on 9-Nov-2026, D87; the
+   operator-run Gate B in every monthly refresh was approved the same day) and send the asks of TASK-078 to the MF
+   dashboard team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
    TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
    without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS
    label (B1) and the export's client items (R8). Keep OneDrive running, and this folder on "Always keep

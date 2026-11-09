@@ -362,7 +362,10 @@ manual checks of D61, and a STOP verdict or an unmet condition counts as a faile
 then stops and asks: D61's wording and stop list do not change. A Gate B run by the operator is weaker than
 one run by the Moderator, because the operator reviews its own work: it must pass the Guardian
 `git diff --name-status origin/main...HEAD`, the month's `_review` outputs and both SHAs, never a summary, and
-record the verdict and any conditions in the update log and the PR body (no workbook values).
+record the verdict and any conditions in the update log and the PR body (no workbook values). The owner
+approved this operator-run Gate B in every monthly refresh on 9-Nov-2026: the Moderator asked in plain words,
+"Do you approve one extra check in every monthly refresh?", and the owner answered "Yes, approve" (no new
+decision number).
 
 **Owner approval before the merge** (separate from the Guardian):
 - any judgement call on D61's stop list: an ambiguous rename, a PMS alias pin, a Reckoner name mismatch, a
