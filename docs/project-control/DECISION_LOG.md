@@ -40,8 +40,9 @@ rather than a documented fact, it is marked (INFERRED).
 ## 1.2 Order to ask, and deadlines
 
 The Oct-2026 MF cycle is expected about 13-17-Nov-2026 (INFERRED from the 13th-17th cadence: data applied
-15-Jul, 13-Aug, 17-Sep and 13-Oct). Several different dates follow from that. DEC-OPEN-08 (the renames) is due by
-about 13-Nov-2026, because `rename_schemes.js --apply` is step 1 of the run. DEC-OPEN-01, DEC-OPEN-02 and
+15-Jul, 13-Aug, 17-Sep and 13-Oct). Several different dates follow from that. DEC-OPEN-08 (the renames) was due by
+about 13-Nov-2026, because `rename_schemes.js --apply` is step 1 of the run; it was ANSWERED on 9-Nov-2026 (D96).
+DEC-OPEN-01, DEC-OPEN-02 and
 DEC-OPEN-03 (who makes the NAV and risk-ratio inputs, the risk-free rate, the Sortino definition) are ANSWERED
 (2-Nov-2026: D86, D84, D85). D86 means (MOD-02's reading, INFERRED until Gate E) that from October the Portfolio Matrix is fed from the MF Screener's data
 pack; that raised four new questions, DEC-OPEN-30 to DEC-OPEN-33. DEC-OPEN-30 and DEC-OPEN-31 gate the build of
@@ -57,29 +58,28 @@ latest means a merge about 16-Nov-2026, which is step 10 itself. The estimate le
 the LIKELY case if TASK-018 (which must merge before the build starts, and cannot reach its Gate D before the
 owner's yes to the operator-run Gate B, given on 9-Nov-2026: D88) slips or the answers come late: the October cycle runs without step 10 (an absent input
 is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late second run or the November cycle. As of 9-Nov-2026
-DEC-OPEN-30 and DEC-OPEN-31 are unanswered and TASK-018 has not merged, so a merge of the bridge by 13-Nov-2026
-is no longer possible: the fallback applies to the October cycle (INFERRED); the build starts when TASK-018 has
-merged and DEC-OPEN-30 and -31 are answered.
+DEC-OPEN-30, -31 and -32 are answered (D92, D93, note on D86) and TASK-018 has not merged, so a merge of the bridge
+by 13-Nov-2026 is no longer possible: the fallback applies to the October cycle (INFERRED); the build starts when
+TASK-018 has merged.
 Suggested order for the owner's decision session:
 
-1. DEC-OPEN-30, then DEC-OPEN-31 (DEC-OPEN-30 and -31 gate the build; first due about 6-Nov and about
-   9-Nov-2026: DEC-OPEN-30 is overdue and DEC-OPEN-31 is due about now: see the note above). DEC-OPEN-34 (who
-   accepts a finished change) was ANSWERED on 9-Nov-2026 (D87); the owner's yes to the operator-run Gate B was given
-   the same day (D88); GOV-01's PR (TASK-018) is not merged yet.
+1. DEC-OPEN-30 (the Sortino form) and DEC-OPEN-31 (the other changes of the pack) were ANSWERED on 9-Nov-2026
+   (D92, D93); they gated the build. DEC-OPEN-34 (who accepts a finished change) was ANSWERED on 9-Nov-2026 (D87);
+   the owner's yes to the operator-run Gate B was given the same day (D88); GOV-01's PR (TASK-018) is not merged
+   yet.
    DEC-OPEN-01, -02 and -03 are ANSWERED (2-Nov-2026: D86, D84, D85).
-2. DEC-OPEN-32 (before the first apply, about 14-16-Nov-2026; INFERRED: it needs people outside this project, so
-   it can take longest), then DEC-OPEN-33 (by about 11-Nov-2026, acted on at run time).
-3. DEC-OPEN-08 (by ~13-Nov-2026).
-4. DEC-OPEN-04 and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a); DEC-OPEN-05;
-   DEC-OPEN-07.
+2. DEC-OPEN-32 was ANSWERED on 9-Nov-2026 (a note on D86). DEC-OPEN-33 (by about 11-Nov-2026, acted on at run time).
+3. DEC-OPEN-08 (the 8 scheme renames) was ANSWERED on 9-Nov-2026 (D96).
+4. DEC-OPEN-04 (see its note) and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a);
+   DEC-OPEN-05. DEC-OPEN-07 (the JioBlackRock records) was ANSWERED on 9-Nov-2026 (D94).
 5. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
 6. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
 7. The rest as time allows.
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-34 exist: 4 are answered (DEC-OPEN-01, -02, -03 and -34; section 1.6) and 30 are
-open. Next free: DEC-OPEN-35.
+Entries DEC-OPEN-01 to DEC-OPEN-34 exist: 9 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32 and -34; section 1.6) and 25
+are open. Next free: DEC-OPEN-35.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
 |---|---|---|---|---|---|
@@ -89,8 +89,8 @@ open. Next free: DEC-OPEN-35.
 | DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | before TASK-020 | no |
 | DEC-OPEN-05 | Two client items in the export | owner + compliance | TASK-032 | - | no |
 | DEC-OPEN-06 | File the true 30-Apr Monitor | owner | TASK-035 | - | no |
-| DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | before the Oct bake | yes (MOD-01: clear them) |
-| DEC-OPEN-08 | The 8 scheme renames | owner | TASK-024 | ~13-Nov-2026 | partly (check the Motilal one) |
+| DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | ANSWERED 9-Nov-2026 (D94) | n/a (answered) |
+| DEC-OPEN-08 | The 8 scheme renames | owner | TASK-024 | ANSWERED 9-Nov-2026 (D96) | n/a (answered) |
 | DEC-OPEN-09 | Bond 3Y/5Y: band top or band average | owner | TASK-027 | - | documented next step only |
 | DEC-OPEN-10 | Segregated side-pocket records | owner | TASK-028 | - | yes (drop and tighten) |
 | DEC-OPEN-11 | Deck labels and AMCs (C4, C5, C6, C38) | owner + desk | TASK-029 | before TASK-020 steps 14/14a | partly (C5 pin) |
@@ -112,9 +112,9 @@ open. Next free: DEC-OPEN-35.
 | DEC-OPEN-27 | Source of the PMS/AIF benchmark rows | owner (+ desk) | TASK-065 | - | no |
 | DEC-OPEN-28 | Which dashboard "the portfolio dashboard" meant | owner | - | - | not applicable (a question) |
 | DEC-OPEN-29 | Public-repository hygiene: old-repository locators, staff identities | owner (+ compliance) | TASK-075 | after DEC-OPEN-13 | yes (a) |
-| DEC-OPEN-30 | Which Sortino formula the Portfolio Matrix uses from October | owner (+ desk, DESK-16) | TASK-022 | ~6-Nov-2026 (with -31, keeps a merge by 13-Nov-2026 possible); if late, the fallback is likely (section 1.2) | yes (a) |
-| DEC-OPEN-31 | Accepting the other changes the pack brings to the Portfolio Matrix | owner | TASK-022 | ~9-Nov-2026 at the latest (a merge ~16-Nov-2026 is step 10 itself; for a merge by 13-Nov-2026: ~6-Nov-2026); if late, the fallback is likely (section 1.2) | yes (accept all) |
-| DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | before the first apply (~14-16-Nov-2026) | yes (a written yes) |
+| DEC-OPEN-30 | Which Sortino formula the Portfolio Matrix uses from October | owner (+ desk, DESK-16) | TASK-022 | ANSWERED 9-Nov-2026 (D92) | n/a (answered) |
+| DEC-OPEN-31 | Accepting the other changes the pack brings to the Portfolio Matrix | owner | TASK-022 | ANSWERED 9-Nov-2026 (D93) | n/a (answered) |
+| DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | ANSWERED 9-Nov-2026 (note on D86; the repository part is MOD-02's reading, INFERRED) | n/a (answered) |
 | DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
 | DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | ANSWERED 9-Nov-2026 (D87) | n/a (answered) |
 
@@ -149,6 +149,10 @@ files (TASK-020 Dep). Unblocks: TASK-025. Related: B1 (P2), C26, C30; DESK-01; R
   documented).
 - **Record the answer as.** A new `Dnn`; update B1; set TASK-025 to PLANNED (option a) or fold it into TASK-020
   (option b).
+- **Note 9-Nov-2026.** The owner's October task list (9-Nov-2026 07:19 UTC) says the PMS and AIF performance can be
+  taken from the Monthly Investment Reckoner (D95). MOD-02 reads this as option (b) with the Reckoner as the source
+  (INFERRED): the label changes together with the data. The entry stays open until the first Reckoner-fed PMS update
+  closes B1 and folds TASK-025 into it.
 
 ### DEC-OPEN-05 The two client items found in the outgoing owner's export
 
@@ -190,59 +194,9 @@ Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-035. Related: B9.
 - **Documented recommendation (not a decision).** No recommendation documented.
 - **Record the answer as.** Update B9 and `docs/INPUT_FILES.md` section 4 note (a); no `Dnn` needed.
 
-### DEC-OPEN-07 The 13 JioBlackRock Regular records, and very young funds
+### DEC-OPEN-07 The 13 JioBlackRock Regular records, and very young funds - ANSWERED 9-Nov-2026: moved to section 1.6 (D94)
 
-Decider: owner. First asked: 19-Oct-2026 11:14 UTC by MOD-01 (repeated 21-Oct). Deadline: needed before the Oct
-bake, so that TASK-023 and TASK-067 can ship with it (C20 and C43 are P1). Unblocks: TASK-023, and the
-treatment rule for TASK-067. Related: C20 (P1), C16, C43; D81.
-
-- **The problem.** Twelve JioBlackRock "Regular" plans started in August 2026, but they show 3-month, 6-month
-  and 1-year returns copied from the older "Direct" plan, for periods before the Regular plan existed. A
-  thirteenth (the G-Sec fund, C16) is held at older values until this is decided (D81). The same family of
-  problem: one ETF launched on 15-Sep-2026 shows an annualised since-inception return of 297,765% (C43),
-  because annualising a few days' return gives an absurd number.
-- **Why a decision is needed.** The screen, Excel and deck quote returns for periods a fund did not exist. That
-  conflicts with CLAUDE.md rule 6 (no fabricated data in client-facing output).
-- **Options.** (a) Clear every return period longer than the fund's life, for all 13, and release the held record
-  in the same change. (b) Keep the values and label them as taken from the Direct plan. For very young funds
-  generally: the same rule for since-inception values, enforced by a bound in the monthly bake (TASK-067).
-- **What each changes.** (a) Fewer figures shown for these funds; the held record refreshed. (b) A label added
-  in three outputs.
-- **Benefits and disadvantages.** (a) Honest and consistent with rule 6, but some cells show "-" for new funds.
-  (b) More numbers shown, but they describe a different plan and need a label everywhere (INFERRED).
-- **Impact on existing functionality.** Performance cells of these 13 funds (and of very young funds), and any
-  proposal totals that include them.
-- **Maintenance.** A young-fund rule applied by the bake every month (TASK-067).
-- **Risks and reversibility.** Reversible in git; decks already sent to clients are not.
-- **Documented recommendation (not a decision).** MOD-01 recommended clearing them and then releasing the held
-  G-Sec record in the same change (19-Oct-2026, transcript). The repo records only the conflict with rule 6.
-- **Record the answer as.** A new `Dnn` (the young-fund rule); update C20, C16, C43; set TASK-023 and TASK-067 to
-  PLANNED.
-
-### DEC-OPEN-08 Confirm or reject the 8 scheme renames
-
-Decider: owner. First asked: 19-Oct-2026 by MOD-01 (repeated 21-Oct). Deadline: ~13-Nov-2026 (before
-`rename_schemes.js --apply` in the October cycle). Unblocks: TASK-024. Related: A6, C19; D46, D79.
-
-- **The problem.** Fund houses sometimes rename schemes. The monthly tool found 8 likely renames (same launch
-  date and same fund house): HDFC Retirement Savings; four Kotak overseas funds of funds; two Axis funds of
-  funds; and Motilal Oswal Asset Allocation Passive FoF-Aggressive -> Multi Asset Passive FoF. They are not
-  applied, so the old-name records keep old figures (seven are at 30-Jun).
-- **Why a decision is needed.** A rename joins a new name to an old fund's history. If it is wrong, one fund's
-  history is shown under another fund's name. It must be answered before the October rename step.
-- **Options.** For each pair: confirm, or reject.
-- **What each changes.** Confirmed renames get current figures in the next bake; rejected ones stay stale and are
-  listed "not in MASTER".
-- **Benefits and disadvantages.** Confirming gives fresh figures; a wrong confirmation mixes two funds' histories.
-  Rejecting is safe but leaves stale figures live.
-- **Impact on existing functionality.** The 8 records' performance, and the IRR map keys the tool re-keys in
-  `site/Centricity_IRR_Offshore.js`.
-- **Maintenance.** None beyond the monthly rename step.
-- **Risks and reversibility.** Reversible: rename back; earlier names are kept in `prev_name` / `prev_names` (D79).
-- **Documented recommendation (not a decision).** Check the Motilal Oswal pair against the fund house's notice
-  ("looks suspicious"; no notice was found in the export). None for the other seven.
-- **Record the answer as.** A new `Dnn` listing the confirmed and rejected pairs; update A6; set TASK-024 to
-  PLANNED inside TASK-021.
+### DEC-OPEN-08 Confirm or reject the 8 scheme renames - ANSWERED 9-Nov-2026: moved to section 1.6 (D96)
 
 ### DEC-OPEN-09 Bond 3-year and 5-year figures: top of the band or band average
 
@@ -747,138 +701,11 @@ PR #29 (SEC-01 to SEC-05). Unblocks: TASK-075. Related: R1, R12, DEC-OPEN-13, DE
   (DEC-OPEN-13), because it is the real fix.
 - **Record the answer as.** A new `Dnn`; update R1 and R12; set TASK-075 to PLANNED.
 
-### DEC-OPEN-30 Which Sortino formula the Portfolio Matrix uses from October
+### DEC-OPEN-30 Which Sortino formula the Portfolio Matrix uses from October - ANSWERED 9-Nov-2026: moved to section 1.6 (D92)
 
-Decider: owner (+ desk, DESK-16). Raised: 2-Nov-2026 by MOD-02 from the analysis of the MF Screener data pack
-(`docs/update-log/2026-11-02_datapack-feasibility.md`). Deadline: about 6-Nov-2026 (the mapping of the bridge tool
-depends on it; with DEC-OPEN-31 also answered by then, a merge by 13-Nov-2026 stays possible, before step 10 of the
-October cycle; if the answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks:
-TASK-022. Related: C35, D85, D86.
+### DEC-OPEN-31 Accepting the other changes the pack brings to the Portfolio Matrix - ANSWERED 9-Nov-2026: moved to section 1.6 (D93)
 
-- **The problem.** The Sortino ratio shows how much return a fund gave for each unit of "bad" bumpiness: only the
-  days it earned less than the risk-free rate count. Earlier on 2-Nov-2026 (08:52 UTC) the owner chose the textbook
-  formula (D85). The MF Screener's data pack does not use it: it divides the average excess return by the spread of
-  the bad days only, which is the form the June 2026 table used, and the textbook form cannot be rebuilt from the
-  pack, which does not carry the daily figures it needs. On 205 funds whose daily series provably equals the pack's,
-  the pack's form reproduces the pack's published Sortino to within 0.014 for all 205, while the textbook form gets
-  within 0.02 for only 119 of them (tested on the 15-Aug and 15-Sep-2026 packs; the 15-Oct daily series was not
-  available; the 15-Oct definitions file states the same formula). The two forms differ by about 0.03-0.05 on
-  average and 0.2-0.3 at most.
-- **Why a decision is needed.** D85 (textbook) was taken before the owner pointed to the MF dashboard as the source (D86; that this means the pack is MOD-02's reading, INFERRED), and the
-  two now conflict on this one column: with the pack as the source, the textbook figure cannot be produced. Only the
-  owner can say what the page shows instead.
-- **Options.** (a) Accept the MF dashboard's Sortino for October, with a one-line note under the table, and ask the
-  dashboard team for a textbook field in a later pack. (b) Leave the Sortino column as dashes until a textbook
-  figure exists. (c) Hold the whole October matrix at 30-Sep-2026.
-- **What each changes.** (a) The history reads textbook in August and September, June's form in June and from
-  October, and a new decision supersedes D85 for the matrix. (b) The page has no Sortino for a month or more.
-  (c) The matrix ages: every column keeps "30 Sep 2026".
-- **Benefits and disadvantages.** (a) The whole October table is refreshed, with the dashboard's own number; the
-  column changes meaning again, so October is not comparable with August and September (the note says so). (b) No
-  mixed forms, but a blank column on screen and in client decks (INFERRED). (c) No definition changes anywhere, but
-  every column of the matrix gets a month older (INFERRED).
-- **Impact on existing functionality.** (a) and (b): the Sortino column of the Portfolio Matrix on screen and in the
-  deck, from the October publish. (c): nothing changes.
-- **Maintenance.** (a) The one-line note stays until the dashboard team adds a textbook field; then a one-line
-  change and a decision record. (b) The same, with dashes instead of the note.
-- **Risks and reversibility.** Reversible: rebuild and publish again. Decks already sent to clients are not
-  recalled.
-- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): option (a), confirmed in
-  writing as a new decision that supersedes D85 for the matrix.
-- **Record the answer as.** A new `Dnn` (for option (a): it supersedes D85 for the Portfolio Matrix, and D85's
-  status in the index changes then); update C35 and C46; put the choice in TASK-022's acceptance.
-
-### DEC-OPEN-31 Accepting the other changes the pack brings to the Portfolio Matrix
-
-Decider: owner. Raised: 2-Nov-2026 by MOD-02 from the same analysis. Deadline: about 9-Nov-2026 at the latest (a merge
-then lands about 16-Nov-2026, which is step 10 itself; a merge by 13-Nov-2026 needs it by about 6-Nov-2026; if the
-answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks: TASK-022 (the mapping of the
-bridge tool, and one small wording change on the page). Related: C46, D86, D84.
-
-- **The problem.** The pack does not calculate the numbers in the same way as the table the page shows today
-  (as on 30-Sep-2026). Besides the Sortino form (DEC-OPEN-30), four things change. They are one package: the owner
-  may accept it whole, or part by part.
-  - (a) Date. The table would be stamped with the pack's date, 15-Oct-2026 (the page label would read "15 Oct
-    2026"), not a month-end as the page's other risk data are. Recommended: accept, and ask the MF dashboard team
-    whether a month-end pack exists.
-  - (b) Coverage. Only funds with a full three-year record get ratios. About 370 of today's 966 funds lose their
-    benchmark-based ratios (Beta, Correlation, Information Ratio, Down Capture, Alpha) and show dashes: 311 are too
-    young, 39 have a stale benchmark (the index data ends before the cycle date; the count changes between packs), 9
-    have no benchmark, 4 (reason to be confirmed: PROXY benchmark or no source) and 10 have a name that does not
-    match the dashboard's. Standard deviation, Sharpe and Sortino go from 966 to 636 funds, and the 3-year rolling
-    return from 433 to 451. The merge tool's check "funds with metrics did not shrink" would stop the merge, so it
-    has to be waived once, with an owner-only override of the coverage gate still to be added to the tool (the flag
-    name is to be fixed in the TASK-022 contract; `--allow-coverage-drop` already exists for the Direct Equity tool with
-    another meaning) and only with the owner's approval after reading the list of the funds that lose their
-    ratios. Recommended: accept, and waive the check once after reading the list.
-  - (c) Benchmark and alpha. Until now each fund was compared with one of four broad indices; the pack compares it
-    with its own benchmark. The benchmark label changes for about 554 funds, and Beta, Correlation, Information
-    Ratio, Down Capture and Alpha change meaning for about 264 of the 593 funds that keep them. The dashboard's own
-    alpha is simple excess return, not Jensen's alpha, which is what the page's wording says ("Alpha (Jensen)").
-    The tool would derive Jensen alpha at Rf 4.5% from the pack's 3-year returns and beta, so that the wording
-    stays true; this works for funds on a total-return benchmark only (7 funds on a price index get a dash).
-    Recommended: accept both.
-  - (d) Daggers and wording. 33 funds carry a warning dagger today: 28 for a NAV split (on the 28 funds flagged for
-    NAV splits, the table's standard deviation is about 3.5 times the MF dashboard's (median ratio), because the
-    MF dashboard adjusts NAV for splits itself) and 5 for low correlation with the index they were compared with.
-    With the pack all 33 lose the dagger. The hint text on the tab changes from "funds with < 250 trading days"
-    to "funds without a full three-year record". Recommended: accept both.
-- **Why a decision is needed.** These change what clients see in the Portfolio Matrix, on screen and in the deck: a
-  different date, dashes where there are numbers today, a different yardstick for each fund, and no warning
-  daggers. Only the owner can accept that.
-- **Options.** Accept all four (recommended); accept with changes (say which); or hold the whole matrix at
-  30-Sep-2026.
-- **What each changes.** Accept all: from the October publish the table has the pack's date, fewer funds with
-  ratios, each fund against its own benchmark, derived Jensen alpha, no daggers and the new hint text; October is
-  then not comparable with September in Sortino (DEC-OPEN-30), the five benchmark-based columns and coverage.
-  Accept with changes: the mapping of the bridge tool follows the owner's list. Hold: the matrix keeps "30 Sep 2026"
-  and ages.
-- **Benefits and disadvantages.** Accept all: the matrix is refreshed without an in-house toolchain to maintain,
-  and each fund is compared with a benchmark that fits it better (INFERRED); clients see fewer funds with ratios
-  and a break in the series. Hold: no break, but the matrix ages.
-- **Impact on existing functionality.** The Portfolio Matrix tab and the deck's matrix (client-facing), and one hint
-  line in `site/index.html`.
-- **Maintenance.** Each month the tool prints the funds that gain or lose ratios, and the update log records the
-  counts.
-- **Risks and reversibility.** Reversible: the next publish replaces the table. Decks already sent to clients are
-  not recalled.
-- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): accept all four, and
-  waive the coverage check once after the owner has read the list.
-- **Record the answer as.** A new `Dnn` (extends D86) that says which of (a) to (d) are accepted; update C46; put
-  the mapping in TASK-022's acceptance. The hint-text change is one small `site/index.html` change, merged before
-  the October cycle if the owner agrees.
-
-### DEC-OPEN-32 May the Screener's computed ratios appear in the public Playbook page and in client decks, and the pack's contract be described in this public repository?
-
-Decider: owner (with the Screener's owner and compliance). Raised: 2-Nov-2026 by MOD-02 from the same analysis.
-Deadline: before the first apply (step 10 of the October cycle, about 14-16-Nov-2026). Unblocks: the first apply of
-the pack-fed table (TASK-021 step 10). Related: the update-log risk R8
-(`docs/update-log/2026-11-02_datapack-feasibility.md`), KNOWN_ISSUES R2 and R12, D60, DEC-OPEN-29, D86.
-
-- **The problem.** The Playbook page is public (D60: free GitHub Pages, so anyone with the link can read the numbers
-  in it). The pack comes from the MF Screener, which is sign-in only and limited to invited users. From October the
-  page's risk block (`RISK_MATRIX`) would carry ratios that the Screener computed, and client decks would show them.
-- **Why a decision is needed.** Nobody has said whether the Screener's computed numbers may be shown outside its
-  sign-in. That is a question of permission and confidentiality, not of engineering, and what is published on a
-  public page stays readable in its history (INFERRED). The same question covers the public records of the pack's
-  contract (file names, field names, definitions) that are kept in this repository
-  (`docs/update-log/2026-11-02_datapack-feasibility.md`), in the tool's code and in its tests; the details of the Screener team's own methodology are kept in a local-only note.
-- **Options.** (a) A written yes (one line is enough). (b) No. (c) Ask the MF dashboard team first.
-- **What each changes.** (a) Nothing changes; the first apply goes ahead. (b) The Portfolio Matrix cannot be fed from
-  the pack: it keeps "30 Sep 2026", and D86 needs another source for these numbers (INFERRED). (c) The first apply
-  waits for their answer; if it is late, the October cycle runs without step 10 and the page keeps "30 Sep 2026".
-- **Benefits and disadvantages.** (a) Quick and clear, once someone entitled gives it. (b) Safest, but the risk table
-  stops being refreshed (INFERRED). (c) The answer comes from the right people; it costs time before mid-November.
-- **Impact on existing functionality.** The Portfolio Matrix refresh only (screen and deck).
-- **Maintenance.** The update log and the PR for the October run record only counts, hashes and dates, never
-  fund-level pack values or manager names (compare R12 and DEC-OPEN-29).
-- **Risks and reversibility.** A publish is hard to take back: the page and its history are public, and decks
-  already sent are not recalled.
-- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): get a one-line written yes
-  before the first apply.
-- **Record the answer as.** The owner's line, quoted with its date, in the update log of the October run and in a
-  note on D86; a new `Dnn` only if it comes with conditions or is a no (a no reopens the source of the Portfolio
-  Matrix).
+### DEC-OPEN-32 May the Screener's computed ratios appear in the public Playbook page and in client decks, and the pack's contract be described in this public repository? - ANSWERED 9-Nov-2026: moved to section 1.6 (note on D86; the repository part is MOD-02's reading of the click, INFERRED)
 
 ### DEC-OPEN-33 Use the PROVISIONAL October pack if the final one is late?
 
@@ -916,7 +743,7 @@ TASK-021, TASK-022.
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
    chat ID)` and set its status from BLOCKED to ANSWERED (and name the Dnn). Do not delete the entry: move it to
    section 1.6.
-2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (D89 on 9-Nov-2026):
+2. **Add a new `Dnn` to [`../DECISIONS.md`](../DECISIONS.md)** with the next free number (the highest in the index plus one):
    Context, Decision, Rationale, Alternatives, Consequences, Source (the owner's message, date and chat). Add it to
    the index table there. If the wording is MOD-02's summary of the owner's answer, the owner confirms it.
    (Small filing answers such as DEC-OPEN-06 need no `Dnn`; the entry says so.)
@@ -931,7 +758,7 @@ TASK-021, TASK-022.
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-34 (D87).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -953,7 +780,7 @@ Rolling" and 17 "NAV Data", KNOWN_ISSUES B8) are not rebuilt in-house; from the 
 Matrix (the `RISK_MATRIX` block) is fed from the Screener's monthly data pack, which the owner shares. The page
 behind the address is the Centricity Mutual Fund Screener (sign-in only, access limited to invited users); MOD-02
 did not and must not sign in. None of options (a) to (c) below was chosen. The answer raised four follow-up
-questions, DEC-OPEN-30 to DEC-OPEN-33 (section 1.4). (The options, the update, the recommendation and the "Record
+questions, DEC-OPEN-30 to DEC-OPEN-33 (sections 1.4 and 1.6). (The options, the update, the recommendation and the "Record
 the answer as" line below are the text as asked, before the answer: D86 leaves D43 in force, with a note added
 there, and TASK-022 is re-scoped in `TASK_REGISTER.md`.)
 
@@ -1109,14 +936,242 @@ changes, with me recording the rest?"; 9-Nov-2026 06:48 UTC, MOD-02 chat) = opti
   prompt 7.4) and to cite D87. The owner's yes to the operator-run Gate B in every monthly refresh is a separate
   approval, given on 9-Nov-2026 (07:34 UTC, MOD-02 chat) and recorded as D88; GOV-01's PR is to cite it.
 
+
+### DEC-OPEN-30 Which Sortino formula the Portfolio Matrix uses from October
+
+Decider: owner (+ desk, DESK-16). Raised: 2-Nov-2026 by MOD-02 from the analysis of the MF Screener data pack
+(`docs/update-log/2026-11-02_datapack-feasibility.md`). Deadline: about 6-Nov-2026 (the mapping of the bridge tool
+depends on it; with DEC-OPEN-31 also answered by then, a merge by 13-Nov-2026 stays possible, before step 10 of the
+October cycle; if the answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks:
+TASK-022. Related: C35, D85, D86.
+
+Answer: 'Dashboard's, with note' (a button offered by MOD-02, in answer to "Which Sortino formula should the
+October risk table use?"; 9-Nov-2026 08:48 UTC, MOD-02 chat) = option (a) -> D92. Status: ANSWERED.
+
+- **The problem.** The Sortino ratio shows how much return a fund gave for each unit of "bad" bumpiness: only the
+  days it earned less than the risk-free rate count. Earlier on 2-Nov-2026 (08:52 UTC) the owner chose the textbook
+  formula (D85). The MF Screener's data pack does not use it: it divides the average excess return by the spread of
+  the bad days only, which is the form the June 2026 table used, and the textbook form cannot be rebuilt from the
+  pack, which does not carry the daily figures it needs. On 205 funds whose daily series provably equals the pack's,
+  the pack's form reproduces the pack's published Sortino to within 0.014 for all 205, while the textbook form gets
+  within 0.02 for only 119 of them (tested on the 15-Aug and 15-Sep-2026 packs; the 15-Oct daily series was not
+  available; the 15-Oct definitions file states the same formula). The two forms differ by about 0.03-0.05 on
+  average and 0.2-0.3 at most.
+- **Why a decision is needed.** D85 (textbook) was taken before the owner pointed to the MF dashboard as the source (D86; that this means the pack is MOD-02's reading, INFERRED), and the
+  two now conflict on this one column: with the pack as the source, the textbook figure cannot be produced. Only the
+  owner can say what the page shows instead.
+- **Options.** (a) Accept the MF dashboard's Sortino for October, with a one-line note under the table, and ask the
+  dashboard team for a textbook field in a later pack. (b) Leave the Sortino column as dashes until a textbook
+  figure exists. (c) Hold the whole October matrix at 30-Sep-2026.
+- **What each changes.** (a) The history reads textbook in August and September, June's form in June and from
+  October, and a new decision supersedes D85 for the matrix. (b) The page has no Sortino for a month or more.
+  (c) The matrix ages: every column keeps "30 Sep 2026".
+- **Benefits and disadvantages.** (a) The whole October table is refreshed, with the dashboard's own number; the
+  column changes meaning again, so October is not comparable with August and September (the note says so). (b) No
+  mixed forms, but a blank column on screen and in client decks (INFERRED). (c) No definition changes anywhere, but
+  every column of the matrix gets a month older (INFERRED).
+- **Impact on existing functionality.** (a) and (b): the Sortino column of the Portfolio Matrix on screen and in the
+  deck, from the October publish. (c): nothing changes.
+- **Maintenance.** (a) The one-line note stays until the dashboard team adds a textbook field; then a one-line
+  change and a decision record. (b) The same, with dashes instead of the note.
+- **Risks and reversibility.** Reversible: rebuild and publish again. Decks already sent to clients are not
+  recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): option (a), confirmed in
+  writing as a new decision that supersedes D85 for the matrix.
+- **Record the answer as.** A new `Dnn` (for option (a): it supersedes D85 for the Portfolio Matrix, and D85's
+  status in the index changes then); update C35 and C46; put the choice in TASK-022's acceptance.
+- **Note 9-Nov-2026.** The other button was 'Leave it blank' (option (b)); option (c), hold the whole matrix, was
+  described in the chat text but was not a button. DEC-OPEN-33 stays open and the fallback of
+  section 1.2 still applies to the October cycle.
+
+
+### DEC-OPEN-31 Accepting the other changes the pack brings to the Portfolio Matrix
+
+Decider: owner. Raised: 2-Nov-2026 by MOD-02 from the same analysis. Deadline: about 9-Nov-2026 at the latest (a merge
+then lands about 16-Nov-2026, which is step 10 itself; a merge by 13-Nov-2026 needs it by about 6-Nov-2026; if the
+answers or TASK-018 come late, the fallback in section 1.2 is the likely case). Unblocks: TASK-022 (the mapping of the
+bridge tool, and one small wording change on the page). Related: C46, D86, D84.
+
+Answer: 'Accept all four' (a button offered by MOD-02, in answer to "Accept all four changes the dashboard's data
+brings to the risk table?"; 9-Nov-2026 08:54 UTC, MOD-02 chat) = accept all -> D93. Status: ANSWERED.
+
+- **The problem.** The pack does not calculate the numbers in the same way as the table the page shows today
+  (as on 30-Sep-2026). Besides the Sortino form (DEC-OPEN-30), four things change. They are one package: the owner
+  may accept it whole, or part by part.
+  - (a) Date. The table would be stamped with the pack's date, 15-Oct-2026 (the page label would read "15 Oct
+    2026"), not a month-end as the page's other risk data are. Recommended: accept, and ask the MF dashboard team
+    whether a month-end pack exists.
+  - (b) Coverage. Only funds with a full three-year record get ratios. About 370 of today's 966 funds lose their
+    benchmark-based ratios (Beta, Correlation, Information Ratio, Down Capture, Alpha) and show dashes: 311 are too
+    young, 39 have a stale benchmark (the index data ends before the cycle date; the count changes between packs), 9
+    have no benchmark, 4 (reason to be confirmed: PROXY benchmark or no source) and 10 have a name that does not
+    match the dashboard's. Standard deviation, Sharpe and Sortino go from 966 to 636 funds, and the 3-year rolling
+    return from 433 to 451. The merge tool's check "funds with metrics did not shrink" would stop the merge, so it
+    has to be waived once, with an owner-only override of the coverage gate still to be added to the tool (the flag
+    name is to be fixed in the TASK-022 contract; `--allow-coverage-drop` already exists for the Direct Equity tool with
+    another meaning) and only with the owner's approval after reading the list of the funds that lose their
+    ratios. Recommended: accept, and waive the check once after reading the list.
+  - (c) Benchmark and alpha. Until now each fund was compared with one of four broad indices; the pack compares it
+    with its own benchmark. The benchmark label changes for about 554 funds, and Beta, Correlation, Information
+    Ratio, Down Capture and Alpha change meaning for about 264 of the 593 funds that keep them. The dashboard's own
+    alpha is simple excess return, not Jensen's alpha, which is what the page's wording says ("Alpha (Jensen)").
+    The tool would derive Jensen alpha at Rf 4.5% from the pack's 3-year returns and beta, so that the wording
+    stays true; this works for funds on a total-return benchmark only (7 funds on a price index get a dash).
+    Recommended: accept both.
+  - (d) Daggers and wording. 33 funds carry a warning dagger today: 28 for a NAV split (on the 28 funds flagged for
+    NAV splits, the table's standard deviation is about 3.5 times the MF dashboard's (median ratio), because the
+    MF dashboard adjusts NAV for splits itself) and 5 for low correlation with the index they were compared with.
+    With the pack all 33 lose the dagger. The hint text on the tab changes from "funds with < 250 trading days"
+    to "funds without a full three-year record". Recommended: accept both.
+- **Why a decision is needed.** These change what clients see in the Portfolio Matrix, on screen and in the deck: a
+  different date, dashes where there are numbers today, a different yardstick for each fund, and no warning
+  daggers. Only the owner can accept that.
+- **Options.** Accept all four (recommended); accept with changes (say which); or hold the whole matrix at
+  30-Sep-2026.
+- **What each changes.** Accept all: from the October publish the table has the pack's date, fewer funds with
+  ratios, each fund against its own benchmark, derived Jensen alpha, no daggers and the new hint text; October is
+  then not comparable with September in Sortino (DEC-OPEN-30), the five benchmark-based columns and coverage.
+  Accept with changes: the mapping of the bridge tool follows the owner's list. Hold: the matrix keeps "30 Sep 2026"
+  and ages.
+- **Benefits and disadvantages.** Accept all: the matrix is refreshed without an in-house toolchain to maintain,
+  and each fund is compared with a benchmark that fits it better (INFERRED); clients see fewer funds with ratios
+  and a break in the series. Hold: no break, but the matrix ages.
+- **Impact on existing functionality.** The Portfolio Matrix tab and the deck's matrix (client-facing), and one hint
+  line in `site/index.html`.
+- **Maintenance.** Each month the tool prints the funds that gain or lose ratios, and the update log records the
+  counts.
+- **Risks and reversibility.** Reversible: the next publish replaces the table. Decks already sent to clients are
+  not recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): accept all four, and
+  waive the coverage check once after the owner has read the list.
+- **Record the answer as.** A new `Dnn` (extends D86) that says which of (a) to (d) are accepted; update C46; put
+  the mapping in TASK-022's acceptance. The hint-text change is one small `site/index.html` change, merged before
+  the October cycle if the owner agrees.
+- **Note 9-Nov-2026.** The other button was 'Hold the table'; accepting with changes was possible by typing. The
+  click accepts (a) to (d) as described in the chat. The one-time waiver of the coverage check (b) still needs the
+  owner's approval after reading the list of the funds that lose their ratios, and the hint-text change ships with the
+  first pack-fed table (D93). DEC-OPEN-33 stays open.
+
+
+### DEC-OPEN-32 May the Screener's computed ratios appear in the public Playbook page and in client decks, and the pack's contract be described in this public repository?
+
+Decider: owner (with the Screener's owner and compliance). Raised: 2-Nov-2026 by MOD-02 from the same analysis.
+Deadline: before the first apply (step 10 of the October cycle, about 14-16-Nov-2026). Unblocks: the first apply of
+the pack-fed table (TASK-021 step 10). Related: the update-log risk R8
+(`docs/update-log/2026-11-02_datapack-feasibility.md`), KNOWN_ISSUES R2 and R12, D60, DEC-OPEN-29, D86.
+
+Answer: 'Yes, they may' (a button offered by MOD-02, in answer to "May the dashboard's ratios appear on the public
+page and in client decks?"; 9-Nov-2026 09:02 UTC, MOD-02 chat) = option (a) (INFERRED: MOD-02 reads the click as the written
+yes). Status: ANSWERED. The owner's button answer is quoted in a note on D86.
+
+- **The problem.** The Playbook page is public (D60: free GitHub Pages, so anyone with the link can read the numbers
+  in it). The pack comes from the MF Screener, which is sign-in only and limited to invited users. From October the
+  page's risk block (`RISK_MATRIX`) would carry ratios that the Screener computed, and client decks would show them.
+- **Why a decision is needed.** Nobody has said whether the Screener's computed numbers may be shown outside its
+  sign-in. That is a question of permission and confidentiality, not of engineering, and what is published on a
+  public page stays readable in its history (INFERRED). The same question covers the public records of the pack's
+  contract (file names, field names, definitions) that are kept in this repository
+  (`docs/update-log/2026-11-02_datapack-feasibility.md`), in the tool's code and in its tests; the details of the Screener team's own methodology are kept in a local-only note.
+- **Options.** (a) A written yes (one line is enough). (b) No. (c) Ask the MF dashboard team first.
+- **What each changes.** (a) Nothing changes; the first apply goes ahead. (b) The Portfolio Matrix cannot be fed from
+  the pack: it keeps "30 Sep 2026", and D86 needs another source for these numbers (INFERRED). (c) The first apply
+  waits for their answer; if it is late, the October cycle runs without step 10 and the page keeps "30 Sep 2026".
+- **Benefits and disadvantages.** (a) Quick and clear, once someone entitled gives it. (b) Safest, but the risk table
+  stops being refreshed (INFERRED). (c) The answer comes from the right people; it costs time before mid-November.
+- **Impact on existing functionality.** The Portfolio Matrix refresh only (screen and deck).
+- **Maintenance.** The update log and the PR for the October run record only counts, hashes and dates, never
+  fund-level pack values or manager names (compare R12 and DEC-OPEN-29).
+- **Risks and reversibility.** A publish is hard to take back: the page and its history are public, and decks
+  already sent are not recalled.
+- **Documented recommendation (not a decision).** MOD-02, 2-Nov-2026 (from the analysis): get a one-line written yes
+  before the first apply.
+- **Record the answer as.** The owner's line, quoted with its date, in the update log of the October run and in a
+  note on D86; a new `Dnn` only if it comes with conditions or is a no (a no reopens the source of the Portfolio
+  Matrix).
+- **Note 9-Nov-2026.** The other button was 'Ask the team first' (option (c)). MOD-02's text beside the question also
+  said that the same permission covers describing the data pack's file layout in the public repository, with only
+  counts, dates and short hashes in update logs and never fund-level pack values; the owner's click is read as
+  covering that too (INFERRED: the question line named only the ratios). The entry named the Screener's owner and
+  compliance as co-deciders; the chat does not record whether they were asked. No `Dnn`: the answer carries no
+  conditions of its own (section 1.5); the update log of the October run quotes the owner's button answer too. The limits above
+  are the entry's own Maintenance rule (compare R12 and DEC-OPEN-29), and the details of the Screener team's own
+  methodology stay in a local-only note. DEC-OPEN-33 stays open.
+
+
+### DEC-OPEN-07 The 13 JioBlackRock Regular records, and very young funds
+
+Decider: owner. First asked: 19-Oct-2026 11:14 UTC by MOD-01 (repeated 21-Oct). Deadline: needed before the Oct
+bake, so that TASK-023 and TASK-067 can ship with it (C20 and C43 are P1). Unblocks: TASK-023, and the
+treatment rule for TASK-067. Related: C20 (P1), C16, C43; D81.
+
+Answer: 'Yes, clear them' (a button offered by MOD-02, in answer to "Clear returns shown for periods before these
+funds existed?"; 9-Nov-2026 11:40 UTC, MOD-02 chat) = option (a) -> D94. Status: ANSWERED.
+
+- **The problem.** Twelve JioBlackRock "Regular" plans started in August 2026, but they show 3-month, 6-month
+  and 1-year returns copied from the older "Direct" plan, for periods before the Regular plan existed. A
+  thirteenth (the G-Sec fund, C16) is held at older values until this is decided (D81). The same family of
+  problem: one ETF launched on 15-Sep-2026 shows an annualised since-inception return of 297,765% (C43),
+  because annualising a few days' return gives an absurd number.
+- **Why a decision is needed.** The screen, Excel and deck quote returns for periods a fund did not exist. That
+  conflicts with CLAUDE.md rule 6 (no fabricated data in client-facing output).
+- **Options.** (a) Clear every return period longer than the fund's life, for all 13, and release the held record
+  in the same change. (b) Keep the values and label them as taken from the Direct plan. For very young funds
+  generally: the same rule for since-inception values, enforced by a bound in the monthly bake (TASK-067).
+- **What each changes.** (a) Fewer figures shown for these funds; the held record refreshed. (b) A label added
+  in three outputs.
+- **Benefits and disadvantages.** (a) Honest and consistent with rule 6, but some cells show "-" for new funds.
+  (b) More numbers shown, but they describe a different plan and need a label everywhere (INFERRED).
+- **Impact on existing functionality.** Performance cells of these 13 funds (and of very young funds), and any
+  proposal totals that include them.
+- **Maintenance.** A young-fund rule applied by the bake every month (TASK-067).
+- **Risks and reversibility.** Reversible in git; decks already sent to clients are not.
+- **Documented recommendation (not a decision).** MOD-01 recommended clearing them and then releasing the held
+  G-Sec record in the same change (19-Oct-2026, transcript). The repo records only the conflict with rule 6.
+- **Record the answer as.** A new `Dnn` (the young-fund rule); update C20, C16, C43; set TASK-023 and TASK-067 to
+  PLANNED.
+- **Note 9-Nov-2026.** The other button was 'Keep and label' (option (b)). TASK-023 and TASK-067 become PLANNED;
+  KNOWN_ISSUES C20, C16 and C43 are updated in the register sweep.
+
+
+### DEC-OPEN-08 Confirm or reject the 8 scheme renames
+
+Decider: owner. First asked: 19-Oct-2026 by MOD-01 (repeated 21-Oct). Deadline: ~13-Nov-2026 (before
+`rename_schemes.js --apply` in the October cycle). Unblocks: TASK-024. Related: A6, C19; D46, D79.
+
+Answer: 'Confirm all 8' (a button offered by MOD-02, in answer to "Confirm the 7 clear scheme renames and hold the
+Motilal Oswal one?"; 9-Nov-2026 12:01 UTC, MOD-02 chat) = confirm all eight -> D96. Status: ANSWERED.
+
+- **The problem.** Fund houses sometimes rename schemes. The monthly tool found 8 likely renames (same launch
+  date and same fund house): HDFC Retirement Savings; four Kotak overseas funds of funds; two Axis funds of
+  funds; and Motilal Oswal Asset Allocation Passive FoF-Aggressive -> Multi Asset Passive FoF. They are not
+  applied, so the old-name records keep old figures (seven are at 30-Jun).
+- **Why a decision is needed.** A rename joins a new name to an old fund's history. If it is wrong, one fund's
+  history is shown under another fund's name. It must be answered before the October rename step.
+- **Options.** For each pair: confirm, or reject.
+- **What each changes.** Confirmed renames get current figures in the next bake; rejected ones stay stale and are
+  listed "not in MASTER".
+- **Benefits and disadvantages.** Confirming gives fresh figures; a wrong confirmation mixes two funds' histories.
+  Rejecting is safe but leaves stale figures live.
+- **Impact on existing functionality.** The 8 records' performance, and the IRR map keys the tool re-keys in
+  `site/Centricity_IRR_Offshore.js`.
+- **Maintenance.** None beyond the monthly rename step.
+- **Risks and reversibility.** Reversible: rename back; earlier names are kept in `prev_name` / `prev_names` (D79).
+- **Documented recommendation (not a decision).** Check the Motilal Oswal pair against the fund house's notice
+  ("looks suspicious"; no notice was found in the export). None for the other seven.
+- **Record the answer as.** A new `Dnn` listing the confirmed and rejected pairs; update A6; set TASK-024 to
+  PLANNED inside TASK-021.
+- **Note 9-Nov-2026.** The other button was 'Confirm 7, hold 1', which was MOD-02's recommendation (hold the Motilal
+  Oswal pair until an AMC notice or the desk confirms it). The owner confirmed all eight; the apply step re-checks the
+  eighth pair first. TASK-024 becomes PLANNED inside TASK-021; KNOWN_ISSUES A6 is updated in the register sweep.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D88 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D89**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D96 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D97**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1129,7 +1184,7 @@ before acting on it.
 | D37 | Exclude no-holdings funds; no fabricated fallbacks | Active | CLAUDE.md rule 6 |
 | D42 | Bake with the page's own parsers; dry-run by default | Active (amended by D72) | page parser edits change the next bake |
 | D43 | Node route into `RISK_MATRIX`; drop `c` | Active (premise reopened) | D86 (B8): `merge_risk_matrix.js` stays the only writer; the producer of its input changes from October |
-| D46 | Rename before every bake; identity = inception + AMC | Active (amended by D73, D79) | CLAUDE.md rule 7; DEC-OPEN-08 |
+| D46 | Rename before every bake; identity = inception + AMC | Active (amended by D73, D79) | CLAUDE.md rule 7; DEC-OPEN-08 (answered: D96) |
 | D48 | One hybrid predicate for all four analytics gates | Active | CLAUDE.md rule 8 |
 | D49 | PMS/AIF look-through is written in two places | Active | A29, TASK-068 |
 | D50 | SIF Monitor baked into the SIF sibling; always /100 | Active | CLAUDE.md rule 4 |
@@ -1154,14 +1209,22 @@ before acting on it.
 | D78 | `Centricity_Risk_Matrix.js` moved to `docs/archive/` (supersedes D69) | Active | 7 published files; the legacy file returns 404 |
 | D79 | Rename history kept in `prev_names` | Active | renames are reversible |
 | D80 | Refresh-only Monitor sheets; unknown sheets fail the bake | Active | C19 |
-| D81 | Publish the C19 re-run; keep blank-cell values; hold the C20 G-Sec record (owner, 21-Oct-2026) | Active | DEC-OPEN-07 |
+| D81 | Publish the C19 re-run; keep blank-cell values; hold the C20 G-Sec record (owner, 21-Oct-2026) | Active | DEC-OPEN-07 (answered: D94, which releases the held record) |
 | D82 | The PowerPoint export lays out every native slide through one measured design system (owner, 22-Oct-2026) | Active | CLAUDE.md rule 10; C44, C45 are exceptions |
 | D83 | The deck marks an expected 1Y/3Y/5Y figure with `*` (owner, 22-Oct-2026) | Active | C28; DEC-OPEN-16 |
 | D84 | Rf stays 4.5% for now (owner, 2-Nov-2026) | Active | the planned bridge tool (TASK-022, not built) is to refuse a pack whose stated Rf is not 4.5% (MOD-02 proposal) |
-| D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active | cannot be met from the pack data: see DEC-OPEN-30 |
-| D86 | NAV and risk-ratio inputs from the MF dashboard (owner, 2-Nov-2026); data-pack reading INFERRED | Active | TASK-022 re-scoped (bridge tool); DEC-OPEN-30 to DEC-OPEN-33 open; D85 cannot be met from the pack |
+| D85 | Sortino stays the textbook formula (owner, 2-Nov-2026) | Active (superseded for the Portfolio Matrix by D92) | cannot be met from the pack data: see D92 |
+| D86 | NAV and risk-ratio inputs from the MF dashboard (owner, 2-Nov-2026); data-pack reading INFERRED | Active (extended by D93) | TASK-022 re-scoped (bridge tool); DEC-OPEN-33 open (DEC-OPEN-30, -31 and -32 answered: D92, D93, note on D86); D85 is superseded for the matrix by D92 |
 | D87 | The owner accepts client-facing changes; the Moderator records acceptance of the rest on evidence (owner, 9-Nov-2026) | Active | Gate E text in FILE_OWNERSHIP section 8 and bootstrap prompt 7.4 (TASK-018, GOV-01's PR) |
 | D88 | Every monthly refresh includes a Guardian diff review (Gate B) run by the refresh operator (owner, 9-Nov-2026) | Active | The refresh rules in CLAUDE.md, the monthly-update skill, the release-manager and integration-guardian agents, the process doc and FILE_OWNERSHIP sections 7 and 8 (TASK-018, GOV-01's PR) |
+| D89 | Direct equity returns are calculated from a public price source: Google Finance or the NSE website (owner, 9-Nov-2026) | Active | the new returns tool (to be contracted); `merge_direct_equity_returns.js` stays the writer |
+| D90 | Product updates: existing products stay, additions are added, a bond is replaced by the same ISIN or an exactly similar product, the two bond lists become one (reading INFERRED), GIFT City expected-IRR ranges stay (owner, 9-Nov-2026) | Active | the bond and GIFT City merge tools (to be contracted); the October product update |
+| D91 | Performance is labelled with the calendar month-end although the NAV date is the last working day before it (owner, 9-Nov-2026) | Active | the October refresh (`--as-on "31st October 2026"`); the update log records the true NAV date |
+| D92 | The Portfolio Matrix shows the MF dashboard's Sortino from October, with a note; supersedes D85 for the matrix (owner, 9-Nov-2026) | Active | TASK-022 (bridge tool); KNOWN_ISSUES C35 and C46 |
+| D93 | The Portfolio Matrix accepts the four other changes of the MF dashboard's data: date, coverage, benchmark and alpha, daggers and wording (owner, 9-Nov-2026; extends D86) | Active | TASK-022 (bridge tool); the one-time coverage waiver needs the owner's approval of the list; KNOWN_ISSUES C46 |
+| D94 | Returns for periods longer than a fund's life are cleared: the 13 JioBlackRock Regular records and very young funds (owner, 9-Nov-2026) | Active | TASK-023, TASK-067; KNOWN_ISSUES C20, C16, C43 |
+| D95 | PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction, 9-Nov-2026) | Active | the PMS-from-the-Reckoner tool (to be contracted); DEC-OPEN-04; D54 and D75 stay until it exists; KNOWN_ISSUES B1 |
+| D96 | The eight scheme renames are confirmed (owner, 9-Nov-2026) | Active | TASK-024 inside TASK-021 step 1; KNOWN_ISSUES A6 |
 
 ## 2.2 Owner decisions made in conversation, not yet recorded as a D-number
 
@@ -1184,9 +1247,8 @@ These were approved by the owner but live only in chat transcripts. TASK-074 rec
 ## 2.3 Recommendations that are not decisions
 
 Recommendations in part 1 stay recommendations until the owner answers. Examples that are easy to mistake for
-decisions: "accept the dashboard's Sortino for October" (DEC-OPEN-30), "move the clone outside OneDrive"
-(DEC-OPEN-19), "require the verify check on main" (DEC-OPEN-17), "one Moderator per project" (DEC-OPEN-25), "clear
-the JioBlackRock pre-launch returns" (DEC-OPEN-07).
+decisions: "move the clone outside OneDrive" (DEC-OPEN-19), "require the verify check on main" (DEC-OPEN-17) and "one
+Moderator per project" (DEC-OPEN-25).
 None of them may be implemented on the strength of the recommendation alone.
 
 ## 3. Change log
@@ -1200,3 +1262,6 @@ None of them may be implemented on the strength of the recommendation alone.
 | 3-Nov-2026 | DEC-OPEN-34 opened (Gate E scope; who accepts a finished change) from ARC-01 finding D-12 (Gate B review of 2-Nov-2026), raised again in the pre-check of the TASK-018 contract. | MOD-02 |
 | 9-Nov-2026 | DEC-OPEN-34 answered ("Client-facing only", 06:48 UTC) = D87; moved to section 1.6; the section 1.2 note (the pack bridge cannot merge by 13-Nov-2026, INFERRED), order item 1 and sections 2.1 to 2.3 updated. | MOD-02 |
 | 9-Nov-2026 | D88 recorded: the owner's yes to an operator-run Gate B in every monthly refresh (07:34 UTC; a Guardian finding of 9-Nov-2026, reported in chat). | MOD-02 |
+| 9-Nov-2026 | DEC-OPEN-30 answered ("Dashboard's, with note", 08:48 UTC) = D92, DEC-OPEN-31 answered ("Accept all four", 08:54 UTC) = D93 and DEC-OPEN-32 answered ("Yes, they may", 09:02 UTC; note on D86); all three moved to section 1.6; section 1.2, the counts and section 2.1 updated. | MOD-02 |
+| 9-Nov-2026 | D89, D90 and D91 recorded from the owner's answers of 9-Nov-2026 (07:19, 08:07 and about 09:12 UTC): the Direct Equity price source, the product-list rules (one Bond List, reading INFERRED), the performance label. | MOD-02 |
+| 9-Nov-2026 | DEC-OPEN-07 answered ("Yes, clear them", 11:40 UTC) = D94 and DEC-OPEN-08 answered ("Confirm all 8", 12:01 UTC) = D96; both moved to section 1.6; D95 recorded (PMS and AIF performance from the Reckoner, the owner's message of 07:19 UTC) with a note on DEC-OPEN-04; sections 1.2, 2.1 and 2.3, the counts and the next-free ids updated. | MOD-02 |

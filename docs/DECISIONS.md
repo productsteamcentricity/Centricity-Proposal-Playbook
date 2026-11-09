@@ -9,8 +9,9 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
-  tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86 sit
-  under the "Risk matrix" heading, D87 and D88 under "Process"). IDs are never reused.
+  tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
+  sit under the "Risk matrix" heading, D87 and D88 under "Process", D89 to D91 and D94 to D96 under "Data model &
+  taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
 - **Fields.** Each entry has Context, Decision, Rationale, Alternatives / supersedes, Consequences and
@@ -117,10 +118,18 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D82 | 22-Oct-2026 | The PowerPoint export lays out every native slide through one measured design system | Exports | Active |
 | D83 | 22-Oct-2026 | The deck marks an expected 1Y/3Y/5Y figure with `*` (`H.isExpectedReturn`) | Exports | Active |
 | D84 | 2-Nov-2026 | Rf stays 4.5% for now (owner) | Risk | Active |
-| D85 | 2-Nov-2026 | Sortino stays the textbook formula (owner) | Risk | Active |
-| D86 | 2-Nov-2026 | NAV and risk-ratio inputs from the MF dashboard (owner); data-pack reading INFERRED | Risk | Active |
+| D85 | 2-Nov-2026 | Sortino stays the textbook formula (owner) | Risk | Active (superseded for the Portfolio Matrix by D92) |
+| D86 | 2-Nov-2026 | NAV and risk-ratio inputs from the MF dashboard (owner); data-pack reading INFERRED | Risk | Active (extended by D93) |
 | D87 | 9-Nov-2026 | The owner accepts client-facing changes; the Moderator records acceptance of the rest on evidence (owner) | Process | Active |
 | D88 | 9-Nov-2026 | Every monthly refresh includes a Guardian diff review (Gate B) run by the refresh operator (owner) | Process | Active |
+| D89 | 9-Nov-2026 | Direct equity returns are calculated from a public price source: Google Finance or the NSE website (owner) | Data | Active |
+| D90 | 9-Nov-2026 | Product updates: existing products stay, additions are added, a bond is replaced by the same ISIN or an exactly similar product, the two bond lists become one (reading INFERRED), GIFT City expected-IRR ranges stay (owner) | Data | Active |
+| D91 | 9-Nov-2026 | Performance is labelled with the calendar month-end although the NAV date is the last working day before it (owner) | Data | Active |
+| D92 | 9-Nov-2026 | The Portfolio Matrix shows the MF dashboard's Sortino from October, with a note; supersedes D85 for the matrix (owner) | Risk | Active |
+| D93 | 9-Nov-2026 | The Portfolio Matrix accepts the four other changes of the MF dashboard's data: date, coverage, benchmark and alpha, daggers and wording (owner; extends D86) | Risk | Active |
+| D94 | 9-Nov-2026 | Returns for periods longer than a fund's life are cleared: the 13 JioBlackRock Regular records and very young funds (owner) | Data | Active |
+| D95 | 9-Nov-2026 | PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction) | Data | Active |
+| D96 | 9-Nov-2026 | The eight scheme renames are confirmed (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -870,6 +879,150 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** `H.buildFundIndex`, `merge_reckoner.js` and `merge_risk_matrix.js` consult `prev_name`.
 - **Source:** `OPERATING_MANUAL.md:737-781`; `docs/PRD.md` §12.
 
+#### D89 - Direct equity returns are calculated from a public price source (Google Finance or the NSE website)
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The owner's October task list (9-Nov-2026 07:19 UTC) asked for an in-house way to calculate the
+  Direct Equity returns, based on the owner's price-to-return calculator workbook, as on the same last date as the
+  mutual funds. That workbook reads prices through Excel's stock data type, which no tool of this project can
+  call (MOD-02's finding from reading the workbook); until now the returns came from a file supplied from outside
+  (input 7 of `docs/INPUT_FILES.md`). MOD-02 asked for an export of the prices, or approval of a public source.
+- **Decision:** The owner replied (9-Nov-2026 08:07 UTC): "Public source is approved; take it from Google Finance
+  or NSE Website". The returns are to be calculated "as on the same last date as the mutual funds" (the owner's
+  words of 07:19 UTC).
+- **Rationale:** the owner's reply; MOD-02 adds no reading of its own.
+- **Alternatives / supersedes:** An export of the prices from the owner: offered, not chosen. Replaces, for the tool
+  to be built, the externally supplied returns file (input 7) (INFERRED).
+- **Consequences (INFERRED, MOD-02's reading):** the task that builds the returns tool names one source per run and
+  records it in the update log; uses the same NAV date as the mutual funds (the close of that day, and of the same
+  calendar day one, three and five years back, or the last trading day before it); adjusts prices for splits and
+  bonus issues; is checked against a sample of the owner's calculator before the first apply; and records the
+  terms of use of the chosen source as a risk (both sites limit automated downloads). Its output feeds
+  `merge_direct_equity_returns.js`. Until the tool exists an absent returns file is not a stop (D61): the Direct
+  Equity returns keep their last values.
+- **Source:** the owner's chat answers of 9-Nov-2026 07:19 UTC and 08:07 UTC (MOD-02). The wording is MOD-02's
+  summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D90 - Product updates: existing products stay, additions are added, a bond is replaced by the same ISIN or an exactly similar product, the two bond lists become one (reading INFERRED), GIFT City expected-IRR ranges stay
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The owner's October task list (9-Nov-2026 07:19 UTC) asked to update the products from the Monthly
+  Investment Reckoner and the GIFT City products from the offshore options deck, and a bond file in a new layout
+  (ISIN, YTM, residual tenure) arrived. MOD-02 asked whether the bond file replaces the Bond List, which desk
+  (Invictus or OneDigital) it is for, and whether the offshore deck's missing expected-IRR ranges would be supplied
+  or the existing ones stay.
+- **Decision:** The owner replied (9-Nov-2026 08:07 UTC), about the GIFT City ranges: "Existing ones Stay"; about
+  the bond file: "All the existing products stay; additional ones will be added; For Bonds; replace the bonds which
+  has the same ISINs or are exactly similar products"; and, asked which desk the new bond file is for (about 09:12
+  UTC): "Merge the two list together as just one Bond List".
+- **Rationale:** the owner's reply; MOD-02 adds no reading of its own.
+- **Alternatives / supersedes:** The bond file replacing the Bond List: not chosen. Supplying new GIFT City ranges:
+  not chosen. Two separate desk bond lists: not kept (INFERRED reading of the last quote; see Consequences).
+- **Consequences (INFERRED, MOD-02's reading):** the owner did not define "exactly similar": the contract of the
+  tool that merges the bonds fixes a rule, lists every replacement and every ambiguous pair, and asks the owner
+  before it is applied; nothing is guessed (CLAUDE.md rule 5). A GIFT City product that is new has no existing
+  range: the contract reports it and the owner decides. MOD-02 reads "the two list" as the Invictus and OneDigital
+  bond lists: one Bond List for both desks, with the bonds of the new file added by the rule above; whether the page
+  filters bonds by desk is for that contract to find; how the single yield (YTM) of the new file becomes the
+  expected-return range is still open.
+- **Source:** the owner's chat answers of 9-Nov-2026 07:19, 08:07 and about 09:12 UTC (MOD-02). The wording is
+  MOD-02's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D91 - Performance is labelled with the calendar month-end although the NAV date is the last working day before it
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** In the owner's October task list (9-Nov-2026 07:19 UTC) the owner asked for the notes to read
+  "Performance as on 31st October" although the performance shown is as on the last working day, "because when it
+  goes to client they will not remember the last working day". The month ended on a Saturday (31-Oct-2026). The
+  owner wrote that the last working day was 29-Oct; MOD-02's check on 9-Nov-2026 found that the Direct monitor
+  exported "as on 31-Oct-2026" carries 30-Oct NAVs.
+- **Decision:** The label reads the calendar month-end ("Performance as on 31st October"); the figures are as on
+  the last working day on or before it. The same task list asks for the SIF performance under the same rule
+  ("Update the performance for SIFs - Regular Code; The last working day last month was October 29th so it shows
+  performance as on that date. However in the notes you can write Performance as on 31st October") and for the
+  Direct Equity returns "as on the same last date as the mutual funds".
+- **Rationale:** the owner's own words: clients "will not remember the last working day" and "we have to keep them
+  and ease of readability and usability in mind before any task".
+- **Alternatives / supersedes:** Labelling the true NAV date: not chosen. KNOWN_ISSUES B1 (PMS data dated under a
+  later label) is a separate case and is not changed.
+- **Consequences (INFERRED, MOD-02's reading):** the update log records the true NAV date of each input and how it
+  was checked (a monitor's "As on" date is the export setting, not its NAV date: the Direct file "as on 31-Oct-2026"
+  carries 30-Oct NAVs; and a Regular file "as on 2-Nov-2026" carried 2-Nov NAVs, not 30-Oct as first believed, which
+  is why inputs on different NAV dates must be told apart by the check); a
+  refresh whose performance inputs (the Regular, Direct and SIF monitors) carry different NAV dates stops and asks
+  the owner; an absent input is still not a stop (D61); the stop list of `docs/MONTHLY_UPDATE_PROCESS.md` takes this
+  line in the register sweep.
+- **Source:** the owner's chat message of 9-Nov-2026 07:19 UTC (the October task list; MOD-02). The wording is
+  MOD-02's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D94 - Returns for periods longer than a fund's life are cleared (the 13 JioBlackRock Regular records and very young funds)
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** Twelve JioBlackRock "Regular" plans that started in August 2026 show 3-month, 6-month and 1-year
+  returns copied from the older "Direct" plan, for periods before the Regular plan existed; a thirteenth, the G-Sec
+  fund, is held at older values (D81); one ETF launched on 15-Sep-2026 shows an annualised since-inception return of
+  297,765%. That conflicts with CLAUDE.md rule 6 (no fabricated data in client-facing output). See
+  `docs/project-control/DECISION_LOG.md` DEC-OPEN-07 (section 1.6) and `docs/KNOWN_ISSUES.md` C20, C16 and C43.
+- **Decision:** The owner chose the button "Yes, clear them" (the other button was "Keep and label"; 9-Nov-2026
+  11:40 UTC, MOD-02 chat) in answer to the question "Clear returns shown for periods before these funds existed?".
+  That is option (a) of DEC-OPEN-07. MOD-02's text beside the question described it as: show "-" for every return
+  period longer than the fund's life; release the held G-Sec record in the same change; and add a limit in the
+  monthly bake so that a very young fund cannot show an absurd annualised figure. The click is read as covering the
+  monthly-bake limit for very young funds too (INFERRED: the question line named only "these funds").
+- **Rationale:** MOD-02's reading, not stated by the owner: the screen, Excel and deck then quote no return for a
+  period the fund did not exist (INFERRED).
+- **Alternatives / supersedes:** Keeping the values and labelling them as taken from the Direct plan: not chosen.
+  This is the C20 decision that D81 waits for: the held G-Sec record is released in the same change.
+- **Consequences (INFERRED, MOD-02's reading):** TASK-023 (the 13 records, including the held G-Sec record: one reviewed data
+  PR, written through `tools/lib/blocklib.js`, with `financial-data-reviewer` sign-off) and TASK-067 (a
+  since-inception bound in the MF bake) become PLANNED and ship before or with the October bake; some cells show "-"
+  for new funds; proposal totals that include these funds can change; `docs/KNOWN_ISSUES.md` C20, C16 and C43 are
+  updated in the register sweep.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-07 (section 1.6); the owner's chat answer of 9-Nov-2026
+  11:40 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms it
+  (DECISION_LOG section 1.5 step 2).
+
+#### D95 - PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction)
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** No `PMS_Scheme_Performance` file was transferred; the PMS returns on the page are 31-Jul-2026 data under
+  a "31st August 2026" label (KNOWN_ISSUES B1). DEC-OPEN-04 asked whether to relabel at once or to wait for the
+  desk's PMS files.
+- **Decision:** In the owner's October task list (9-Nov-2026 07:19 UTC) the owner wrote: "The PMS and AIF performance
+  can be taken from Monthly Investment Reckoner File."
+- **Rationale:** the owner's instruction; MOD-02 adds no reading of its own to it.
+- **Alternatives / supersedes:** Waiting for the desk's PMS files (DESK-01): not chosen (INFERRED from the
+  instruction). The source assumed by D54 (the vendor `PMS_Scheme_Performance` file) and by the pins of D75 changes,
+  for the tool to be built; D54 and D75 stay Active until that tool exists (INFERRED).
+- **Consequences (INFERRED, MOD-02's reading):** the PMS performance is replaced from the Reckoner deck, as on the
+  deck's own date, by a tool that does not exist yet (`merge_pms_performance.js` reads a vendor file that is not
+  coming); the PMS label changes together with the data, which is option (b) of DEC-OPEN-04 with the Reckoner as the
+  source; DEC-OPEN-04 stays open until the first Reckoner-fed PMS update closes KNOWN_ISSUES B1 and folds TASK-025
+  into it; the AIF grid is already read by `merge_aif_performance.js`.
+- **Source:** the owner's chat message of 9-Nov-2026 07:19 UTC (MOD-02). The wording is MOD-02's summary; the owner
+  confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D96 - The eight scheme renames are confirmed
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The monthly rename tool found eight likely renames in the Sep and Aug monitors (same launch date and fund
+  house) that it used to miss; they were not applied, so the old records keep old figures
+  (`docs/project-control/DECISION_LOG.md` DEC-OPEN-08, section 1.6; `docs/KNOWN_ISSUES.md` A6). The pairs: (1) HDFC
+  Retirement Savings Fund-Hybrid-Debt Plan-Reg(G) to HDFC Retirement Fund-Hybrid-Debt Plan-Reg(G); (2) to (5) four
+  Kotak overseas funds of funds (Global Emerging Market; Global Innovation; International REIT; Quality), "Omni" to
+  "Active" in the name; (6) and (7) two Axis funds of funds (Income Plus Arbitrage; Multi-Asset), "Active" to "Omni";
+  (8) Motilal Oswal Asset Allocation Passive FoF-Aggressive-Reg(G) to Motilal Oswal Multi Asset Passive FoF-Reg(G).
+- **Decision:** The owner chose the button "Confirm all 8" (the other button was "Confirm 7, hold 1"; 9-Nov-2026
+  12:01 UTC, MOD-02 chat) in answer to the question "Confirm the 7 clear scheme renames and hold the Motilal Oswal
+  one?". All eight renames are confirmed.
+- **Rationale:** the owner's choice. MOD-02's text beside the question recommended holding the eighth pair (the name
+  changes more than a rename usually does; the records file the fund as an equity ETF while the monitor lists it on a
+  Hybrid sheet; its Conservative sister plan kept its name; no AMC notice was found); the owner confirmed it
+  nonetheless.
+- **Alternatives / supersedes:** Confirming seven and holding the Motilal Oswal pair (MOD-02's recommendation): not
+  chosen.
+- **Consequences (INFERRED, MOD-02's reading):** TASK-024 becomes PLANNED inside TASK-021 step 1; the apply step
+  re-checks all eight pairs against the dry-run output of that day, the eighth first, and stops and asks the owner if
+  any pair differs from the list above; the confirmed renames get current figures in the next bake (earlier names are
+  kept in `prev_name` / `prev_names`, D79); `docs/KNOWN_ISSUES.md` A6 is updated in the register sweep.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-08 (section 1.6); the owner's chat answer of 9-Nov-2026
+  12:01 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms it
+  (DECISION_LOG section 1.5 step 2).
+
 ### Analytics & credit
 
 #### D17 · Fixed seven-bucket credit vocabulary
@@ -1171,7 +1324,7 @@ and the entry says so. "—" means no date is recorded.
 - **Note (2-Nov-2026, later):** the MF Screener data pack states Rf 4.5% in its definitions, equal to this decision; the bridge tool planned in TASK-022 refuses a pack whose stated Rf is not 4.5% (see the update-log, section 7 T1 gates). DEC-OPEN-01 is answered (D86): no in-house builder is planned; read 'builder' in the Consequences above as the planned bridge tool of TASK-022 (D84: it is to refuse a pack whose stated Rf is not 4.5%; D85: cannot be met from the pack data, see DEC-OPEN-30).
 
 #### D85 - Sortino stays the textbook formula
-`Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
+`Active (superseded for the Portfolio Matrix by D92)` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
 - **Context:** The Sortino ratio has two definitions in the live history: the June 2026 workbook used the
   semi-deviation (the standard deviation of the negative excess returns); the August 2026 workbook, the live
   September `RISK_MATRIX` and the in-house calculator use the textbook form (the root-mean-square of the
@@ -1192,9 +1345,11 @@ and the entry says so. "—" means no date is recorded.
   2-Nov-2026 (MOD-02). The wording of D84 and D85 is MOD-02's summary of the owner's button answers; the
   owner confirms it at Gate E (DECISION_LOG section 1.5 step 2).
 - **Note (2-Nov-2026, later):** the MF Screener data pack's Sortino is not the textbook form; see D86 and DEC-OPEN-30. DEC-OPEN-01 is answered (D86): no in-house builder is planned; read 'builder' in the Consequences above as the planned bridge tool of TASK-022 (D84: it is to refuse a pack whose stated Rf is not 4.5%; D85: cannot be met from the pack data, see DEC-OPEN-30).
+- **Note (9-Nov-2026):** superseded for the Portfolio Matrix from the October cycle by D92 (the MF dashboard's Sortino, with a note
+  under the table).
 
 #### D86 - The NAV and risk-ratio inputs come from the MF dashboard (the owner's answer to DEC-OPEN-01); MOD-02 reads it as the Screener's monthly data pack (INFERRED)
-`Active` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
+`Active (extended by D93)` - 2-Nov-2026 (chat with MOD-02) - **owner decision**
 - **Context:** `docs/KNOWN_ISSUES.md` B8: the two inputs of the Portfolio Matrix (inbox rows 12 "Fund Risk Ratios &
   3Y Rolling" and 17 "NAV Data") were made in-house by the outgoing owner, and nobody makes them now. DEC-OPEN-01
   asked the owner who should (MOD-01 on 27-Oct-2026 at 12:28 UTC, and MOD-02 again on 2-Nov-2026). Step 10 of the
@@ -1217,8 +1372,8 @@ and the entry says so. "—" means no date is recorded.
   Supersedes nothing: D43 stays in force (only the producer of its input changes), and D85 cannot be carried out
   from the pack's data (DEC-OPEN-30).
 - **Consequences:** The read-only analysis of 2-Nov-2026 (the two packs, the live page and the local September
-  workbooks; `docs/update-log/2026-11-02_datapack-feasibility.md`) found the following. NONE of these changes has
-  been accepted by the owner yet: they are put to the owner as DEC-OPEN-30 (the Sortino form, which conflicts with
+  workbooks; `docs/update-log/2026-11-02_datapack-feasibility.md`) found the following. NONE of these changes had
+  been accepted by the owner yet (see the note of 9-Nov-2026 at the end of this entry): they were put to the owner as DEC-OPEN-30 (the Sortino form, which conflicts with
   D85), DEC-OPEN-31 (the other changes), DEC-OPEN-32 (permission to show the computed ratios on the public page
   and in client decks) and DEC-OPEN-33 (use of a PROVISIONAL pack).
   - The packs: 2,090 funds, cycle date 15-Oct-2026 (returns as on 15-Oct-2026, holdings month-end 30-Sep-2026),
@@ -1254,6 +1409,72 @@ and the entry says so. "—" means no date is recorded.
   owner's chat answer of 2-Nov-2026 (MOD-02); `docs/update-log/2026-11-02_datapack-feasibility.md`. Only the quoted
   sentence is the owner's: the rest of D86 is MOD-02's summary, findings and reading, and the owner confirms it at
   Gate E (DECISION_LOG section 1.5 step 2).
+- **Note (9-Nov-2026):** of the four questions listed under Consequences, three are answered. DEC-OPEN-30 (the Sortino form): "Dashboard's, with note" = D92 (supersedes D85 for the matrix).
+  DEC-OPEN-31 (the other changes): "Accept all four" = D93 (extends D86). DEC-OPEN-32 (permission to show the
+  computed ratios): the owner chose the button "Yes, they may" (the other button was "Ask the team first"; 9-Nov-2026
+  09:02 UTC, MOD-02 chat) in answer to the question "May the dashboard's ratios appear on the public page and in
+  client decks?". MOD-02's text beside the question also said that the same permission covers describing the data
+  pack's file layout in the public repository, with only counts, dates and short hashes in update logs and never
+  fund-level pack values; the click is read as covering that too (INFERRED: the question line named only the
+  ratios). The chat does not record whether the dashboard's owner and compliance were asked. DEC-OPEN-33 (a
+  provisional pack) is open.
+
+#### D92 - The Portfolio Matrix shows the MF dashboard's Sortino from October, with a note (supersedes D85 for the matrix)
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** D85 (2-Nov-2026) kept the textbook Sortino formula. The MF dashboard's data pack, the planned source of
+  the risk table from October (D86; the reading is INFERRED), uses another form (the one the June 2026 table used),
+  and the textbook form cannot be rebuilt from the pack (`docs/project-control/DECISION_LOG.md` DEC-OPEN-30,
+  section 1.6).
+- **Decision:** The owner chose the button "Dashboard's, with note" (the other button was "Leave it blank";
+  9-Nov-2026 08:48 UTC, MOD-02 chat) in answer to the question "Which Sortino formula should the October risk table
+  use?". That is option (a) of DEC-OPEN-30: the Portfolio Matrix shows the MF dashboard's Sortino from the October
+  cycle, with a one-line note under the table, and a textbook field is to be asked from the dashboard team for a
+  later pack.
+- **Rationale:** MOD-02's reading, not stated by the owner: the whole table is refreshed with the dashboard's own
+  number rather than left blank or held (INFERRED).
+- **Alternatives / supersedes:** Supersedes D85 for the Portfolio Matrix only. Leaving the Sortino column blank until
+  a textbook figure exists: not chosen. Holding the whole October matrix at 30 Sep 2026: described in the chat text,
+  not a button, not chosen.
+- **Consequences (INFERRED, MOD-02's reading):** the bridge tool (TASK-022) maps the pack's Sortino; the note under
+  the table says that the form changed (October is not comparable with August and September in this column);
+  `docs/KNOWN_ISSUES.md` C35 and C46 and TASK-022's acceptance are updated in the register sweep; the request for a
+  textbook field goes to the dashboard team (TASK-078); the October cycle still keeps "30 Sep 2026" if the bridge is
+  not ready at step 10 (D86, D93; DEC-OPEN-33 is still open).
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-30 (section 1.6); the owner's chat answer of
+  9-Nov-2026 08:48 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms
+  it (DECISION_LOG section 1.5 step 2).
+
+#### D93 - The Portfolio Matrix accepts the four other changes of the MF dashboard's data (extends D86)
+`Active` - 9-Nov-2026 (chat with MOD-02) - **owner decision**
+- **Context:** The MF dashboard's data pack (D86) does not calculate the risk table the way the page's table (as on
+  30-Sep-2026) is calculated. Besides the Sortino form (D92), four things change (`docs/project-control/DECISION_LOG.md`
+  DEC-OPEN-31, section 1.6): (a) the date; (b) coverage; (c) benchmark and alpha; (d) daggers and wording.
+- **Decision:** The owner chose the button "Accept all four" (the other button was "Hold the table"; 9-Nov-2026
+  08:54 UTC, MOD-02 chat) in answer to the question "Accept all four changes the dashboard's data brings to the risk
+  table?". MOD-02's chat text described them as: (a) the table carries the pack's date (15-Oct-2026 for the pack in
+  hand), not a month-end; (b) only funds with a full three-year record get ratios: about 370 of today's 966 funds
+  lose their five benchmark-based ratios (Beta, Correlation, Information Ratio, Down Capture, Alpha) and show
+  dashes, and the standard deviation, Sharpe and Sortino columns go from 966 to 636 funds (figures of the
+  2-Nov-2026 analysis), and the tool's "number of funds must not shrink" check (the merge tool's gate "funds with
+  metrics did not shrink") "would be waived once, by me, after you've seen the list of funds affected"; (c) each fund
+  is compared with its own benchmark (the label changes
+  for about 554 funds) and Alpha is derived as Jensen's alpha, as the page's wording says; (d) the 33 warning
+  daggers go (the dashboard adjusts for NAV splits itself) and the tab's hint text changes to "funds without a full
+  three-year record".
+- **Rationale:** MOD-02's reading, not stated by the owner: the whole table is refreshed, each fund against a
+  benchmark that fits it, without an in-house toolchain to maintain (INFERRED).
+- **Alternatives / supersedes:** Accepting with changes, and holding the whole matrix at 30 Sep 2026: not chosen.
+  Extends D86; D92 settles the Sortino form.
+- **Consequences (INFERRED, MOD-02's reading):** the bridge tool (TASK-022) follows (a) to (d); the one-time waiver of
+  the coverage check is an owner-only override that is used only after the owner has read the list of the funds that
+  lose their ratios (that approval is still to come, and MOD-02 applies the override only on it); the hint text is
+  one small `site/index.html` change that ships with the first pack-fed table, not before; the update log records each month the counts of the funds that gain or
+  lose ratios; the October figures are not comparable with September in Sortino, the five benchmark-based columns
+  and coverage; if the bridge is not ready at step 10 of the October cycle the table keeps "30 Sep 2026" (D86;
+  DEC-OPEN-33 is still open).
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-31 (section 1.6); the owner's chat answer of
+  9-Nov-2026 08:54 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms
+  it (DECISION_LOG section 1.5 step 2).
 
 ### Process
 
@@ -1394,7 +1615,7 @@ SHA for `git show` in this repository.
 
 ## How to add a decision
 
-1. Take the next free ID (D89 on 9-Nov-2026). Never reuse or renumber an ID, and never delete an entry.
+1. Take the next free ID (the highest ID in the index plus one). Never reuse or renumber an ID, and never delete an entry.
 2. Add a row to the index, then the entry under its area heading, with the same fields (Context,
    Decision, Rationale, Alternatives / supersedes, Consequences, Source) in 3–8 lines.
 3. Cite evidence a reader can open: `path:line` in the code and the PR or commit that made the change.

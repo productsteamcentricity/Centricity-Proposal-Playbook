@@ -20,7 +20,7 @@ public: nothing here may name a client or hold investor data, personal data or s
 | Topic | Authoritative file | Role of this folder |
 |---|---|---|
 | Project state: data as on, latest verification, release, next steps | [`../PROJECT_STATE.md`](../PROJECT_STATE.md) | none: there is deliberately no `project-control/PROJECT_STATE.md`; `CLAUDE.md` tells every session to read `docs/PROJECT_STATE.md` |
-| Approved decisions (D1-D88; next D89) | [`../DECISIONS.md`](../DECISIONS.md) | [`DECISION_LOG.md`](DECISION_LOG.md) holds the **open** decisions (`DEC-OPEN-nn`, with documented recommendations, which are not decisions) and an index of the load-bearing approved ones |
+| Approved decisions (D1-D96; next D97) | [`../DECISIONS.md`](../DECISIONS.md) | [`DECISION_LOG.md`](DECISION_LOG.md) holds the **open** decisions (`DEC-OPEN-nn`, with documented recommendations, which are not decisions) and an index of the load-bearing approved ones |
 | Defects and technical debt (IDs A, B, C, R, E, F; severity and status) | [`../KNOWN_ISSUES.md`](../KNOWN_ISSUES.md) | [`KNOWN_ISSUES_AND_REGRESSION_RISKS.md`](KNOWN_ISSUES_AND_REGRESSION_RISKS.md) is a dated snapshot index of it plus the regression-risk catalogue (area -> what can regress -> which gate or test catches it -> coverage gap) |
 | Architecture overview | [`../ARCHITECTURE.md`](../ARCHITECTURE.md) | [`ARCHITECTURE_AND_DEPENDENCY_MAP.md`](ARCHITECTURE_AND_DEPENDENCY_MAP.md) adds the dependency and blast-radius view |
 | Change history | [`../../CHANGELOG.md`](../../CHANGELOG.md), [`../update-log/`](../update-log/) | [`INTEGRATION_AND_REGRESSION_LOG.md`](INTEGRATION_AND_REGRESSION_LOG.md) records baselines, gate results and incidents |
@@ -72,7 +72,7 @@ with the code or git, the code wins. Fix the register with a dated correction.
 
 1. **Stable IDs.** Never renumber, reuse or delete an ID. A withdrawn item becomes SUPERSEDED with a
    pointer to what replaced it. A new item takes the next free number. As of 9-Nov-2026: REQ-096,
-   REQ-PPT-154, TASK-079, DEC-OPEN-35, D89, A33, B10, C47, R13, E18, F4, INC-20; chats EX-02, NB-04,
+   REQ-PPT-154, TASK-079, DEC-OPEN-35, D97, A33, B10, C47, R13, E18, F4, INC-20; chats EX-02, NB-04,
    OPS-01, GOV-02, ARC-02, MOD-03; external labels EXT-PR-06.
 2. **Dated entries.** Dates as 28-Oct-2026 (with UTC time where order matters). A status change adds a
    dated note; it does not silently rewrite history. A correction is marked "Correction <date>:" with
