@@ -207,3 +207,6 @@ for the owner (`KNOWN_ISSUES.md` → *Before the next refresh*, item 10).
 - Not acted on here: the outgoing owner's `Project_History_and_Conversation_Summary.md` (15-Oct)
   stays in the archive unless the owner asks for it; the process docs
   (`MONTHLY_UPDATE_PROCESS.md`) still list #12 and #17 among the desk's files (B8).
+  (Corrected 3-Nov-2026: `MONTHLY_UPDATE_PROCESS.md` and `INPUT_FILES.md` were corrected in the same PR as
+  this log, #28 (`11d5c0a`); `docs/HANDOVER.md` and the inbox README were still wrong until TASK-018
+  (KNOWN_ISSUES E8). After D86 the Portfolio Matrix inputs come from the MF dashboard, not from the desk.)

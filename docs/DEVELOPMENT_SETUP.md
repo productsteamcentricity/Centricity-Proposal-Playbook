@@ -36,13 +36,18 @@ Git settings used: `core.autocrlf=false` (global); `.gitattributes` enforces LF 
 
 ## Working in Claude Code
 
-Open the repository folder as the project. Claude Code then loads `CLAUDE.md`, the 8 agents in
+Open the repository folder as the project. Claude Code then loads `CLAUDE.md`, the 9 agents in
 `.claude/agents/` and the skills `/monthly-update` and `/verify-dashboard`. The preview configuration
 `playbook` (`.claude/launch.json`) starts `.claude/serve.js` for the in-app browser.
 
 ## OneDrive notes
 
-The workspace lives in a OneDrive-synced folder. This works, with two precautions:
+The workspace lives in a OneDrive-synced folder. This works only while the folder is healthy: OneDrive
+running, the folder set to "Always keep on this device", and no `.git` file cloud-only (TASK-017,
+KNOWN_ISSUES R6). That is the target, not the state of 3-Nov-2026 (folder not pinned, 228 `.git` files
+cloud-only). Until it holds, and whenever it stops holding, the ban in CLAUDE.md "Project control" applies:
+no `git checkout`, `git switch`, `git merge` or `git pull` in this folder (a checkout there once truncated
+tracked files). Two precautions:
 - Keep the folder "Always keep on this device" so OneDrive never replaces files with online-only
   placeholders (tools read 12 MB files and large workbooks).
 - If a large file looks stale in one tool, verify through Node on the real path

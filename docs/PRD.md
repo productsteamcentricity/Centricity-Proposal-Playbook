@@ -218,7 +218,7 @@ Deploying `index.html` alone **silently reverts** the data. There is no error, o
 | 4 | L5084 | `Centricity_IRR_Offshore.js` | Applies `irr_low`/`irr_high` to about 2,065 funds by exact name. Moves 4 funds to `Offshore Funds`. Adds RATIONALE, BENCHMARKS and LIQUIDITY_MAP entries. **Must load after #3.** |
 | 5 | L5085 | `Centricity_SIF_Refresh.js` | Deletes every `/SIF$/` row and appends its own 30 (Equity SIF 16, Hybrid SIF 14). Sets `DATA_DATES.sif`. Registers `REFRESH.parseSif`. **Must load after #4.** |
 
-Each sibling is idempotent-guarded (`window.__JUNE_REFRESH_APPLIED` and similar) and re-applies on every load. Folding them into the embedded blocks is the standing intent and is still outstanding (§14).
+Each sibling sets a marker (`window.__JUNE_REFRESH_APPLIED` and similar) that no page code reads, and re-applies on every load; re-running is harmless because each one filters out what it owns, then concatenates or assigns. Folding them into the embedded blocks is the standing intent and is still outstanding (section 14).
 
 ### 3.4 Line map of `index.html` (14-Oct-2026)
 

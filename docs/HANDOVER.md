@@ -41,8 +41,12 @@ overlap, tenure, liquidity, name matching), parsers under `window.REFRESH`, expo
 ## 5. Data and where it comes from
 
 Monthly workbooks from the desk and vendors (MF Monitor, analytics, expense/exit load, SIF monitor,
-fund managers, risk ratios, market deck, PMS performance, the Reckoner deck…). They are sensitive and
-never committed; they live in `monthly-updates/` on the owner's machine. Each refresh is recorded in
+fund managers, market deck, PMS performance, the Reckoner deck...). They are sensitive and
+never committed; they live in `monthly-updates/` on the owner's machine. The two Portfolio Matrix inputs
+(Fund Risk Ratios, NAV Data) are not desk files and are not built in-house any more (KNOWN_ISSUES B8). The
+owner's answer of 2-Nov-2026 (D86) is to get them from the MF dashboard; the Moderator reads that as its
+monthly data pack, which the owner shares (INFERRED), and the tool that would turn the pack into the
+workbook layout is not built (TASK-022, KNOWN_ISSUES C46). Each refresh is recorded in
 `docs/update-log/<YYYY-MM>_<Mon-YYYY>.md` with file names, as-on dates and SHA-256 fingerprints.
 Specification: [`INPUT_FILES.md`](INPUT_FILES.md).
 
@@ -67,7 +71,7 @@ live. Releases: [`DEPLOYMENT.md`](DEPLOYMENT.md).
 | Wrong fund identity after a vendor rename | rename-first workflow; tools refuse on ambiguity; owner decides |
 | A tool's input layout changes (banner rows, renamed columns) | tools refuse on 0 joins / layout change; never force |
 | Public repository exposes internal research | owner decision D60; revisit if content becomes more sensitive |
-| OneDrive sync interfering with large files or git | keep the folder always-on-device; verify through Node |
+| OneDrive sync interfering with large files or git | keep the folder always-on-device and healthy (TASK-017, KNOWN_ISSUES R6); the git ban in CLAUDE.md "Project control" applies until it is; verify through Node |
 | CDN outage | the page cannot load React; no mitigation in place (libraries are not self-hosted) |
 
 ## 9. Who to ask

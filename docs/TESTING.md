@@ -109,6 +109,12 @@ npm run rehearse -- --old C:/t/cpp-old --old-site C:/t/cpp-old/site   # tools an
 git worktree remove C:/t/cpp-old
 ```
 
+Note the path you use (here `C:/t/cpp-old`). The worktree left from 16-Oct-2026 is registered at
+`%USERPROFILE%/AppData/Local/Temp/cpp-old`, not at `C:/t/cpp-old` (KNOWN_ISSUES E11); removing it waits for
+the owner (DEC-OPEN-22, TASK-061). Remove only the worktree you created in this task, in the same task, with
+`git worktree remove <that path>` (never `--force` or `rm -rf`); if it fails (for example OneDrive "Permission
+denied" on `.git/worktrees`), leave it and tell the Moderator (CLAUDE.md "Never").
+
 `tools/dev/rehearse.js` copies the live `site/` twice into a new `rehearse-*` folder in the OS temp
 directory and runs each case's tool chain with `--apply` on both copies: one with the tools under
 `--old`, one with the tools of this checkout (or `--new <root>`). Both sides read the inputs from

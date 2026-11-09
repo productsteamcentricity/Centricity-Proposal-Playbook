@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 |
+| Version | 2 |
+| Date | 3-Nov-2026 |
+| Author chat | MOD-01; GOV-01 (TASK-018 update, 3-Nov-2026) |
 | Status | Authoritative (rules; the Moderator proposes changes, the owner approves those that change publishing or approvals) |
-| Supersedes | none (first version) |
-| Next review | MOD-02's validation (TASK-016); then whenever a rule is found wrong in practice |
+| Supersedes | the version of 28-Oct-2026 (kept in git history) |
+| Next review | when the owner answers DEC-OPEN-34; then whenever a rule is found wrong in practice |
 
 This file says how several Claude chats change this repository without colliding: where each chat works,
 which files one task may hold at a time, how a claim is made and released, how overlaps are resolved,
@@ -54,35 +54,45 @@ apply in full. Related records:
 | Place | Path | Branch and state | Used by |
 |---|---|---|---|
 | Main checkout | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Investment Proposal Dashboard` (inside OneDrive) | `main` = `origin/main` = `2b2a397` | the Moderator |
-| Desktop-app worktree of NB-01 (completed) | `.claude/worktrees/focused-wright-d50bee` | `fix/reckoner-drop-gates` `fe060d5`, clean | nobody (clean-up TASK-061) |
-| Desktop-app worktree of NB-02 (completed) | `.claude/worktrees/adoring-boyd-7028f6` | `fix/a27-rehearse-old-site` `18abff3`, clean | nobody (TASK-061) |
+| Desktop-app worktree of NB-01 (completed; reused by the app for GOV-01 from 3-Nov-2026, see the update below) | `.claude/worktrees/focused-wright-d50bee` | detached HEAD at `fe060d5` (tip of `fix/reckoner-drop-gates`), clean, until the reuse | nobody until the reuse (clean-up TASK-061) |
+| Desktop-app worktree of NB-02 (completed) | `.claude/worktrees/adoring-boyd-7028f6` | detached HEAD at `18abff3` (tip of `fix/a27-rehearse-old-site`), clean | nobody (TASK-061) |
 | Rehearsal worktree (16-Oct-2026, PR #3) | `%USERPROFILE%\AppData\Local\Temp\cpp-old` | detached `bf20c08`, clean | nobody (TASK-061) |
 | Stale worktree admin folders | `.git/worktrees/cpp-main`, `.git/worktrees/wtdocs` | prunable | none |
 | Stash | `stash@{0}` (19-Oct-2026) | superseded work; applying it would revert Sep-2026 page data | never apply it (TASK-062) |
+
+Update 3-Nov-2026 (TASK-018; audit interfaces-architecture D-08): the first path was reused by the app for
+GOV-01 (session branch `claude/affectionate-lovelace-f11b67`; task branch
+`docs/gov-01-rule-consistency-20261102`), and a fifth worktree, `.claude/worktrees/investment-proposal-dashboard-c68580`
+(detached at `f5c2431`, unused, created by the app on 2-Nov-2026), exists. This table is the 28-Oct snapshot;
+the inventory of record is [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md)
+sections 6 and 19.3.
 
 **Environment hazard.** On 28-Oct-2026, 229 of 519 `.git` files were OneDrive cloud-only placeholders and
 the OneDrive client (OneDrive.exe) was not running. Reads of the current tree work; reads of historical and
 stash blobs fail with `fatal: mmap failed: Invalid argument`. On 25-Oct-2026 a `git checkout` back to
 `main` in the main checkout failed this way and left tracked files truncated or deleted (restored, nothing
-lost; KNOWN_ISSUES R6). Until TASK-017 restores OneDrive health, treat every `git checkout` / `git switch`
-inside the OneDrive folder as unsafe.
+lost; KNOWN_ISSUES R6). The rule (CLAUDE.md "Project control"): No `git checkout`, `git switch`, `git merge`
+or `git pull` in the main checkout (the OneDrive folder) until TASK-017 has passed (`docs/PROJECT_STATE.md`
+records the pass), and again whenever OneDrive is not running or any `.git` file is cloud-only (check: the
+"OneDrive state" block in section 18 of `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`).
 
 ### 2.2 Who works where
 
 | Who | Where | Rules |
 |---|---|---|
-| Moderator (MOD-nn) | the main checkout | Stays on `main`; never `git checkout` / `git switch`. Edits only Moderator-owned files and files its own claim covers. Creates branches with `git branch <new> origin/main` and commits by explicit path through a temporary index; brings local `main` up to `origin/main` after a merge with the method in [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md). |
-| Coding sub-chat (any EX, NB, OPS or GOV chat that writes files) | its own git worktree | In the desktop app: started with `start_session` and `use_worktree: true`, which creates `.claude/worktrees/<name>` on a session branch `claude/<name>` (as NB-01 and NB-02 were; VERIFIED by their location and the app's worktree marker). It creates its task branch inside the worktree from the starting commit, which rewrites no files (INFERRED). Outside the app: `git worktree add -b <task-branch> <path> origin/main`, run from the main checkout (this does not change the main checkout's branch; INFERRED safe because it reads only the current tree). Use a short path outside OneDrive for such a worktree (`docs/TESTING.md` section 2.3 uses `C:/t/...` for the same reason); avoid `%TEMP%`, which Windows may clean. One task branch per worktree; a new task gets a new worktree cut from current `origin/main`. Never writes in the main checkout or in another chat's worktree. |
+| Moderator (MOD-nn) | the main checkout | Stays on `main`; never `git checkout`, `git switch`, `git merge` or `git pull` (the ban of CLAUDE.md "Project control"; the Moderator's checkout always stays on `main`, bootstrap 7.1, so for it the ban does not lift with TASK-017). Edits only Moderator-owned files and files its own claim covers. Creates branches with `git branch <new> origin/main` and commits by explicit path through a temporary index; brings local `main` up to `origin/main` after a merge with the method in [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md). |
+| Coding sub-chat (any EX, NB, OPS or GOV chat that writes files) | its own git worktree | In the desktop app: started with `start_session` and `use_worktree: true`, which creates `.claude/worktrees/<name>` on a session branch `claude/<name>`. The branch name usually matches the folder name (NB-01, NB-02 and the unused fifth worktree; VERIFIED by their location and the app's worktree marker) but can differ when the app reuses a folder (GOV-01: folder `focused-wright-d50bee`, branch `claude/affectionate-lovelace-f11b67`; VERIFIED 3-Nov-2026). It makes its task branch inside the worktree with `git switch -c <task-branch>` at the starting commit, which rewrites no file (VERIFIED 3-Nov-2026: `git status` was empty after it in GOV-01's worktree). Outside the app: `git worktree add -b <task-branch> <path> origin/main`, run from the main checkout (this does not change the main checkout's branch; INFERRED safe because it reads only the current tree). Use a short path outside OneDrive for such a worktree (`docs/TESTING.md` section 2.3 uses `C:/t/...` for the same reason); avoid `%TEMP%`, which Windows may clean. One task branch per worktree; a new task gets a new worktree cut from current `origin/main`. Never writes in the main checkout or in another chat's worktree. |
 | Read-only work | may share the main checkout | Investigations, `node tools/verify_page.js site`, `npm test` (leaves no files; VERIFIED 28-Oct-2026), tool dry runs without `--apply`, the preview server. It must not create, modify or stage tracked files; output goes to the session scratchpad or to `monthly-updates/<month>/_review/` (local, ignored). |
 | Guardian (ARC-01) | anywhere, read-only | No write tools. |
 | Fallback when no worktree is possible | the main checkout | Only one coding chat at a time (single writer for the whole folder), recorded in ACTIVE_CHANGE_REGISTER. It never switches branches and commits by explicit path through a temporary index. The Moderator keeps its own edits to Moderator-owned files and commits them by explicit path; nobody else writes there meanwhile. |
 
 **Practical points for worktrees** (VERIFIED from code and folder listings unless labelled):
 - A new worktree has no `node_modules/`: run `npm ci` there (`xlsx` 0.18.5 is pinned; never upgrade it).
-- It has no `monthly-updates/`, `backups/`, `handover-archive/` or `_testdata/` (all git-ignored). Tools take
-  input paths as arguments, so point them at the main checkout's `monthly-updates/` by absolute path.
-  Recommendation: write pre-refresh backups to the main checkout's `backups/<date>_<tag>/` so they outlive
-  the worktree.
+- It has no content in `monthly-updates/`, `backups/`, `handover-archive/` or `_testdata/` (all git-ignored;
+  only the tracked README placeholders exist, so a relative path would not fail, it would point at an empty
+  folder). Tools take input paths as arguments, so point them at the main checkout's `monthly-updates/` by
+  absolute path (the main checkout is the first entry of `git worktree list`). Rule: write pre-refresh
+  backups to the main checkout's `backups/<date>_<tag>/` so they outlive the worktree.
 - `tools/dev/rehearse.js` reads inputs only from `<new root>/monthly-updates` (`tools/dev/rehearse.js:19, :27`),
   so in a worktree it needs that folder (for example a directory junction to the main checkout's copy).
   This has not been tried in this repository: UNKNOWN / NEEDS INVESTIGATION. Keep rehearsal roots on short
@@ -95,8 +105,8 @@ inside the OneDrive folder as unsafe.
   process, step B5), `C:/t/...` rehearsal checkouts, and `%TEMP%\x\` (deck renders and bounds files; it
   also holds `ref.pptx`, KNOWN_ISSUES R10). One task uses each at a time; never delete what another task
   left there without the owner (TASK-070). Note: the `monthly-update` skill's step 5 says to empty `C:\t\`,
-  which would also delete a rehearsal checkout under `C:/t/` (INFERRED from the two documents); check the
-  folder before emptying it.
+  but only after `git worktree list` shows no worktree under `C:/t/` (a rehearsal checkout there would be
+  deleted with it, and CLAUDE.md "Never" bans deleting a worktree; TASK-018).
 
 ### 2.3 Verify the actual arrangement before allowing parallel coding
 
@@ -128,7 +138,7 @@ but nobody edits it without first claiming it.
 | Verification and CI | `tools/verify_page.js` together with `.github/workflows/pages.yml` (the CI greps match `verify_page.js` label padding: change both in one PR); each file in `tools/test/`; each file in `tools/dev/`; `package.json` together with `package-lock.json` | 1 task per group | No dependency or version change without the owner (CLAUDE.md "Never"). |
 | Shared docs registers | `CHANGELOG.md`, `docs/PROJECT_STATE.md`, `docs/KNOWN_ISSUES.md`, `docs/DECISIONS.md` | append by any task; edit by one | Most PRs touch them (VERIFIED with `git diff --name-only` for PR #18, the group #19-#23 and PRs #25-#28; PR #24 did not). Each task adds only its own entries and edits other entries only with the Moderator's agreement. New IDs come from the Moderator. Write these last, after syncing the branch with `origin/main`; a conflict is resolved by the later PR (merge `origin/main` into its branch, keep both entries, re-run CI). |
 | Monthly update log | `docs/update-log/<YYYY-MM>_<Mon-YYYY>.md` | the OPS refresh of that month | |
-| Moderator-owned | `docs/project-control/**`, `docs/handover/**` | the Moderator | Exception: an outgoing sub-chat writes its own handover and successor prompt under `docs/handover/continuations/` on its continuation branch ([continuations/README.md](../handover/continuations/README.md)). |
+| Moderator-owned | `docs/project-control/**`, `docs/handover/**` | the Moderator | Exception: an outgoing sub-chat writes its own handover and successor prompt under `docs/handover/continuations/` on its continuation branch ([continuations/README.md](../handover/continuations/README.md)). Second exception: `INTERFACE_CONTRACTS.md` and `ARCHITECTURE_AND_DEPENDENCY_MAP.md` are updated by the task that changes an interface, in its own PR, under its claim. |
 | Project instructions | `CLAUDE.md`; each file in `.claude/agents/` and `.claude/skills/`; `.claude/serve.js`; `.claude/launch.json` | 1 task per file; the Moderator approves | They steer every session (material, section 7). An OPS refresh updates only the "Headline state" section of `CLAUDE.md`. |
 | Other docs | `docs/PRD.md`, `docs/OPERATING_MANUAL.md`, `docs/ARCHITECTURE.md`, `docs/TESTING.md`, `docs/DEPLOYMENT.md`, `docs/MONTHLY_UPDATE_PROCESS.md`, `docs/INPUT_FILES.md`, `docs/HANDOVER.md`, `docs/DEVELOPMENT_SETUP.md`, `docs/README.md`, `tools/README.md`, `README.md` | 1 task per file | |
 | Local-only folders (never committed, apart from their tracked placeholder `README.md` files, which are ordinary docs) | `monthly-updates/00_INBOX/` (the owner drops files; the OPS refresh moves them out); `monthly-updates/<YYYY-MM_Mon-YYYY>/` (that month's refresh); `backups/` (append-only: a new folder per snapshot; never overwrite or delete one; retention is TASK-063); `handover-archive/` (read-only; holds client items under KNOWN_ISSUES R8: never open, copy, move or delete them; owner and compliance decide, TASK-032); `_testdata/` (the task that created a subfolder) | as stated | Never commit `.xlsx`, `.pptx`, `.zip` or anything from these folders (CLAUDE.md "Never"). |
@@ -145,9 +155,11 @@ but nobody edits it without first claiming it.
    the same group (section 3). It checks the shared interfaces the change touches in the
    [INTERFACE_CONTRACTS.md](INTERFACE_CONTRACTS.md) ripple lists and adds every file a ripple list requires
    to the claim. It checks the task's dependencies in [TASK_REGISTER.md](TASK_REGISTER.md).
-2. **Classify the change** (section 7). For a material change, write the change-impact contract (section 6)
-   into the task's entry in ACTIVE_CHANGE_REGISTER. For a high-risk change, the Guardian reviews the
-   contract (Gate B pre-check) before step 4.
+2. **Classify the change** (section 7). For a material or high-risk change, write the change-impact
+   contract (section 6) into the task's entry in ACTIVE_CHANGE_REGISTER and have the Guardian review it
+   (Gate B pre-check) before step 3; the chat that will implement may draft the contract after it is
+   launched (section 6, "Who"). A routine monthly refresh has a standing contract and no per-run pre-check
+   (section 7).
 3. **Record the claim.** The Moderator adds the row (task, chat, workstream, worktree, source branch and
    baseline, task branch, files, interfaces, dependencies and overlaps, status) and commits it to `main` in
    a docs PR; several register updates may share one PR. **A claim is in force when it is on
@@ -233,8 +245,9 @@ handling is a recommendation):
 **When.** Before every material or high-risk change (section 7). A low-risk change needs none.
 **Who.** The Moderator writes it in the launch packet, or the implementing chat drafts it and the Moderator
 accepts it. **Where.** In the task's entry in [ACTIVE_CHANGE_REGISTER.md](ACTIVE_CHANGE_REGISTER.md)
-("Change-impact contracts"), copied into the PR description at Gate A. **Review.** The Guardian reviews a
-high-risk contract before implementation. **Changes.** If the scope grows, the chat updates the contract
+("Change-impact contracts"), copied into the PR description at Gate A. **Review.** The Guardian reviews every
+material or high-risk contract before implementation (Gate B pre-check; a routine monthly refresh has a
+standing contract and no per-run pre-check, section 7). **Changes.** If the scope grows, the chat updates the contract
 and gets the Moderator's agreement before it touches files outside its claim.
 
 The twelve fields (master prompt section 11), with what to write here. The example column uses TASK-028 as
@@ -271,7 +284,7 @@ Change-impact contract - TASK-nnn (risk class: material | high risk)
 10. Required tests:
 11. Rollback and migration considerations:
 12. Explicit non-goals:
-Guardian pre-check (high risk only): date, verdict, conditions
+Guardian pre-check (material or high risk): date, verdict, conditions
 ```
 
 ---
@@ -281,14 +294,15 @@ Guardian pre-check (high risk only): date, verdict, conditions
 | Class | What counts in this repository | Contract | Guardian (ARC-01) |
 |---|---|---|---|
 | Low | Docs that change no rule, procedure, gate or decision (records, registers, typo fixes); read-only investigation | none | Not required. Moderator self-check; CI `verify` still runs on the PR. |
-| Material | Anything else that changes `site/`, `tools/` (including `tools/test/`, `tools/dev/`, `tools/data/`), `.github/`, `package.json` / `package-lock.json`, `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/serve.js`, `.claude/launch.json`, or a document that changes a rule, procedure, gate or decision (OPERATING_MANUAL, MONTHLY_UPDATE_PROCESS, TESTING, DEPLOYMENT, DECISIONS); every routine monthly refresh | required (short is fine) | Gate B review of the diff after implementation |
-| High risk | Any trigger in the list below | required, reviewed before implementation | Gate B pre-check of the contract, then Gate B review of the diff; `financial-data-reviewer` as well where financial |
+| Material | Anything else that changes `site/`, `tools/` (including `tools/test/`, `tools/dev/`, `tools/data/`), `.github/`, `package.json` / `package-lock.json`, `CLAUDE.md`, `.claude/agents/`, `.claude/skills/`, `.claude/serve.js`, `.claude/launch.json`, or a document that changes a rule, procedure, gate or decision (OPERATING_MANUAL, MONTHLY_UPDATE_PROCESS, TESTING, DEPLOYMENT, DECISIONS); every routine monthly refresh (R1 below) | required (short is fine; a routine refresh has a standing contract) | Gate B pre-check of the contract, then Gate B review of the diff (a routine refresh: the diff review only) |
+| High risk | Any trigger in the list below | required, in full | Gate B pre-check of the contract, then Gate B review of the diff; `financial-data-reviewer` as well where financial |
 
 **High-risk triggers** (any one is enough):
 1. **Data blocks** of `site/index.html` (MASTER, the analytics stores, DIRECT_PERF, CENTRICITY_SELECT,
-   PMS_PERFORMANCE, PMS_PERF_ALIAS, RISK_MATRIX, DATA_DATES and the rest) changed outside a routine refresh
-   step, or any edit of a block not made through `tools/lib/blocklib.js`.
-2. **Sibling scripts**, the script tags, or the load order June -> IRR/Offshore -> SIF (D1). Siblings
+   PMS_PERFORMANCE, PMS_PERF_ALIAS, RISK_MATRIX, DATA_DATES and the rest) changed outside a routine refresh's
+   tool-made edits (R1), or any edit of a block not made through `tools/lib/blocklib.js`.
+2. **Sibling scripts** (outside a routine refresh's tool-made edits, R1), the script tags, or the load order
+   June -> IRR/Offshore -> SIF (D1). Siblings
    re-apply on every load, and a broken sibling only logs `console.error`, which `verify_page` and CI do not
    count (KNOWN_ISSUES A30).
 3. **Page code the tools execute**: the `window.REFRESH` parsers and inline load-time code
@@ -305,12 +319,13 @@ Guardian pre-check (high risk only): date, verdict, conditions
    C35), credit buckets (`H.creditBucket`), look-through aggregation and the single predicates
    (`H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`), performance buckets (C29), PMS/AIF
    benchmark rows (C41).
-8. **Scale**: anything that reads or writes a return, IRR, expense or weight. MASTER returns, IRR and expense
-   are decimals; analytics weights are percent; MF and SIF Monitor returns are percent and divided by 100,
+8. **Scale**: anything that reads or writes a return, IRR, expense or weight, outside a routine refresh's
+   tool-made edits (R1). MASTER returns, IRR and expense are decimals; analytics weights are percent; MF and SIF Monitor returns are percent and divided by 100,
    never auto-detected (CLAUDE.md rule 4).
 9. **Identity matching**: renames (`rename_schemes.js`, `prev_name` / `prev_names`), name joins (Reckoner,
    Direct Equity universe, SIF name normaliser, `H.buildFundIndex`), `tools/data/pins.json`,
-   `PMS_PERF_ALIAS`, `var IRR` keys, duplicate folding.
+   `PMS_PERF_ALIAS`, `var IRR` keys, duplicate folding, outside a routine refresh's tool-made edits (R1);
+   a change to `tools/data/pins.json` is never one.
 10. **Gates and overrides**: an override flag (`--accept-drops`, `--allow-coverage-drop`, `--allow-shrink`,
     `--allow-layout-change`), a change to any tool's gates or exit codes (D72), or a refresh that is not
     routine (a correction run, a universe change, applying an owner decision such as DEC-OPEN-07 or
@@ -334,11 +349,20 @@ recovery risk. It reviews the actual diff and the current code, not chat summari
   records them in [INTEGRATION_AND_REGRESSION_LOG.md](INTEGRATION_AND_REGRESSION_LOG.md). A finding the
   Moderator does not accept is put to the owner in plain language, never silently overridden.
 
-**For a routine monthly refresh**, Gate B checks that only the expected blocks and files changed, all
-changed deploy files are in one commit, every gate output was read and every count change is explained. It
-is one more check before D61's automatic merge and does not change D61 (publication is still automatic once
-every check passes). It is not yet written into `docs/MONTHLY_UPDATE_PROCESS.md` or the `monthly-update`
-skill; until it is, the Moderator puts it in the OPS launch packet.
+**Routine monthly refresh (R1).** A routine monthly refresh PR changes only the six deploy files as the tools
+wrote them, that month's update-log file, `docs/PROJECT_STATE.md`, `CHANGELOG.md`, `docs/KNOWN_ISSUES.md` and
+the CLAUDE.md headline (check: `git diff --name-only origin/main...HEAD`). Any other file (a tool,
+`tools/data/pins.json`, page code, CI, a hand-edited sibling), an override flag, a correction run, a universe
+change or an applied owner decision makes it High risk. A routine refresh is Material with a standing
+contract (`docs/MONTHLY_UPDATE_PROCESS.md` Part B and the month's input table in the update log): no per-run
+contract and no pre-check. Gate B reviews the diff every run, before the merge: only the expected blocks and
+files changed, all changed deploy files in one commit, every gate output read, every count change explained.
+The operator of the refresh runs Gate B (the Moderator runs it for any other change); it is one of the
+manual checks of D61, and a STOP verdict or an unmet condition counts as a failed check under D61, which
+then stops and asks: D61's wording and stop list do not change. A Gate B run by the operator is weaker than
+one run by the Moderator, because the operator reviews its own work: it must pass the Guardian
+`git diff --name-status origin/main...HEAD`, the month's `_review` outputs and both SHAs, never a summary, and
+record the verdict and any conditions in the update log and the PR body (no workbook values).
 
 **Owner approval before the merge** (separate from the Guardian):
 - any judgement call on D61's stop list: an ambiguous rename, a PMS alias pin, a Reckoner name mismatch, a
@@ -362,17 +386,17 @@ change comes before the merge.
 | Gate | What must be true | Commands and evidence | Who |
 |---|---|---|---|
 | A. Implementation report | The task ID, chat, branch, worktree, baseline SHA, head SHA (pushed), files changed, tests actually run with their output, deviations from the contract and open issues are reported. | `git merge-base HEAD origin/main`; `git rev-parse HEAD`; `git ls-remote origin <branch>`; `git diff --name-status origin/main...HEAD`. Written into the PR description ([`docs/DEPLOYMENT.md`](../DEPLOYMENT.md) "Commit and PR conventions") and sent to the Moderator, who copies the fields into ACTIVE_CHANGE_REGISTER. | the implementing chat (`implementation-engineer`; `docs-keeper` for the docs) |
-| B. Guardian review | Diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk reviewed (section 7); no secrets or client data. | `integration-guardian` subagent on the actual diff; `security-reviewer` before any push (CLAUDE.md "How every change is made", step 6). | ARC-01; `security-reviewer` |
+| B. Guardian review | Diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk reviewed (section 7). For a material or high-risk change its contract was pre-checked before the claim (section 4.1). | `integration-guardian` subagent on the actual diff (the operator of a monthly refresh runs it for its own refresh, section 7). | ARC-01 |
 | C. Independent verification | The checks for the kind of change (table below) ran and passed, run by someone other than the implementer. Each is reported PASS / FAIL / NOT RUN with evidence; a check that was not run is never reported as passed. | see the table below | `qa-verifier` (or the `verify-dashboard` skill), `financial-data-reviewer`, the Moderator |
-| D. Controlled integration | One PR at a time, up to date with `main`, every check green, merged, published, live files equal `site/`, new baseline recorded, dependants told. | steps below | the Moderator with `release-manager` |
-| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states; the task is accepted only on evidence, and by the owner where the change is client-facing or the owner asked. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
+| D. Controlled integration | One PR at a time, up to date with `main`, every check green, `security-reviewer` done (it runs before every push, CLAUDE.md "How every change is made", step 6; the Moderator confirms it here), merged, published, live files equal `site/`, local `main` advanced, new baseline recorded, dependants told. | steps below | the Moderator with `release-manager` |
+| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states. The owner accepts every client-facing change and any change the owner asked to review; for other changes the Moderator records acceptance on evidence. A task is not accepted because its chat finished. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
 
 **Gate C by kind of change:**
 
 | The change touches | Run |
 |---|---|
 | anything | `node tools/verify_page.js site`: every line equals the last baseline except explained deltas (on 28-Oct-2026: MASTER effective 7682; CENTRICITY_SELECT 178, 178 in MASTER; PMS 692 / AIF 12 / benchmarks 4; PMS_PERF_ALIAS 27; EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; PMS_AIF_TERMS 73; EXTRA_SLIDES 6; 0 duplicate MASTER names; 0 script errors). `npm test` (on 28-Oct-2026: 5 test files, 903 checks, 0 failures). CI `verify` on the PR (`gh pr checks <n>`). |
-| `site/` | The `verify-dashboard` skill or `qa-verifier` in a browser: the checks of [`docs/TESTING.md`](../TESTING.md) section 3 on the preview (`preview_start` with `playbook`, or `node .claude/serve.js`, http://127.0.0.1:8080/), console clean, including no sibling `console.error` (A30). |
+| `site/` | The `verify-dashboard` skill or `qa-verifier` in a browser: the checks of [`docs/TESTING.md`](../TESTING.md) section 3 on the preview (`preview_start` with `playbook`, or `node .claude/serve.js`, http://127.0.0.1:8080/), console clean, including no sibling `console.error` (A30). Verify the worktree's own page: `preview_start playbook` serves the `site/` of the project root the session was opened on, so from another checkout start `node <worktree>/.claude/serve.js` (set `PORT` if 8080 is busy) and confirm the MASTER count and `DATA_DATES` it shows. |
 | page parsers or load-time code | `node tools/dev/rehearse.js --old-site <old site/>` and its data verdict (A27; TESTING.md section 2.3). |
 | tools or `tools/lib/` | Dry runs on the current month's inputs (TESTING.md section 2.2); `node tools/dev/rehearse.js --old <old root>` (section 2.3). |
 | the PowerPoint export | `npm test` (`pptx_layout.test.js`); a real export with `window.__PPTX_LAYOUT.warnings` empty; a PowerPoint render with `tools/dev/render_pptx.ps1` and `node tools/dev/check_pptx_bounds.js <dir>/bounds.jsonl` (CLAUDE.md rule 10); the owner sees a sample deck when every client deck changes. |
@@ -380,13 +404,15 @@ change comes before the merge.
 | docs only | CI `verify` (with `site/` unchanged the `verify_page` output is identical); links and IDs checked. |
 
 **Gate D steps:**
-1. The PR head is up to date with `origin/main` (`gh pr view <n> --json mergeStateStatus,headRefOid`). If
-   another PR changed the same files since, merge `origin/main` into the branch and re-run Gate C.
+1. The PR head contains `origin/main` (`gh pr view <n> --json mergeStateStatus,headRefOid`). If the branch
+   is behind, run `gh pr update-branch <n>` (server-side merge, no local checkout) or merge `origin/main`
+   in the task's worktree; either way the head changes: re-run Gate C and, for a material or high-risk
+   change, Gate B.
 2. Every check is green (`gh pr checks <n>`). With no branch protection (R9) the Moderator checks this by
    hand.
-3. Merge with a merge commit, as for all 28 PRs so far: `gh pr merge <n> --merge --match-head-commit <sha>`.
-   Whether to add `--delete-branch` is open (DEC-OPEN-22, KNOWN_ISSUES E12); until the owner decides, keep
-   current practice (branches kept).
+3. Merge with a merge commit, as for every PR so far: `gh pr merge <n> --merge --match-head-commit <sha>`,
+   with `<sha>` from `gh pr view <n> --json headRefOid -q .headRefOid`. No `--delete-branch`: whether to
+   add it is open (DEC-OPEN-22, KNOWN_ISSUES E12); until the owner decides, branches are kept.
 4. Watch the push run on `main` (`gh run list --branch main --limit 1`, then `gh run watch <id>`): `verify`
    and `publish` both succeed.
 5. `release-manager` confirms that the seven published files equal `site/` (allow a few minutes after the
@@ -398,11 +424,16 @@ change comes before the merge.
      a=$(curl -s --compressed "$B/$f" | sha256sum | cut -c1-16); b=$(sha256sum "site/$f" | cut -c1-16)
      echo "$f live=$a local=$b"; done
    ```
-   Each pair must match (the loop in `docs/DEPLOYMENT.md` omits `robots.txt`, KNOWN_ISSUES E14).
+   Each pair must match (the loop in `docs/DEPLOYMENT.md` covers the same seven files).
 6. Record the new baseline (merge SHA, site content state, counts) in
    [INTEGRATION_AND_REGRESSION_LOG.md](INTEGRATION_AND_REGRESSION_LOG.md) and release the claim in
    ACTIVE_CHANGE_REGISTER.
-7. Tell every task that depends on the change, or holds a branch on the same files, to sync with the new
+7. Advance local `main` in the main checkout with the method in
+   [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md) section 14.4 E (the Moderator;
+   an operator only when `git status --porcelain` there is empty). Then `git diff --stat origin/main --
+   CLAUDE.md .claude docs` there must print nothing before any OPS or NB launch or refresh: a session reads
+   its rules from the working tree it opens, and the app cuts new worktrees from local `main`.
+8. Tell every task that depends on the change, or holds a branch on the same files, to sync with the new
    `main`.
 
 **Gate E notes.** A monthly refresh publishes automatically under D61 and is accepted afterwards (the owner
@@ -435,10 +466,12 @@ If a merge breaks the live site or its data:
    - *Tracked files truncated or deleted by a failed git operation* (R6): stage and commit nothing; restore
      each file from git with the recipe in KNOWN_ISSUES R6 and
      [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md); `git status` must be clean
-     before work continues. If a historical blob read fails, fetch it with `gh api .../git/blobs/<sha>` and
-     check it with `git hash-object`.
+     before work continues. If a historical blob read fails, fetch it with
+     `gh api -H "Accept: application/vnd.github.raw+json" repos/productsteamcentricity/Centricity-Proposal-Playbook/git/blobs/<sha> > <file>`
+     and check that `git hash-object <file>` prints `<sha>` (the default response is JSON with base64
+     content, which hashes differently).
 5. **Never** force-push, `git reset --hard` a shared branch, rewrite published history, run `git clean`,
-   delete another task's branch, worktree or stash, discard another task's uncommitted work, or weaken or
+   delete any branch, worktree, tag or the stash, discard another task's uncommitted work, or weaken or
    bypass a failing check to make it pass (CLAUDE.md "Never"; master prompt sections 13 and 29).
 6. **Afterwards**: re-run Gate C on the restored `main`, run the live check, record the new baseline, reopen
    the task with the root cause, and add a regression test or gate where possible

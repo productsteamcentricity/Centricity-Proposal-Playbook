@@ -37,6 +37,10 @@ That is all. You never need to run commands, use git, or edit files in `site/` o
 Optional precaution: pause OneDrive syncing (tray icon → Pause syncing → 2 hours) while a run is in
 progress, and resume it after Claude reports.
 
+Step 0 above is the TASK-017 action. What must be true before a refresh can start, and the ban on
+`git checkout`, `git switch`, `git merge` and `git pull` in this folder, are in CLAUDE.md "Project control";
+Claude checks them (B1).
+
 ### When to run — two runs most months
 
 Both runs are named for the **data** month (the month-end the figures are as on).
@@ -118,7 +122,8 @@ when you start the run.
 
 Everything else: identifying and dating each file, flagging missing or stale ones, backups, running
 every tool in the right order with dry-runs first, reading every safety gate, rendering the market
-slides in PowerPoint, verifying the result (counts, page, exports), the financial spot-checks,
+slides in PowerPoint, verifying the result (counts, page, exports), an independent review of the changes
+by a second Claude agent (the Guardian) before anything is published, the financial spot-checks,
 writing the update log and keeping all documentation current, git, GitHub, the pull request,
 publishing, confirming the live site serves exactly the new files, archiving the inbox, and
 reporting to you. Detail in Part B.
@@ -127,29 +132,53 @@ reporting to you. Detail in Part B.
 
 ## Part B — Operator procedure (Claude)
 
-Run from the repository root. Every tool is dry-run unless `--apply` is passed; read the whole
+Run from your own worktree root (B1). Every tool is dry-run unless `--apply` is passed; read the whole
 output and every `GATE` line before applying. Claude Code's shells do not keep variables between
-calls: set `M` in the same command as each tool call. Throughout, `<M>` means
-`monthly-updates/<YYYY-MM_Mon-YYYY>` (e.g. `monthly-updates/2026-10_Oct-2026`). Tool details:
+calls: set `M` in the same command as each tool call. `<MAIN>` is the main checkout: the first entry of
+`git worktree list` (in the main checkout itself, the current folder). What lives only there is addressed
+by ABSOLUTE path: `<M>` means `<MAIN>/monthly-updates/<YYYY-MM_Mon-YYYY>` (e.g.
+`<MAIN>/monthly-updates/2026-10_Oct-2026`), the inbox is `<MAIN>/monthly-updates/00_INBOX/` and backups go
+to `<MAIN>/backups/`. A worktree carries only the tracked README placeholders of those folders, so a
+relative path would not fail: it would show an empty inbox. Tool details:
 [`../tools/README.md`](../tools/README.md). Traps: [`OPERATING_MANUAL.md`](OPERATING_MANUAL.md) →
 Traps. Open defects that affect a refresh: [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) ("Before the next
 refresh").
 
 ### B0. Resume or second run
-If branch `data/<YYYY-MM>` exists or `<M>/_review/` holds an unfinished run, report where it stopped
-and continue from there. In B2, inputs already applied in an earlier run of the same data month are
-"applied in run 1", not "missing". A correction re-runs only the steps that consume that file (and
+Branches: the first run of a data month is `data/<YYYY-MM>`; a later run uses `data/<YYYY-MM>-<n>` (n = 2,
+3, ...). A `data/...` branch that is an ancestor of `origin/main` (`git merge-base --is-ancestor <branch>
+origin/main` exits 0) is finished: take the next free name. An unfinished one (not an ancestor, or
+`<M>/_review/` holds an unfinished run): report where it stopped and continue from there; find its
+worktree with `git worktree list` and add one only if none exists (`git worktree add <short path>
+<branch>`). In B2, inputs already applied in an earlier run of the same data month are
+"applied in run N", not "missing". A correction re-runs only the steps that consume that file (and
 their mandatory followers, e.g. steps 3–4 after a bake).
 
 ### B1. Preflight
-1. `git switch main`, then `git pull --ff-only` (separate commands — `&&` does not parse in Windows
-   PowerShell 5.1); working tree clean. `npm ci` if `node_modules/` is missing.
-2. `node tools/verify_page.js site` equals "Latest verification" in [`PROJECT_STATE.md`](PROJECT_STATE.md).
+1. Where you are decides what you do. `git rev-parse --git-dir` differs from `git rev-parse --git-common-dir`
+   in a worktree and is equal in the main checkout (separate commands: `&&` does not parse in Windows
+   PowerShell 5.1).
+   - In a worktree (a Moderator-launched OPS chat, or an app chat): `git fetch origin`; `git status --porcelain`
+     empty; `git diff --quiet HEAD origin/main -- site tools .github .claude package.json package-lock.json`
+     exits 0, else `git merge origin/main`; then `git switch -c <branch>` at the starting commit (B0 names
+     the branch; no file changes; a resumed run is already on its branch).
+   - In the main checkout: do not run the refresh here. Create a worktree outside OneDrive and outside
+     `C:/t/` (B5 empties that folder): `git worktree add "<short path>" -b <branch> origin/main`, and run
+     every later command from it.
+   - No worktree possible: ask the Moderator (FILE_OWNERSHIP_AND_CHANGE_CONTROL.md section 2.2).
+
+   Preconditions: CLAUDE.md "Project control".
+2. The refresh owns all six deploy files: its claim must be on `origin/main`
+   (`git show origin/main:docs/project-control/ACTIVE_CHANGE_REGISTER.md`; only the Moderator edits it). If
+   CHAT_REGISTRY shows no active Moderator, stop and tell the owner.
+3. `npm ci` if `node_modules/` is missing (a new worktree has none).
+4. `node tools/verify_page.js site` equals "Latest verification" in [`PROJECT_STATE.md`](PROJECT_STATE.md).
    If not, stop: something changed outside the process.
-3. No OneDrive sync-conflict copies (`*-<PCNAME>.*`) in `site/` or `.git`.
+5. No OneDrive sync-conflict copies (`*-<PCNAME>.*`) in `site/` or `.git`.
 
 ### B2. Intake (no writes yet)
-1. List `monthly-updates/00_INBOX/`. For each file: identify its role **by content** (sheet names,
+1. List `<MAIN>/monthly-updates/00_INBOX/` (stop if the path you list is not under `<MAIN>`). For each
+   file: identify its role **by content** (sheet names,
    header cells — `INPUT_FILES.md`), read the as-on date **from inside the file** (never infer it
    from the file or folder name: decks are named for the month they ship, and the April-2026 monitor
    was dated 15-May), compute SHA-256.
@@ -167,8 +196,8 @@ their mandatory followers, e.g. steps 3–4 after a bake).
    May-2026 soft hyphen) and record the original name in the log. If the month folder already holds a
    file for the same role (a re-issue), keep only the final one in place, move the superseded copy to
    `<M>/_superseded/`, and log both SHA-256s.
-2. Copy the six deploy files to `backups/<YYYY-MM-DD>_pre-<YYYY-MM>-refresh/`.
-3. `git switch -c data/<YYYY-MM>` (or switch to it when resuming).
+2. Copy the six deploy files from your worktree's `site/` to `<MAIN>/backups/<YYYY-MM-DD>_pre-<YYYY-MM>-refresh/`.
+3. The branch exists from B1 (named per B0).
 4. `node tools/verify_page.js site > "<M>/_review/00_verify_before.txt"`.
 
 ### B4. Run the tools (dry-run → read → apply), skipping any whose input is absent
@@ -210,6 +239,8 @@ owner's confirmation of what changed. A Bond List run names its desk (`--desk In
 `--desk OneDigital`); the tool refuses a workbook where the sheet for that desk is ambiguous.
 
 ### B5. Market Update slides (PowerPoint on this machine)
+Before step 1 empties C:/t/, check that `git worktree list` shows no worktree under C:/t/ (CLAUDE.md "Never"
+bans deleting a worktree). The deck is read from `<M>` by absolute path.
 The decks are native shapes, so they must be rendered (script in `tools/README.md` §4):
 1. Empty `C:\t\` first (stale `slideN.jpg` files would be baked). Open a copy of the deck via
    PowerPoint COM; delete every picture narrower than 400 pt (baked-in logos — the dashboard stamps
@@ -226,7 +257,12 @@ The decks are native shapes, so they must be rendered (script in `tools/README.m
    workbook cells (returns, expense, ratios, ratings) and to check scales.
 3. Run the `verify-dashboard` skill (browser: clean console, `Universe — N instruments.`, footer
    dates, core flow, Excel 13 sheets, PPT with logo on every slide, allocation round-trip, all nine
-   tabs, credit rating = 100%).
+   tabs, credit rating = 100%). Run it against a preview served from YOUR worktree, not the main checkout's:
+   `node <worktree>/.claude/serve.js` (set `PORT` if 8080 is busy). Do not use `preview_start playbook` from
+   a session rooted in the main checkout: `.claude/launch.json` runs the relative `.claude/serve.js`, which
+   serves that checkout's older page. Prove it is your page: the server's first line prints your worktree's
+   `site/` path, and the MASTER count and `DATA_DATES` it shows equal `99_verify_after.txt`. Save exports
+   under `<M>/_review/`, never in a tracked folder.
 
 ### B7. Document (same branch)
 - `docs/update-log/<YYYY-MM>_<Mon-YYYY>.md` from the template in `docs/update-log/README.md`: inputs
@@ -242,13 +278,27 @@ The decks are native shapes, so they must be rendered (script in `tools/README.m
 2. Commit `Data refresh: <Month YYYY> (as on <date>)`, push, then
    `gh pr create --base main --title "Data refresh: <Month YYYY> (as on <date>)" --body-file <summary.md>`
    (summary + verify before/after; `gh` is non-interactive here, so title and body must be given).
-3. Wait for the `verify` check (`gh pr checks <PR> --watch`). If green and no judgement call is open
-   → `gh pr merge <PR> --merge --delete-branch` (D61). Otherwise stop and ask.
-4. Watch the Pages run:
+3. Wait for the `verify` check (`gh pr checks <PR> --watch`).
+4. **Gate B.** Run the `integration-guardian` agent, mode DIFF REVIEW. Pass it `git diff --name-status origin/main...HEAD`,
+   the `<M>/_review` outputs, base and head SHAs and the time of your last `git fetch origin`, never a
+   summary. Record its verdict and any conditions in the update log and the PR body (no workbook values).
+   GO, or GO WITH CONDITIONS that you have met, clears it. A STOP verdict or an unmet condition counts as a
+   failed check under D61: stop before merging and ask the owner. A Gate B run by you is weaker than one run
+   by the Moderator: you review your own work.
+5. Confirm the PR head contains `origin/main` (`gh pr view <PR> --json mergeStateStatus`); if
+   `gh pr update-branch <PR>` or a merge is needed, that is a new head: re-run CI and Gate B. If every check is
+   green, Gate B is clear and no judgement call is open, merge (D61):
+   `gh pr merge <PR> --merge --match-head-commit <head-sha>`, with `<head-sha>` from
+   `gh pr view <PR> --json headRefOid -q .headRefOid` (no `--delete-branch` until the owner decides
+   DEC-OPEN-22). Otherwise stop and ask.
+6. Watch the Pages run:
    `gh run watch "$(gh run list --workflow pages.yml --branch main --limit 1 --json databaseId -q '.[0].databaseId')" --exit-status`,
-   then download the six files from the live URL and compare SHA-256 with `site/`
+   then download the seven published files from the live URL and compare SHA-256 with `site/`
    (`docs/DEPLOYMENT.md`). Only then report "published", and note the PR, merge commit and live check
    in the PR and in the next run's log.
 
 ### B9. Close
-The inbox holds only its README. Report to the owner (Part A, "What you get back").
+The inbox holds only its README. Report to the owner (Part A, "What you get back"). The report also gives
+the branch name, the worktree path and the merge SHA, so the Moderator can record them and release the
+claim. Advancing local `main` after the merge is Gate D (the Moderator): do not run it yourself unless
+`git status --porcelain` in the main checkout is empty.

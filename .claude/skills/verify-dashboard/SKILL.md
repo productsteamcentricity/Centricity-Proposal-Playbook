@@ -16,11 +16,17 @@ own the conclusion. Steps:
 2. Start the preview (`preview_start` with the `playbook` configuration, or `node .claude/serve.js`)
    and load http://127.0.0.1:8080/ : console clean; Section 3 reads `Universe — N instruments.`
    with N = MASTER effective; the footer shows the `DATA_DATES` performance and analytics dates.
+   In a worktree session whose project root is another checkout, start `node <worktree>/.claude/serve.js`
+   yourself (set `PORT` if 8080 is busy) and prove the page is the worktree's (the server's first line prints
+   the worktree's `site/` path; the MASTER count and `DATA_DATES` equal the `verify_page` output);
+   `preview_start playbook` serves the folder its project root points to.
 3. Core flow + exports + allocation round-trip + every Live Output tab, as listed in
    `docs/TESTING.md` §3. Save any exported files under `monthly-updates/<current month>/_review/`
-   (never in the repository's tracked folders).
-4. If the arguments contain `live`: download the six deploy files from the Pages URL in
-   `docs/DEPLOYMENT.md` and compare SHA-256 with `site/`.
+   (never in the repository's tracked folders). In a worktree, `monthly-updates/` and `backups/` hold only
+   README placeholders: use the main checkout's folders by absolute path (the first entry of
+   `git worktree list`), for exports too.
+4. If the arguments contain `live`: download the 7 published files (the six deploy files and `robots.txt`)
+   from the Pages URL in `docs/DEPLOYMENT.md` and compare SHA-256 with `site/`.
 
 Report a table: check | PASS / FAIL / NOT RUN | evidence. Separate new regressions from the
 pre-existing items in `docs/KNOWN_ISSUES.md`.

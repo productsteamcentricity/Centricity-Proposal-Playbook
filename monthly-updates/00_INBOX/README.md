@@ -55,9 +55,15 @@ If you type the wrong month, Claude sees that the dates inside the files disagre
 | 9 | `Exit Load_<Month>.xlsx` | Exit loads |
 | 10 | `SIF Monitor_<date>.xlsx` | SIF returns |
 | 11 | `Fund Manager Data_<date>.xlsx` | Fund manager names |
-| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Portfolio Matrix (Beta, Sharpe, …) |
+| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` - **not a desk file** (see below) | Portfolio Matrix (Beta, Sharpe, ...) |
 | 13 | `Monthly Outlook Pagers_<Month>.pptx` — the **final** issue | Market Update slides in the PPT |
-| 17 (optional) | `NAV Data as on <date>.xlsx` | Alternative risk-matrix route |
+| 17 (optional) | `NAV Data as on <date>.xlsx` - **not a desk file** (see below) | Alternative risk-matrix route |
+
+#12 and #17 are not sent by the desk: the outgoing owner made them in-house and nobody builds them now
+(`docs/KNOWN_ISSUES.md` B8). By the owner's answer of 2-Nov-2026 (D86) the inputs come from the MF
+dashboard; the Moderator reads that as its monthly data pack, which the owner shares (INFERRED). The tool
+that would turn the pack into this layout is not built yet (TASK-022), so until it is the Portfolio Matrix
+keeps its date. Do not ask the desk for them.
 
 **When the monthly Reckoner is released (usually 20th–28th of the following month; the deck is
 titled one month ahead of its data)**

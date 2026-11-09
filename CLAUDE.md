@@ -43,7 +43,8 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 2. **Never Read `site/index.html` whole** (12.8 MB, multi-MB lines). Use Grep `-o`/`-n`, Read with
    offset/limit, or Node `fs`. Never regex its data lines in PowerShell. Data blocks change only via
    `tools/lib/blocklib.js`. The file must end with `</body></html>`.
-3. **Dry-run first, read the gates, back up** the six files to `backups/<date>_<tag>/` before `--apply`.
+3. **Dry-run first, read the gates, back up** the six files to `backups/<date>_<tag>/` in the main checkout
+   (an absolute path: a worktree keeps no `backups/`) before `--apply`.
 4. **Scale:** MASTER returns/IRR/expense are decimals (0.12 = 12%); analytics weights are percent;
    MF and SIF Monitor returns are always percent → ÷100, never auto-detect.
 5. **Report, never guess** ambiguous matches (renames, PMS pins, Reckoner names, uploads). Ask the owner.
@@ -69,25 +70,50 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 5. Update docs in the same branch: `CHANGELOG.md`, `docs/PROJECT_STATE.md`, and whatever the change
    made stale (`docs/DECISIONS.md` for decisions, `docs/KNOWN_ISSUES.md`).
 6. Stage files explicitly, `security-reviewer` check, commit, push, `gh pr create`, wait for the
-   `verify` check, merge (= publish), confirm the live files match `site/` (`release-manager`).
-   Monthly refreshes auto-publish when every check passes (D61); other changes: merge when verified
-   unless the owner asked to review first.
+   `verify` check, merge with `gh pr merge <n> --merge --match-head-commit <sha>` (= publish; `<sha>` from
+   `gh pr view <n> --json headRefOid -q .headRefOid`; no `--delete-branch` until the owner decides
+   DEC-OPEN-22), confirm the 7 published files match `site/` (`release-manager`). Monthly refreshes
+   auto-publish when every check passes (D61); Gate B, an `integration-guardian` DIFF REVIEW of the
+   branch, is one of those checks, and a STOP verdict or an unmet condition counts as a failed check.
+   Other changes: merge when verified unless the owner asked to review first or
+   `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 ("Owner approval before the
+   merge") applies.
 
 ## Project control (several chats)
 
 - One **Moderator** chat coordinates the project; who is active is in
   [`docs/project-control/CHAT_REGISTRY.md`](docs/project-control/CHAT_REGISTRY.md). The registers live in
-  `docs/project-control/` (start at its README). Claim files in `ACTIVE_CHANGE_REGISTER.md` before
-  editing; one writer at a time for `site/index.html`, for each sibling and for `tools/lib/`.
-- The main checkout (this OneDrive folder) stays on `main`. **Never `git checkout` / `git switch` here
-  while any `.git` file is cloud-only** (229 were on 28-Oct-2026; a switch on 25-Oct failed with "mmap
-  failed" and truncated tracked files, KNOWN_ISSUES R6). Create branches with `git branch <new>
-  origin/main`, commit through a temporary index, or work in a worktree
-  (`docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`). This overrides the `git switch` steps
-  in the monthly-update skill and process doc until they are fixed.
-- Coding sub-chats work in their own worktree. Material or high-risk changes get a change-impact contract
-  and an `integration-guardian` review before and after (gates A–E:
-  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`).
+  `docs/project-control/` (start at its README). Ask the Moderator to record your claim in
+  `ACTIVE_CHANGE_REGISTER.md` (only the Moderator edits it) and do not edit claimed files until the claim
+  is on `origin/main`; one writer at a time for `site/index.html`, for each sibling and for `tools/lib/`.
+- **Git in the main checkout.** It stays on `main`. No `git checkout`, `git switch`, `git merge` or
+  `git pull` in the main checkout (the OneDrive folder) until TASK-017 has passed (`docs/PROJECT_STATE.md`
+  records the pass), and again whenever OneDrive is not running or any `.git` file is cloud-only (check:
+  the "OneDrive state" block in section 18 of
+  `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`). 229 `.git` files were cloud-only on
+  28-Oct-2026; on 25-Oct a `git checkout` failed with "mmap failed" and truncated tracked files
+  (KNOWN_ISSUES R6).
+- **Use instead** (`docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` section 14.4):
+  `git fetch origin`; `git branch <new> origin/main` (moves no file); `git worktree add` at the current
+  `origin/main`; a commit of chosen files through a temporary index, then `git push origin <branch>`; after
+  a merge, advance local `main` with `git update-ref` and `git reset -q` (14.4 E: the Moderator runs it; an
+  operator only when `git status --porcelain` there is empty). A historical blob read that fails with
+  `mmap failed`: fetch the blob with `gh api` (14.4 G) and do not retry. **Until TASK-017 has passed, also
+  no** worktree at a historical commit and no tool `--apply` on the real `site/` (the one that will be
+  committed; a rehearsal on temporary copies, `docs/TESTING.md` section 2.3, is not covered), so no
+  `/monthly-update` run.
+- **Worktrees.** Coding sub-chats, a monthly refresh included, work in their own worktree cut from the
+  current `origin/main`. In it, `git switch -c <task-branch>` at the starting commit changes no file; never
+  switch it to another existing branch. Sync with `git fetch origin`, then merge `origin/main` into the
+  task branch (or `gh pr update-branch <n>`); never `git pull`, and no rebase after the first push. The
+  main checkout is a fallback only when no worktree is possible (ask the Moderator: one coding chat at a
+  time, `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 2.2).
+- Material or high-risk changes get a change-impact contract, an `integration-guardian` pre-check of it
+  before the claim, and a Gate B review of the diff before the merge (gates A-E:
+  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`). A routine monthly refresh is Material with
+  a standing contract (`docs/MONTHLY_UPDATE_PROCESS.md`): no per-run contract or pre-check, Gate B every
+  run; what makes it routine is in section 7 of that file, and a refresh that fails the criterion is High
+  risk.
 - Hand over before context is lost (third compaction, lost context, or a replacement):
   `docs/handover/continuations/README.md`. A new Moderator starts from
   `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md`.
@@ -103,8 +129,13 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 
 - Commit `.xlsx/.pptx/.zip`, anything under `monthly-updates/`, `backups/`, `handover-archive/`, or
   any secret. Put client names or investor data in any file.
-- Force-push, rewrite published history, change repo settings/visibility, or bypass a failing check
-  without the owner's explicit instruction.
+- Run `git checkout`, `git switch`, `git merge` or `git pull` in the main checkout (when this lifts:
+  "Project control").
+- Force-push, rewrite published history, change repo settings/visibility, delete branches, worktrees, tags
+  or the stash (so no `--delete-branch`), or bypass a failing check without the owner's explicit
+  instruction. One exception: a worktree you created in this task and remove in the same task with
+  `git worktree remove` (never `--force` or `rm -rf`; if it fails, leave it and tell the Moderator), as
+  `docs/TESTING.md` section 2.3 does for a rehearsal.
 - Upgrade the CDN libraries or `xlsx` (pinned for parity), or "modernise"/restyle during data work.
 
 ## Headline state (update after every refresh; full detail in `docs/PROJECT_STATE.md`)
