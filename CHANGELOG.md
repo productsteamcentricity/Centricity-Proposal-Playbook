@@ -18,6 +18,58 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-09 - Rule documents made consistent: TASK-018 (GOV-01; docs only)
+
+No `site/`, `tools/`, `.github/` or package-file change; `verify_page` output and `npm test` (903 checks) are
+unchanged. The ban on four git commands, the worktree rule, the pre-check rule, the criterion for a routine monthly
+refresh and the merge command each now have one wording, stated once and pointed to from the other documents. This
+answers ARC-01's conditions of 2-Nov-2026 (findings D-01 to D-07, D-14 and the minor D-09 to D-18) and
+`docs/KNOWN_ISSUES.md` E6 to E15 and E17; E12 stays open for the owner's rule (DEC-OPEN-22).
+
+### Added
+- `CLAUDE.md` "Project control": the ban on `git checkout`, `git switch`, `git merge` and `git pull` in the main
+  checkout, with its trigger (TASK-017 not passed, OneDrive not running, or any `.git` file cloud-only) and its check
+  (section 18 of `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`); what to use instead; one worktree rule
+  (sync by merging `origin/main`, no rebase after the first push); and a "Never" bullet for the four commands, with
+  one narrow exception for a worktree created and removed in the same task.
+- `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`: one criterion (R1, section 7) for a routine monthly
+  refresh: Material with a standing contract, Gate B inside the refresh as one of D61's checks (an operator-run
+  `integration-guardian` DIFF REVIEW, weaker than one run by the Moderator); and a Gate D step that advances local
+  `main` and checks that `git diff --stat origin/main -- CLAUDE.md .claude docs` is empty before any OPS or NB launch.
+- The monthly refresh in its own worktree (the skill and `docs/MONTHLY_UPDATE_PROCESS.md`): the inbox, the month folder
+  and the backups of the main checkout addressed by absolute path (`<MAIN>`, the first entry of `git worktree list`),
+  branches `data/<YYYY-MM>` and `data/<YYYY-MM>-<n>` (a branch already in `origin/main` is finished), and the preview
+  served from the worktree.
+- Errata ERR-9 and ERR-10 in `docs/handover/README.md`; dated notes "Corrected 3-Nov-2026" on the 2026-10-30 entry
+  below and in `docs/update-log/2026-10-23_handover-export.md`.
+
+### Changed
+- The Guardian pre-check rule reads "material or high-risk" in `CLAUDE.md`, the Moderator bootstrap prompt and
+  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, which also aligns the Gate B, D and E rows
+  (`security-reviewer` runs before every push and is confirmed at Gate D; Gate E has a narrower scope, pending DEC-OPEN-34).
+- One merge command: `gh pr merge <n> --merge --match-head-commit <sha>`, no `--delete-branch` until DEC-OPEN-22
+  (`CLAUDE.md` step 6, `release-manager`, the skill, the process doc); the live check covers the 7 published files.
+- `docs/KNOWN_ISSUES.md`: the status of E6 to E15 and E17, and "Before the next refresh" items 4, 11 and 12.
+- `docs/PROJECT_STATE.md`: the ban in the "Git in this folder" bullet and the OneDrive data of 3-Nov and 9-Nov-2026;
+  the Gate D advance in the ARC-01 bullet; the PR #23 merge (`1523bbc`); in "Next steps", that the October cycle needs
+  the owner's OneDrive pin (TASK-017) well before 13-Nov.
+
+### Fixed
+- E6: the siblings' `__..._APPLIED` flags are written and never read (`ARCHITECTURE.md`, `OPERATING_MANUAL.md`,
+  `PRD.md`). E7: the `git switch` and `git pull` steps in the skill and the process doc. E8 and the D86 wording: the
+  inbox README, `HANDOVER.md`, the CLAUDE.md headline, the process doc's paragraph on rows 12 and 17 and the TASK-022
+  row of `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`. E9: the tools exit 2, not 1, on a missing file. E10: the OneDrive
+  guidance. E11 (in part): the rehearsal path in `TESTING.md`. E13: the PR #23 merge cell. E14: `DEPLOYMENT.md` (7
+  files, the three verify steps, the retirement condition). E15: `ARCHITECTURE.md` line references and what the bake
+  captures.
+
+Risk class Material (rule documents, agents and skills; claim and contract in
+`docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1). Gate B (ARC-01 DIFF REVIEW of the branch text, run by
+MOD-02) and `security-reviewer` run before the merge; their verdicts are in the PR description.
+This change (PR number to be added at release) takes effect when it merges. That lifts ARC-01's condition on OPS and
+NB launches (after the Moderator advances local `main`); it does not lift the TASK-017 hold: a `/monthly-update` run
+and any tool `--apply` on the real `site/` still wait for the owner's OneDrive pin.
+
 ## 2026-11-03 - GOV-01 claim for TASK-018 recorded; DEC-OPEN-34 opened (docs only)
 
 No `site/`, `tools/`, `.github/` or package-file change. The live files are unchanged (7 of 7 equal `site/`).
@@ -121,6 +173,11 @@ No `site/` or `tools/` change. Branch `handover/mod-01-to-mod-02-20261028`; pack
 - `CLAUDE.md`: a "Project control" section (Moderator, registers, worktrees, single writer, no
   `git checkout`/`git switch` in the OneDrive checkout, handover triggers). `docs/README.md`: rows for
   `handover/` and `project-control/`. `docs/PROJECT_STATE.md`: the handover and the checks of 28-Oct.
+- Corrected 3-Nov-2026 (TASK-018, ARC-01 finding D-17): the commit of this entry changed `CLAUDE.md` in three
+  places, and the bullet above names only the first: the new "Project control" section; two rows of the repository
+  map (`docs/` now names `project-control/` and `handover/`; `.claude/` now lists 9 specialists including
+  `integration-guardian`); and step 2 of "How every change is made" (the branch patterns
+  `handover/<from>-to-<to>-<YYYYMMDD>` and `continuation/<chat-id>-task-<id>-<YYYYMMDD>`).
 
 ## 2026-10-27 — The outgoing owner's handover export ingested (docs only)
 

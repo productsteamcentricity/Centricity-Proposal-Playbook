@@ -80,9 +80,11 @@ on 20-Aug and 28-Sep.)
 | 17 (opt.) | `NAV Data as on <date>.xlsx` — **not sent by the desk** (see below) | Alternative way to compute the risk matrix |
 
 #12 and #17 were made in-house by the outgoing owner with a PowerShell + C# toolchain, from AMFI NAV
-history and Nifty index files downloaded by hand. Nobody sends them, and nobody builds them now. Until
-the owner decides who does (`KNOWN_ISSUES.md` B8), the Portfolio Matrix cannot be refreshed. Do not
-ask the desk for them.
+history and Nifty index files downloaded by hand. Nobody sends them, and nobody builds them now. The
+owner's answer of 2-Nov-2026 (D86) is to get them from the MF dashboard (the Moderator reads that as its
+monthly data pack, which the owner shares: INFERRED); the tool that turns the pack into this layout is not
+built yet (TASK-022, `KNOWN_ISSUES.md` B8), so until it is the Portfolio Matrix cannot be refreshed. Do
+not ask the desk for them.
 
 **When the monthly Reckoner is released (the "Reckoner cycle"; the deck is titled one month ahead of
 its data)**
