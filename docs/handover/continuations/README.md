@@ -103,11 +103,12 @@ Then decide, and write down in the handover document:
 
 A new branch does not preserve uncommitted changes. Handle the working tree explicitly.
 
-**Rule for this machine.** Never run `git checkout` / `git switch <existing branch>` / `git merge` /
-`git pull` in the OneDrive main checkout while OneDrive is not running or any `.git` file is cloud-only
-(on 25-Oct-2026 a checkout failed with "mmap failed" and truncated tracked files, R6; on 28-Oct-2026
-229 `.git` files were cloud-only). Creating a branch with `git branch <new>` changes no files and is safe
-there. `git switch -c <new>` also changes no files, but it moves the checkout onto the new branch, so use it
+**Rule for this machine.** No `git checkout`, `git switch`, `git merge` or `git pull` in the main checkout
+(the OneDrive folder) until TASK-017 has passed (`docs/PROJECT_STATE.md` records the pass), and again
+whenever OneDrive is not running or any `.git` file is cloud-only (check: the "OneDrive state" block in
+section 18 of `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`). On 25-Oct-2026 a checkout failed
+with "mmap failed" and truncated tracked files (R6); on 28-Oct-2026 229 `.git` files were cloud-only.
+Creating a branch with `git branch <new>` changes no files and is safe there. `git switch -c <new>` also changes no files, but it moves the checkout onto the new branch, so use it
 only in a task's own worktree, never in the main checkout (which stays on `main`; `CLAUDE.md` "Project control").
 
 ### Case A: all changes belong to the outgoing task and are safe to checkpoint

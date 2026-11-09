@@ -69,9 +69,10 @@ Load order is fixed and load order matters:
 
 - #4 must load **after** #3 — it edits the GIFT City bucket #3 installs.
 - #5 must load **after** #4 — otherwise a fund-name collision.
-- Each sibling is idempotent-guarded (`window.__JUNE_REFRESH_APPLIED` etc.) and re-applies on
-  *every page load*. Folding them into the embedded blocks and deleting them is the standing
-  intent — still outstanding for #3, #4, #5.
+- Each sibling sets a marker (`window.__JUNE_REFRESH_APPLIED` etc.) that no page code reads, and
+  re-applies on *every page load*; re-running is harmless because each one filters out what it owns,
+  then concatenates or assigns. Folding them into the embedded blocks and deleting them is the standing
+  intent - still outstanding for #3, #4, #5.
 
 `Centricity_Risk_Matrix.js` is **NOT** loaded — no `<script src>` points at it. Since 24-Jul-2026
 its content is baked inline (see L4192). It survives only as `build_risk_matrix.py`'s output.

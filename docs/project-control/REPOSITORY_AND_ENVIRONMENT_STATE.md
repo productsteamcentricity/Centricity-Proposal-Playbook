@@ -25,8 +25,10 @@ Current project state: [`../PROJECT_STATE.md`](../PROJECT_STATE.md). Defects: [`
 
 ## 1. Read this first (three rules for this machine)
 
-1. **Never run `git checkout` or `git switch` in the main checkout `<repo>` while any `.git` file is
-   cloud-only** (CLAUDE.md "Project control"; 229 were on 28-Oct). On 25-Oct-2026 a checkout aborted with
+1. No `git checkout`, `git switch`, `git merge` or `git pull` in the main checkout (the OneDrive folder) until
+   TASK-017 has passed (`docs/PROJECT_STATE.md` records the pass), and again whenever OneDrive is not running
+   or any `.git` file is cloud-only (check: the "OneDrive state" block in section 18 of this file;
+   CLAUDE.md "Project control"; 229 were cloud-only on 28-Oct). On 25-Oct-2026 a checkout aborted with
    `fatal: mmap failed: Invalid argument` and truncated or deleted tracked files (INC-16,
    [`../KNOWN_ISSUES.md` R6](../KNOWN_ISSUES.md#r6-the-git-repository-lives-inside-onedrive)). Whatever the
    OneDrive state, the main checkout stays on `main`. Use the procedures in section 14.4.
@@ -411,10 +413,11 @@ Update 2-Nov-2026: OneDrive is running; what remains is to pin the folder and le
 
 ### 14.4 Safe procedures until TASK-017 passes (and good practice after)
 
-**A. Never `git checkout`, `git switch` or `git merge` in the main checkout.** It stays on `main`. CLAUDE.md
-"Project control" forbids checkout/switch there while any `.git` file is cloud-only (the memory note warns
-that `git merge` can abort the same way); `SKILL.md` and `MONTHLY_UPDATE_PROCESS.md` still say `git switch` (E7;
-fix in TASK-018).
+**A. No `git checkout`, `git switch`, `git merge` or `git pull` in the main checkout.** It stays on `main`.
+The rule and its trigger are in CLAUDE.md "Project control" (until TASK-017 has passed, and again whenever
+OneDrive is not running or any `.git` file is cloud-only; the memory note warns that `git merge` can abort the
+same way as a checkout). The monthly-update skill and `MONTHLY_UPDATE_PROCESS.md` no longer run any of the
+four (TASK-018, E7).
 
 **B. Coding work happens in a worktree.** In the Claude desktop app: `start_session` with `use_worktree: true`
 (creates `.claude/worktrees/<name>` on its own session branch; create the task branch from current `origin/main`
@@ -465,8 +468,10 @@ git status --porcelain                       # must be empty
 ```
 
 **F. Recover from an aborted checkout** (memory note, 25-Oct-2026): rewrite each damaged file from
-`git cat-file blob HEAD:<f>`; then `git update-ref refs/heads/main origin/main`, `git symbolic-ref HEAD refs/heads/main`,
-`git reset -q`, and write the files that differ (`git diff --name-only <old> origin/main`) from their blobs.
+`git cat-file blob HEAD:<f>`; then, once `git merge-base --is-ancestor main origin/main || echo "STOP: main has commits origin/main lacks"`
+has printed nothing (the guard of procedure E), `git update-ref refs/heads/main origin/main`,
+`git symbolic-ref HEAD refs/heads/main`, `git reset -q`, and write the files that differ
+(`git diff --name-only <old> origin/main`) from their blobs.
 
 **G. Read a historical blob that fails with mmap:** fetch it from GitHub,
 `gh api -H "Accept: application/vnd.github.raw+json" repos/productsteamcentricity/Centricity-Proposal-Playbook/git/blobs/<sha> > <file>`,

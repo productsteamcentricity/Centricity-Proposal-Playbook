@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 3 |
-| Date | 2-Nov-2026 |
-| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026) |
+| Version | 4 |
+| Date | 9-Nov-2026 |
+| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026) |
 | Status | Authoritative (index of this folder) |
-| Supersedes | version 2 of 28-Oct-2026 |
+| Supersedes | version 3 of 2-Nov-2026 |
 | Next review | at every handover (the TASK-016 review was done on 2-Nov-2026) |
 
 ## 1. Chat handover packages
@@ -66,7 +66,7 @@ MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the authoritative
 MOD-02's validation of package v1 (TASK-016; record:
 [`../update-log/2026-11-02_task-016-validation.md`](../update-log/2026-11-02_task-016-validation.md)) found the errors
 below. The snapshot documents stay as written (a dated snapshot is not edited): read them together with this table.
-The living registers were corrected in the same update (the rows say where). The ids ERR-1 to ERR-8 belong to this table;
+The living registers were corrected in the same update (the rows say where). The ids ERR-1 to ERR-10 belong to this table;
 they are not KNOWN_ISSUES ids (those are written with the file name, for example "KNOWN_ISSUES E7"). Line numbers are
 those of the unedited snapshot files.
 
@@ -76,20 +76,21 @@ those of the unedited snapshot files.
 | ERR-2 | MASTER_HANDOVER 4.1 (line 208) and 8.1 (lines 424-426); EXISTING_DASHBOARD 6.1 (line 298). Corrected 2-Nov-2026: DECISION_LOG 2.2 row 4 | the owner's condition that the old site goes only after full testing is "recorded in no repo document" (MASTER_HANDOVER), "recorded in no repository document today" (EXISTING_DASHBOARD) and "not in R7" (DECISION_LOG) | KNOWN_ISSUES R7, REQ-049, TASK-034, DEC-OPEN-14 and DEC-OPEN-24 record it; only `docs/DEPLOYMENT.md` and `docs/DECISIONS.md` still lack it (TASK-074) | audit decisions:F-01 |
 | ERR-3 | MASTER_HANDOVER 8.1 (D60 row, line 416). Corrected 2-Nov-2026: DECISION_LOG DEC-OPEN-18 and the D60 row | "no client data anywhere in the repo" (MASTER_HANDOVER, DECISION_LOG D60 row) and "No client data is in the repo" (DECISION_LOG DEC-OPEN-18) | no client names or files are in the tree; de-identified per-client sample figures remain in the public history (KNOWN_ISSUES R1) | audit decisions:F-02 |
 | ERR-4 | MASTER_HANDOVER 8.2 (lines 434, 463-464), 9.3 (line 523) and 13 step 3 (line 671); successor prompt F.3 (lines 156-159); MODERATOR_HANDOVER_TEMPLATE example (line 176). Corrected 2-Nov-2026: DECISION_LOG 1.2 and 1.3 | DEC-OPEN-01, -02 and -03 are due "about 13-Nov-2026" | 13-Nov-2026 is the START of the October MF cycle: only DEC-OPEN-08 is due then; DEC-OPEN-01 is needed well before it (the producer must be merged before step 10 of the cycle); DEC-OPEN-02 and DEC-OPEN-03 were decided on 2-Nov-2026 (D84, D85) | audit decisions:F-03 |
-| ERR-5 | NEW_BUILD_HANDOVER 5.1 (line 201); EXISTING_DASHBOARD 8 (line 406) | TASK-017 is "needed before any worktree or branch" (NEW_BUILD_HANDOVER) and "worktree creation is unsafe until fixed" (EXISTING_DASHBOARD) | TASK-017 gates checkout, switch, merge and pull in the main checkout, worktrees at historical commits, history reads and tool `--apply`; `git branch <new> origin/main` and a worktree at the current `origin/main` are allowed (to be fixed in TASK-018) | audit guardian-gate-b:D-06 |
-| ERR-6 | CLAUDE.md "Project control"; KNOWN_ISSUES E7; "Other documents to read with care" below | the override names only `git switch` | the monthly-update skill (`SKILL.md` line 20) and the process doc (`MONTHLY_UPDATE_PROCESS.md` line 145) also run `git pull --ff-only`; the rule covers checkout, switch, merge and pull (TASK-018) | audit guardian-gate-b:D-01 |
+| ERR-5 | NEW_BUILD_HANDOVER 5.1 (line 201); EXISTING_DASHBOARD 8 (line 406) | TASK-017 is "needed before any worktree or branch" (NEW_BUILD_HANDOVER) and "worktree creation is unsafe until fixed" (EXISTING_DASHBOARD) | TASK-017 gates checkout, switch, merge and pull in the main checkout, worktrees at historical commits and tool `--apply` on the real `site/`; `git branch <new> origin/main` and a worktree at the current `origin/main` are allowed; a failed historical blob read is fetched with `gh api`, not banned (fixed in TASK-018: CLAUDE.md "Project control" says it once) | audit guardian-gate-b:D-06 |
+| ERR-6 | CLAUDE.md "Project control"; KNOWN_ISSUES E7; "Other documents to read with care" below | the override names only `git switch` | the monthly-update skill (`SKILL.md` line 20) and the process doc (`MONTHLY_UPDATE_PROCESS.md` line 145, both at `c0fb2dd`) also ran `git pull --ff-only`; the rule covers checkout, switch, merge and pull (fixed in TASK-018: the ban is in CLAUDE.md "Project control", and the skill and the process doc no longer run any of the four) | audit guardian-gate-b:D-01 |
 | ERR-7 | many, for example MASTER_HANDOVER 2.2 (line 116), 3.3 (lines 169-171) and 3.4 (lines 181, 186); EXISTING_DASHBOARD 2.3 (line 147) and 8 (line 406); CODEBASE_GUARDIAN 5 (line 199), 6 (lines 224, 232) and 7 (line 272); the successor prompt A (line 23), C (line 56), D (line 104) and J (line 260); MODERATOR_HANDOVER_TEMPLATE example (lines 159, 169) | "58 of 58" CI runs; "28 PRs"; "3 worktrees besides the main checkout"; "26 local branches besides main"; "229 of 519" cloud-only files; "OneDrive.exe not running"; "MOD-02 QUEUED" | superseded by REPOSITORY_AND_ENVIRONMENT_STATE section 19 (19.6 lists the changed key numbers) and CHAT_REGISTRY | the 2-Nov-2026 refresh |
 | ERR-8 | ACTIVE_CHANGE_REGISTER 2 (contract of TASK-015, field 10, "Required tests") (as merged in PR #29, 7cc3946; condensed since in INTEGRATION_AND_REGRESSION_LOG section 11) | the added lines are checked to be ASCII | the 22 new files are ASCII; 87 added lines in 5 existing files (CHANGELOG.md 8, CLAUDE.md 2, docs/KNOWN_ISSUES.md 67, docs/PROJECT_STATE.md 8, docs/README.md 2) carry the files' own typography (dashes, middle dot, arrow, ellipsis, section sign, plus-minus sign), with no control characters and no decoded escapes | audit package-consistency:D-03 |
+| ERR-9 | CODEBASE_GUARDIAN 2.3 (line 101) and 2.4 (line 111) | "A monthly refresh is HIGH risk by section 2.4"; the HIGH row includes "any data refresh or data correction" | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7: a routine monthly refresh is Material under one criterion (R1: the PR changes only the tool-made edits of the six deploy files and the month's records); it is High risk when it changes any other file, passes an override flag, is a correction run, a universe change or an applied owner decision (fixed in TASK-018; the agent text and CLAUDE.md say the same) | audit guardian-gate-b:D-04 |
+| ERR-10 | CODEBASE_GUARDIAN 9 (lines 321-323) | fetch a blob with `gh api repos/.../git/blobs/<sha>` and check it with `git hash-object` | the default response is JSON with base64 content, so its hash differs: use `gh api -H "Accept: application/vnd.github.raw+json" repos/productsteamcentricity/Centricity-Proposal-Playbook/git/blobs/<sha> > <file>`, then `git hash-object <file>` must print `<sha>` (VERIFIED 2-Nov-2026 on the blob of `site/robots.txt`; the agent text and FILE_OWNERSHIP section 9 now say so) | audit guardian-gate-b:D-10 |
 
 ### Other documents to read with care
 
-- [`../HANDOVER.md`](../HANDOVER.md) (new-maintainer guide, last changed 16-Oct-2026) is still useful, but
-  its section 5 lists risk ratios among the desk and vendor workbooks (the Fund Risk Ratios and NAV Data
-  workbooks have no producer, KNOWN_ISSUES B8 and E8; the inbox README also lists both) and its section 8
-  OneDrive advice omits the checkout hazard (E10). Treat both
-  as stale until TASK-018 (E10 still open).
-- `.claude/skills/monthly-update/SKILL.md` and [`../MONTHLY_UPDATE_PROCESS.md`](../MONTHLY_UPDATE_PROCESS.md)
-  still say `git switch` (E7); the "Project control" section of `CLAUDE.md` overrides them.
+None, except `docs/INPUT_FILES.md` (rows 12 and 17 and sections 12 and 17), which still describes the state
+before D86 until the Moderator or TASK-022 corrects it. [`../HANDOVER.md`](../HANDOVER.md),
+`.claude/skills/monthly-update/SKILL.md` and [`../MONTHLY_UPDATE_PROCESS.md`](../MONTHLY_UPDATE_PROCESS.md)
+were corrected by TASK-018 (KNOWN_ISSUES E7, E8, E10; effective at the merge): the OneDrive-safe branch procedure replaced the `git switch` and `git pull`
+steps, and the Fund Risk Ratios and NAV Data inputs are no longer listed as desk files. The dated 28-Oct
+snapshot documents above are read together with the errata.
 
 ## 2. Completing the transfer from the outgoing owner
 

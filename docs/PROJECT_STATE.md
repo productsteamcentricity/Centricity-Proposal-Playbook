@@ -1,6 +1,22 @@
 # Project state
 
-_Last updated: 3-Nov-2026 (includes the 2-Nov-2026 update) - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
+_Last updated: 9-Nov-2026 - GOV-01 (TASK-018, the widened docs PR) makes the rule documents agree with each other
+and with the code and answers ARC-01's conditions of 2-Nov-2026 (findings D-01 to D-07, D-14 and the minor D-09 to
+D-18; KNOWN_ISSUES E6 to E10, E13 to E15 and E17 closed, E11 partly fixed, E12 open for DEC-OPEN-22). CLAUDE.md
+"Project control" now states one ban on `git checkout`, `git switch`, `git merge` and `git pull` in the main checkout,
+with its trigger and its check, beside one worktree rule, one Guardian pre-check rule (material or high-risk), one
+criterion for a routine monthly refresh (Gate B inside it) and one merge command without `--delete-branch`. The
+monthly refresh runs in its own worktree and reaches the inbox and the backups of the main checkout by absolute path.
+Gate E is final after the owner's answer to DEC-OPEN-34 of 9-Nov-2026 (D87): the owner accepts client-facing changes
+and anything the owner asked to review; the Moderator records acceptance of the rest on evidence. The owner also
+approved the operator-run Gate B in every monthly refresh (D88). The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
+has advanced local `main`. It does not lift the TASK-017 hold: a `/monthly-update` run and any tool `--apply` on the
+real `site/` still wait for the owner's OneDrive pin, so the October cycle (about 13-17 Nov) needs that pin well
+before then. PR #34 (`3fd1eab`, docs only: D87 and D88; merged 9-Nov-2026 08:59 UTC) is the latest merge before
+this record, after PR #33 (`8aeabfc`, docs only: the claim record; merged 2-Nov-2026 21:24 UTC). No `site/`, `tools/`, `.github/` or package-file change; `verify_page` and `npm test` (903 checks) are
+unchanged. Claim and contract: `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1._
+
+_Previous update: 3-Nov-2026 (includes the 2-Nov-2026 update) - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
 PR #32 (`703b975`, docs only: the D86 records; merged 2-Nov-2026 19:50 UTC) is the latest merge before this
 record, after PR #31 (`c0fb2dd`, 14:41 UTC), PR #30 (`32172f5`, 12:20 UTC) and PR #29 (`f5c2431`); `verify_page`, `npm test` (903 checks) and the live files (7 of 7) are
 unchanged from 28-Oct. ARC-01's first review (GO WITH CONDITIONS) and a security review found no secret
@@ -68,6 +84,12 @@ plan's date, and one legacy "Mutual Funds" record). Detail: `docs/update-log/202
 Run 2.
 
 ## Latest verification
+
+9-Nov-2026 (GOV-01, branch `docs/gov-01-rule-consistency-20261102` merged with `origin/main` `3fd1eab`; docs
+only): `npm ci` exit 0; `verify_page` output identical to the block below, exit 0; `npm test` 5 of 5 files, 903 checks (blocklib 34,
+dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43), 0 failures; no change under `site/`, `tools/`,
+`.github/` or in the package files. The other checks of the change (links, tables, added lines, the one grep per
+ARC-01 condition, the walkthrough of the monthly refresh in a worktree) are in the PR description.
 
 2-Nov-2026 (MOD-02, `main` `f5c2431`): `verify_page` output identical to the block below, exit 0; `npm test` 5 of
 5 files, 903 checks, 0 failures; the 7 live files equal `site/` (SHA-256); CI 60 of 60 green; the page starts in
@@ -196,7 +218,7 @@ Five independent fixes, one PR each; none changes a data block.
 | #20 | `0cb7e95` | `writeFileAtomic` retries a rename blocked by OneDrive (`EPERM`/`EBUSY`/`EACCES`, 6.3 s) and always removes its temp file | R6 (mitigated), A8, D72 |
 | #21 | `75538de` | Portfolio Matrix slide: with a flagged fund the table shrinks to end above the † footnote (25 funds: 6.64" vs 7.87"); new C22 for the unflagged overflow | C17, C22 |
 | #22 | `fb9cbd6` | Centricity Select popover: dagger and note for a C3-flagged fund; new C23 (Select Alpha scale) | C18, C23 |
-| #23 | — | `tools/dev/rehearse.js --old-site <dir>`: rehearse a page-code change (old side seeded from another `site/`), with a data verdict | A27 |
+| #23 | `1523bbc` | `tools/dev/rehearse.js --old-site <dir>`: rehearse a page-code change (old side seeded from another `site/`), with a data verdict | A27 |
 
 ## PowerPoint design system (22-Oct-2026)
 
@@ -243,9 +265,14 @@ every owner message, and checked against the code (record:
   decisions DEC-OPEN-01–28 ([`project-control/DECISION_LOG.md`](project-control/DECISION_LOG.md)).
   These are the 28-Oct ranges; 2-Nov additions: TASK-075 to TASK-078, DEC-OPEN-29 to DEC-OPEN-33, D86, C46;
   3-Nov-2026 addition: DEC-OPEN-34.
-- **Git in this folder:** On 28-Oct: OneDrive is not running and 229 `.git` files are cloud-only, so never
-  `git checkout` / `git switch` here (R6; CLAUDE.md "Project control"). On 2-Nov OneDrive is running but the
-  folder is not pinned and 228 of 568 are still cloud-only; the rule stays.
+- **Git in this folder:** the ban is on `git checkout`, `git switch`, `git merge` and `git pull` in the main
+  checkout (R6; stated once, with its trigger and its check, in CLAUDE.md "Project control"). On 28-Oct OneDrive
+  was not running and 229 `.git` files were cloud-only. On 2-Nov OneDrive was running but the folder was not pinned
+  and 228 of 568 were still cloud-only. On 3-Nov and again on 9-Nov, from the GOV-01 sub-chat (`Get-Process OneDrive`
+  and the section 18 check of `project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`): no OneDrive process was found,
+  the folder was not pinned, and 228 of 686 (3-Nov) and 228 of 780 (9-Nov) `.git` files were cloud-only. On 9-Nov a
+  `git commit` in a worktree printed `error reading from .git/objects/pack/loose-<hash>.pack: Invalid argument`
+  (the commit succeeded and its new objects read back). The ban stays until TASK-017 has passed.
 - **2-Nov-2026 (TASK-016):**
   - Validation: MOD-02 checked the package against the repository. `site/` and `tools/` are unchanged;
     `verify_page`, `npm test` (903 checks), the 7 live files and CI (60 of 60) agree with 28-Oct; the page
@@ -276,7 +303,10 @@ every owner message, and checked against the code (record:
 - **ARC-01 conditions (2-Nov-2026):** the widened TASK-018 PR (rule documents) must merge before any
   `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
   states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
-  the chat runs; whether a Guardian pre-check applies. The merge of TASK-018 lifts the ARC-01 condition only.
+  the chat runs; whether a Guardian pre-check applies. After the merge the Moderator advances local `main`
+  (`project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` 14.4 E) and checks that
+  `git diff --stat origin/main -- CLAUDE.md .claude docs` there is empty before any OPS or NB launch, because a
+  session reads its rules from the working tree it opens. The merge of TASK-018 lifts the ARC-01 condition only.
   A `/monthly-update` run and any tool `--apply` on the real `site/` also wait for TASK-017 (the owner pins
   the folder, the cloud-only `.git` files hydrate, MOD-02 records the pass). The Sep catch-up (TASK-020) and
   the October cycle (about 13-17 Nov) cannot start before that.
@@ -287,8 +317,10 @@ every owner message, and checked against the code (record:
   month. The owner started GOV-01 (TASK-018, its own worktree) and EX-01 (TASK-064, read-only, shared checkout,
   no branch, no commit) on 2-Nov-2026; GOV-01's contract passed the Guardian pre-check (GO WITH CONDITIONS,
   3-Nov-2026); its claim of 23 files is recorded in `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1 and
-  is in force from the merge of that record; Gate D waits for the owner's answer to DEC-OPEN-34 (who accepts a
-  finished change) and for the owner's yes to the operator-run Gate B in every monthly refresh.
+  is in force from the merge of that record. The owner answered DEC-OPEN-34 on 9-Nov-2026 (the owner accepts
+  client-facing changes and anything the owner asked to review; the Moderator records the rest on evidence: D87,
+  recorded by the Moderator) and, the same day, approved the operator-run Gate B in every monthly refresh ("Yes,
+  approve"; D88), so no owner answer is left open for GOV-01's PR.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
     pending and still blocks the October risk matrix;
@@ -313,15 +345,14 @@ every owner message, and checked against the code (record:
   the widened TASK-018 merges and must be merged before step 10 of the October cycle (about 13-17 Nov);
   if it is not merged when step 10 is reached, the cycle runs without step 10 and the risk table keeps
   '30 Sep 2026'.
-- **Statements still describing the pre-answer state**, to be fixed by TASK-018 and TASK-022 (update-log
-  T5), not in this change: the `CLAUDE.md` headline (B8 sentence), `docs/MONTHLY_UPDATE_PROCESS.md` and the
-  inbox README (rows 12 and 17), the TASK-022 line in
-  `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, `docs/INPUT_FILES.md` (rows 12 and 17 and the
-  sections about them), `docs/HANDOVER.md` section 5,
-  `docs/project-control/ARCHITECTURE_AND_DEPENDENCY_MAP.md` (the B8 and risk-route lines),
-  `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md` (statements about who builds the workbooks,
-  outside K20 and K33, which this change fixes), `docs/update-log/2026-10-23_handover-export.md` (the second
-  copy of the B8 sentence) and the handover snapshots (corrected through the errata table only).
+- **Statements still describing the pre-answer state** (update-log T5). TASK-018 fixed, on 9-Nov-2026: the
+  `CLAUDE.md` headline (B8 sentence), the `docs/MONTHLY_UPDATE_PROCESS.md` paragraph on rows 12 and 17, the inbox
+  README (rows 12 and 17), the TASK-022 line in `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`,
+  `docs/HANDOVER.md` section 5 and the second copy of the B8 sentence in
+  `docs/update-log/2026-10-23_handover-export.md` (a dated note). Still to be fixed by TASK-022 or the Moderator:
+  step 10 of Part B of the monthly process (the `merge_risk_matrix.js` command), `docs/INPUT_FILES.md` (rows 12
+  and 17 and the sections about them) and `docs/project-control/ARCHITECTURE_AND_DEPENDENCY_MAP.md` (the B8 and
+  risk-route lines). The handover snapshots are corrected through the errata table only.
 - **Owner decision pending — C20 (P1).** 12 JioBlackRock Regular records carry the Direct plan's
   returns from before their Aug-2026 launch (live); the 13th, the C16 G-Sec fund, is held at its
   earlier values (Run 3) so it does not mix the Regular inception with the Direct plan's figures.
@@ -352,15 +383,22 @@ The full, dependency-ordered plan is in
 handover; where this list and the register differ, the register wins.
 
 **First (done 2-Nov-2026):** MOD-02 validated the handover (TASK-016). **Now:** the widened TASK-018 docs PR
-(GOV-01), then the owner decision session (DEC-OPEN-34 together with DEC-OPEN-30 first, then -31, -32, -33 and
-the rest in the documented order: -08, -04, -05, -07, -13/-14/-24, -29; -30 and -31 are needed about 6-Nov and
-9-Nov, and -34, who accepts a finished change, before GOV-01's PR reaches Gate D), TASK-064 (EX-01, read-only)
+(GOV-01), then the owner decision session (DEC-OPEN-30 first, then -31, -32, -33 and the rest in the
+documented order: -08, -04, -05, -07, -13/-14/-24, -29; -30 and -31 are needed about 6-Nov and 9-Nov;
+DEC-OPEN-34, who accepts a finished change, was answered on 9-Nov-2026: D87), TASK-064 (EX-01, read-only)
 in parallel, and TASK-017 (the owner pins the folder).
 
-0. Owner: answer DEC-OPEN-30 to -34 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
-   before the first apply, PROVISIONAL pack about 11-Nov, who accepts a finished change, asked together with -30 and needed before GOV-01's PR
-   reaches Gate D, with the owner's yes to the operator-run Gate B) and send the asks of TASK-078 to the MF dashboard
-   team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
+**TASK-017 gates the refreshes.** When the TASK-018 PR merges, the ARC-01 conditions lift (OPS and NB launches,
+after the Moderator advances local `main`), but a `/monthly-update` run and any tool `--apply` on the real `site/`
+still wait for TASK-017: the owner pins the folder ("Always keep on this device"), the cloud-only `.git` files
+(228 of 780 on 9-Nov-2026) hydrate, and MOD-02 records the pass here. The Sep-2026 Reckoner catch-up (item 4) and the
+October MF cycle (item 5, about 13-17 Nov) cannot start before that, so the owner needs to pin the folder well
+before 13-Nov. The hold is not narrowed: a worktree outside OneDrive still keeps its git data in the OneDrive `.git`.
+
+0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
+   before the first apply, PROVISIONAL pack about 11-Nov; DEC-OPEN-34 was answered on 9-Nov-2026, D87; the
+   operator-run Gate B in every monthly refresh was approved the same day, D88) and send the asks of TASK-078 to the MF
+   dashboard team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
    TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
    without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS
    label (B1) and the export's client items (R8). Keep OneDrive running, and this folder on "Always keep

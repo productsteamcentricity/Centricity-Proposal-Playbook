@@ -28,8 +28,8 @@ page. There is no server, database, build step, login or persistence.
 | Page shell, CSS, UI | `site/index.html` (compiled React 18, no JSX at runtime) | Layout, sections 1–6, Master Editor, rails | Edit the compiled `React.createElement` code directly, matching the style; never restyle during data work |
 | Reference data | inline `<script>` blocks defining `window.*` globals | Universe, analytics, Select, benchmarks, PMS performance, risk matrix | Changed only through `tools/` (blocklib) |
 | Load-time overrides ("siblings") | `site/Centricity_*.js` (5 files) | Patch the globals on every page load | The data they own must be edited **in them** (PRD §11.5) |
-| Business logic | `window.H` helpers in `index.html` (~L1446–2906) | KPIs, plan switch, look-through, credit buckets, overlap, tenure, liquidity, name resolution | Single predicates — never re-inline `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` |
-| In-browser parsers | `window.REFRESH` (~L3154–3921) + `REFRESH.parseSif` (SIF sibling) | Session-only uploads; **also reused by the tools** so a bake equals an upload | The Monitor sheet lists (`SHEET_MAP`, `DEBT_STYLE_SHEETS`, `REFRESH_ONLY_SHEETS`) live here; `bake_month.js` reads what the parser reports, and `rename_schemes.js` keeps only a sub-category mirror of `SHEET_MAP` (`SHEET_SUB`) (D80) |
+| Business logic | `window.H` helpers in `index.html` (~L1446-2929) | KPIs, plan switch, look-through, credit buckets, overlap, tenure, liquidity, name resolution | Single predicates - never re-inline `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` |
+| In-browser parsers | `window.REFRESH` (~L3177-3944) + `REFRESH.parseSif` (SIF sibling) | Session-only uploads; **also reused by the tools** so a bake equals an upload | The Monitor sheet lists (`SHEET_MAP`, `DEBT_STYLE_SHEETS`, `REFRESH_ONLY_SHEETS`) live here; `bake_month.js` reads what the parser reports, and `rename_schemes.js` keeps only a sub-category mirror of `SHEET_MAP` (`SHEET_SUB`) (D80) |
 | Exports | `window.EXPORTS` (~L3945–5521) | `exportXlsx`, `exportPpt`, `exportTabSlide`, `exportMaster` | Client-side only; every native slide goes through the PowerPoint design system (D82) |
 | Monthly tools | `tools/*.js`, `tools/lib/*.js`, `tools/build_risk_matrix.py` | Turn source workbooks into new data blocks | Dry-run default; refuse rather than guess |
 | Verification | `tools/verify_page.js`, `.github/workflows/pages.yml` | Run the page's scripts in a vm and print the true in-browser state; gate publishing | — |
@@ -41,14 +41,26 @@ page. There is no server, database, build step, login or persistence.
 |---|---|---|---|
 | 1 | `<head>`, L1232 | `Centricity_ExtraSlides.js` | `EXTRA_SLIDES` (3 dividers, 6 market slides, disclaimer, thank-you; 2001×1125 images) |
 | 2 | L1233 | `Centricity_PMS_AIF_Terms.js` | `PMS_AIF_TERMS` (73: exit load + IRR band for new PMS/AIF) |
-| 3 | after `#root`, L5167 | `Centricity_June_Refresh.js` | Replaces the GIFT City bucket; re-assigns 12 PMS/AIF look-throughs |
-| 4 | L5168 | `Centricity_IRR_Offshore.js` | IRR bands for ~2,065 funds by exact name; 4 funds → Offshore Funds; RATIONALE/BENCHMARKS/LIQUIDITY entries. **After #3.** |
-| 5 | L5169 | `Centricity_SIF_Refresh.js` | Replaces SIF rows with 30 (Equity SIF 16, Hybrid SIF 14); sets `DATA_DATES.sif`; registers `REFRESH.parseSif`. **After #4.** |
+| 3 | after `#root`, L5525 | `Centricity_June_Refresh.js` | Replaces the GIFT City bucket; re-assigns 12 PMS/AIF look-throughs |
+| 4 | L5526 | `Centricity_IRR_Offshore.js` | IRR bands for ~2,065 funds by exact name; 4 funds -> Offshore Funds; RATIONALE/BENCHMARKS/LIQUIDITY entries. **After #3.** |
+| 5 | L5527 | `Centricity_SIF_Refresh.js` | Replaces SIF rows with 30 (Equity SIF 16, Hybrid SIF 14); sets `DATA_DATES.sif`; registers `REFRESH.parseSif`. **After #4.** |
 
-Each is idempotent-guarded (`window.__JUNE_REFRESH_APPLIED` etc.). Baseline MASTER 7,672 →
-effective 7,682 after the siblings. The risk matrix is baked inline (L5175 on 19-Oct-2026); the old
+Each sibling sets a marker (`window.__JUNE_REFRESH_APPLIED`, `window.__IRR_OFFSHORE_APPLIED`,
+`window.__SIF_REFRESH_APPLIED`) that no page code reads (the only reader is `tools/merge_sif_monitor.js:76`,
+for a printout). Re-running a sibling is harmless because each one filters out what it owns, then
+concatenates or assigns. Baseline MASTER 7,672 -> effective 7,682 after the siblings. The risk matrix is baked
+inline (`window.RISK_MATRIX` at `site/index.html:5533`); the old
 unloaded `Centricity_Risk_Matrix.js` moved to `docs/archive/` on 19-Oct-2026 (D78). Deploying `index.html` without the siblings
-silently reverts data — the CI `verify` job refuses a deploy with a missing sibling.
+silently reverts data - the CI `verify` job refuses a deploy with a missing sibling.
+
+**What the bake captures.** `tools/bake_month.js` runs every inline `<script>` block of `site/index.html`
+that has no `src`, except the block that calls `ReactDOM.createRoot`, in a Node vm, and writes the resulting
+data globals back into their embedded blocks (`tools/bake_month.js:75-114` and `:233`); the five siblings are
+not run. The page's inline load-time code therefore runs too (for example `linkIdcwToGrowth()` at
+`site/index.html:1474` and `applyPmsPerformance()` at `:3054`), and what it does to `MASTER` is baked in: 35
+baseline `MASTER` records carry `_pms_source` (34 Equity, 1 Debt; counted with `tools/lib/blocklib.js` on
+`c0fb2dd`), so the baseline block holds PMS/AIF overlay fields. That those 35 come from the bake's capture is
+an inference.
 
 ## 3. Line map of `site/index.html` (re-derived 22-Oct-2026 with the PowerPoint design system, D82; drifts with every edit)
 

@@ -9,6 +9,9 @@
 | Pages source | GitHub Actions (`.github/workflows/pages.yml`) publishing the `site/` folder of `main` |
 | Outgoing owner's repo / site | https://github.com/magazineishita1108-boop/Centricity-Proposal-Playbook — remote `upstream`, read-only (push URL disabled). Its Pages site still serves the 30-Sep-2026 baseline until the outgoing owner retires it. |
 
+The old site is retired only after the owner has fully tested the new build (the owner's condition,
+KNOWN_ISSUES R7 and DEC-OPEN-24); the retirement itself is the outgoing owner's act.
+
 ## How a release works
 
 ```
@@ -20,9 +23,12 @@ pull request ──► "verify" job: six files present + verify_page parity gate
    ▼
 merge to main ──► "verify" again ──► "publish": upload-pages-artifact (site/) ──► deploy-pages
    ▼
-confirm: SHA-256 of the six files on the live URL == site/
+confirm: SHA-256 of the 7 published files on the live URL == site/
 ```
 
+- The `verify` job has three steps (`.github/workflows/pages.yml:37`, `:43-46`, `:47`): the six-file presence
+  check, `npm ci` with the unit tests (`node tools/test/run.js`), and the `verify_page` parity gate.
+  `publish` uploads all of `site/` (`:81`), so seven files go live: the six deploy files and `robots.txt`.
 - `main` is production: anything merged there is published within ~1–2 minutes.
 - Pull requests are used for every change, including monthly refreshes. Monthly refreshes are merged
   automatically once every check passes and no judgement call is open (D61).
@@ -43,10 +49,10 @@ confirm: SHA-256 of the six files on the live URL == site/
 
 ```bash
 B=https://productsteamcentricity.github.io/Centricity-Proposal-Playbook
-for f in index.html Centricity_ExtraSlides.js Centricity_PMS_AIF_Terms.js Centricity_June_Refresh.js Centricity_IRR_Offshore.js Centricity_SIF_Refresh.js; do
+for f in index.html Centricity_ExtraSlides.js Centricity_PMS_AIF_Terms.js Centricity_June_Refresh.js Centricity_IRR_Offshore.js Centricity_SIF_Refresh.js robots.txt; do
   curl -s --compressed "$B/$f" | sha256sum | cut -c1-16; sha256sum "site/$f" | cut -c1-16; done
 ```
-Each pair must match. `index.html` is 12.8 MB; allow a minute.
+Each pair must match (seven files: the six deploy files and `robots.txt`). `index.html` is 12.8 MB; allow a minute.
 
 ## One-time GitHub configuration (done 16-Oct-2026)
 
