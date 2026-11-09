@@ -4,10 +4,10 @@
 |---|---|
 | Version | 2 |
 | Date | 3-Nov-2026 |
-| Author chat | MOD-01; GOV-01 (TASK-018 update, 3-Nov-2026) |
+| Author chat | MOD-01; GOV-01 (TASK-018 update, 3-Nov-2026; Gate E text final 9-Nov-2026, D87) |
 | Status | Authoritative (rules; the Moderator proposes changes, the owner approves those that change publishing or approvals) |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
-| Next review | when the owner answers DEC-OPEN-34; then whenever a rule is found wrong in practice |
+| Next review | whenever a rule is found wrong in practice (DEC-OPEN-34, who accepts a finished change, was answered on 9-Nov-2026: D87) |
 
 This file says how several Claude chats change this repository without colliding: where each chat works,
 which files one task may hold at a time, how a claim is made and released, how overlaps are resolved,
@@ -389,7 +389,7 @@ change comes before the merge.
 | B. Guardian review | Diff, cross-module effects, ownership, interface compatibility, test coverage and residual risk reviewed (section 7). For a material or high-risk change its contract was pre-checked before the claim (section 4.1). | `integration-guardian` subagent on the actual diff (the operator of a monthly refresh runs it for its own refresh, section 7). | ARC-01 |
 | C. Independent verification | The checks for the kind of change (table below) ran and passed, run by someone other than the implementer. Each is reported PASS / FAIL / NOT RUN with evidence; a check that was not run is never reported as passed. | see the table below | `qa-verifier` (or the `verify-dashboard` skill), `financial-data-reviewer`, the Moderator |
 | D. Controlled integration | One PR at a time, up to date with `main`, every check green, `security-reviewer` done (it runs before every push, CLAUDE.md "How every change is made", step 6; the Moderator confirms it here), merged, published, live files equal `site/`, local `main` advanced, new baseline recorded, dependants told. | steps below | the Moderator with `release-manager` |
-| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states. The owner accepts every client-facing change and any change the owner asked to review; for other changes the Moderator records acceptance on evidence. A task is not accepted because its chat finished. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
+| E. Acceptance | Implementation, review, verification, integration (= deployment) and acceptance are tracked as separate states. The owner accepts every client-facing change (what a client or adviser sees: data refresh results, page, deck and Excel changes) and any change the owner asked to review (D87). The Moderator records acceptance of the rest (registers, tests, internal documents) on evidence and lists those changes in the Moderator's report to the owner. A monthly refresh publishes first (D61) and is accepted afterwards. A task is not accepted because its chat finished. | status in [TASK_REGISTER.md](TASK_REGISTER.md) | the owner; the Moderator records |
 
 **Gate C by kind of change:**
 

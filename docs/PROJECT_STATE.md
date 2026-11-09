@@ -7,7 +7,8 @@ D-18; KNOWN_ISSUES E6 to E10, E13 to E15 and E17 closed, E11 partly fixed, E12 o
 with its trigger and its check, beside one worktree rule, one Guardian pre-check rule (material or high-risk), one
 criterion for a routine monthly refresh (Gate B inside it) and one merge command without `--delete-branch`. The
 monthly refresh runs in its own worktree and reaches the inbox and the backups of the main checkout by absolute path.
-The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
+Gate E is final after the owner's answer to DEC-OPEN-34 of 9-Nov-2026 (D87): the owner accepts client-facing changes
+and anything the owner asked to review; the Moderator records acceptance of the rest on evidence. The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
 has advanced local `main`. It does not lift the TASK-017 hold: a `/monthly-update` run and any tool `--apply` on the
 real `site/` still wait for the owner's OneDrive pin, so the October cycle (about 13-17 Nov) needs that pin well
 before then. PR #33 (`8aeabfc`, docs only: the claim record; merged 2-Nov-2026 21:24 UTC) is the latest merge before
@@ -315,8 +316,10 @@ every owner message, and checked against the code (record:
   month. The owner started GOV-01 (TASK-018, its own worktree) and EX-01 (TASK-064, read-only, shared checkout,
   no branch, no commit) on 2-Nov-2026; GOV-01's contract passed the Guardian pre-check (GO WITH CONDITIONS,
   3-Nov-2026); its claim of 23 files is recorded in `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1 and
-  is in force from the merge of that record; Gate D waits for the owner's answer to DEC-OPEN-34 (who accepts a
-  finished change) and for the owner's yes to the operator-run Gate B in every monthly refresh.
+  is in force from the merge of that record. The owner answered DEC-OPEN-34 on 9-Nov-2026 (the owner accepts
+  client-facing changes and anything the owner asked to review; the Moderator records the rest on evidence: D87,
+  recorded by the Moderator), so Gate D waits only for the owner's yes to the operator-run Gate B in every monthly
+  refresh.
 - **Owner decisions from the handover export (urgent; B8 and R8 are P1, B1 is P2):**
   - who builds NAV Data and Fund Risk Ratios from October (B8): answered 2-Nov-2026 (D86); the build is
     pending and still blocks the October risk matrix;
@@ -379,9 +382,9 @@ The full, dependency-ordered plan is in
 handover; where this list and the register differ, the register wins.
 
 **First (done 2-Nov-2026):** MOD-02 validated the handover (TASK-016). **Now:** the widened TASK-018 docs PR
-(GOV-01), then the owner decision session (DEC-OPEN-34 together with DEC-OPEN-30 first, then -31, -32, -33 and
-the rest in the documented order: -08, -04, -05, -07, -13/-14/-24, -29; -30 and -31 are needed about 6-Nov and
-9-Nov, and -34, who accepts a finished change, before GOV-01's PR reaches Gate D), TASK-064 (EX-01, read-only)
+(GOV-01), then the owner decision session (DEC-OPEN-30 first, then -31, -32, -33 and the rest in the
+documented order: -08, -04, -05, -07, -13/-14/-24, -29; -30 and -31 are needed about 6-Nov and 9-Nov;
+DEC-OPEN-34, who accepts a finished change, was answered on 9-Nov-2026: D87), TASK-064 (EX-01, read-only)
 in parallel, and TASK-017 (the owner pins the folder).
 
 **TASK-017 gates the refreshes.** When the TASK-018 PR merges, the ARC-01 conditions lift (OPS and NB launches,
@@ -391,10 +394,10 @@ still wait for TASK-017: the owner pins the folder ("Always keep on this device"
 October MF cycle (item 5, about 13-17 Nov) cannot start before that, so the owner needs to pin the folder well
 before 13-Nov. The hold is not narrowed: a worktree outside OneDrive still keeps its git data in the OneDrive `.git`.
 
-0. Owner: answer DEC-OPEN-30 to -34 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
-   before the first apply, PROVISIONAL pack about 11-Nov, who accepts a finished change, asked together with -30 and needed before GOV-01's PR
-   reaches Gate D, with the owner's yes to the operator-run Gate B) and send the asks of TASK-078 to the MF dashboard
-   team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
+0. Owner: answer DEC-OPEN-30 to -33 (Sortino form by about 6-Nov, other changes about 9-Nov, permission
+   before the first apply, PROVISIONAL pack about 11-Nov; DEC-OPEN-34 was answered on 9-Nov-2026, D87), say yes or
+   no to the operator-run Gate B in every monthly refresh (needed before GOV-01's PR reaches Gate D) and send the
+   asks of TASK-078 to the MF dashboard team (FINAL 15-Oct pack by about 11-Nov). The build (TASK-022, bridge tool) starts after the widened
    TASK-018 PR has merged; if it is not merged when step 10 of the October cycle is reached, the cycle runs
    without step 10 and the table keeps '30 Sep 2026'. Also decide the PMS
    label (B1) and the export's client items (R8). Keep OneDrive running, and this folder on "Always keep

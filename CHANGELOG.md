@@ -46,7 +46,10 @@ answers ARC-01's conditions of 2-Nov-2026 (findings D-01 to D-07, D-14 and the m
 ### Changed
 - The Guardian pre-check rule reads "material or high-risk" in `CLAUDE.md`, the Moderator bootstrap prompt and
   `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, which also aligns the Gate B, D and E rows
-  (`security-reviewer` runs before every push and is confirmed at Gate D; Gate E has a narrower scope, pending DEC-OPEN-34).
+  (`security-reviewer` runs before every push and is confirmed at Gate D). Gate E, in `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  and in the bootstrap prompt (7.4), is final after the owner's answer to DEC-OPEN-34 of 9-Nov-2026 (D87): the owner
+  accepts client-facing changes and anything the owner asked to review; the Moderator records acceptance of the rest
+  on evidence and lists those changes in the Moderator's report to the owner; a monthly refresh publishes first (D61).
 - One merge command: `gh pr merge <n> --merge --match-head-commit <sha>`, no `--delete-branch` until DEC-OPEN-22
   (`CLAUDE.md` step 6, `release-manager`, the skill, the process doc); the live check covers the 7 published files.
 - `docs/KNOWN_ISSUES.md`: the status of E6 to E15 and E17, and "Before the next refresh" items 4, 11 and 12.
