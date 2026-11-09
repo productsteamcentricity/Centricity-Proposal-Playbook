@@ -12,8 +12,8 @@ and anything the owner asked to review; the Moderator records acceptance of the 
 approved the operator-run Gate B in every monthly refresh (D88). The merge of this PR (number added at release) lifts ARC-01's condition on OPS and NB launches, once the Moderator
 has advanced local `main`. It does not lift the TASK-017 hold: a `/monthly-update` run and any tool `--apply` on the
 real `site/` still wait for the owner's OneDrive pin, so the October cycle (about 13-17 Nov) needs that pin well
-before then. PR #33 (`8aeabfc`, docs only: the claim record; merged 2-Nov-2026 21:24 UTC) is the latest merge before
-this record. No `site/`, `tools/`, `.github/` or package-file change; `verify_page` and `npm test` (903 checks) are
+before then. PR #34 (`3fd1eab`, docs only: D87 and D88; merged 9-Nov-2026 08:59 UTC) is the latest merge before
+this record, after PR #33 (`8aeabfc`, docs only: the claim record; merged 2-Nov-2026 21:24 UTC). No `site/`, `tools/`, `.github/` or package-file change; `verify_page` and `npm test` (903 checks) are
 unchanged. Claim and contract: `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1._
 
 _Previous update: 3-Nov-2026 (includes the 2-Nov-2026 update) - MOD-02 validated the MOD-01 handover package against the repository (TASK-016).
@@ -85,8 +85,8 @@ Run 2.
 
 ## Latest verification
 
-9-Nov-2026 (GOV-01, branch `docs/gov-01-rule-consistency-20261102` on `origin/main` `8aeabfc`; docs only): `npm ci`
-exit 0; `verify_page` output identical to the block below, exit 0; `npm test` 5 of 5 files, 903 checks (blocklib 34,
+9-Nov-2026 (GOV-01, branch `docs/gov-01-rule-consistency-20261102` merged with `origin/main` `3fd1eab`; docs
+only): `npm ci` exit 0; `verify_page` output identical to the block below, exit 0; `npm test` 5 of 5 files, 903 checks (blocklib 34,
 dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43), 0 failures; no change under `site/`, `tools/`,
 `.github/` or in the package files. The other checks of the change (links, tables, added lines, the one grep per
 ARC-01 condition, the walkthrough of the monthly refresh in a worktree) are in the PR description.
