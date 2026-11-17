@@ -26,7 +26,7 @@ TASK-018 claim (PR #33, `8aeabfc`, 2-Nov-2026 21:24 UTC) was in force from its m
 9-Nov-2026 12:16 UTC): that ARC-01 condition is lifted (C9 VERIFIED 17-Nov-2026: local `main` = `origin/main` and an empty diff of `CLAUDE.md`,
 `.claude` and `docs`). The October instructions of the owner of 9-Nov-2026 (D87 to D96) direct the next work, and MOD-02 started OPS-01 for it on
 9-Nov-2026 (12:32 UTC). No claim is active: the claim row of OPS-01 is not on `origin/main` (a claim is in force only when its row is on
-`origin/main`), so OPS-01 edits nothing and runs no `--apply`. TASK-017 passed on 9-Nov-2026 and was re-verified on 17-Nov-2026 ($1); the PR of TASK-079 records the pass in `docs/PROJECT_STATE.md` and `REPOSITORY_AND_ENVIRONMENT_STATE.md`, so the ban on `git checkout`, `git switch`, `git merge` and `git pull` in the main checkout and the `--apply` hold end when it merges, except while OneDrive is not running or any `.git` file is cloud-only. The Sep catch-up (TASK-020)
+`origin/main`), so OPS-01 edits nothing and runs no `--apply`. TASK-017 passed on 9-Nov-2026 and was re-verified on 17-Nov-2026 (OneDrive.exe running; the folder pinned; 0 of 923 `.git` files cloud-only; `git fsck --connectivity-only` exit 0; a read from `pack-631ec788...` and the historical blob reads succeed); the PR of TASK-079 records the pass in `docs/PROJECT_STATE.md` and `REPOSITORY_AND_ENVIRONMENT_STATE.md`, so the ban on `git checkout`, `git switch`, `git merge` and `git pull` in the main checkout and the `--apply` hold end when it merges, except while OneDrive is not running or any `.git` file is cloud-only. The Sep catch-up (TASK-020)
 and the October cycle (TASK-021, expected about 13-17 Nov) also wait for the answers of the owner and the re-exports of the desk.
 
 ---
