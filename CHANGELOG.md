@@ -18,6 +18,32 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-17 - The owner's answers of 9-Nov-2026 recorded as D89 to D96 (PR #36, merge `b47069b`; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change (3 files: `docs/DECISIONS.md`,
+`docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md`). The commit is dated 9-Nov-2026; the PR was merged
+on 17-Nov-2026 06:37 UTC. Actions push run 44032631708 (verify + publish) succeeded and the 7 live files equal `site/`
+(SHA-256).
+
+### Added
+- Owner decisions, with the wording MOD-02 recorded (the owner confirms it at Gate E; MOD-02's readings are marked INFERRED):
+  - D89: Direct Equity returns are calculated from a public price source (Google Finance or the NSE website).
+  - D90: product updates: existing products stay, additions are added, a bond is replaced by the same ISIN or an
+    exactly similar product, the two bond lists become one (reading INFERRED), GIFT City expected-IRR ranges stay.
+  - D91: performance is labelled with the calendar month-end although the NAV date is the last working day before it.
+  - D92 (supersedes D85 for the Portfolio Matrix): the matrix shows the MF dashboard's Sortino from October, with a note.
+  - D93 (extends D86): the matrix accepts the four other changes of the dashboard's data (date, coverage, benchmark and
+    alpha, daggers and wording).
+  - D94: returns for periods longer than a fund's life are cleared (the 13 JioBlackRock Regular records and very young
+    funds).
+  - D95: PMS and AIF performance can be taken from the Monthly Investment Reckoner.
+  - D96: the eight scheme renames are confirmed.
+  - DEC-OPEN-32 ("Yes, they may"): a note on D86, no new decision number.
+
+### Changed
+- `docs/project-control/DECISION_LOG.md`: DEC-OPEN-07, -08, -30, -31 and -32 moved to section 1.6 (9 answered, 25 open);
+  next free D97. `docs/DECISIONS.md`: the D85 and D86 entries carry their qualified status.
+
 ## 2026-11-09 - Rule documents made consistent: TASK-018 (GOV-01; docs only)
 
 No `site/`, `tools/`, `.github/` or package-file change; `verify_page` output and `npm test` (903 checks) are
@@ -72,9 +98,25 @@ answers ARC-01's conditions of 2-Nov-2026 (findings D-01 to D-07, D-14 and the m
 Risk class Material (rule documents, agents and skills; claim and contract in
 `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1). Gate B (ARC-01 DIFF REVIEW of the branch text, run by
 MOD-02) and `security-reviewer` run before the merge; their verdicts are in the PR description.
-This change (PR number to be added at release) takes effect when it merges. That lifts ARC-01's condition on OPS and
+This change (PR #35, merge `ddd0304`, 9-Nov-2026 12:16 UTC) takes effect when it merges. That lifts ARC-01's condition on OPS and
 NB launches (after the Moderator advances local `main`); it does not lift the TASK-017 hold: a `/monthly-update` run
 and any tool `--apply` on the real `site/` still wait for the owner's OneDrive pin.
+
+## 2026-11-09 - D87 and D88 recorded (PR #34, merge `3fd1eab`; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change (3 files: `docs/DECISIONS.md`,
+`docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md`). Merged 9-Nov-2026 08:59 UTC; Actions push run
+42589947603 (verify + publish) succeeded.
+
+### Added
+- D87: the owner accepts every client-facing change and anything the owner asked to review; the Moderator records
+  acceptance of the rest on evidence (the owner's answer "Client-facing only" to DEC-OPEN-34).
+- D88: every monthly refresh includes an operator-run Guardian diff review (Gate B), one more check under D61 (the owner's
+  answer "Yes, approve").
+
+### Changed
+- DEC-OPEN-34 moved to section 1.6 of `docs/project-control/DECISION_LOG.md`; next-free ids in
+  `docs/project-control/README.md`.
 
 ## 2026-11-03 - GOV-01 claim for TASK-018 recorded; DEC-OPEN-34 opened (docs only)
 
@@ -95,7 +137,7 @@ No `site/`, `tools/`, `.github/` or package-file change. The live files are unch
   decision session; section 2.3), `docs/project-control/README.md` (next-free ids) and `docs/PROJECT_STATE.md`.
 
 Risk class Material (a claim and a decision record); ARC-01 DIFF REVIEW (GO WITH CONDITIONS on the first version; its conditions are applied) and security-reviewer ran before the push.
-This change (PR number to be added at release) takes effect when it merges.
+This change (PR #33, merge `8aeabfc`, 2-Nov-2026 21:24 UTC) takes effect when it merges.
 
 ## 2026-11-02 - MOD-02 validates the handover package (TASK-016); registers and records brought up to date (docs only)
 

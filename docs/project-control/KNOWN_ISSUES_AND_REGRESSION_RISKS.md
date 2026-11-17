@@ -84,6 +84,8 @@ it, and by `grep -c '^| [A-Z][0-9]* |'`, on 2-Nov-2026): 119 rows (A 32, B 9, C 
 P3 32); Partly fixed 12; Fixed 1; Accepted 4; Closed 33; not closed (any status except Closed) 86; severity totals P1 10,
 P2 60, P3 47, none 2.
 
+Counts at `b47069b` (VERIFIED 17-Nov-2026 by a Node parse of the Summary table of `KNOWN_ISSUES.md`; 119 rows, equal to the `grep -c` count): A 32, B 9, C 46, R 12, E 17, F 3; Open 59 (P1 5, P2 29, P3 25); Partly fixed 13; Fixed 1; Accepted 4; Closed 42; not closed 77; severity totals P1 10, P2 60, P3 47, none 2. TASK-018 closed E6 to E10, E13 to E15 and E17, and E11 became partly fixed (E12 stays open). The 17-Nov-2026 register sweep adds B10 (Open, P2), R13 (Partly fixed, P2) and C47 to C50 (Open, P3): 125 rows; Open 64 (P1 5, P2 30, P3 29); Partly fixed 14; Fixed 1; Accepted 4; Closed 42; not closed 83; severity totals P1 10, P2 62, P3 51, none 2 (INFERRED arithmetic from the parse above).
+
 ### 1.2 Entries added on 2-Nov-2026 (Update 2-Nov-2026)
 
 The TASK-016 audit of the handover registers adds three entries to `KNOWN_ISSUES.md`, and the analysis of the MF Screener
@@ -97,6 +99,14 @@ section 1.1.
 | E17 | P2 | The rule documents contradict each other on gates, risk class, worktrees and git commands (ARC-01 DIFF REVIEW of TASK-015, GO WITH CONDITIONS); no `/monthly-update` run, tool `--apply` or OPS/NB sub-chat launch until TASK-018 (widened) merges; Open (Moderator) |
 | R12 | P3 | The public repository carries staff identities in commit metadata, one name and address in three lines, and a thin `.gitignore` guard rail (SEC-02 to SEC-05); Open (owner), DEC-OPEN-29, TASK-075 |
 
+### 1.3 Entries added on 17-Nov-2026 (register sweep)
+
+| ID | Sev | One line |
+|---|---|---|
+| B10 | P2 | A monitor's "As on" cell is not its NAV date (found 9-Nov-2026): a Regular monitor exported "as on 2-Nov" carried 2-Nov NAVs and the Direct monitor "as on 31-Oct" carries 30-Oct NAVs; test the real NAV date of the Regular, Direct and SIF monitors before every bake (MTD equals 1 Day test; same-scheme pair test); D91; Open (a pre-bake check is proposed; re-exports as on 31-Oct-2026 requested) |
+| R13 | P2 | A path over 400 characters (from the OneDrive root) stalled the OneDrive sync provider on 9-Nov-2026; 34 folders in the git-ignored local archive were renamed, all `.git` files hydrated and TASK-017 passed; re-verified 17-Nov-2026 (0 of 5,274 files cloud-only; longest path 298); Partly fixed (the path scan is not yet routine) |
+| C47 to C50 | P3 | The four new findings of EX-01's browser acceptance of 2-Nov-2026 (EX01-N1 to N4; the id mapping is INFERRED): C47 the Overlap Matrix image legend is cut off for 2 to 4 funds; C48 the Excel export has no number formats and no cached formula values; C49 Net Asset Allocation counts every "Global Funds" record as equity (owner rule needed); C50 a watch item, one unreproduced misrouting of a Direct monitor file through the Regular parser; all Open |
+
 ---
 
 ## 2. Open P1 items (one line each)
@@ -104,10 +114,10 @@ section 1.1.
 | ID | One line | Status (abbreviated; KNOWN_ISSUES.md is exact) | Covered by | Section |
 |---|---|---|---|---|
 | B8 | NAV Data (#17) and Fund Risk Ratios & 3Y Rolling (#12) were made in-house; nobody builds them now; **blocks the Oct-2026 Portfolio Matrix** | Open (owner answered 2-Nov-2026, D86, whose reading is INFERRED until Gate E; build pending) | DEC-OPEN-01 (answered: D86), -02, -03; TASK-022 | [B8](../KNOWN_ISSUES.md#b8-nav-data-and-fund-risk-ratios-were-made-in-house-nobody-builds-them-now) |
-| C20 | 12 JioBlackRock Regular records show Direct-plan returns from before their launch (13 with the held G-Sec record, C16) | Open (owner decision) | DEC-OPEN-07; TASK-023 | [C20](../KNOWN_ISSUES.md#c20-jioblackrock-regular-records-show-direct-plan-returns-from-before-their-launch) |
+| C20 | 12 JioBlackRock Regular records show Direct-plan returns from before their launch (13 with the held G-Sec record, C16) | Open (decided 9-Nov-2026, D94: clear the returns; not yet applied) | DEC-OPEN-07 (answered: D94); TASK-023 | [C20](../KNOWN_ISSUES.md#c20-jioblackrock-regular-records-show-direct-plan-returns-from-before-their-launch) |
 | R1 | Client personal data still public in the outgoing owner's repository history and old site | Open (outgoing owner) | DEC-OPEN-13; TASK-033 | [R1](../KNOWN_ISSUES.md#r1-client-pii-still-public-in-the-outgoing-owners-repo-and-site) |
 | R8 | The outgoing owner's export shipped two client items (kept local, git-ignored) | Open (owner + compliance) | DEC-OPEN-05; TASK-032 | [R8](../KNOWN_ISSUES.md#r8-the-handover-export-shipped-two-client-items-despite-its-readme) |
-| C43 | Since-inception outlier `si` = 2977.646 on one young ETF (new 28-Oct) | Open | TASK-067 | `grep -n "^### C43\." docs/KNOWN_ISSUES.md` |
+| C43 | Since-inception outlier `si` = 2977.646 on one young ETF (new 28-Oct) | Open (decided with C20, D94; the bound is TASK-067, not yet built) | TASK-067 | `grep -n "^### C43\." docs/KNOWN_ISSUES.md` |
 
 Also P1 but Fixed with follow-ups: [C19](../KNOWN_ISSUES.md#c19-215-funds-on-four-unmapped-monitor-sheets-carry-pre-september-performance)
 (215 funds on four unmapped Monitor sheets; code PR #17, data PR #18; one record held for C20; read the new bake lines
@@ -136,7 +146,7 @@ Update 2-Nov-2026: the Open P2 entries added on 2-Nov-2026 (E17, C46) are listed
 | C23 | Select popover Alpha shown 100 times too large | Open (desk: period) | DESK-14; DEC-OPEN-12; TASK-030 | [C23](../KNOWN_ISSUES.md#c23-select-popover-alpha-shown-100-times-too-large-source-confirmed) |
 | C24 | Headline weighted IRR counts instruments with no IRR band as 0% (three screen paths; Section 4 and the deck GRAND TOTAL exclude them, per the 28-Oct correction) | Open (owner; desk IRR file) | DEC-OPEN-15; DESK-06; TASK-026 | [C24](../KNOWN_ISSUES.md#c24-headline-weighted-irr-counts-instruments-with-no-irr-band-as-0) |
 | C28 | Expected returns stored as track record (bond yields, AIF/PMS band mid-points; 14 stale mid-points); deck marks them `*` (D83) | Open (owner/desk) | DEC-OPEN-16; TASK-031 | [C28](../KNOWN_ISSUES.md#c28-expected-returns-are-stored-as-track-record-bond-yields-aifpms-band-mid-points) |
-| C35 | Sortino has two definitions in the live history (June semi-deviation; Aug/Sep textbook) | Open (owner/desk) | DEC-OPEN-03 (answered: D85); DEC-OPEN-30; DESK-16; TASK-022 | [C35](../KNOWN_ISSUES.md#c35-sortino-has-two-definitions-in-the-live-history-and-a-third-route-uses-another) |
+| C35 | Sortino has two definitions in the live history (June semi-deviation; Aug/Sep textbook) | Open (answered 9-Nov-2026, D92; build pending) | DEC-OPEN-03 (answered: D85); DEC-OPEN-30 (answered: D92); DESK-16; TASK-022 | [C35](../KNOWN_ISSUES.md#c35-sortino-has-two-definitions-in-the-live-history-and-a-third-route-uses-another) |
 | C37 | Bonds store the top of the IRR band as 1Y/3Y/5Y; the owner asked for the band average | Open (owner decision) | DEC-OPEN-09; TASK-027 | [C37](../KNOWN_ISSUES.md#c37-bonds-store-the-top-of-the-irr-band-as-1y3y5y-the-owner-asked-for-the-band-average) |
 | R6 | The git repository lives inside OneDrive (cloud-only `.git` files; checkout hazard; EPERM on rename) | Open (owner decision) | TASK-017; DEC-OPEN-19; TASK-037 | [R6](../KNOWN_ISSUES.md#r6-the-git-repository-lives-inside-onedrive) |
 | R7 | Old site still live alongside the new one (retire only after full testing of the new build) | Open (owner: retire only after full testing of the new build; then outgoing owner) | DEC-OPEN-14, DEC-OPEN-24; TASK-034 | [R7](../KNOWN_ISSUES.md#r7-old-site-still-live-alongside-the-new-one) |
@@ -213,12 +223,12 @@ reading `tools/verify_page.js:90-96` and `pages.yml:37-61`). `site/index.html` l
 | Deck tables outside `drawTable`; `listTable` page 2 (C44, C45) | TASK-069 | NOT STARTED |
 | `si` bound in the MF bake (C43) | TASK-067 | NOT STARTED |
 | RISK_MATRIX keys against the effective MASTER (C42) | TASK-066 | NOT STARTED |
-| A producer and a regression test for the risk matrix (B8, C11, C35, A22) | TASK-022, TASK-057 | TASK-022: BLOCKED (TASK-018; DEC-OPEN-30, -31); TASK-057: proposed, after one verified month |
+| A producer and a regression test for the risk matrix (B8, C11, C35, A22) | TASK-022, TASK-057 | TASK-022: no bridge tool on `main` (17-Nov-2026); TASK-018 merged; DEC-OPEN-30 and -31 answered (D92, D93); TASK-057: proposed, after one verified month |
 | Static PMS/AIF benchmark rows (C41) | TASK-065 | BLOCKED (DEC-OPEN-27) |
 | Branch protection (R9) | TASK-036 | BLOCKED (DEC-OPEN-17) |
-| OneDrive health; docs still saying `git switch` (R6, E7, E10) | TASK-017, TASK-018 | IN PROGRESS |
+| OneDrive health; docs still saying `git switch` (R6, E7, E10) | TASK-017, TASK-018 | DONE 9-Nov-2026 (TASK-017 passed, KNOWN_ISSUES R13; TASK-018 merged, PR #35) |
 | Strict CLI parsing: unknown flag, stray word, value-less flag, bad or missing `--as-on`, missing `--html` on three tools (A32) | TASK-076 | NOT STARTED |
-| Rule documents contradict each other (E17) | TASK-018 | IN PROGRESS |
+| Rule documents contradict each other (E17) | TASK-018 | MERGED 9-Nov-2026 (PR #35) |
 | Automated Excel export test | none registered | - |
 | Old share links decoding test | none registered | - |
 
