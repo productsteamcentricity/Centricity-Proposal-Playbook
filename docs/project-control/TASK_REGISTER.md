@@ -94,8 +94,8 @@ Done and verified: TASK-016 (PR #30), TASK-018 (PR #35, `ddd0304`) and TASK-017 
 launch condition of 2-Nov-2026 is lifted. The October cycle is late: nothing from the owner's list of 9-Nov-2026 has been
 applied (the page still carries the 30-Sep-2026 data).
 
-1. **TASK-079 / TASK-080** the MOD-02 -> MOD-03 handover package (merge pending) and MOD-03's validation of it (like TASK-016).
-   No work is assigned before the validation is written.
+1. **TASK-079 / TASK-080** the MOD-02 -> MOD-03 handover package (merged: PRs #37 and #38) and MOD-03's validation of it
+   (done 17-Nov-2026; record `docs/update-log/2026-11-17_task-080-validation.md`).
 2. **TASK-081** the rest of the register sweep (docs only). The PR of TASK-079 already records the TASK-017 pass, the effects of D87
    to D96 and the stale statements of KNOWN_ISSUES, PROJECT_STATE, INPUT_FILES, the integration log and the environment record; what
    is left is the EX-01 update log (this closes TASK-064), requirement rows, `ARCHITECTURE_AND_DEPENDENCY_MAP.md`, the NAV-date
@@ -211,8 +211,8 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-076 | Extend `tool_inputs.test.js` to the whole CLI contract (A32) | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-077 | TASK-016 audit corrections backlog (P3 wording, snapshot errata) | GOV | PLANNED | P2 | MOD-02 assigns (docs-keeper) | G |
 | TASK-078 | Owner asks the MF dashboard team | OPS | NOT STARTED | P1 | owner (MOD-02 drafts the message) | R |
-| TASK-079 | MOD-02 -> MOD-03 handover package | GOV | IN PROGRESS | P1 | MOD-02 | G |
-| TASK-080 | MOD-03 validates the MOD-02 handover | GOV | PLANNED | P1 | MOD-03 | G |
+| TASK-079 | MOD-02 -> MOD-03 handover package | GOV | VERIFIED COMPLETE | - | MOD-02 (PR #37 `8278f85`, PR #38 `cd4aaa5`) | Done |
+| TASK-080 | MOD-03 validates the MOD-02 handover | GOV | VERIFIED COMPLETE (at the merge of its docs PR) | - | MOD-03 | Done |
 | TASK-081 | Register sweep after PRs #34 to #36 and the EX-01 results | GOV | PLANNED | P1 | MOD-03 (docs-keeper) | G |
 | TASK-082 | PMS and AIF performance from the Reckoner (D95) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
 | TASK-083 | GIFT City products from the offshore options deck (D90) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
@@ -898,14 +898,15 @@ checkout to do them (CLAUDE.md "Project control"): use `git branch -d` (never `-
 - Rel: REQ-034; R6.
 
 #### TASK-079 MOD-02 -> MOD-03 handover package (Moderator replacement, Scenario B)
-- WS GOV | Status IN PROGRESS (the package is written by MOD-02; the branch is not merged yet) | P1 | Owner: MOD-02 | Dep: - | Blk: -
+- WS GOV | Status VERIFIED COMPLETE (17-Nov-2026: PR #37, merge `8278f85`, 08:42 UTC; PR #38, merge `cd4aaa5`, 08:55 UTC, repairs two lines of PR #37; both documentation only, CI green; validated by MOD-03 in TASK-080) | P1 | Owner: MOD-02 | Dep: - | Blk: -
 - Trigger (the handover brief of this record; MOD-02 counted from its transcript, not re-counted here): the owner pasted the handover master prompt on 17-Nov-2026 06:27:07 UTC, and MOD-02 has had four automatic compactions (2-Nov-2026 11:22:16Z and 19:14:48Z, 9-Nov-2026 07:36:47Z, 17-Nov-2026 06:28:46Z): the three-compaction trigger of `docs/handover/continuations/README.md` section 1 is met.
 - Accept (`docs/handover/continuations/README.md` sections 3 to 8): a handover branch `handover/mod-02-to-mod-03-20261117` cut from current `origin/main`, documentation only (the master handover filled from `MODERATOR_HANDOVER_TEMPLATE.md`, the successor prompt, the index rows and the registers); no secrets, client data or forbidden files (`security-reviewer`); pushed, PR merged with `verify` green, remote SHA = local SHA; the owner's handover message (the ten items of section 8); `CHAT_REGISTRY.md`: MOD-02 HANDOVER REQUIRED, then RETIRED once MOD-03 has confirmed the handover in writing, MOD-03 QUEUED, then ACTIVE; the old chat then makes no further change.
 - Next: MOD-02 finishes the package; the owner pastes the successor prompt into a new chat on the main checkout. Open work that passes to MOD-03: OPS-01's local-only state (branch `data/2026-09-4`, no commit; session `local_ab19558f`), the unpushed OPS-01 claim draft (it assumes a routine refresh: redo it as High risk if any pin, `add_reckoner_funds.js`, `--accept-drops` or universe change is approved) and TASK-081.
 - Rel: REQ-072, REQ-081; TASK-015, TASK-016; INC-19.
 
 #### TASK-080 MOD-03 validates the MOD-02 handover against the repository
-- WS GOV | Status PLANNED | P1 | Owner: MOD-03 | Dep: TASK-079 merged | Blk: -
+- WS GOV | Status VERIFIED COMPLETE (17-Nov-2026, effective at the merge of its docs PR) | P1 | Owner: MOD-03 | Dep: TASK-079 merged | Blk: -
+- Evidence (17-Nov-2026, MOD-03, session `local_ce891716`): record [`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md). `origin/main` = local `main` = `cd4aaa5` (handover merge `8278f85` + PR #38), clean, no open PR; `git diff --stat b47069b origin/main -- site/ tools/ .github/ package.json package-lock.json` empty; `verify_page` as recorded (MASTER 7682; Select 178/178; PMS 692 / AIF 12 / benchmarks 4; RISK_MATRIX 1088; EQUITY_ANALYTICS 1205; 0 duplicates; 0 script errors; ends `</body></html>`); `npm test` 903 / 0 failures; live 7 of 7 equal `site/`; OneDrive running, 0 of 988 `.git` files cloud-only, fsck exit 0; worktrees, stash and branches as recorded; CI 78 of 78 green. No check failed. Differences V1 to V11 (stale counts in the dated prompt; the change of Claude account, so `list_sessions` could not be compared with CHAT_REGISTRY) are in the record and in the errata ERR-11 to ERR-14 of `docs/handover/README.md`. MOD-02 RETIRED, MOD-03 ACTIVE.
 - Accept: as for TASK-016 (record `docs/update-log/2026-11-02_task-016-validation.md`): before assigning any work MOD-03 re-derives the handover's snapshot values from git, `gh`, the registers and the code (HEAD and `origin/main`, branches, worktrees, stash, open PRs, `verify_page`, `npm test`, live 7 of 7, OneDrive state, the local-only artefacts it names), lists every discrepancy with its evidence, records the result and the corrections in a validation record under `docs/update-log/` and in `INTEGRATION_AND_REGRESSION_LOG.md`, and confirms the handover to the owner in writing (MOD-02 can then be RETIRED).
 - Next: MOD-03 starts from the successor prompt; first reads CLAUDE.md, `docs/PROJECT_STATE.md` and `CHAT_REGISTRY.md`.
 - Rel: REQ-071, REQ-072, REQ-081; TASK-016, TASK-079.

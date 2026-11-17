@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | 5 |
+| Version | 6 |
 | Date | 17-Nov-2026 |
-| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026 and package v2 of 17-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026) |
+| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026 and package v2 of 17-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026); MOD-03 (TASK-080 validation and errata ERR-11 to ERR-14, 17-Nov-2026) |
 | Status | Authoritative (index of this folder) |
-| Supersedes | version 4 of 9-Nov-2026 |
-| Next review | when MOD-03 completes its validation task (TASK-080), and at every handover |
+| Supersedes | version 5 of 17-Nov-2026 |
+| Next review | at the next handover |
 
 ## 1. Chat handover packages
 
@@ -24,6 +24,7 @@
 | [`MASTER_HANDOVER_2026-11-17_v2.md`](MASTER_HANDOVER_2026-11-17_v2.md) | Authoritative (v2) (dated snapshot of 17-Nov-2026) | the state of the project: repository and tests, work done and not done, chats, claims, the owner's queue, local-only files, the plan, uncertainty (section 11), the crosswalk to the owner's handover prompt (section 15) | yes: the successor prompt names it |
 | [`MASTER_HANDOVER_2026-10-28_v1.md`](MASTER_HANDOVER_2026-10-28_v1.md) | Historical snapshot, superseded by [`MASTER_HANDOVER_2026-11-17_v2.md`](MASTER_HANDOVER_2026-11-17_v2.md) for the state; still the history (dated snapshot; errata below) | project history, architecture, replication, decisions, blockers, uncertainty (section 12), ordered plan (section 13) as of 28-Oct-2026 | yes, for the history |
 | [`../update-log/2026-11-02_task-016-validation.md`](../update-log/2026-11-02_task-016-validation.md) | Authoritative record (2-Nov-2026) | the TASK-016 validation of package v1 and the audit findings, with where each went | yes, with the master handover |
+| [`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md) | Authoritative record (17-Nov-2026) | the TASK-080 validation of package v2 by MOD-03: 18 checks, differences V1 to V11 (errata 1.2 below) | yes, with the master handover |
 | [`EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`](EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream A (EX): replication, parity, transfer, old-site retirement | yes, for EX work |
 | [`NEW_BUILD_HANDOVER_2026-10-28_v1.md`](NEW_BUILD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream B (NB) and monthly operations (OPS) | yes, for NB and OPS work |
 | [`CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md`](CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | ARC-01: dependency map, shared interfaces, ownership, integration state, risks | yes; also input to every Guardian review |
@@ -32,11 +33,15 @@
 | [`SUBCHAT_HANDOVER_TEMPLATE.md`](SUBCHAT_HANDOVER_TEMPLATE.md) | Template | fields for a sub-chat handover, with the NB-03 example | to every sub-chat at its handover |
 | [`continuations/README.md`](continuations/README.md) | Authoritative (procedure and index) | triggers, continuation branches, cases A-D, verification, successor prompt A-J, the owner's message 1-10, index of prompts | when a chat is replaced |
 | [`continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 has been ACTIVE since 2-Nov-2026 | the exact prompt that starts MOD-02 | no (MOD-02 was replaced: use the MOD-03 prompt below) |
-| [`continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | Authoritative (the prompt that starts MOD-03); becomes a historical snapshot once MOD-03 is ACTIVE | the exact prompt that starts MOD-03 | yes: the only prompt to give |
+| [`continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | Historical snapshot: MOD-03 has been ACTIVE since 17-Nov-2026 (read it with errata 1.2) | the exact prompt that started MOD-03 | no (use the bootstrap prompt or the next successor prompt) |
 | [`DATA_EXTRACTION_PROMPT.md`](DATA_EXTRACTION_PROMPT.md) | Historical (sent; the export arrived on 23-Oct-2026) | the prompt the outgoing owner ran to export their files (section 2) | no; reference only |
 | [`../project-control/README.md`](../project-control/README.md) | Authoritative (living registers) | chats, tasks, requirements, open decisions, ownership, integration log, interfaces, dependency map, repository state | yes: read after the master handover |
 
 ### What to give the next Moderator
+
+Update 17-Nov-2026 (MOD-03): MOD-03 is ACTIVE (TASK-080). No successor prompt exists for a later Moderator yet: when MOD-03
+hands over it writes one (`MODERATOR_HANDOVER_TEMPLATE.md`, `continuations/README.md`); until then use
+[`MODERATOR_BOOTSTRAP_PROMPT.md`](MODERATOR_BOOTSTRAP_PROMPT.md). The paragraphs below are historical snapshots.
 
 Update 17-Nov-2026: MOD-02 hands over to MOD-03. Give only
 [`continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md):
@@ -62,9 +67,10 @@ prompts name their predecessor and successor IDs.
 | Package | Date | From -> To | Status |
 |---|---|---|---|
 | v1 | 28-Oct-2026 | MOD-01 -> MOD-02 | Historical snapshot for the state; authoritative for the history |
-| v2 | 17-Nov-2026 | MOD-02 -> MOD-03 | Authoritative (current) |
+| v2 | 17-Nov-2026 | MOD-02 -> MOD-03 | Authoritative (current; validated 17-Nov-2026, errata 1.2) |
 
-MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the history of the project. MOD-03 validates package v2 (TASK-080).
+MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the history of the project. MOD-03 validated package v2 on
+17-Nov-2026 (TASK-080; record [`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md)).
 
 ### 1.1 Errata to the 28-Oct-2026 snapshot documents (found 2-Nov-2026)
 
@@ -87,6 +93,20 @@ those of the unedited snapshot files.
 | ERR-8 | ACTIVE_CHANGE_REGISTER 2 (contract of TASK-015, field 10, "Required tests") (as merged in PR #29, 7cc3946; condensed since in INTEGRATION_AND_REGRESSION_LOG section 11) | the added lines are checked to be ASCII | the 22 new files are ASCII; 87 added lines in 5 existing files (CHANGELOG.md 8, CLAUDE.md 2, docs/KNOWN_ISSUES.md 67, docs/PROJECT_STATE.md 8, docs/README.md 2) carry the files' own typography (dashes, middle dot, arrow, ellipsis, section sign, plus-minus sign), with no control characters and no decoded escapes | audit package-consistency:D-03 |
 | ERR-9 | CODEBASE_GUARDIAN 2.3 (line 101) and 2.4 (line 111) | "A monthly refresh is HIGH risk by section 2.4"; the HIGH row includes "any data refresh or data correction" | `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7: a routine monthly refresh is Material under one criterion (R1: the PR changes only the tool-made edits of the six deploy files and the month's records); it is High risk when it changes any other file, passes an override flag, is a correction run, a universe change or an applied owner decision (fixed in TASK-018; the agent text and CLAUDE.md say the same) | audit guardian-gate-b:D-04 |
 | ERR-10 | CODEBASE_GUARDIAN 9 (lines 321-323) | fetch a blob with `gh api repos/.../git/blobs/<sha>` and check it with `git hash-object` | the default response is JSON with base64 content, so its hash differs: use `gh api -H "Accept: application/vnd.github.raw+json" repos/productsteamcentricity/Centricity-Proposal-Playbook/git/blobs/<sha> > <file>`, then `git hash-object <file>` must print `<sha>` (VERIFIED 2-Nov-2026 on the blob of `site/robots.txt`; the agent text and FILE_OWNERSHIP section 9 now say so) | audit guardian-gate-b:D-10 |
+
+### 1.2 Errata to the 17-Nov-2026 package v2 (found 17-Nov-2026)
+
+MOD-02 found ERR-11, ERR-12 and ERR-14 after its PRs had merged and wrote them in a local note on top of the paste copy of the
+successor prompt; MOD-03 confirmed them and found ERR-13 in its validation (TASK-080; record
+[`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md), section 3). The
+successor prompt and the master handover v2 stay as written (dated snapshots): read them together with this table.
+
+| # | Where | What the snapshot says | What is true | Source |
+|---|---|---|---|---|
+| ERR-11 | successor prompt sections B and C; MASTER_HANDOVER v2 sections 2, 3 and 6 | the baseline is `b47069b`; `origin/main` is "the handover merge or newer"; "CI is green (74 of 74 runs)"; "PRs #30 to #36 merged" | `origin/main` = `cd4aaa5` = the handover merge `8278f85` (PR #37) plus PR #38; both documentation only. `b47069b` stays the base of the code-and-data diff (empty). CI 78 of 78 green; 38 PRs, all merged | validation V1, V2 |
+| ERR-12 | successor prompt section H | MOD-02's helper scripts are in `06_WORKING_FILES` of the package | they are in the local package folder `PROJECT_HANDOVER/08_SOURCE_CODE_AND_TECHNICAL_FILES/moderator_helper_scripts/`; `PROJECT_HANDOVER/06_WORKING_FILES/` holds the prepared TASK-081 edits and OPS-01's draft claim | validation V3 |
+| ERR-13 | successor prompt steps D6 and F3, sections F and G | compare `list_sessions` with CHAT_REGISTRY; message OPS-01 with `SendMessage`; the weekly-limit and Fable remarks | MOD-03 runs in a different Claude account: its `list_sessions` shows none of this project's earlier chats (the registry could not be compared) and it cannot message OPS-01; the usage remarks describe the old account. The owner decides whether OPS-01 carries on in the old account (the owner relays) or OPS-02 starts in the new one from a launch packet | validation V4, V5, V6 |
+| ERR-14 | successor prompt section F2; the local package files `PROJECT_HANDOVER/README.md` and `01_MASTER_DOCUMENTATION/NEXT_SESSION_MASTER_PROMPT.md` | the owner's questions are listed as a to f; the package README and prompt are the ones to follow | the letters are local labels (DEC-OPEN-36 has its own sub-items a to d): name each question by its id and follow `DECISION_LOG.md` section 1.2 (DEC-OPEN-35 first). The two package files are version 1; the prompt is `continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md` | validation V7, V8 |
 
 ### Other documents to read with care
 

@@ -18,6 +18,23 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-17 - MOD-03 validates the Moderator handover (TASK-080; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Added
+- `docs/update-log/2026-11-17_task-080-validation.md`: MOD-03's validation of the MOD-02 -> MOD-03 package (PRs #37 and
+  #38): 18 checks, all passed; the differences from the dated prompt (V1 to V11).
+- Errata ERR-11 to ERR-14 to the package v2 in `docs/handover/README.md` section 1.2.
+
+### Changed
+- `docs/project-control/CHAT_REGISTRY.md`: MOD-02 RETIRED, MOD-03 ACTIVE (session `local_ce891716`, another Claude account).
+- `docs/project-control/TASK_REGISTER.md`: TASK-079 and TASK-080 VERIFIED COMPLETE.
+- `docs/project-control/INTEGRATION_AND_REGRESSION_LOG.md`: baseline `cd4aaa5`, live check 7.5, rows for PRs #37 and #38,
+  the TASK-080 entry.
+- `docs/handover/README.md`, `docs/handover/continuations/README.md`: index rows (the MOD-03 prompt is a historical
+  snapshot); `docs/PROJECT_STATE.md`: the state line.
+
 ## 2026-11-17 - The owner's answers of 9-Nov-2026 recorded as D89 to D96 (PR #36, merge `b47069b`; docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change (3 files: `docs/DECISIONS.md`,
