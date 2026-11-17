@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Version | 1 |
-| Date | 28-Oct-2026 |
-| Author chat | MOD-01 |
+| Version | 2 |
+| Date | 17-Nov-2026 |
+| Author chat | MOD-01; MOD-02 (compaction evidence and the index row of 17-Nov-2026) |
 | Status | Authoritative (procedure and index of every continuation and handover prompt) |
-| Supersedes | none (first version) |
+| Supersedes | version 1 of 28-Oct-2026 |
 | Next review | at the first sub-chat continuation, and at every Moderator handover |
 
 This is the procedure a Moderator (MOD-nn) or a sub-chat follows when a chat must be replaced
@@ -38,7 +38,11 @@ timestamps**. A resumed session can start from a copy of its parent's summary (s
 not a new compaction. Grepping for "This session is being continued" overcounts. Example: MOD-01 had two
 compactions (19-Oct-2026 06:28:17Z and 27-Oct-2026 12:24:37Z); its 28-Oct session started from a copy of
 the second. MOD-01 hands over because the owner ordered a Moderator replacement, not because of a third
-compaction.
+compaction. MOD-02 had four (2-Nov-2026 11:22:16Z, 2-Nov 19:14:48Z, 9-Nov 07:36:47Z and 17-Nov 06:28:46Z, counted by a
+script over its transcript: the three-compaction trigger was already met on 9-Nov); it hands over on the owner's
+instruction of 17-Nov-2026. Owner messages typed while a turn is running are stored as `queue-operation` and
+`queued_command` records, not as `user` records: count both when you extract the owner's words, and read a transcript
+with a script (its lines are multi-megabyte).
 
 **Who starts it.** The Moderator decides for a sub-chat (or the sub-chat asks the Moderator); the
 Moderator starts its own handover; the owner can order either at any time.
@@ -277,6 +281,7 @@ Newest last. The status column uses the chat statuses; update it when the succes
 | Date | From -> To | Scenario | Tasks | Branch | Handover document | Successor prompt | Status |
 |---|---|---|---|---|---|---|---|
 | 28-Oct-2026 | MOD-01 -> MOD-02 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-015 (package), TASK-016 (validation by MOD-02) | `handover/mod-01-to-mod-02-20261028` | [`../MASTER_HANDOVER_2026-10-28_v1.md`](../MASTER_HANDOVER_2026-10-28_v1.md) | [`MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 ACTIVE since 2-Nov-2026 |
+| 17-Nov-2026 | MOD-02 -> MOD-03 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-079 (package), TASK-080 (validation by MOD-03) | `handover/mod-02-to-mod-03-20261117` | [`../MASTER_HANDOVER_2026-11-17_v2.md`](../MASTER_HANDOVER_2026-11-17_v2.md) | [`MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | QUEUED: MOD-03 not started |
 
 No sub-chat continuation has been needed so far: NB-01, NB-02 and NB-03 each finished their task and
 are COMPLETED (`docs/project-control/CHAT_REGISTRY.md`).

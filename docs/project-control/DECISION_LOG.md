@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 9-Nov-2026 |
-| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026 and 9-Nov-2026) |
+| Date | 17-Nov-2026 |
+| Author chat | MOD-01 (handover package, TASK-015); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026, 9-Nov-2026 and 17-Nov-2026) |
 | Status | Authoritative for decisions waiting for the owner (DEC-OPEN-nn). Approved decisions: `docs/DECISIONS.md` is authoritative; part 2 here is only an index. |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
 | Next review | each time the owner answers a decision |
@@ -34,7 +34,10 @@ to record the answer. Every entry is BLOCKED on the named decider (answered entr
 The options, effects and recommendations come from the cited KNOWN_ISSUES and DECISIONS entries and the
 28-Oct-2026 fact sheets and, for DEC-OPEN-30 to -33, the 2-Nov-2026 pack analysis
 (`docs/update-log/2026-11-02_datapack-feasibility.md`) and, for DEC-OPEN-34, ARC-01's finding D-12 (Gate B review of 2-Nov-2026) and the pre-check of the
-TASK-018 contract of 3-Nov-2026. Where a benefit, disadvantage or effect is MOD-01's or MOD-02's own reasoning
+TASK-018 contract of 3-Nov-2026; for DEC-OPEN-35, the owner's handover prompt of 17-Nov-2026 and the rules it
+meets (D61, D87, D88; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7); for DEC-OPEN-36, OPS-01's dry-run
+report of 9-Nov-2026 (local-only) and the gates of the two tools it ran. Where a benefit, disadvantage or effect
+is MOD-01's or MOD-02's own reasoning
 rather than a documented fact, it is marked (INFERRED).
 
 ## 1.2 Order to ask, and deadlines
@@ -61,25 +64,39 @@ is not a stop, D61) and the Portfolio Matrix keeps "30 Sep 2026" until a late se
 DEC-OPEN-30, -31 and -32 are answered (D92, D93, note on D86) and TASK-018 has not merged, so a merge of the bridge
 by 13-Nov-2026 is no longer possible: the fallback applies to the October cycle (INFERRED); the build starts when
 TASK-018 has merged.
-Suggested order for the owner's decision session:
+**Correction and update, 17-Nov-2026 (MOD-02).** The statement above that GOV-01's PR (TASK-018) "has not
+merged" was true only when it was written on 9-Nov-2026 (the order list below is corrected): the PR merged on
+9-Nov-2026 at 12:16 UTC (PR #35, merge ddd0304), and PR #36 then recorded D89 to D96 (merge b47069b, 17-Nov-2026
+06:37 UTC). The October MF cycle has not started: the Regular and SIF monitors as on 31-Oct-2026 have not
+arrived, and OPS-01's Run A (the Reckoner steps 14 and 15) stopped at its gates on 9-Nov-2026 and waits for
+DEC-OPEN-36. DEC-OPEN-33's date (about 11-Nov-2026) has passed without an answer. The owner's handover prompt of
+17-Nov-2026 raised DEC-OPEN-35, which decides how every later publish is approved.
 
-1. DEC-OPEN-30 (the Sortino form) and DEC-OPEN-31 (the other changes of the pack) were ANSWERED on 9-Nov-2026
-   (D92, D93); they gated the build. DEC-OPEN-34 (who accepts a finished change) was ANSWERED on 9-Nov-2026 (D87);
-   the owner's yes to the operator-run Gate B was given the same day (D88); GOV-01's PR (TASK-018) is not merged
-   yet.
-   DEC-OPEN-01, -02 and -03 are ANSWERED (2-Nov-2026: D86, D84, D85).
-2. DEC-OPEN-32 was ANSWERED on 9-Nov-2026 (a note on D86). DEC-OPEN-33 (by about 11-Nov-2026, acted on at run time).
-3. DEC-OPEN-08 (the 8 scheme renames) was ANSWERED on 9-Nov-2026 (D96).
-4. DEC-OPEN-04 (see its note) and DEC-OPEN-11 (both before TASK-020; DEC-OPEN-11 before its steps 14/14a);
-   DEC-OPEN-05. DEC-OPEN-07 (the JioBlackRock records) was ANSWERED on 9-Nov-2026 (D94).
-5. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
-6. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
-7. The rest as time allows.
+Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
+
+1. DEC-OPEN-35 (the approval gate before publishing). It decides how every later change that alters `site/` is
+   approved, so it comes first.
+2. DEC-OPEN-36 (the October Reckoner run: the Select list and AIF gates), one question at a time in the order a,
+   c, d, b; together with DEC-OPEN-11 (the four desk labels), which the same run needs before its steps 14 and
+   14a, and with the owner's re-exports of the Regular and SIF monitors as on 31-Oct-2026 (not a DEC-OPEN; asked
+   on 9-Nov-2026 and not answered).
+3. DEC-OPEN-30 (the Sortino form) and DEC-OPEN-31 (the other changes of the pack) were ANSWERED on 9-Nov-2026
+   (D92, D93); they gated the build. DEC-OPEN-34 (who accepts a finished change) was ANSWERED on 9-Nov-2026
+   (D87); the owner's yes to the operator-run Gate B was given the same day (D88); GOV-01's PR (TASK-018) merged
+   on 9-Nov-2026 (PR #35). DEC-OPEN-01, -02 and -03 are ANSWERED (2-Nov-2026: D86, D84, D85).
+4. DEC-OPEN-32 was ANSWERED on 9-Nov-2026 (a note on D86). DEC-OPEN-33 (by about 11-Nov-2026, acted on at run
+   time; the date has passed unanswered: ask it only when the pack bridge nears step 10).
+5. DEC-OPEN-08 (the 8 scheme renames) was ANSWERED on 9-Nov-2026 (D96).
+6. DEC-OPEN-04 (see its note; before TASK-020), then DEC-OPEN-05. DEC-OPEN-07 (the JioBlackRock records) was
+   ANSWERED on 9-Nov-2026 (D94). (DEC-OPEN-11 moved up to item 2.)
+7. DEC-OPEN-13, DEC-OPEN-14 and DEC-OPEN-24 together (the old site).
+8. DEC-OPEN-25, then DEC-OPEN-26 (time-sensitive: the outgoing owner's offer may lapse); DEC-OPEN-29.
+9. The rest as time allows.
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-34 exist: 9 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32 and -34; section 1.6) and 25
-are open. Next free: DEC-OPEN-35.
+Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 9 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32 and -34; section 1.6) and 27
+are open. Next free: DEC-OPEN-37.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
 |---|---|---|---|---|---|
@@ -117,6 +134,8 @@ are open. Next free: DEC-OPEN-35.
 | DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | ANSWERED 9-Nov-2026 (note on D86; the repository part is MOD-02's reading, INFERRED) | n/a (answered) |
 | DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
 | DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | ANSWERED 9-Nov-2026 (D87) | n/a (answered) |
+| DEC-OPEN-35 | Approval gate before publishing: the owner approves before every merge that changes `site/`, or only in the listed cases | owner | every publish of the October update; the publish rule in `CLAUDE.md`, the skill and the release rules | before the next merge that changes `site/` | yes (MOD-02, 17-Nov-2026; INFERRED) |
+| DEC-OPEN-36 | October Reckoner run: pin the two AIF series names, accept the drops, add the new names, confirm the removals | owner (+ desk for the fund facts) | TASK-020 steps 14, 14a and 15 (OPS-01's Run A) | as soon as possible (OPS-01 has waited since 9-Nov-2026) | MOD-02's reading only (17-Nov-2026; INFERRED) |
 
 ## 1.4 The open decisions
 
@@ -738,6 +757,233 @@ TASK-021, TASK-022.
 
 ### DEC-OPEN-34 Who accepts a finished change (Gate E)? - ANSWERED 9-Nov-2026: moved to section 1.6 (D87)
 
+### DEC-OPEN-35 Approval gate before publishing: does the owner approve before every merge that changes `site/`, or only in the listed cases?
+
+Decider: owner. Raised: 17-Nov-2026 by MOD-02 from the owner's handover prompt (pasted 17-Nov-2026 06:27 UTC in
+the MOD-02 chat; its sections 2 (item 14), 7.3 (steps 7 and 8), 8, 9, 17.1 and 23). Deadline: before the next
+merge that changes any of the six deploy files; every wave of the October update waits on it (the first wave was
+targeted for 11-Nov-2026 in the ETA of 9-Nov-2026). Unblocks: every publish of the October update (OPS-01's Run
+A and the later waves) and the final wording of the publish rule in `CLAUDE.md`, the `monthly-update` skill and
+the release rules. Related: D61, D63, D68, D87, D88; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7, 8 and
+10; `CLAUDE.md` "How every change is made" step 6; `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and 7.6.
+
+- **Words used in this entry.** A merge puts a change on the live site; the deploy files are the six files the live page is made of; Gate B is an independent code review of the change; the head commit is the exact saved version of a change.
+- **The problem.** The owner's prompt of 17-Nov-2026 says that coding done is not a task done: the owner's
+  explicit approval comes before a sprint is closed and before roll-out, the last approved version is never
+  overwritten with unapproved work, and silence, a lack of feedback or the passage of time is never approval. It
+  also asks for the owner's approval of a data update before the updated dashboard becomes the new baseline (its
+  section 6.8). In this project a merge to `main` is the roll-out: it publishes the live site within minutes
+  (D63), and the site and the repository are public (D60). The recorded rules say something different. D61
+  (owner, 16-Oct-2026): a routine monthly refresh is merged, and so published, as soon as every check has
+  passed, and the owner accepts it afterwards (D87; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8: "the owner
+  reads the closing report"). D88 (9-Nov-2026) adds one more check to every refresh, a Guardian review of the
+  diff run by the operator, but the refresh still publishes by itself when every check passes. `CLAUDE.md` step
+  6 merges other changes when they are verified, unless the owner asked to review first or section 7 applies.
+- **What the recorded rule asks the owner first, in plain words** (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 7, "Owner approval before the merge"). Five cases only: (1) the tools cannot tell which fund or file
+  is meant, or the product list would change (an unclear rename, a PMS name pin, a deck name that matches
+  nothing, adding or removing products, a file that cannot be identified, that competes for one slot, that is
+  older than what is live or that belongs to another month); (2) a correction to data that is already live, or a
+  change that alters every client deck; (3) getting past a safety gate with an override flag, or pinning a name
+  to a record by hand; (4) anything the project's "Never" list keeps for the owner (repository settings and
+  visibility, force-push or history rewrite, library upgrades); (5) anything the owner has asked to see first.
+  For everything else the owner's yes before the merge is not required.
+- **Facts (VERIFIED 17-Nov-2026).** No merge since 22-Oct-2026 has changed `site/`:
+  `git diff --stat 5d39821 origin/main -- site` prints nothing (5d39821 is the merge of PR #26, which was merged
+  after the owner had seen the sample deck: D82). D61's automatic route has never been used (section 2.1: "never
+  yet exercised"), so the October waves would be its first use. Which version is "the last approved" one is not
+  recorded as such (UNKNOWN; INFERRED: the live content of PR #26, from the owner's go-ahead of 22-Oct-2026
+  15:36 UTC in section 2.2). OPS-01's launch packet (point 11) lets it merge its own pull request when every
+  check passes and no High-risk trigger applies, so the answer changes its instructions too.
+- **Why a decision is needed.** Two instructions of the owner point different ways. D61 is an approved decision;
+  the new prompt says to follow the latest explicit instruction, but also never to override an established
+  decision silently (its section 17.1). Only the owner can say whether the prompt is meant to replace D61 for
+  publishing. A change to publishing or approvals needs the owner's approval and a new `Dnn`
+  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10).
+- **Options.**
+  - (a) Keep the recorded rules (D61, D87, D88 and section 7 as they are). A routine refresh publishes when
+    every check passes, Gate B included; the owner decides first only in the five cases above and accepts the
+    rest afterwards.
+  - (b) The owner approves before every merge that changes `site/` (any of the six deploy files), routine
+    refreshes included. The work is finished in a branch, every check and Gate B pass, and the owner gets a
+    one-page plain-language summary (what changes for clients, counts before and after, dates, funds added or
+    dropped) with the result on the local preview. The merge follows an explicit "approved" for that exact head
+    commit; a new commit means a new approval; silence is never approval. Merges that cannot change what clients
+    see (documents, registers, tests, tool code that publishes nothing) stay on the Moderator's evidence (D87).
+    A rollback that puts back the last approved version needs no new approval; the owner is told at once.
+  - (c) A middle rule, approval on the preview. For each refresh run the owner approves once, explicitly, the
+    one-page preview made from the dry runs. The operator then applies, tests and merges alone if every check
+    passes and the outcome equals the preview (same files, same counts, same dates). Any difference, any failed
+    gate and any of the five cases send it back for a new yes. Changes to the page, the exports or the tools
+    that alter what clients see are treated as in (b), and a rollback is as in (b).
+- **What each changes.** (a) Nothing. (b) A refresh no longer publishes by itself; Gate E for client-facing
+  changes moves from after the merge to before it; the wording changes in `CLAUDE.md` (step 6),
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and
+  7.6, the `monthly-update` skill, `docs/MONTHLY_UPDATE_PROCESS.md`, the `release-manager` agent and OPS-01's
+  launch packet; a new `Dnn` supersedes D61 in part and amends D87 and D88. (c) The same files change, but only
+  the refresh route, and the preview becomes a named output of every run.
+- **Benefits and disadvantages.** (a) Fastest, and the owner's time goes only where a judgement is needed; but a
+  publish can reach clients before the owner has seen it, which is not what the prompt asks (INFERRED), and the
+  automatic route has not been tried yet. (b) The owner controls every publish and the last approved version can
+  always be named; the price is one yes per merge (three to five merges in a month while the October update runs
+  in waves: INFERRED from the ETA of 9-Nov-2026), delay when the owner is away, and a branch that has to be
+  brought up to date and re-checked if `main` moves while it waits. (c) Fewer round trips than (b), and nothing
+  reaches clients without an explicit yes; the risk is a gap between the preview and the final result that the
+  equality check does not catch (INFERRED), and that check is new and has to be written down.
+- **Impact on existing functionality.** None on the dashboard, its data or the tools: only who says yes, and
+  when.
+- **Maintenance.** (b) and (c): the Moderator records each approval (date, head commit, the owner's words) in
+  `INTEGRATION_AND_REGRESSION_LOG.md`, so that the latest owner-approved version can always be named, as the
+  prompt requires. (a): nothing new.
+- **Risks and reversibility.** Reversible: a rule change by a docs PR with the owner's approval. Under (a) the
+  risk is a mistake published before the owner has seen it; a bad publish is rolled back by reverting the merge
+  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 9), but decks already sent to clients are not recalled. Under
+  (b) the risk is a stale dashboard while an approval is awaited (INFERRED); under (c) see above.
+- **Related question inside this entry (INFERRED).** The prompt also asks for the owner's approval before any
+  sprint (task) is closed. D87 (9-Nov-2026) lets the Moderator accept changes that clients do not see
+  (registers, tests, internal documents) on evidence. This entry keeps D87 for changes that publish nothing; the
+  owner can say that the prompt is meant to override D87 as well.
+- **Documented recommendation (not a decision).** MOD-02, 17-Nov-2026 (INFERRED from the prompt and the recorded
+  rules): option (b), at least for the October update. It is the owner's latest explicit instruction (the
+  prompt's own order of precedence puts that first), a merge is a public roll-out, the automatic route has never
+  been used so no working practice is disturbed, there is no hosted staging copy (INFERRED), so the owner's
+  first sight of a hosted change would be the live site, and the cost is one short yes per merge. Keep (c) as
+  the fallback if waiting becomes a problem, and let the owner relax to (a) later with a new decision. What
+  stays the same under all three: gates A to D (Gate B runs before the owner is asked), the six-file deploy
+  rule, the CI `verify` check, `security-reviewer` before every push, the stop list of D61 (a judgement call
+  always asks first), and the Moderator's acceptance of internal documents on evidence (D87).
+- **Record the answer as.** A new `Dnn` (for (b) or (c): it supersedes D61 for publishing and amends D87 and
+  D88); update `CLAUDE.md`, `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8 and
+  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` in the same PR (the rule is in section 10 of
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`); tell OPS-01 and every later OPS chat, because the merge rule in the
+  launch packet changes.
+- **Not covered here (INFERRED).** The same prompt asks for other process changes that this project's rules do
+  not contain: a Stage 0 reconstruction of the dashboard, a roadmap of phases and sprints that the owner
+  approves before new development, and a numbered-chat system. Whether they apply to a project that already has
+  a verified baseline and its own chat numbering is a separate question for the owner; MOD-03 puts it as the
+  next free entry once it has read the prompt.
+
+### DEC-OPEN-36 October Reckoner run: the Centricity Select list and the AIF performance stop at their gates (four questions)
+
+Decider: owner (with the desk for the facts about the funds). Raised: 17-Nov-2026 by MOD-02 from OPS-01's
+dry-run report of 9-Nov-2026 (local-only; `tools/merge_reckoner.js` and `tools/merge_aif_performance.js` on the
+deck "Monthly Investment Reckoner - October 2026", data as on 30-Sep-2026; nothing was applied). Deadline: as
+soon as possible. OPS-01 stopped on 9-Nov-2026 and waits; the first October wave (the Reckoner products) was
+targeted for 11-Nov-2026. The same names will come back with the next deck (expected about 20-28-Nov-2026:
+INFERRED from the monthly cadence in `monthly-updates/00_INBOX/README.md`), so the answers are needed in any
+case. Unblocks: TASK-020 steps 14, 14a and 15 (the Reckoner steps of Run A) and with them the refreshed
+Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; KNOWN_ISSUES A4 and A20; D61
+(stop list), D71, D75, D76, D90; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 (high-risk triggers 9 and 10).
+
+- **The problem.** Each month the Reckoner deck decides which funds carry the Centricity Select badge (the house
+  recommendation, with its rationale) and supplies the AIF performance table. OPS-01's dry run on the October
+  deck found the following (nothing applied; both steps exit 1):
+  - Step 14 (Select list): 178 would become 171 (5 added, 12 dropped, 166 kept). Two gates fail. (i) 12 drops
+    against a limit of 8 (5% of 178): only the owner can waive it, with `--accept-drops 12`, after reading the
+    list. (ii) In the category "EQUITY AIFs- Listed Equities" five Select AIFs drop (Alchemy Long Term Ventures
+    Fund, ICICI Prudential Alpha Opportunities, Karma Capital Jasmine Fund, Kotak Iconic Fund II, Motilal Oswal
+    Founders Fund) while the deck lists three names that match nothing in our records (Motilal Oswal Founders
+    Fund Series VII, Alchemy Long Term Ventures Fund 3, Aionios Alpha Fund I). The tool reads that as a possible
+    join failure (a respelled name), not as a deliberate removal, and `--accept-drops` does not waive it (D71).
+  - The 12 drops are those 5 AIFs; 5 gold ETFs (HDFC Gold ETF, ICICI Pru Gold ETF, Mirae Asset Gold ETF, Nippon
+    India ETF Gold BeES, SBI Gold ETF), while the deck lists three gold ETF funds of funds (HDFC, Quantum, UTI)
+    among the 5 additions; and 2 diversified equity funds (360 ONE Focused Fund, Tata Large & Mid Cap Fund),
+    while the deck lists two others (Aditya Birla SL Flexi Cap Fund, Invesco India Large & Mid Cap Fund) among
+    the additions. The 5 additions have no rationale text yet (the deck's fund pages are performance grids
+    only).
+  - Five deck names have no MASTER record: the three AIF names above and two PMS names (Sundaram SISOP, Equinova
+    Edge PMS). Adding a record is a universe change (`tools/add_reckoner_funds.js`, step 14a: "always confirm
+    with the owner"), and that tool keeps its own hard-coded list of the products to add (four entries today),
+    so adding means editing that list first (VERIFIED in code).
+  - Step 15 (AIF performance): the deck's AIF grid has ten rows; seven match our AIF records and the three names
+    above match nothing. The page holds performance for 12 AIF records and the tool rebuilds it from the deck,
+    so 12 would become 7 and the gate "MASTER AIF funds with performance" fails. The five that would lose it are
+    the five AIFs that drop out of Select (VERIFIED: the 12 keys of `PMS_PERFORMANCE.aif` on `origin/main` less
+    the 7 matched rows). That gate has no override flag (VERIFIED in `tools/merge_aif_performance.js`: its flags
+    are `--apply`, `--html` and `--allow-layout-change`, which concerns the deck layout only).
+  - The two "successor series" names. OPS-01 read them as successor series of our two records (UNCERTAIN). Our
+    live Select entries for Motilal Oswal Founders Fund and Alchemy Long Term Ventures Fund carry the previous
+    deck's spellings "Motilal Oswal Founders Series VII" and "Alchemy Long Term Ventures Fund Series 3"
+    (VERIFIED: the `CENTRICITY_SELECT` block on `origin/main`), and `tools/data/pins.json` already pins "Motilal
+    Oswal Founders Fund*" and "Alchemy Long Term Ventures Fund*" to those records. The October deck writes
+    "Series VII" and "3": the same series numbers, spelled differently (INFERRED: a respelling and not a new
+    series; only the desk or the funds' own documents can confirm). For the other names: VERIFIED that no MASTER
+    name contains Aionios, Equinova or SISOP; the PMS performance block already holds a key "Sundaram Alternate
+    - SISOP".
+- **Why a decision is needed.** Every way out of the stop is the owner's under the project's rules: a pin needs
+  the owner (D75; a Reckoner name mismatch is on D61's stop list), adding a record is a universe change (D61),
+  and `--accept-drops` is an owner-only override (D71). A wrong pin puts another fund's numbers on a client's
+  fund. Any of them makes Run A a High-risk change (section 7, triggers 9 and 10): a change-impact contract, a
+  Gate B review run by the Moderator and the owner's approval before the merge. OPS-01's claim record (a draft
+  exists, local only) assumes a routine refresh and has to be redone (INFERRED). The owner's words of 9-Nov-2026
+  "All the existing products stay; additional ones will be added" (D90) were said about the bond file; whether
+  they also cover Select badges is not said (INFERRED: these tools never delete a MASTER record, and a Select
+  badge is a different thing).
+- **Options.** One decision per question. Ask in the order a, c, d, b, because the count in (b) depends on the
+  others.
+  - (a) Are "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" the same funds as
+    our two records? (a1) Yes: pin both names to the records (a reviewed edit of `tools/data/pins.json`, in two
+    sections, with the desk's or the fund house's confirmation quoted). (a2) No, they are new series: leave the
+    old records as they are and add the two names as new products (see c). (a3) Ask the desk first and hold
+    steps 14 and 15 until it answers.
+  - (b) After a, c and d, accept the drops that are left? (b1) Yes: apply with `--accept-drops <n>`, where n is
+    the exact count of the final list (12 if nothing is pinned, about 10 if both names are pinned: INFERRED),
+    after the owner has read the DROPPED list. (b2) No: hold the Select refresh and keep the current list until
+    the next deck. The flag never waives the gate on unmatched deck names, so (a) and (c) come first.
+  - (c) May the new names be added to the product list? The names are Aionios Alpha Fund I (an AIF) and Sundaram
+    SISOP and Equinova Edge PMS (PMS), plus the two series names if (a2). (c1) Yes: add them with
+    `tools/add_reckoner_funds.js` after a reviewed change to its list; each new product's expected-return band
+    is inherited from its peer group, not taken from a source for that product (the tool's own header), and its
+    facts come from its own page of the deck. (c2) Not now: leave them out and let the run record them as known
+    gaps (a small change to the `NO_MASTER_NOTE` list in `tools/merge_reckoner.js`), to be added later. (c3) Ask
+    the desk for the details first.
+  - (d) Are the removals the desk's own decision? Three groups: the 5 gold ETFs (replaced by 3 gold ETF funds of
+    funds), the 2 equity funds (replaced by 2 others) and the 3 AIFs the deck leaves out altogether (Karma
+    Capital Jasmine Fund, Kotak Iconic Fund II, ICICI Prudential Alpha Opportunities: editorial or omission is
+    UNKNOWN). (d1) Accept the deck: the funds lose the Select badge and stay in the product list. (d2) Keep the
+    existing Select entries ("existing products stay", D90): the tools take membership from the deck, so this
+    needs a tool change or a hand edit (INFERRED), and it leaves badges on funds the desk no longer lists
+    (INFERRED). (d3) Ask the desk which removals are deliberate before deciding, at least for the three AIFs.
+    Whatever is chosen, step 15 cannot pass until the AIF performance of the AIFs the deck leaves out (those
+    three, if a1 is chosen) is settled too, because the gate has no override: (i) show no performance for them
+    (an owner-only override flag must be added to the tool: High risk); (ii) keep their old performance with its
+    old date (INFERRED: a table of mixed dates, in conflict with CLAUDE.md rule 6 if shown as current); (iii)
+    get their current performance from the desk.
+- **What each changes (what clients see).** A fund dropped from Select loses its badge, rationale and ratio
+  details in the picker, the popover and the rationale pages (INFERRED from the tool's header: "Retained funds
+  keep their rationale, risk ratios and details"); it stays in the product list and can still be picked. An
+  added fund shows the badge without rationale text (INFERRED from the tool's list of "new entries with no
+  rationale"). An AIF without performance shows no returns in the AIF table on screen, in Excel and in the deck
+  (INFERRED). New products become selectable and appear in the deck. (a1) keeps two AIFs with badge, rationale
+  and refreshed performance; (a2) drops them and adds two new products. Holding the run keeps the page as it is:
+  the Select list and the AIF performance as on 31-Aug-2026 (the September deck), including funds the desk has
+  dropped.
+- **Benefits and disadvantages.** (a1) Fewest changes for clients; it depends on the sameness being right, and a
+  wrong pin is the worst case (D75). (a3) is the safest and the slowest. (c1) completes the list as the deck
+  shows it, with bands that are inherited and so a judgement (INFERRED). (c2) is quick, but the deck and the
+  page differ until the names are added. (d1) follows the desk's own list, but some clients lose a badge on a
+  fund they know. (d2) keeps continuity, but the badge may contradict the desk (INFERRED). (b1) refreshes
+  October with an exact, owner-only override. (b2) changes nothing for clients, who stay on last month's view.
+- **Impact on existing functionality.** The Select badges and rationale pages and the AIF and PMS tables; the
+  product count only under (a2) and (c1). Nothing else.
+- **Maintenance.** A pin is a standing line in `tools/data/pins.json` that every later deck run uses; each added
+  product needs its monthly performance and rationale kept up (INFERRED). The same names return with every deck,
+  so a note recorded now saves asking again.
+- **Risks and reversibility.** The pins, the override and the data merge are reversible in git (restore the six
+  deploy files from `backups/`, or revert the merge); decks already sent to clients are not recalled. A wrong
+  pin or a wrong addition is the real risk.
+- **Documented recommendation (not a decision).** None is documented. MOD-02, 17-Nov-2026 (INFERRED): put (a),
+  (d) and the details for (c) to the desk in one message (the owner contacts the desk). If the desk confirms a
+  respelling, take (a1). Take (c1) for the three names, as a small tool change in its own reviewed task with the
+  owner's approval of each band. Take (d1) for the gold ETFs and the equity funds if the desk confirms, and (d3)
+  for the three AIFs. Take (b1) last, with the exact count. If the desk cannot answer soon, (b2) keeps the page
+  as it is rather than guessing.
+- **Record the answer as.** A new `Dnn` (pins and additions are owner decisions on the product list: D75) with
+  the owner's words and the exact `--accept-drops` count quoted; update TASK-020 and the OPS-01 claim (High
+  risk), KNOWN_ISSUES (A20, or a new entry if a tool change is needed) and DEC-OPEN-11; `tools/data/pins.json`
+  records each pin with the confirmation date (D75). Prepare the relay message for OPS-01 (DECISION_LOG section
+  1.5 step 4).
+
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
@@ -946,7 +1192,7 @@ October cycle; if the answers or TASK-018 come late, the fallback in section 1.2
 TASK-022. Related: C35, D85, D86.
 
 Answer: 'Dashboard's, with note' (a button offered by MOD-02, in answer to "Which Sortino formula should the
-October risk table use?"; 9-Nov-2026 08:48 UTC, MOD-02 chat) = option (a) -> D92. Status: ANSWERED.
+October risk table use?"; 9-Nov-2026 08:43 UTC, MOD-02 chat) = option (a) -> D92. Status: ANSWERED.
 
 - **The problem.** The Sortino ratio shows how much return a fund gave for each unit of "bad" bumpiness: only the
   days it earned less than the risk-free rate count. Earlier on 2-Nov-2026 (08:52 UTC) the owner chose the textbook
@@ -1105,7 +1351,7 @@ bake, so that TASK-023 and TASK-067 can ship with it (C20 and C43 are P1). Unblo
 treatment rule for TASK-067. Related: C20 (P1), C16, C43; D81.
 
 Answer: 'Yes, clear them' (a button offered by MOD-02, in answer to "Clear returns shown for periods before these
-funds existed?"; 9-Nov-2026 11:40 UTC, MOD-02 chat) = option (a) -> D94. Status: ANSWERED.
+funds existed?"; 9-Nov-2026 11:38 UTC, MOD-02 chat) = option (a) -> D94. Status: ANSWERED.
 
 - **The problem.** Twelve JioBlackRock "Regular" plans started in August 2026, but they show 3-month, 6-month
   and 1-year returns copied from the older "Direct" plan, for periods before the Regular plan existed. A
@@ -1190,7 +1436,7 @@ before acting on it.
 | D50 | SIF Monitor baked into the SIF sibling; always /100 | Active | CLAUDE.md rule 4 |
 | D58 | Rf = 4.5%, pending desk confirmation | Open | = DEC-OPEN-02 (owner kept 4.5% for now: D84; desk confirmation open) |
 | D60 | Public repository on free GitHub Pages (owner, 16-Oct-2026) | Active | no client names or files in the repo (R1: de-identified sample figures remain in pushed history); DEC-OPEN-18 |
-| D61 | Monthly updates publish automatically once every check passes (owner, 16-Oct-2026) | Active | never yet exercised; data corrections are not covered |
+| D61 | Monthly updates publish automatically once every check passes (owner, 16-Oct-2026) | Active | never yet exercised; data corrections are not covered; the owner's handover prompt of 17-Nov-2026 asks for approval before roll-out: DEC-OPEN-35 |
 | D62 | Repository reorganised into `site/`, `tools/`, `tools/lib/`, `docs/` | Active | repository layout |
 | D63 | Pages built by GitHub Actions from `site/`, behind a parity gate | Active | Gate D; no branch protection (R9, DEC-OPEN-17) |
 | D64 | History migrated sanitised, not verbatim | Active | never push `upstream/*`; R1 |
@@ -1199,11 +1445,11 @@ before acting on it.
 | D67 | Shared Claude config, package manifest and LF tracked (`xlsx` 0.18.5 pinned) | Active | never upgrade without the owner (TASK-058) |
 | D68 | Changes go branch -> PR -> verify -> merge | Active | every change, docs included |
 | D70 | `DATA_DATES.analytics` labels the MF analytics only | Active | A3 |
-| D71 | Centricity Select merge refuses join failures and mass drops | Active (extended by D76) | `--accept-drops` only by the owner |
+| D71 | Centricity Select merge refuses join failures and mass drops | Active (extended by D76) | `--accept-drops` only by the owner; the October run needs it (DEC-OPEN-36) |
 | D72 | One tool contract: exit 0 ok / 1 gate failed / 2 usage or input error; gates before writes; atomic writes; strict CLI | Active | read every gate line |
 | D73 | Workbook dates are calendar days (`isoDay`) | Active | A6 |
 | D74 | Source reliability flags reach the page as `fl` | Active | 33 risk flags; dagger notes |
-| D75 | Hand pins live in `tools/data/pins.json` | Active | pins only with the owner |
+| D75 | Hand pins live in `tools/data/pins.json` | Active | pins only with the owner; DEC-OPEN-36 asks for two |
 | D76 | Reckoner merge refuses a drop under an unmapped deck heading | Active | Reckoner step |
 | D77 | CDN scripts carry SRI; noindex; inline favicon | Active | never change CDN versions |
 | D78 | `Centricity_Risk_Matrix.js` moved to `docs/archive/` (supersedes D69) | Active | 7 published files; the legacy file returns 404 |
@@ -1262,6 +1508,7 @@ None of them may be implemented on the strength of the recommendation alone.
 | 3-Nov-2026 | DEC-OPEN-34 opened (Gate E scope; who accepts a finished change) from ARC-01 finding D-12 (Gate B review of 2-Nov-2026), raised again in the pre-check of the TASK-018 contract. | MOD-02 |
 | 9-Nov-2026 | DEC-OPEN-34 answered ("Client-facing only", 06:48 UTC) = D87; moved to section 1.6; the section 1.2 note (the pack bridge cannot merge by 13-Nov-2026, INFERRED), order item 1 and sections 2.1 to 2.3 updated. | MOD-02 |
 | 9-Nov-2026 | D88 recorded: the owner's yes to an operator-run Gate B in every monthly refresh (07:34 UTC; a Guardian finding of 9-Nov-2026, reported in chat). | MOD-02 |
-| 9-Nov-2026 | DEC-OPEN-30 answered ("Dashboard's, with note", 08:48 UTC) = D92, DEC-OPEN-31 answered ("Accept all four", 08:54 UTC) = D93 and DEC-OPEN-32 answered ("Yes, they may", 09:02 UTC; note on D86); all three moved to section 1.6; section 1.2, the counts and section 2.1 updated. | MOD-02 |
+| 9-Nov-2026 | DEC-OPEN-30 answered ("Dashboard's, with note", 08:43 UTC) = D92, DEC-OPEN-31 answered ("Accept all four", 08:54 UTC) = D93 and DEC-OPEN-32 answered ("Yes, they may", 09:02 UTC; note on D86); all three moved to section 1.6; section 1.2, the counts and section 2.1 updated. | MOD-02 |
 | 9-Nov-2026 | D89, D90 and D91 recorded from the owner's answers of 9-Nov-2026 (07:19, 08:07 and about 09:12 UTC): the Direct Equity price source, the product-list rules (one Bond List, reading INFERRED), the performance label. | MOD-02 |
-| 9-Nov-2026 | DEC-OPEN-07 answered ("Yes, clear them", 11:40 UTC) = D94 and DEC-OPEN-08 answered ("Confirm all 8", 12:01 UTC) = D96; both moved to section 1.6; D95 recorded (PMS and AIF performance from the Reckoner, the owner's message of 07:19 UTC) with a note on DEC-OPEN-04; sections 1.2, 2.1 and 2.3, the counts and the next-free ids updated. | MOD-02 |
+| 9-Nov-2026 | DEC-OPEN-07 answered ("Yes, clear them", 11:38 UTC) = D94 and DEC-OPEN-08 answered ("Confirm all 8", 12:01 UTC) = D96; both moved to section 1.6; D95 recorded (PMS and AIF performance from the Reckoner, the owner's message of 07:19 UTC) with a note on DEC-OPEN-04; sections 1.2, 2.1 and 2.3, the counts and the next-free ids updated. | MOD-02 |
+| 17-Nov-2026 | DEC-OPEN-35 opened (approval gate before publishing: the owner's handover prompt of 17-Nov-2026 against D61, D87 and D88) and DEC-OPEN-36 opened (the October Reckoner run: the Select list and the AIF performance stop at their gates, from OPS-01's dry runs of 9-Nov-2026). Sections 1.1 to 1.3 (sources, order to ask, counts: 36 entries, 9 answered, 27 open, next free DEC-OPEN-37) and the D61, D71 and D75 rows of section 2.1 updated; the statement in section 1.2 that TASK-018 had not merged corrected (PR #35 merged 9-Nov-2026). | MOD-02 |

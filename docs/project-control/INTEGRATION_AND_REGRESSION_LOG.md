@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 2-Nov-2026 |
+| Date | 17-Nov-2026 (register sweep: PR #31 to #36 added; earlier content dated 2-Nov-2026) |
 | Author chat | MOD-01 (writer W-state, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026, TASK-016) |
 | Status | Authoritative - the record of every merge to `main`, the baseline chain, incidents and the current live-site parity |
 | Supersedes | Version 1 of 28-Oct-2026 (updated in place; it stays in git history). The source documents listed in version 1 (`CHANGELOG.md`, `docs/PROJECT_STATE.md`, PR bodies and update logs) stay as they are. |
@@ -49,7 +49,7 @@ and [`ACTIVE_CHANGE_REGISTER.md`](ACTIVE_CHANGE_REGISTER.md); regression-risk ca
 | Baseline deploy blobs | all 8 root files identical between `72e1f1e` and `862e40b`: index.html `60106a8e04...`, ExtraSlides `b649397745...`, PMS_AIF_Terms `6636bbed4f...`, June `a918b32f0d...`, IRR `e2272de2a8...`, SIF `d65f9fee8f...`, robots `7d4da722ab...`, legacy Risk_Matrix `fe3826e8e4...` | `git rev-parse <commit>:<file>` |
 | Baseline index.html | SHA-256 `5872958ddacd728b...`, 12,827,311 B = PRD section 2.3 = the old live site today | sha256 of `git show 862e40b:index.html`; old-site download 28-Oct |
 | Transfer baseline | `25e71a3` = PR #1 merge (16-Oct-2026 07:15): files moved to `site/`, `tools/`, `docs/`; `site/` bytes identical to `862e40b`; first publish run 38866042211 (8 live files = `site/`). `bf20c08` = PR #2 merge (post-transfer record). | `docs/REPLICATION_REPORT.md` section 7; CHANGELOG 16-Oct entry |
-| Current `main` | `32172f5` = `origin/main` = PR #30 merge (2-Nov-2026 12:20 UTC; PR #29 `f5c2431` before it) (28-Oct-2026: `2b2a397` = PR #28 merge) | `git rev-parse HEAD origin/main` (2-Nov-2026) |
+| Current `main` | `b47069b` = `origin/main` = PR #36 merge (17-Nov-2026 06:37 UTC; on 2-Nov-2026: `32172f5` = PR #30 merge; PR #29 `f5c2431` before it) (28-Oct-2026: `2b2a397` = PR #28 merge) | `git rev-parse HEAD origin/main` (2-Nov-2026) |
 
 ### 2.2 Site-content states on `main` (VERIFIED with `git rev-parse <merge>:site/<file>` across all 28 first-parent merges on 28-Oct-2026; #29 and #30 added 2-Nov-2026)
 
@@ -77,9 +77,9 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
-**`main` = `origin/main` = `32172f5` (PR #30; PR #29 `f5c2431` before it; site content S7) - VERIFIED COMPLETE at parity level (2-Nov-2026).**
+**`main` = `origin/main` = `b47069b` (PR #36, docs only; PR #30 `32172f5` and PR #29 `f5c2431` before it; site content S7: `site/`, `tools/` and `.github/` are tree-identical to `5d39821` and `32172f5`) - VERIFIED COMPLETE at parity level (17-Nov-2026: `verify_page`, `npm test`, live 7 of 7, section 7.4). The check table below is the 2-Nov-2026 record at `32172f5` (S7 content unchanged).**
 Held at `32172f5` for the S7 content: PR #31 (`c0fb2dd`, 2-Nov-2026) changed documents only (`site/` and `tools/` identical); its release record and the Gate B / Gate D rows of the D86 records change set are added with the next register update.
-Full browser acceptance of S7 is **IMPLEMENTED NOT FULLY VERIFIED** (TASK-064).
+Full browser acceptance of S7: EX-01's pass of 2-Nov-2026 (TASK-064; report local-only) found all 11 checks PASS; the owner's acceptance (Gate E, DEC-OPEN-24) is pending, so the status stays **IMPLEMENTED NOT FULLY VERIFIED** until the Moderator records it.
 
 | Check | Result | Evidence |
 |---|---|---|
@@ -88,7 +88,7 @@ Full browser acceptance of S7 is **IMPLEMENTED NOT FULLY VERIFIED** (TASK-064).
 | `node tools/verify_page.js site` | at `f5c2431`, before PR #30: exit 0; output identical to the 28-Oct run: MASTER 7682; Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; 0 duplicates; ends `</html>`; 0 script errors. Full output of the 28-Oct run in [`REPOSITORY_AND_ENVIRONMENT_STATE.md`](REPOSITORY_AND_ENVIRONMENT_STATE.md) section 13 | run by MOD-02 on 2-Nov-2026; `site/` and `tools/` are identical at `32172f5` and the PR #30 push run's `verify` job (which runs `verify_page` and `npm test`) passed (row 85) |
 | `npm test` | at `f5c2431`, before PR #30: exit 0; 5 of 5 files, 903 checks, 0 failures (blocklib 34, dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43) | run by MOD-02 on 2-Nov-2026 (same counts on 28-Oct-2026, `node tools/test/run.js`) |
 | App startup in a browser | VERIFIED 2-Nov-2026 at `f5c2431`, before PR #30 (MOD-02, `preview_start playbook`, built-in browser): MASTER 7,682, `window.H`/`REFRESH`/`EXPORTS` present, all three sibling flags set, 0 console messages (also after a reload with the console reader attached). No proposal was built and nothing was exported. Not re-run after PR #30 (PR #30 changed no `site/` file) | MOD-02 start-up check (section 11, TASK-016 table row 14); the 28-Oct-2026 check at `2b2a397`: REPOSITORY_AND_ENVIRONMENT_STATE section 13.4 |
-| Full browser acceptance (TESTING.md section 3, all areas, Excel opened in Office) | **not run on S7** (TASK-064 still due on 2-Nov-2026). Last full pass: S6, 21-Oct-2026 (7 areas PASS). After PR #26 only the live 4-fund deck export was checked (22-Oct: 23 slides, no layout warning) | `docs/PROJECT_STATE.md:92-109` at `2b2a397`; TASK-064 |
+| Full browser acceptance (TESTING.md section 3, all areas, Excel opened in Office) | **run on S7 by EX-01 on 2-Nov-2026 at `c0fb2dd`** (TASK-064; report local-only, read in the 17-Nov-2026 sweep and not re-run): all 11 checks PASS, both Excel exports opened in Microsoft Excel, layout warnings empty, console clean; the owner's acceptance (Gate E, DEC-OPEN-24) is pending; findings KNOWN_ISSUES C47 to C50 (before that run: not run on S7, TASK-064 still due on 2-Nov-2026). Last full pass: S6, 21-Oct-2026 (7 areas PASS). After PR #26 only the live 4-fund deck export was checked (22-Oct: 23 slides, no layout warning) | `docs/PROJECT_STATE.md:92-109` at `2b2a397`; TASK-064 |
 | Repo health | at `f5c2431`, before PR #30: `git status` clean; `git fsck --connectivity-only --no-dangling` exit 0; stash patch readable (1,408,451 bytes); historical blob reads still fail with `mmap failed` on some blobs (5 of 11 in the audit; R6, not a code defect) | MOD-02 and the TASK-016 audit, 2-Nov-2026; REPOSITORY_AND_ENVIRONMENT_STATE section 14 |
 
 Recovery points if a later merge breaks the site:
@@ -105,9 +105,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#30)
+## 4. Per-PR integration table (#1-#36)
 
-All 30 PRs are MERGED (VERIFIED, `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 36 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -151,10 +151,16 @@ written down at the time.
 | #28 | 27-Oct 12:27 | `2b2a397` / 40503943213 | docs/handover-export-ingestion (origin only) | EX (+GOV) | MOD-01 | Ingest the outgoing owner's 23-Oct export: verified, 32 desk files filed locally, findings logged; no `site/` or `tools/` change | docs 6 incl. new `docs/update-log/2026-10-23_handover-export.md`; CHANGELOG; CLAUDE.md; +742/-132 | SUCCESS 12:27:27Z | not recorded at merge; 28-Oct parity check 7/7 (section 7) | O: B8 (P1), B9, C35-C40, A28, R8 (P1); C: B3; corrected B1, B2, B7, C5, C6, C11, C19, C20, C23, C24, C28, R1, R6 (INC-14, INC-15) |
 | #29 | 30-Oct-2026 07:46 | `f5c2431` / 41022201456 | handover/mod-01-to-mod-02-20261028 | GOV | MOD-01 | MOD-01 -> MOD-02 Moderator handover package, project-control registers, integration-guardian agent definition; no `site/` or `tools/` change | docs 25 (docs/handover 10 = 9 new + README; docs/project-control 12 new; KNOWN_ISSUES, PROJECT_STATE, docs/README); `.claude/agents/integration-guardian.md` (new); CHANGELOG; CLAUDE.md; 28 files, +9675/-42; none under site/, tools/, .github/, package.json, package-lock.json | SUCCESS 07:46:26Z | not recorded at merge; 7 of 7 = `site/` on 2-Nov-2026 (MOD-02 about 07:47Z; auditor about 08:05Z) | TASK-015, TASK-016; KNOWN_ISSUES +22 entries (A29-A31, C41-C45, E6-E16, R9-R11); site stays S7; no Gate A/B/security-reviewer record before the 58 s merge (INC-19) |
 | #30 | 2-Nov-2026 12:20 | `32172f5` / 41443940610 | docs/mod-02-validation-20261102 (kept on origin) | GOV | MOD-02 | TASK-016 validation of the MOD-01 -> MOD-02 package: registers, records and decisions D84-D85; no `site/` or `tools/` change | 18 files, `docs/` and `CHANGELOG.md` only; none under `site/` or `tools/` | SUCCESS 12:20:16Z (publish skipped by design) | 7 of 7 = `site/` by SHA-256 on 2-Nov-2026, shortly after the publish run | TASK-016 (VERIFIED COMPLETE); D84, D85; site stays S7; merged without `--delete-branch`; Gate E pending |
+| #31 | 2-Nov-2026 14:41 | `c0fb2dd` / 41464361000 | docs/mod-02-release-pr30-20261102 | GOV | MOD-02 | Record the PR #30 release (merge `32172f5`, live 7 of 7); propose GOV-01 and EX-01 | 10 files, `docs/` and `CHANGELOG.md` only; +242/-116; none under `site/` or `tools/` | PR run 41464073329 success (publish skipped) | 7 of 7 = `site/` recorded by PROJECT_STATE | site stays S7; opened to merged 110 s; Gate records: UNKNOWN (PR body not read in the 17-Nov-2026 sweep) |
+| #32 | 2-Nov-2026 19:50 | `703b975` / 41513729682 | docs/mod-02-d86-datapack-20261102 | GOV | MOD-02 | Record D86 (NAV and risk-ratio inputs come from the MF dashboard); open DEC-OPEN-30 to -33; re-scope TASK-022; add TASK-078, C46 and the data-pack analysis | 14 files, +1179/-231 (`docs/` and `CHANGELOG.md` only, incl. the new `docs/update-log/2026-11-02_datapack-feasibility.md`); none under `site/` or `tools/` | PR run 41513584642 success | 7 of 7 = `site/` recorded by PROJECT_STATE | D86; C46; TASK-078; site stays S7; opened to merged 58 s; Gate records: UNKNOWN (PR body not read) |
+| #33 | 2-Nov-2026 21:24 | `8aeabfc` / 41528119095 | docs/mod-02-claim-gov01-20261103 | GOV | MOD-02 | Record the TASK-018 claim for GOV-01 (23 files), its Guardian pre-check (GO WITH CONDITIONS) and DEC-OPEN-34 | 7 files, +318/-102 (`docs/` and `CHANGELOG.md` only) | PR run 41528009621 success | not recorded | claim of TASK-018; DEC-OPEN-34 opened; site stays S7; opened to merged 44 s |
+| #34 | 9-Nov-2026 08:59 | `3fd1eab` / 42589947603 | docs/mod-02-d87-d88-20261109 | GOV | MOD-02 | Record D87 (Gate E scope: the owner accepts client-facing changes) and D88 (operator-run Gate B in every monthly refresh); answer DEC-OPEN-34 | 3 files, +141/-69: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md` | PR run 42589809315 success | not recorded | D87, D88; DEC-OPEN-34 answered; site stays S7; opened to merged 73 s; risk class Low per the PR text |
+| #35 | 9-Nov-2026 12:16 | `ddd0304` / 42615584473 | docs/gov-01-rule-consistency-20261102 | GOV | GOV-01 | TASK-018 (widened): make the rule documents agree; answer ARC-01's conditions; Gate E and Gate B text final (D87, D88) | 23 files, all modified, +709/-285: `CLAUDE.md`, `CHANGELOG.md`, 4 under `.claude/` (2 agents, 2 skills), 10 under `docs/`, 3 under `docs/handover/`, 2 under `docs/project-control/`, 1 under `docs/update-log/`, `monthly-updates/00_INBOX/README.md`; none under `site/`, `tools/`, `.github/` or the package files | PR run 42615211842 success | not recorded at merge; 7 of 7 = `site/` on 17-Nov-2026 | TASK-018; KNOWN_ISSUES E6-E10, E13-E15, E17 closed, E11 partly fixed, E12 open; D87, D88 cited; site stays S7; opened to merged 160 s; Material (section 11 entry) |
+| #36 | 17-Nov-2026 06:37 | `b47069b` / 44032631708 | docs/mod-02-d89-d93-20261109 | GOV | MOD-02 | Record D89 to D96 (the owner's answers of 9-Nov-2026); answer DEC-OPEN-07, -08, -30, -31, -32 | 3 files, +512/-226: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md` | PR run 42619217382 success | 7 of 7 = `site/` on 17-Nov-2026 (SHA-256) | D89-D96; site stays S7; opened 9-Nov-2026 12:42 UTC, merged 17-Nov-2026 06:37 UTC (7.7 days later); risk class Low per the PR text |
 
 ### 4.1 Totals (VERIFIED)
 
-- 30 PRs, 16-Oct to 2-Nov-2026; 0 open PRs and 0 open issues on 2-Nov-2026 (28-Oct-2026: 28 PRs, none open).
+- 36 PRs, 16-Oct to 17-Nov-2026; 0 open PRs on 17-Nov-2026 (2-Nov-2026: 30 PRs and 0 open issues; 28-Oct-2026: 28 PRs, none open); open issues not re-counted.
 - `main` has 147 commits; 73 since `862e40b` = 40 non-merge commits + 30 PR merges + 3 other merges
   (`18abff3` = PR #23's A27 implementation committed as a merge commit; `75256ea` = sync inside #22;
   `aa83993` = sync inside #19). **0 revert commits** (`git log -i --grep=revert 862e40b..main` empty).
@@ -184,7 +190,7 @@ written down at the time.
 |---|---|---|
 | Merge of `handover/mod-01-to-mod-02-20261028` (the package) | DONE: PR #29, merge `f5c2431` (30-Oct-2026 07:46:59Z); recorded in section 4 and section 11 by MOD-02 (TASK-016) | MOD-02 in TASK-016 |
 | `docs/mod-02-validation-20261102` (TASK-016 registers and records) | MERGED: docs-only PR #30 from MOD-02, merge `32172f5` (2-Nov-2026 12:20 UTC); branch kept on origin (no `--delete-branch`); it was created with `git branch` from `origin/main` and committed through a temporary index | MOD-02 (section 4 row and section 11 entry: done) |
-| TASK-018 (widened): rule-document consistency PR | PLANNED: GOV-01 in its own worktree; Material: contract + ARC-01 DIFF REVIEW + security-reviewer; gates every OPS and NB launch (section 11, TASK-016 record, ARC-01 conditions) | the Moderator after the merge (section 4 row and section 11 entry) |
+| TASK-018 (widened): rule-document consistency PR | MERGED: PR #35, merge `ddd0304` (9-Nov-2026 12:16 UTC); section 4 row #35 and the section 11 entry | the Moderator |
 | Any other branch, PR or task | none: 0 open PRs | - |
 
 ---
@@ -215,10 +221,11 @@ OneDrive/git environment incidents.
 | INC-13 | 21-Oct (live acceptance) | C24-C27 surfaced. C24 as corrected on 28-Oct: three screen paths (Section 1 tile, Section 5 Future Value, Section 6.1 Live Output) count no-band instruments as 0%, while Section 4 and the deck GRAND TOTAL exclude them | Inherited ("same code at `handover-baseline`") | Existing behaviour | Logged in #25; decision DEC-OPEN-15, task TASK-026 | Acceptance checks find inherited defects; log them, do not fix silently | EXISTING DEFECT |
 | INC-14 | 24-25-Oct (export ingestion) | **B1:** PMS performance labelled "31st August 2026" is 31-Jul data; docs before #28 overstated it as 31-Aug | Inherited mislabel | Client-facing label one month ahead of the data | Recorded in #28; DEC-OPEN-04, TASK-025 | Verify "as on" labels against file contents | EXISTING DEFECT |
 | INC-15 | 24-Oct | **R8 (P1):** two client items inside the outgoing owner's export | Outgoing owner's export | None published; kept in git-ignored `handover-archive/` | Owner + compliance decide (DEC-OPEN-05, TASK-032); never push `upstream/*` or `--mirror` | Treat every received archive as possibly holding client data | BLOCKED (owner + compliance) |
-| INC-16 | 25-Oct-2026 | `git checkout` back to `main` aborted with "fatal: mmap failed: Invalid argument" and left tracked files truncated (CLAUDE.md 0 bytes) or deleted. Cause: `.git` pack files were OneDrive cloud-only placeholders while OneDrive.exe was not running. Context: NB-03 had worked in the shared main checkout and left it on `feat/pptx-design-system` | Environment (R6) plus process (a coding chat in the shared checkout) | None: files restored from git blobs; everything was already on `origin` (`docs/KNOWN_ISSUES.md` R6) | Branch switch done without `checkout` (`git cat-file` + `update-ref` + `symbolic-ref`); rule since: sessions sharing the folder leave it on `main`, coding sub-chats use their own worktree | Never `checkout`/`switch` in the OneDrive main checkout (procedures: REPOSITORY_AND_ENVIRONMENT_STATE section 14) | **Still present 28-Oct** (mmap errors on historical and stash blobs; 229 `.git` files cloud-only). EXISTING DEFECT (R6; TASK-017, DEC-OPEN-19). Update 2-Nov-2026: OneDrive.exe is running since 11:47 IST but the folder is not pinned; 228 of 568 `.git` files are still cloud-only (229 at 13:29 IST); 5 of 11 historical blob reads (index.html and SIF) still fail with mmap; `git fsck --connectivity-only` exit 0. Still present; TASK-017 not met; the no-checkout rule stays. |
+| INC-16 | 25-Oct-2026 | `git checkout` back to `main` aborted with "fatal: mmap failed: Invalid argument" and left tracked files truncated (CLAUDE.md 0 bytes) or deleted. Cause: `.git` pack files were OneDrive cloud-only placeholders while OneDrive.exe was not running. Context: NB-03 had worked in the shared main checkout and left it on `feat/pptx-design-system` | Environment (R6) plus process (a coding chat in the shared checkout) | None: files restored from git blobs; everything was already on `origin` (`docs/KNOWN_ISSUES.md` R6) | Branch switch done without `checkout` (`git cat-file` + `update-ref` + `symbolic-ref`); rule since: sessions sharing the folder leave it on `main`, coding sub-chats use their own worktree | Never `checkout`/`switch` in the OneDrive main checkout (procedures: REPOSITORY_AND_ENVIRONMENT_STATE section 14) | **Still present 28-Oct** (mmap errors on historical and stash blobs; 229 `.git` files cloud-only). EXISTING DEFECT (R6; TASK-017, DEC-OPEN-19). Update 2-Nov-2026: OneDrive.exe is running since 11:47 IST but the folder is not pinned; 228 of 568 `.git` files are still cloud-only (229 at 13:29 IST); 5 of 11 historical blob reads (index.html and SIF) still fail with mmap; `git fsck --connectivity-only` exit 0. Still present; TASK-017 not met; the no-checkout rule stays. Update 9-Nov-2026: resolved by INC-20 (the cause was over-long paths, KNOWN_ISSUES R13); TASK-017 passed; the rule applies again whenever OneDrive is not running or any `.git` file is cloud-only. |
 | INC-17 | 16-19-Oct | #4, #9, #11 merged one merge behind `main`; combined trees tested only by the post-merge push runs | Process (rapid parallel merges) | None (all push runs green; disjoint files) | none needed | Sync a branch with `main` before merging when `main` moved (as #22 did); one merge at a time (Gate D) | Observation |
 | INC-18 | 2-Nov-2026 | An audit sub-agent (the issues-code auditor of the TASK-016 workflow) created an empty untracked file probe_sib.js in the repo root through a mistyped `cat > probe_sib.js` before writing its real script to its scratch folder; the other auditors and the Guardian noticed it. | Process: a read-only audit sub-agent breached its read-only rule (agent types without a Write tool can still write through Bash) | None: 0 bytes, untracked, never staged; MOD-02 removed that one file and `git status` is clean | Removed by MOD-02 after the workflow finished (cause read from the sub-agent's transcript) | Run `git status` after every workflow that fans out in the shared checkout; tell sub-agents to `cd` into their scratch folder before writing helper scripts; nobody runs `git clean` | VERIFIED COMPLETE |
 | INC-19 | 30-Oct-2026 (found 2-Nov-2026 by ARC-01) | PR #29 was merged 58 s after it was opened with no recorded Gate A report (the PR body has no TASK-015, no head SHA, no contract), no Guardian review (the agent did not exist yet; pre-declared) and no security-reviewer result, although the registers planned a security-reviewer run before the push. | Process (the merge came 58 s after the PR opened; no branch protection, R9) | None: docs and one agent file only; ARC-01 and security-reviewer ran post-merge on 2-Nov-2026 and found no secret, client name or user path | Gate A reconstructed and Gate B recorded in section 11 (PR #29 entry); security-reviewer run on `git diff 2b2a397 f5c2431` (0 BLOCKER, 5 warnings); the rule-document conflicts the review found go to TASK-018 (E17) | A merge needs its gate record before it happens; `main` has no protection, so the Moderator keeps the gate | Observation (corrected in the registers) |
+| INC-20 | 9-Nov-2026 | After OneDrive was started and the folder pinned (TASK-017), every read of the 228 online-only `.git` files failed with "The cloud file provider is not running" and OneDrive restarted every few minutes for about 90 minutes; the sync client's error window said a path was too long (limit 400 characters from the OneDrive root); 108 items in the git-ignored local `handover-archive/` (34 folders with 197-character names, longest path 491) exceeded it (MOD-02's record) | Environment (R6, R13): an extracted archive of deep agent-session data inside the project folder | None: no tracked file was written; no `--apply`, checkout, switch, merge or pull ran in the main checkout | The 34 folders were renamed (the mapping is kept in a local note; nothing deleted); longest path 298 afterwards; all `.git` files hydrated in about 25 minutes; TASK-017 passed 9-Nov-2026 15:10 IST | Scan path lengths (limit 400 from the OneDrive root) before restarting OneDrive; extract archives outside the project folder | VERIFIED COMPLETE (re-verified 17-Nov-2026: 0 of 5,274 files cloud-only, longest path 298, `git fsck --connectivity-only` exit 0); R13 partly fixed (the scan is not routine yet) |
 
 ### 6.2 Audit notes (no incident ID; found on 28-Oct-2026 and 2-Nov-2026)
 
@@ -319,10 +326,23 @@ SHA-256 of the body with the file in `site/` (HEAD = `32172f5`); an independent 
 Centricity_SIF_Refresh.js 35,735; robots.txt 156. `site/` did not change between `f5c2431` and `32172f5` (PR #30 is
 documents only).
 
+### 7.4 17-Nov-2026, after PR #36 (`b47069b`): the current check
+
+**Date:** 17-Nov-2026, about 07:15 UTC (register sweep, read-only). **Method:** each published file downloaded with
+`curl --compressed` and a cache-busting query, SHA-256 with `sha256sum`, compared with `site/` in the working tree
+(HEAD = `origin/main` = `b47069b`). **Result: 7 of 7 MATCH (VERIFIED)**, the same bytes as sections 7.1 to 7.3:
+index.html 12,864,963 B (`916f2455...62ce3`); Centricity_ExtraSlides.js 2,617,988; Centricity_PMS_AIF_Terms.js 6,054;
+Centricity_June_Refresh.js 54,408; Centricity_IRR_Offshore.js 110,356; Centricity_SIF_Refresh.js 35,735; robots.txt 156.
+`Centricity_Risk_Matrix.js` returns 404. `index.html` Last-Modified Tue, 17 Nov 2026 06:38:21 GMT (the PR #36 publish
+re-deployed identical bytes). The tree objects of `site/`, `tools/`, `.github/`, `package.json` and
+`package-lock.json` at `b47069b` equal those at `5d39821` and at `32172f5`. Push run 44032631708: verify success
+06:38:08Z, publish success 06:38:26Z; deployment 7846135755.
+
 ---
 
 ## 8. CI history (VERIFIED, `gh run list --limit 200`, `gh run view`)
 
+- Update 17-Nov-2026: 74 runs, 74 success (38 pull_request, 36 push; `gh run list --limit 200`). The job-level counts, `run_attempt` and run-number continuity were NOT RUN again. Latest push run 44032631708 (`b47069b`): verify success 06:38:08Z, publish success 06:38:26Z; deployment 7846135755. The 2-Nov-2026 record follows.
 - Workflow "Verify and publish dashboard" (`.github/workflows/pages.yml`): **62 runs, 62 success** (32
   pull_request, 30 push) on 2-Nov-2026 (28-Oct-2026: 58 runs, 30 + 28). No failed, cancelled or re-run workflow in
   the repository's history (`run_attempt` 1 for all 62; `run_number` 1..62 contiguous; 124 jobs: `verify` 62
@@ -525,3 +545,69 @@ and is pending. Records: [`DECISION_LOG.md`](DECISION_LOG.md) and [`../DECISIONS
 | Dependent tasks notified | TASK-018 and TASK-064 (both depend on TASK-016) are proposed to the owner as sub-chats GOV-01 and EX-01 (cards); nothing runs until the owner starts them |
 | Regressions found after merge | none found on 2-Nov-2026 (push run success; live 7 of 7 = `site/`) |
 | Rollback | `git revert -m 1 32172f5ca04d670f8ccbea4c7e482d97f966be87` in a new PR (docs only; `site/` unaffected) |
+
+PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records were NOT read in the 17-Nov-2026 sweep (UNKNOWN).
+
+### PR #34 - Docs: record D87 and D88 (Gate E scope; operator-run Gate B); DEC-OPEN-34 answered (9-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / requirement / decision IDs | D87, D88; DEC-OPEN-34 answered |
+| Chat and worktree | MOD-02; the main checkout (docs only, Moderator) |
+| Branch | `docs/mod-02-d87-d88-20261109` |
+| Base SHA (origin/main when the branch was cut) | `8aeabfc` (PR #33 merge) |
+| Head SHA at merge | `9a1b9da` |
+| Merge SHA / push run / deployment id | `3fd1eabfa122c9f90fcb306a3362de47bdbd64cf` / 42589947603 / 7650726512 |
+| Files changed | 3, +141/-69: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md`; none under `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or the package files |
+| Site-content state | unchanged (S7) |
+| Gate A - implementation report | the PR description |
+| Gate B - Guardian review (ARC-01) | not run: risk class Low per the PR text (it records two owner decisions and changes no rule text); the PR text says an independent consistency review and a security review stood in for Gate B |
+| Gate C - independent verification | scripted checks on the added lines (ASCII, no e-mail address, user path, MF dashboard address or old-repository identifier; links; table rows) per the PR text; PR run 42589809315 verify success |
+| Gate D - integration | merged 9-Nov-2026 08:59:32Z, 73 s after opening; push run 42589947603: verify success 08:59:51Z, publish success 09:00:31Z; live 7 of 7: not recorded at merge (VERIFIED 17-Nov-2026) |
+| Baseline update | no (docs only; section 3 moved to `b47069b` by the 17-Nov-2026 sweep) |
+| Gate E - acceptance | the owner's wording confirmation of D87 and D88: UNKNOWN (the PR text says the owner confirms the wording; D87 lets the Moderator record acceptance of docs-only changes on evidence) |
+| Regressions found after merge | none found |
+| Rollback | `git revert -m 1 3fd1eabfa122c9f90fcb306a3362de47bdbd64cf` in a new PR (docs only) |
+
+### PR #35 - Docs: make the rule documents agree (TASK-018, GOV-01) (9-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / requirement / decision IDs | TASK-018 (widened); KNOWN_ISSUES E6 to E10, E13 to E15 and E17 closed, E11 partly fixed, E12 open; ARC-01 findings D-01 to D-07, D-14 and the minor D-09 to D-18; D87 and D88 cited |
+| Chat and worktree | GOV-01; `.claude/worktrees/focused-wright-d50bee` |
+| Branch | `docs/gov-01-rule-consistency-20261102` (kept; still checked out in that worktree on 17-Nov-2026) |
+| Base SHA (origin/main when the branch was cut) | `3fd1eab` (PR #34 merge, merged into the branch as `5a96aca`) |
+| Head SHA at merge | `29e0d32` |
+| Merge SHA / push run / deployment id | `ddd0304454d086d4b7b155f735f339192b131087` / 42615584473 / 7654433853 |
+| Files changed | 23, all modified, +709/-285 (the 23 files of the claim in `docs/project-control/ACTIVE_CHANGE_REGISTER.md` section 1): `CLAUDE.md`, `CHANGELOG.md`, `.claude/agents/integration-guardian.md`, `.claude/agents/release-manager.md`, `.claude/skills/monthly-update/SKILL.md`, `.claude/skills/verify-dashboard/SKILL.md`, ten files under `docs/`, three under `docs/handover/`, `docs/project-control/FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`, `docs/project-control/REPOSITORY_AND_ENVIRONMENT_STATE.md`, `docs/update-log/2026-10-23_handover-export.md`, `monthly-updates/00_INBOX/README.md`; none under `site/`, `tools/`, `.github/` or the package files |
+| Site-content state | unchanged (S7) |
+| Gate A - implementation report | the PR description (the contract copy and the G1 to G8 table); risk class Material |
+| Gate B - Guardian review (ARC-01) | as stated in the PR description: DIFF REVIEW on head `28e1d4e`: GO WITH CONDITIONS, risk MEDIUM, docs only, conditions C1 to C7 of 2-Nov-2026 and the 18 earlier findings all MET; DELTA REVIEW of `git diff 28e1d4e 29e0d32` on the reviewed head `29e0d32`: GO WITH CONDITIONS (applies to `29e0d32` only), risk MEDIUM, no BLOCKER and no MAJOR finding; conditions C-1 to C-6 MET. security-reviewer: first review at `c1c9f05` 0 BLOCKER, 3 WARNING, 7 INFO; re-checks at `3fd7e0f` and `52ed777` 0 BLOCKER, 1 WARNING (D87 and D88 cited before their records PR merged); final head `29e0d32` 0 BLOCKER, 0 WARNING, 6 INFO, SAFE TO PUSH. The Guardian verdicts are quoted from the PR text and were NOT re-run in the sweep |
+| Gate C - independent verification | per the PR description: `npm ci` exit 0; `verify_page` exit 0 identical to the baseline; `npm test` 5 of 5 files, 903 checks, 0 failures; the diff lists exactly the 23 files; added lines ASCII; the option W walkthrough (dry runs in a scratch worktree outside OneDrive) passed; re-run on 17-Nov-2026 by the sweep: `verify_page` and `npm test` identical (section 3) |
+| Gate D - integration | PR run 42615211842: verify success, publish skipped; merged by `productsteamcentricity` 9-Nov-2026 12:16:05Z, 160 s after opening (12:13:25Z); push run 42615584473: verify success 12:16:25Z, publish success 12:16:44Z; deployment 7654433853 (12:16:26Z); live 7 of 7: not recorded at merge (VERIFIED 17-Nov-2026); one PR at a time: yes |
+| Baseline update | no at merge; section 3 moved to `b47069b` by the 17-Nov-2026 sweep |
+| Gate E - acceptance | the owner's confirmation of the D87 and D88 wording: UNKNOWN (the PR text says the Moderator planned to ask at this PR's Gate E); under D87 the Moderator records acceptance of the rest on evidence |
+| Dependent tasks notified | OPS and NB launches: ARC-01's condition is lifted once local `main` is advanced; on 17-Nov-2026 local `main` = `origin/main` and `git diff --stat origin/main -- CLAUDE.md .claude docs` is empty (VERIFIED); a `/monthly-update` run was still held by TASK-017, which passed on 9-Nov-2026 (INC-20) |
+| Regressions found after merge | none found; PR-number placeholders left in CHANGELOG and PROJECT_STATE (fixed by the 17-Nov-2026 sweep) |
+| Rollback | `git revert -m 1 ddd0304454d086d4b7b155f735f339192b131087` in a new PR (docs only) |
+
+### PR #36 - Docs: record D89 to D96 (the owner's answers of 9-Nov-2026) (17-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / requirement / decision IDs | D89 to D96; DEC-OPEN-07, -08, -30, -31 and -32 answered (DEC-OPEN-32 as a note on D86) |
+| Chat and worktree | MOD-02; the main checkout (docs only, Moderator) |
+| Branch | `docs/mod-02-d89-d93-20261109` |
+| Base SHA (origin/main when the branch was cut) | `ddd0304` (PR #35 merge) |
+| Head SHA at merge | `c6bb4aa` |
+| Merge SHA / push run / deployment id | `b47069bf3e6d73973cf48a3a754ec2ad4b5cd289` / 44032631708 / 7846135755 |
+| Files changed | 3, +512/-226: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md`; none under `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or the package files |
+| Site-content state | unchanged (S7) |
+| Gate A - implementation report | the PR description |
+| Gate B - Guardian review (ARC-01) | not run: risk class Low per the PR text (decision records; no rule text changes); two rounds of independent security and consistency review before the push per the PR text; no third full round was run |
+| Gate C - independent verification | scripted checks on the added lines per the PR text; PR run 42619217382 verify success |
+| Gate D - integration | opened 9-Nov-2026 12:42:10Z, merged 17-Nov-2026 06:37:48Z; push run 44032631708: verify success 06:38:08Z, publish success 06:38:26Z; deployment 7846135755; live 7 of 7 = `site/` (SHA-256; VERIFIED 17-Nov-2026, section 7.4); one PR at a time: yes |
+| Baseline update | yes (section 3 now `b47069b`) |
+| Gate E - acceptance | the owner's confirmation of the recorded wording of D89 to D96: UNKNOWN (DECISION_LOG section 1.5 step 2) |
+| Regressions found after merge | none found |
+| Rollback | `git revert -m 1 b47069bf3e6d73973cf48a3a754ec2ad4b5cd289` in a new PR (docs only) |

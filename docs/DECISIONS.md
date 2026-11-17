@@ -960,7 +960,7 @@ and the entry says so. "—" means no date is recorded.
   297,765%. That conflicts with CLAUDE.md rule 6 (no fabricated data in client-facing output). See
   `docs/project-control/DECISION_LOG.md` DEC-OPEN-07 (section 1.6) and `docs/KNOWN_ISSUES.md` C20, C16 and C43.
 - **Decision:** The owner chose the button "Yes, clear them" (the other button was "Keep and label"; 9-Nov-2026
-  11:40 UTC, MOD-02 chat) in answer to the question "Clear returns shown for periods before these funds existed?".
+  11:38 UTC, MOD-02 chat) in answer to the question "Clear returns shown for periods before these funds existed?".
   That is option (a) of DEC-OPEN-07. MOD-02's text beside the question described it as: show "-" for every return
   period longer than the fund's life; release the held G-Sec record in the same change; and add a limit in the
   monthly bake so that a very young fund cannot show an absurd annualised figure. The click is read as covering the
@@ -975,7 +975,7 @@ and the entry says so. "—" means no date is recorded.
   for new funds; proposal totals that include these funds can change; `docs/KNOWN_ISSUES.md` C20, C16 and C43 are
   updated in the register sweep.
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-07 (section 1.6); the owner's chat answer of 9-Nov-2026
-  11:40 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms it
+  11:38 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms it
   (DECISION_LOG section 1.5 step 2).
 
 #### D95 - PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction)
@@ -1426,7 +1426,7 @@ and the entry says so. "—" means no date is recorded.
   and the textbook form cannot be rebuilt from the pack (`docs/project-control/DECISION_LOG.md` DEC-OPEN-30,
   section 1.6).
 - **Decision:** The owner chose the button "Dashboard's, with note" (the other button was "Leave it blank";
-  9-Nov-2026 08:48 UTC, MOD-02 chat) in answer to the question "Which Sortino formula should the October risk table
+  9-Nov-2026 08:43 UTC, MOD-02 chat) in answer to the question "Which Sortino formula should the October risk table
   use?". That is option (a) of DEC-OPEN-30: the Portfolio Matrix shows the MF dashboard's Sortino from the October
   cycle, with a one-line note under the table, and a textbook field is to be asked from the dashboard team for a
   later pack.
@@ -1441,7 +1441,7 @@ and the entry says so. "—" means no date is recorded.
   textbook field goes to the dashboard team (TASK-078); the October cycle still keeps "30 Sep 2026" if the bridge is
   not ready at step 10 (D86, D93; DEC-OPEN-33 is still open).
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-30 (section 1.6); the owner's chat answer of
-  9-Nov-2026 08:48 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms
+  9-Nov-2026 08:43 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms
   it (DECISION_LOG section 1.5 step 2).
 
 #### D93 - The Portfolio Matrix accepts the four other changes of the MF dashboard's data (extends D86)

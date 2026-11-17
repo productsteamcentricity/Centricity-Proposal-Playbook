@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 3-Nov-2026 |
-| Author chat | MOD-01 (first version, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026 and 3-Nov-2026) |
+| Date | 17-Nov-2026 |
+| Author chat | MOD-01 (first version, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026 and 17-Nov-2026) |
 | Status | Authoritative (live register; only the Moderator edits it) |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
 | Next review | at the start of every Moderator session and at every chat status change |
@@ -26,6 +26,8 @@ re-read `list_sessions` (including archived sessions) and `get_session` on 2-Nov
 about 08:55 UTC), and `git` and `gh` for commits, pull requests and worktrees. 3-Nov-2026: MOD-02 read
 the state of the GOV-01 and EX-01 sessions, the GOV-01 worktree and branch (read-only git) and the
 Guardian pre-check result for the GOV-01 contract (ARC-01: GO WITH CONDITIONS).
+17-Nov-2026: MOD-02 re-read `list_sessions` (including archived sessions) and `get_session` for the chats of this
+project, and `git worktree list`, the branch heads and `gh pr list` (VERIFIED; the results are in sections 1 and 3).
 
 **Effective date of the 2-Nov-2026 and 3-Nov-2026 entries.** The entries of 2-Nov-2026 that PR #30 carried (MOD-01
 RETIRED, MOD-02 and ARC-01 ACTIVE, TASK-016 done, the NB archive state, the new external sessions) took
@@ -34,7 +36,7 @@ proposed to the owner on 2-Nov-2026) and the other updates that PR #31 carried t
 (2-Nov-2026 14:41 UTC, `c0fb2dd`). The later 2-Nov-2026 entries of this file (the chats started by the
 owner, DEC-OPEN-01 answered) took effect when PR #32 merged (2-Nov-2026 19:50 UTC, `703b975`). The 3-Nov-2026
 entries (the shortened session ids of GOV-01 and EX-01, the GOV-01 claim and its Guardian pre-check,
-DEC-OPEN-34 as a pending owner decision) take effect when the record that adds them merges.
+DEC-OPEN-34 as a pending owner decision) took effect when PR #33 merged (2-Nov-2026 21:24 UTC, `8aeabfc`). The 17-Nov-2026 entries (the handover to MOD-03, GOV-01 and EX-01 COMPLETED, OPS-01 recorded) take effect when the record that adds them merges.
 
 ---
 
@@ -44,29 +46,33 @@ Registry names, in the format `[CHAT-ID] | [WORKSTREAM] | [RESPONSIBILITY] | [ST
 
 ```text
 MOD-01 | Project-Wide | Master Project Moderator                    | RETIRED
-MOD-02 | Project-Wide | Master Project Moderator                    | ACTIVE
+MOD-02 | Project-Wide | Master Project Moderator                    | HANDOVER REQUIRED
+MOD-03 | Project-Wide | Master Project Moderator                    | QUEUED
 ARC-01 | Project-Wide | Codebase Integrity & Integration Guardian   | ACTIVE
 NB-01  | NB - New build     | P1 tool risks A1, A3, A4 (TASK-003)         | COMPLETED (archived)
 NB-02  | NB - New build     | Five P3 tool and UI follow-ups (TASK-011)   | COMPLETED (archived)
 NB-03  | NB - New build     | PowerPoint export design system (TASK-013)  | COMPLETED (archived)
-GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (TASK-018 widened) | ACTIVE
-EX-01  | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | ACTIVE (turn finished 2-Nov-2026; report delivered; results to be recorded in the next register update)
+GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (TASK-018 widened) | COMPLETED
+EX-01  | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | COMPLETED (report delivered 2-Nov-2026; its findings are recorded as KNOWN_ISSUES C47 to C50 by the PR of TASK-079; the update log is still to be written)
+OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | BLOCKED
 ```
 
 | ID | Status | Session id | Title in the app | Tasks | Works in | Successor |
 |---|---|---|---|---|---|---|
-| MOD-01 | RETIRED | `local_11e29451-b340-463b-8289-9a30c5fa2173` | Investment Proposal Dashboard architecture | none open (TASK-015 released at the merge of PR #29); 12 completed incl. TASK-015 | main checkout, `main` | MOD-02 |
-| MOD-02 | ACTIVE | `local_cecc2f4c-a274-4286-a778-228ebe1a5f2c` | Investment Proposal Dashboard | TASK-016 (done 2-Nov-2026); TASK-018 (widened; GOV-01, started) | main checkout, `main` | none |
-| ARC-01 | ACTIVE | none (subagent `integration-guardian`) | none | Gate B reviews; first review 2-Nov-2026 (TASK-015, GO WITH CONDITIONS); contract pre-check of TASK-018 3-Nov-2026 (GO WITH CONDITIONS, C1-C9) | read-only | none |
-| NB-01 | COMPLETED (archived) | `local_d2d575b3-186e-49d0-9fe4-fe36f685a9f3` | Fix the three P1 tool risks before the next refresh | TASK-003 | worktree `focused-wright-d50bee` | none |
-| NB-02 | COMPLETED (archived) | `local_1f914af1-944c-44a0-8bda-5bfa6f228cab` | Small tool and UI follow-ups from the 19-Oct fixes | TASK-011 | worktree `adoring-boyd-7028f6` | none |
-| NB-03 | COMPLETED (archived) | `local_00b57be9-5ff6-4864-92bd-de4f103330ae` | Fix and standardise the proposal PowerPoint export | TASK-013 | main checkout (no worktree) | none |
-| GOV-01 | ACTIVE | `local_622b2ebd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | GOV-01 Playbook: rule documents consistency | TASK-018 (widened); claim recorded in ACTIVE_CHANGE_REGISTER section 1 (in force from the merge of the record that adds it); Guardian pre-check GO WITH CONDITIONS 3-Nov-2026 | worktree `focused-wright-d50bee` (formerly NB-01's, reused by the app; app branch `claude/affectionate-lovelace-f11b67`; task branch to be `docs/gov-01-rule-consistency-20261102`; TASK-061 must not remove it while GOV-01 runs) | none |
-| EX-01 | ACTIVE (turn finished 2-Nov-2026; report delivered; results to be recorded in the next register update) | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | EX-01 Playbook: browser acceptance | TASK-064 | shared main checkout (no worktree); read-only, no branch, no commit | none |
+| MOD-01 | RETIRED | `local_11e29451` | Investment Proposal Dashboard architecture | none open (TASK-015 released at the merge of PR #29); 12 completed incl. TASK-015 | main checkout, `main` | MOD-02 |
+| MOD-02 | HANDOVER REQUIRED (from 17-Nov-2026) | `local_cecc2f4c` | Investment Proposal Dashboard | TASK-016 (done 2-Nov-2026); TASK-018 (GOV-01; merged 9-Nov-2026 as PR #35); the handover to MOD-03 | main checkout, `main` | MOD-03 |
+| MOD-03 | QUEUED | not created yet | not created yet | the open tasks of [TASK_REGISTER.md](TASK_REGISTER.md) (from the MOD-02 handover) | main checkout, `main` (when it starts) | none |
+| ARC-01 | ACTIVE | none (subagent `integration-guardian`) | none | Gate B reviews; first review 2-Nov-2026 (TASK-015, GO WITH CONDITIONS); contract pre-check of TASK-018 3-Nov-2026 (GO WITH CONDITIONS, C1-C9); DIFF REVIEW (head `28e1d4e`) and DELTA REVIEW (`29e0d32`) of the TASK-018 branch 9-Nov-2026 (GO WITH CONDITIONS) | read-only | none |
+| NB-01 | COMPLETED (archived) | `local_d2d575b3` | Fix the three P1 tool risks before the next refresh | TASK-003 | worktree `focused-wright-d50bee` | none |
+| NB-02 | COMPLETED (archived) | `local_1f914af1` | Small tool and UI follow-ups from the 19-Oct fixes | TASK-011 | worktree `adoring-boyd-7028f6` (the app reuses the folder for OPS-01 since 9-Nov-2026) | none |
+| NB-03 | COMPLETED (archived) | `local_00b57be9` | Fix and standardise the proposal PowerPoint export | TASK-013 | main checkout (no worktree) | none |
+| GOV-01 | COMPLETED (9-Nov-2026) | `local_622b2ebd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | GOV-01 Playbook: rule documents consistency | TASK-018 (widened): merged as PR #35 (`ddd0304`, 9-Nov-2026 12:16 UTC); claim released at the merge (ACTIVE_CHANGE_REGISTER section 4); Guardian reviews GO WITH CONDITIONS, conditions met | worktree `focused-wright-d50bee` (the folder that was NB-01 worktree; idle, not retired: on the merged task branch `docs/gov-01-rule-consistency-20261102` at `29e0d32`, clean; app session branch `claude/affectionate-lovelace-f11b67` at `c0fb2dd`, 0 commits; TASK-061 must skip the folder until the owner decides DEC-OPEN-22) | none |
+| EX-01 | COMPLETED (report delivered 2-Nov-2026; record in the repository pending) | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | EX-01 Playbook: browser acceptance | TASK-064: 11 of 11 checks PASS on the live S7 build at `c0fb2dd`; four new findings EX01-N1 to EX01-N4 (P3; recorded as KNOWN_ISSUES C47 to C50 by this PR, mapping INFERRED); the full report is local only | shared main checkout (no worktree); read-only, no branch, no commit | none |
+| OPS-01 | BLOCKED (owner answers and desk re-exports; not running since 9-Nov-2026 21:49 UTC) | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | OPS-01 October update: Reckoner run | TASK-020 (steps 14, 14a, 15, 17: dry runs only, stopped at gates), TASK-021 and TASK-024 (read-only preparation); no claim | worktree `adoring-boyd-7028f6` (the folder that was NB-02 worktree, reused by the app; app session branch `claude/ops-01-reckoner-a11e94` and task branch `data/2026-09-4`, both at `ddd0304`, local only, 0 commits; TASK-061 must skip it) | none |
 
 Workstreams (prefixes): **EX** existing dashboard, **NB** new build, **OPS** monthly data operations,
-**GOV** governance and continuity. EX-01 and GOV-01 were started by the owner on 2-Nov-2026; no OPS
-chat has started: that work was done by MOD-01 itself. Sessions of the
+**GOV** governance and continuity. EX-01 and GOV-01 were started by the owner on 2-Nov-2026; OPS-01 was started by MOD-02 on 9-Nov-2026 (before that no OPS
+chat had started: the data runs were done by MOD-01 itself). Sessions of the
 sister Portfolio Review Dashboard project are in section 4, not here (Update 2-Nov-2026: two of them
 carry titles that start with `ARC-01` and `EX-01`; they are not this project's chats).
 
@@ -99,7 +105,7 @@ is not a status.
 
 | Field | Value |
 |---|---|
-| Session id | `local_11e29451-b340-463b-8289-9a30c5fa2173` |
+| Session id | `local_11e29451` |
 | Title in the app | Investment Proposal Dashboard architecture |
 | Started | 15-Oct-2026 14:36 UTC, by the owner (the first master project prompt) |
 | Model and settings | claude-opus-5-5, effort xhigh, permission mode auto |
@@ -118,23 +124,45 @@ is not a status.
 | Successor | MOD-02 |
 | Retirement reason | The owner ordered a new Moderator and the Moderator / Guardian multi-chat model with project-control registers (master prompt sections 1, 7 and 14-16). Proactive handover is preferred because MOD-01 has been compacted twice. The three-compaction trigger is **not** met and is not the reason. Retired on 2-Nov-2026 after TASK-016. |
 
-### MOD-02 | Project-Wide | Master Project Moderator | ACTIVE
+### MOD-02 | Project-Wide | Master Project Moderator | HANDOVER REQUIRED
 
 | Field | Value |
 |---|---|
-| Session id | `local_cecc2f4c-a274-4286-a778-228ebe1a5f2c` (VERIFIED `get_session self`) |
+| Session id | `local_cecc2f4c` (VERIFIED `get_session self`) |
 | Title in the app | Investment Proposal Dashboard (as the app shows it, VERIFIED `get_session self`). In the desktop app a session can be renamed (`set_session_title`), but the app asks the owner first when the owner chose the title; do not rename without asking. |
 | How it starts | Started 2-Nov-2026 07:43:23 UTC by the owner in a new chat on the main checkout (Code tab) with the successor prompt ([MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md](../handover/continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md)). |
 | Responsibility | The owner's primary contact. Validates the package; coordinates EX, NB, OPS and GOV; decomposes requirements into tasks and assigns them; grants and records file claims; keeps the registers; consults ARC-01; runs Gate D (merge = publish) and docs-only changes itself; manages the handover of sub-chats and of itself. |
-| Status | ACTIVE since 2-Nov-2026. Model and settings: claude-sonnet-5-5, effort max, permission mode auto (VERIFIED `get_session self`); MOD-01 ran on claude-opus-5-5, effort xhigh (the model is the owner's choice). |
-| Assigned tasks | TASK-016 (VERIFIED COMPLETE 2-Nov-2026); TASK-018 (widened; GOV-01, started), TASK-064 (EX-01, started); next TASK-017 verification, TASK-074, TASK-071, TASK-070; records or verifies the owner's TASK-019, 032, 033, 034, 073. Still with MOD-02 (alone or with the owner): TASK-036, TASK-037, TASK-054, TASK-056, TASK-059, TASK-060, TASK-061, TASK-062, TASK-063. Assigns every other open task ([TASK_REGISTER.md](TASK_REGISTER.md)). |
-| Working directory and branch | The main checkout on `main`. It never leaves it on another branch and never runs `git checkout` / `git switch` there (KNOWN_ISSUES R6; `CLAUDE.md` "Project control"). The worktree `.claude/worktrees/investment-proposal-dashboard-c68580` (detached at `f5c2431`; unused) is VERIFIED to have been created by the desktop app (its admin folder holds the app's `claude-desktop-worktree` marker file, as the NB worktrees' folders do); that it was made for this chat is INFERRED (its name is this chat's title and it was created minutes before this chat); this chat does not use it (`REPOSITORY_AND_ENVIRONMENT_STATE.md` section 19). |
-| Reserved files and shared components | Since the merge of PR #30: the Moderator-owned group (`docs/project-control/**`, `docs/handover/**`; see FILE_OWNERSHIP_AND_CHANGE_CONTROL section 3), except that the TASK-018 claim grants five of those files to GOV-01 from its merge until GOV-01's PR merges (named in `ACTIVE_CHANGE_REGISTER.md` section 1; one writer at a time). |
+| Status | HANDOVER REQUIRED since 17-Nov-2026: the owner pasted the handover master prompt on 17-Nov-2026 at 06:27 UTC (trigger: the Moderator itself must be replaced; MOD-02 has also had four automatic compactions, see Context state, so the three-compaction trigger of the continuations README section 1 is met too). ACTIVE from 2-Nov-2026 to that instruction. It does only handover work from now on: no new task, no code change. Model and settings: claude-sonnet-5-5, effort max, permission mode auto (VERIFIED `get_session self`, 17-Nov-2026); MOD-01 ran on claude-opus-5-5, effort xhigh (the model is the choice of the owner). |
+| Context state | 4 automatic context compactions, distinct `compact_boundary` timestamps in the transcript (VERIFIED 17-Nov-2026): 2-Nov-2026 11:22:16 UTC, 2-Nov-2026 19:14:48 UTC, 9-Nov-2026 07:36:47 UTC and 17-Nov-2026 06:28:46 UTC. The handover master prompt was pasted at 06:27:07 UTC on 17-Nov-2026. Detail from 2-Nov to 17-Nov survives only in summaries and in the transcript. |
+| Transcript | `56ada2dd...jsonl` (file name shortened to 8 characters) under `%USERPROFILE%\.claude\projects\<project slug>\`, from 2-Nov-2026 07:43 UTC |
+| Assigned tasks | Now only the handover to MOD-03 (HANDOVER REQUIRED). Done: TASK-016 (VERIFIED COMPLETE 2-Nov-2026) and the records PRs #31 to #34 and #36. Started by MOD-02 and finished or idle: TASK-018 (GOV-01; merged as PR #35, 9-Nov-2026), TASK-064 (EX-01; report delivered 2-Nov-2026; findings recorded as C47 to C50 by the PR of TASK-079), TASK-020, TASK-021 and TASK-024 (OPS-01; dry runs only, BLOCKED). Passing to MOD-03 with everything else open in [TASK_REGISTER.md](TASK_REGISTER.md): among them the TASK-017 record (the checks passed on 17-Nov-2026, see Current blocker), TASK-074, TASK-071, TASK-070, TASK-036, TASK-037, TASK-054, TASK-056, TASK-059 to TASK-063, and the owner TASK-019, 032, 033, 034 and 073. |
+| Working directory and branch | The main checkout on `main`. It never leaves it on another branch and never runs `git checkout`, `git switch`, `git merge` or `git pull` there (KNOWN_ISSUES R6; `CLAUDE.md` "Project control"). The worktree `.claude/worktrees/investment-proposal-dashboard-c68580` (detached at `f5c2431`; unused) is VERIFIED to have been created by the desktop app (its admin folder holds the app's `claude-desktop-worktree` marker file, as the NB worktrees' folders do); that it was made for this chat is INFERRED (its name is this chat's title and it was created minutes before this chat); this chat does not use it (`REPOSITORY_AND_ENVIRONMENT_STATE.md` section 19). VERIFIED 17-Nov-2026: the checkout is on `main` = `origin/main` = `b47069b`, clean (0 ahead, 0 behind); the unused worktree is still detached at `f5c2431`, clean. |
+| Reserved files and shared components | Since the merge of PR #30: the Moderator-owned group (`docs/project-control/**`, `docs/handover/**`; see FILE_OWNERSHIP_AND_CHANGE_CONTROL section 3). The five of those files that the TASK-018 claim granted to GOV-01 returned to the Moderator when PR #35 merged (9-Nov-2026 12:16 UTC). No claim is active (ACTIVE_CHANGE_REGISTER section 1, 17-Nov-2026). At the handover the group passes to MOD-03; MOD-02 edits it only for the handover itself. |
 | Dependencies | TASK-015 merged (the package on `main`). |
-| Last known commit and deliverable | TASK-016 delivered as PR #30 (`32172f5`): validation record `docs/update-log/2026-11-02_task-016-validation.md` and the register updates |
-| Pending owner decisions | DEC-OPEN-02 and DEC-OPEN-03 answered 2-Nov-2026 (D84, D85); DEC-OPEN-01 answered 2-Nov-2026 (D86); DEC-OPEN-30 to -33 open; DEC-OPEN-34 (who accepts a finished change, the Gate E scope; needed before GOV-01's PR reaches Gate D, together with the owner's yes to the operator-run Gate B in every refresh); DEC-OPEN-04..29 next in the documented order. Correction 2-Nov-2026: only DEC-OPEN-08 is due about 13-Nov-2026 (INFERRED from the documented cadence); DEC-OPEN-01 is answered (D86); the follow-on decisions DEC-OPEN-30 (about 6-Nov-2026) and DEC-OPEN-31 (about 9-Nov-2026) are the ones needed early: they gate the build of the bridge tool (TASK-022), which must be built and merged before step 10 of the October cycle (about 13-17-Nov-2026); DEC-OPEN-34 is also needed early (before GOV-01's PR reaches Gate D, about the end of the week of 3-Nov-2026). |
-| Current blocker | ARC-01 condition (2-Nov-2026): no `/monthly-update`, no tool `--apply` and no OPS or NB sub-chat before the widened TASK-018 PR merges; a run on the real `site/` also waits for TASK-017. |
-| Current handover document | The successor prompt above and [MASTER_HANDOVER_2026-10-28_v1.md](../handover/MASTER_HANDOVER_2026-10-28_v1.md) |
+| Last known commit and deliverable | PR #36 (`b47069b`, merged 17-Nov-2026 06:37:48 UTC; docs only: D89 to D96 and the answers to DEC-OPEN-07, -08, -30, -31 and -32; push run 44032631708 verify + publish success; the 7 published files equal `site/`, VERIFIED 17-Nov-2026). Before it: PR #34 (`3fd1eab`, D87 and D88), PR #33 (`8aeabfc`, the GOV-01 claim record), PR #32 (`703b975`, D86), PR #31 (`c0fb2dd`) and TASK-016 as PR #30 (`32172f5`): validation record `docs/update-log/2026-11-02_task-016-validation.md`. MOD-02 opened PRs #30 to #34 and #36; PR #35 is GOV-01. |
+| Pending owner decisions | Answered since 2-Nov-2026: DEC-OPEN-01, -02 and -03 (D86, D84, D85; 2-Nov-2026); DEC-OPEN-34 (D87) and the owner yes to the operator-run Gate B in every monthly refresh (D88), both 9-Nov-2026, whose recorded wording the owner has still to confirm; DEC-OPEN-07, -08, -30, -31 and -32 (D94, D96, D92, D93 and a note on D86; 9-Nov-2026, recorded by PR #36 on 17-Nov-2026). Open: 27 (DECISION_LOG section 1.3; DEC-OPEN-35 and -36 are new). Needed first for the October update: DEC-OPEN-11 (four desk labels, before TASK-020 steps 14 and 14a), DEC-OPEN-04 (the PMS date label; D95 names the Reckoner as the source), DEC-OPEN-33 (the provisional data pack; at run time) and the decisions at the Reckoner gates that OPS-01 holds (see its record); later DEC-OPEN-05, -09 and -10. The order to ask is in DECISION_LOG section 1.2. |
+| Current blocker | none for the handover itself. History of the conditions on work: the ARC-01 condition of 2-Nov-2026 (no `/monthly-update`, no tool `--apply` and no OPS or NB sub-chat before the widened TASK-018 PR merges) was lifted when PR #35 merged on 9-Nov-2026 (C9 VERIFIED 17-Nov-2026: local `main` = `origin/main`; empty diff of `CLAUDE.md`, `.claude` and `docs`). TASK-017 (a run on the real `site/` and any tool `--apply`): its checks were met when re-run on 17-Nov-2026 (OneDrive.exe running; folder pinned; 0 of 923 `.git` files cloud-only; `git fsck --connectivity-only` exit 0; a read from the pack `pack-631ec788...` succeeds); the PR of TASK-079 records the pass in `docs/PROJECT_STATE.md`, so the ban of `CLAUDE.md` "Project control" (no checkout, switch, merge or pull in the main checkout) applies from its merge only while OneDrive is not running or a `.git` file is cloud-only. |
+| Current handover document | [MASTER_HANDOVER_2026-11-17_v2.md](../handover/MASTER_HANDOVER_2026-11-17_v2.md) and the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md), both written on 17-Nov-2026. The package of the previous handover, [MASTER_HANDOVER_2026-10-28_v1.md](../handover/MASTER_HANDOVER_2026-10-28_v1.md), is a historical snapshot. |
+| Successor | MOD-03 (QUEUED; the owner starts it with the successor prompt above) |
+| Retirement reason | not applicable yet. MOD-02 stays HANDOVER REQUIRED until MOD-03 has validated the handover and confirmed it (continuations README section 9); then RETIRED, reason: replaced after four automatic compactions on the owner order of 17-Nov-2026. |
+
+### MOD-03 | Project-Wide | Master Project Moderator | QUEUED
+
+| Field | Value |
+|---|---|
+| Session id | not created yet (QUEUED). The owner starts it; the app then shows its id and title, which the Moderator records here. |
+| Title in the app | not created yet |
+| How it starts | The owner opens a new chat in the Code tab of the Claude desktop app on the main checkout and pastes the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) (continuations README section 8). |
+| Responsibility | As MOD-02: the primary contact of the owner; coordinates EX, NB, OPS and GOV; decomposes requirements into tasks and assigns them; grants and records file claims; keeps the registers; consults ARC-01; runs Gate D (merge = publish) and docs-only changes itself; manages the handover of sub-chats and of itself. |
+| Status | QUEUED (defined 17-Nov-2026 by MOD-02; not started). It becomes ACTIVE when it has validated the handover (continuations README section 9). Model and settings: the choice of the owner (UNKNOWN until it starts). |
+| Assigned tasks | Everything open in [TASK_REGISTER.md](TASK_REGISTER.md), starting with the validation of the handover, the record of the TASK-017 pass, the register sweep that the handover lists and the October update with OPS-01. |
+| Working directory and branch | The main checkout on `main`; it never leaves it and never runs `git checkout`, `git switch`, `git merge` or `git pull` there (`CLAUDE.md` "Project control"). |
+| Reserved files and shared components | The Moderator-owned group (`docs/project-control/**`, `docs/handover/**`) from the moment it is ACTIVE. No file claim is active. |
+| Dependencies | The MOD-02 -> MOD-03 handover merged (branch `handover/mod-02-to-mod-03-20261117`, named by the continuations rule). |
+| Last known commit and deliverable | none (not started) |
+| Pending owner decisions | The open decisions of DECISION_LOG section 1.3, in the order of its section 1.2; the owner confirmation of the recorded wording of D87 and D88; the October inputs held by OPS-01. |
+| Current blocker | The owner has not started it yet. |
+| Current handover document | [MASTER_HANDOVER_2026-11-17_v2.md](../handover/MASTER_HANDOVER_2026-11-17_v2.md) and the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) |
 | Successor | none |
 | Retirement reason | not applicable |
 
@@ -142,16 +170,16 @@ is not a status.
 
 | Field | Value |
 |---|---|
-| Session id | None. ARC-01 is the subagent defined in [`.claude/agents/integration-guardian.md`](../../.claude/agents/integration-guardian.md) (created by TASK-015) and invoked by the Moderator. For a long review the Moderator may run it as its own session; that session's id is then recorded here. |
+| Session id | None. ARC-01 is the subagent defined in [`.claude/agents/integration-guardian.md`](../../.claude/agents/integration-guardian.md) (created by TASK-015) and invoked by the Moderator. For a long review the Moderator may run it as its own session; that session's id is then recorded here. Since 9-Nov-2026 (D88) the refresh operator of a monthly refresh also invokes it for the Gate B DIFF REVIEW of that refresh (an operator-run review, weaker than one run by the Moderator). |
 | Title in the app | none (not a chat) |
 | Responsibility | The independent technical control layer. Reviews change-impact contracts before material or high-risk work (Gate B pre-check) and the actual diffs after (Gate B): affected files, downstream consumers, ripple effects, conflicts with active claims, interface and schema compatibility, duplicated business logic, required regression tests, documentation and recovery risk. Reports to the Moderator. Read-only tools (Read, Grep, Glob, Bash). Never implements features and never makes product decisions. |
 | Status | ACTIVE since 2-Nov-2026: first successful invocation (DIFF REVIEW of TASK-015, in the 2-Nov-2026 validation workflow): the definition loaded in a session started after the merge (VERIFIED, supports the earlier INFERRED statement); verdict GO WITH CONDITIONS, risk MEDIUM. |
-| Assigned tasks | Gate B for every material change (triggers: FILE_OWNERSHIP_AND_CHANGE_CONTROL section 7). First use (done 2-Nov-2026): the DIFF REVIEW of TASK-015 within MOD-02's TASK-016 validation. Further uses (done 3-Nov-2026): the pre-check of GOV-01's TASK-018 contract (GO WITH CONDITIONS, C1-C9; see `ACTIVE_CHANGE_REGISTER.md` section 2) and the DIFF REVIEW of this claim record (GO WITH CONDITIONS on its first version; conditions applied); still to come: the DIFF REVIEW of GOV-01's branch text. |
+| Assigned tasks | Gate B for every material change (triggers: FILE_OWNERSHIP_AND_CHANGE_CONTROL section 7). First use (done 2-Nov-2026): the DIFF REVIEW of TASK-015 within MOD-02's TASK-016 validation. Further uses (done 3-Nov-2026): the pre-check of GOV-01's TASK-018 contract (GO WITH CONDITIONS, C1-C9; see `ACTIVE_CHANGE_REGISTER.md` section 2) and the DIFF REVIEW of this claim record (GO WITH CONDITIONS on its first version; conditions applied); done 9-Nov-2026: the DIFF REVIEW of the TASK-018 branch (head `28e1d4e`; GO WITH CONDITIONS, risk MEDIUM) and the DELTA REVIEW of `29e0d32` (GO WITH CONDITIONS, no BLOCKER, no MAJOR finding), both quoted in the PR #35 description. Still open from them: finding 2 (`.claude/agents/qa-verifier.md` line 24 still says "SHA-256 of all six"; outside the claim) and the PR-number placeholders that the register sweep fills in. From the merge on, the refresh operator runs the Gate B of a monthly refresh (D88). |
 | Working directory and branch | Read-only. It reads whichever checkout or worktree the Moderator points it at. |
 | Reserved files and shared components | none (it does not write) |
 | Durable memory | A subagent keeps no memory between calls. Its knowledge lives in [CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md](../handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md), [ARCHITECTURE_AND_DEPENDENCY_MAP.md](ARCHITECTURE_AND_DEPENDENCY_MAP.md), [INTERFACE_CONTRACTS.md](INTERFACE_CONTRACTS.md), [ACTIVE_CHANGE_REGISTER.md](ACTIVE_CHANGE_REGISTER.md), [INTEGRATION_AND_REGRESSION_LOG.md](INTEGRATION_AND_REGRESSION_LOG.md) and [KNOWN_ISSUES_AND_REGRESSION_RISKS.md](KNOWN_ISSUES_AND_REGRESSION_RISKS.md). The Moderator keeps them current after each review. |
 | Dependencies | TASK-015 merged |
-| Last known commit and deliverable | ARC-01 pre-check of the TASK-018 contract and DIFF REVIEW of this claim record, 3-Nov-2026 (both GO WITH CONDITIONS; the pre-check conditions C1-C9 are in `ACTIVE_CHANGE_REGISTER.md` section 2); before them, the ARC-01 report of 2-Nov-2026 (summary in `INTEGRATION_AND_REGRESSION_LOG.md` section 11; findings and conditions in `docs/update-log/2026-11-02_task-016-validation.md`) |
+| Last known commit and deliverable | ARC-01 DIFF REVIEW (branch head `28e1d4e`) and DELTA REVIEW (`29e0d32`) of the TASK-018 branch, 9-Nov-2026 (both GO WITH CONDITIONS; conditions met; PR #35 description); before them: ARC-01 pre-check of the TASK-018 contract and DIFF REVIEW of this claim record, 3-Nov-2026 (both GO WITH CONDITIONS; the pre-check conditions C1-C9 are in `ACTIVE_CHANGE_REGISTER.md` section 2); before them, the ARC-01 report of 2-Nov-2026 (summary in `INTEGRATION_AND_REGRESSION_LOG.md` section 11; findings and conditions in `docs/update-log/2026-11-02_task-016-validation.md`) |
 | Pending owner decisions | none |
 | Current blocker | none |
 | Current handover document | [CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md](../handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md) |
@@ -162,7 +190,7 @@ is not a status.
 
 | Field | Value |
 |---|---|
-| Session id | `local_d2d575b3-186e-49d0-9fe4-fe36f685a9f3` |
+| Session id | `local_d2d575b3` |
 | Title in the app | Fix the three P1 tool risks before the next refresh |
 | Started | 16-Oct-2026 13:09 UTC. Proposed by MOD-01; the owner started it by clicking the proposal card. |
 | Responsibility | Fix KNOWN_ISSUES A1 (Bond List tool read the first sheet and assumed the desk), A3 (look-through tool re-dated the MF analytics), A4 (Reckoner merge had no gate against dropped funds). |
@@ -185,13 +213,13 @@ is not a status.
 
 | Field | Value |
 |---|---|
-| Session id | `local_1f914af1-944c-44a0-8bda-5bfa6f228cab` |
+| Session id | `local_1f914af1` |
 | Title in the app | Small tool and UI follow-ups from the 19-Oct fixes |
 | Started | 21-Oct-2026; its brief arrived 05:51 UTC. Proposed by MOD-01; started by the owner accepting the card (INFERRED: the act is visible only in the transcript). |
 | Responsibility | Five P3 follow-ups: every tool exits 2 on a missing input (D72), OneDrive rename retry (R6), C17 matrix footnote, C18 Select popover dagger, A27 `rehearse.js --old-site`. |
 | Status | COMPLETED. Last activity 21-Oct-2026 06:44 UTC; not running and not archived on 28-Oct-2026. Archived on or before 2-Nov-2026 (`list_sessions` shows isArchived true; that the owner did it is INFERRED). |
 | Assigned tasks | TASK-011 (VERIFIED COMPLETE) |
-| Working directory and branch | Worktree `.claude/worktrees/adoring-boyd-7028f6` (desktop-app session branch `claude/adoring-boyd-7028f6`, local only, merged). The worktree now sits on `fix/a27-rehearse-old-site` at `18abff3`, clean apart from the ignored `node_modules/`, 12 commits behind `main` (VERIFIED, 28-Oct-2026). Since 2-Nov-2026 13:32:29 IST (08:02:29 UTC) the worktree shows a detached HEAD at its commit (the app released the branch when the session was archived; INFERRED from the timing); the branches still exist and no work was lost. |
+| Working directory and branch | Worktree `.claude/worktrees/adoring-boyd-7028f6` (desktop-app session branch `claude/adoring-boyd-7028f6`, local only, merged). The worktree now sits on `fix/a27-rehearse-old-site` at `18abff3`, clean apart from the ignored `node_modules/`, 12 commits behind `main` (VERIFIED, 28-Oct-2026). Since 2-Nov-2026 13:32:29 IST (08:02:29 UTC) the worktree shows a detached HEAD at its commit (the app released the branch when the session was archived; INFERRED from the timing); the branches still exist and no work was lost. Since 9-Nov-2026 the app reuses this worktree folder for OPS-01 (task branch `data/2026-09-4`, app session branch `claude/ops-01-reckoner-a11e94`): see the OPS-01 record; TASK-061 must skip it. |
 | Reserved files and shared components | none (released at the merge of PR #23) |
 | Dependencies | none |
 | Last known commit and deliverable | PR #19 `699978b`, PR #20 `0cb7e95`, PR #21 `75538de`, PR #22 `fb9cbd6`, PR #23 `1523bbc` (21-Oct-2026 06:06-06:41 UTC). PR #23's code exists only inside merge commit `18abff3`, so `git log --no-merges` does not show it (use `git log -m` or `git diff 18abff3^1 18abff3`). It opened C22 and C23. |
@@ -207,7 +235,7 @@ is not a status.
 
 | Field | Value |
 |---|---|
-| Session id | `local_00b57be9-5ff6-4864-92bd-de4f103330ae` |
+| Session id | `local_00b57be9` |
 | Title in the app | Fix and standardise the proposal PowerPoint export |
 | Started | 22-Oct-2026 14:31 UTC. Proposed by MOD-01; the owner chose "New session" at 14:30 UTC. |
 | Responsibility | The PowerPoint export design system: measured layout, continuation slides, page numbers, `*` marker on expected returns (D82, D83). |
@@ -227,43 +255,64 @@ is not a status.
 | Clean-up | Merged branches: TASK-060 (local), TASK-059 (origin), under DEC-OPEN-22. |
 | Lesson | NB-03 left the shared main checkout on `feat/pptx-design-system`. When MOD-01 switched back to `main` on 25-Oct-2026, `git checkout` failed with "mmap failed" (OneDrive cloud-only pack files) and truncated or deleted tracked files; they were restored from git with nothing lost (KNOWN_ISSUES R6). Rule since then: the main checkout stays on `main`, and coding chats use their own worktree. |
 
-### GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (TASK-018 widened) | ACTIVE
+### GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (TASK-018 widened) | COMPLETED
 
 | Field | Value |
 |---|---|
 | Session id | `local_622b2ebd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) |
 | Title in the app | GOV-01 Playbook: rule documents consistency (as proposed by MOD-02; started by the owner on 2-Nov-2026) |
-| How it starts | Started by the owner on 2-Nov-2026 (MOD-02 had proposed the card to the owner that day). |
+| How it starts | Started by the owner on 2-Nov-2026 (MOD-02 had proposed the card to the owner that day). VERIFIED `get_session` 17-Nov-2026: created 2-Nov-2026 15:17:57 UTC, parent session MOD-02, model claude-sonnet-5-5, effort max, permission mode auto. |
 | Responsibility | Make the rule documents consistent: TASK-018, widened (KNOWN_ISSUES E6-E15, E17; ARC-01 conditions). |
-| Status | ACTIVE since 2-Nov-2026 (started by the owner); claim recorded in [ACTIVE_CHANGE_REGISTER.md](ACTIVE_CHANGE_REGISTER.md) section 1 (in force from the merge of the record that adds it); Guardian pre-check of its contract: GO WITH CONDITIONS (3-Nov-2026). Condition: it must merge before any `/monthly-update` run, any tool `--apply` or any OPS or NB launch (a run on the real `site/` also waits for TASK-017). |
-| Assigned tasks | TASK-018 (widened). Risk class Material (rule documents); gates A to D (E only if a decision is raised; DEC-OPEN-34, the Gate E scope, is one and gates its Gate D, together with the owner's yes to the operator-run Gate B). |
-| Working directory and branch | Its own worktree, cut from local `main` = `origin/main` at the start; never the shared main checkout. Worktree: `.claude/worktrees/focused-wright-d50bee`, the folder that was NB-01's worktree (the app reused it for GOV-01). App session branch: `claude/affectionate-lovelace-f11b67` (cut at `c0fb2dd`, 0 commits on 3-Nov-2026). Task branch: to be `docs/gov-01-rule-consistency-20261102`, made with `git switch -c` at the starting commit (changes no file); the folder name and the app branch name differ. TASK-061 (worktree clean-up) must not remove this folder while GOV-01 runs. |
-| Reserved files and shared components | The TASK-018 claim (23 files), recorded in [ACTIVE_CHANGE_REGISTER.md](ACTIVE_CHANGE_REGISTER.md) section 1 (in force from the merge of the record that adds it). GOV-01 edits nothing before MOD-02's written "claim in force" message. |
-| Dependencies | Moderator: MOD-02. Guardian: ARC-01, called by MOD-02 for the contract pre-check and the DIFF REVIEW. |
-| Last known commit and deliverable | none (started 2-Nov-2026) |
-| Pending owner decisions | DEC-OPEN-34 (Gate E scope), raised by MOD-02 and still open; needed before its PR reaches Gate D (GOV-01 holds no decision itself); also the owner's yes, after one plain sentence from MOD-02, to adding Gate B (an integration-guardian DIFF REVIEW run by the refresh operator, weaker than one run by the Moderator) to every monthly refresh as one of D61's checks (FILE_OWNERSHIP_AND_CHANGE_CONTROL section 10; the yes goes in the PR; no new D) |
-| Current blocker | none for starting once MOD-02's written claim-in-force message has arrived (it edits nothing before); its Gate D waits for DEC-OPEN-34 and for that yes |
-| Current handover document | none |
+| Status | COMPLETED on 9-Nov-2026: TASK-018 merged as PR #35 (`ddd0304`, 12:16:05 UTC); the claim was released at the merge (ACTIVE_CHANGE_REGISTER section 4). Session last active 9-Nov-2026 12:20 UTC; not running; not archived (VERIFIED `list_sessions`, 17-Nov-2026). The worktree is idle, not retired. Open follow-ups, none of them GOV-01: ARC-01 finding 2 (`.claude/agents/qa-verifier.md` line 24), the PR-number placeholders and the register sweep (Moderator), and the owner confirmation of the recorded wording of D87 and D88 at Gate E. |
+| Assigned tasks | TASK-018 (widened): merged. Risk class Material (rule documents); gates A to D done; Gate E: the final text after D87 and D88, the owner confirmation of their recorded wording pending. |
+| Working directory and branch | Its own worktree `.claude/worktrees/focused-wright-d50bee`, the folder that was NB-01 worktree (the app reused it for GOV-01); never the shared main checkout. VERIFIED 17-Nov-2026: the worktree is on the task branch `docs/gov-01-rule-consistency-20261102` at `29e0d32` (the PR head; merged; also on origin), clean; the app session branch `claude/affectionate-lovelace-f11b67` is at `c0fb2dd` with 0 commits. TASK-061 (worktree clean-up) must still skip this folder until the owner decides DEC-OPEN-22. |
+| Reserved files and shared components | none. The TASK-018 claim (23 files) was released at the merge of PR #35. |
+| Dependencies | Moderator: MOD-02. Guardian: ARC-01, called by MOD-02 for the contract pre-check and the DIFF REVIEW (done: pre-check 3-Nov-2026; DIFF REVIEW and DELTA REVIEW 9-Nov-2026, both GO WITH CONDITIONS). |
+| Last known commit and deliverable | PR #35 (`ddd0304`, merged 9-Nov-2026 12:16:05 UTC; head `29e0d32`, base `3fd1eab`; 23 files, +709/-285; docs only; push run 42615584473 success). The PR description holds the contract copy, the Gate C evidence and the Guardian verdicts. |
+| Pending owner decisions | none held. DEC-OPEN-34 was answered on 9-Nov-2026 (D87) and the owner yes to the operator-run Gate B was given the same day (D88); the owner has still to confirm the recorded wording of both (a task of the Moderator). |
+| Current blocker | none |
+| Current handover document | none: it finished its task without a handover. Its brief is the first message of its transcript (`4b1e7917...jsonl` in the project folder of its worktree under `%USERPROFILE%\.claude\projects\`; VERIFIED: it starts with the GOV-01 launch packet). |
 | Successor | none |
-| Retirement reason | not applicable |
+| Retirement reason | Not retired: its work is complete. Same recommendation as NB-01: no new work (start a new chat with the next free GOV number, GOV-02). |
 
-### EX-01 | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | ACTIVE
+### EX-01 | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | COMPLETED
 
 | Field | Value |
 |---|---|
 | Session id | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) |
 | Title in the app | EX-01 Playbook: browser acceptance (as proposed by MOD-02; started by the owner on 2-Nov-2026) |
-| How it starts | Started by the owner on 2-Nov-2026 (MOD-02 had proposed the card to the owner that day). |
+| How it starts | Started by the owner on 2-Nov-2026 (MOD-02 had proposed the card to the owner that day). VERIFIED `get_session` 17-Nov-2026: created 2-Nov-2026 15:17:56 UTC, parent session MOD-02, model claude-sonnet-5-5, effort max, permission mode auto. |
 | Responsibility | Full browser acceptance pass on the current build (TASK-064). Read-only: it reports its results to MOD-02, who records them. |
-| Status | ACTIVE (turn finished 2-Nov-2026; report delivered; results to be recorded in the next register update). Started by the owner on 2-Nov-2026; read-only, shared checkout, no branch, no commit. |
-| Assigned tasks | TASK-064 |
-| Working directory and branch | The shared main checkout, without a worktree; no branch, no commit; it leaves the checkout on `main`. Exports go only to `_testdata/acceptance-2026-11/` (git-ignored) or `monthly-updates/<month>/_review/`. |
+| Status | COMPLETED: it ran the pass on 2-Nov-2026 (15:19-16:13 UTC) and delivered its report; last activity 2-Nov-2026 16:19 UTC; not running; not archived (VERIFIED `list_sessions`, 17-Nov-2026). Recording the result in the repository is still to be done by the Moderator (see Result). |
+| Result | The report is local only (`_testdata/acceptance-2026-11/EX-01_ACCEPTANCE_REPORT.md`, git-ignored; its files are listed in `MANIFEST.txt`). All 11 checks of `docs/TESTING.md` section 3 PASS on the live build (site state S7) at base `c0fb2dd`, plus the shared-link view; the 7 published files equalled `site/` at 15:19 and 16:13 UTC; `verify_page` and `npm test` (903 checks) identical to the baseline; both Excel exports opened in Microsoft Excel without error; every deck export had no layout warning; the browser console was clean over 8 page loads. Four new findings (proposed ids, no KNOWN_ISSUES entry yet): EX01-N1 (the Overlap Matrix image has its legend cut off for 2 to 4 funds; P3, client-facing); EX01-N2 (the Excel export has no number formats and no cached formula values; P3); EX01-N3 (Net Asset Allocation counts every Global Funds record as equity, a GIFT City G-Sec feeder included; P3, needs a rule from the owner); EX01-N4 (one unexplained, unreproduced misrouting of a Direct monitor file in its first Data Refresh run; a watch item). Known items reproduced: C23, C24, C26, C28, C36, C43 (with a new manifestation in the weighted row) and B1. To record: an update-log entry, KNOWN_ISSUES entries for EX01-N1 to N4, the PROJECT_STATE and integration-log references, TASK-064 and REQ-071. |
+| Assigned tasks | TASK-064 (the pass is done; the record in the repository is pending) |
+| Working directory and branch | The shared main checkout, without a worktree; no branch, no commit; it left the checkout on `main` (clean at its end, per its report). Exports went only to `_testdata/acceptance-2026-11/` (git-ignored). |
 | Reserved files and shared components | none (read-only; no claim) |
 | Dependencies | Moderator: MOD-02. |
-| Last known commit and deliverable | none (started 2-Nov-2026) |
-| Pending owner decisions | none held |
+| Last known commit and deliverable | none (no commit). Deliverable: the local report, delivered 2-Nov-2026. |
+| Pending owner decisions | none held. Questions the pass raised for the owner: a rule for Global Funds in Net Asset Allocation (EX01-N3) and the existing C43. DEC-OPEN-24 and DEC-OPEN-12 were neither decided nor pre-empted. |
 | Current blocker | none |
-| Current handover document | none |
+| Current handover document | none: it finished its task without a handover. Its brief is the first message of its transcript. |
+| Successor | none |
+| Retirement reason | Not retired: its work is complete. Same recommendation as NB-01: no new work (use EX-02 for a later pass). |
+
+### OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | BLOCKED
+
+| Field | Value |
+|---|---|
+| Session id | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) |
+| Title in the app | OPS-01 October update: Reckoner run (VERIFIED `get_session`, 17-Nov-2026). It does not carry the word Playbook (rule 11 of section 6); renaming needs the agreement of the owner. |
+| How it starts | Started by MOD-02 on 9-Nov-2026 at 12:32 UTC (VERIFIED `get_session`: created 12:32:13 UTC, parent session MOD-02), 16 minutes after PR #35 merged and after the October instructions of the owner (D87 to D96). Whether the owner clicked a start card: UNKNOWN. It was started before its record existed here (rule 5 of section 6 was not followed); this record is the first. |
+| Responsibility | The operator of the October 2026 update: run A (the Reckoner products: `tools/merge_reckoner.js`, step 14, and `tools/merge_aif_performance.js`, step 15, of the Sep-2026 catch-up with the "October 2026" deck) and read-only preparation of run B (the MF cycle: NAV-date tests of the monitors, the rename and bake dry runs). Its launch packet is the first message of its transcript. |
+| Status | BLOCKED (waiting on the owner and the desk). Not running since 9-Nov-2026 21:49 UTC, when its last turn ended with the weekly-limit error of the account (per MOD-02); not archived (VERIFIED `list_sessions`). Model claude-fable-5-1, effort high, permission mode auto (VERIFIED `get_session`; INFERRED: the model was set after the limit error). Nothing was applied: it made dry runs and wrote two reports (local only), and it has no commit. |
+| Assigned tasks | TASK-020 (steps 14, 14a, 15 and 17 only), TASK-021 and TASK-024 as read-only preparation (launch packet, field 2). No claim: it edits nothing and runs no `--apply` until MOD-02 sends "claim in force" (a claim row on `origin/main`). |
+| Working directory and branch | Its own worktree `.claude/worktrees/adoring-boyd-7028f6`, the folder that was NB-02 worktree (the app reused it). VERIFIED 17-Nov-2026: clean; the task branch `data/2026-09-4` and the app session branch `claude/ops-01-reckoner-a11e94` are both at `ddd0304` (the PR #35 merge, the base of the run), with 0 commits and not on origin. TASK-061 (worktree clean-up) must skip this folder while OPS-01 exists. |
+| Reserved files and shared components | none yet. A claim for the Sep-2026 Reckoner catch-up (all six deploy files, the update log, the state files) is drafted outside the repository and not merged; it assumes a routine refresh and must be redone as High risk if any pin, `add_reckoner_funds.js`, `--accept-drops` or universe change is approved. |
+| Dependencies | Moderator: MOD-02, then MOD-03. Guardian: ARC-01, called by the refresh operator for the Gate B DIFF REVIEW of a refresh (D88). The owner (decisions below) and the desk (monitor re-exports). The TASK-017 pass must be recorded before any `--apply`. |
+| Last known commit and deliverable | none (no commit). Two local-only reports of 9-Nov-2026: `monthly-updates/2026-09_Sep-2026/_review/14-15_runA_dry_gates_2026-11-09.md` (steps 14 and 15 both exit 1; no `--apply`) and `monthly-updates/2026-10_Oct-2026/_review/prepB_report_2026-11-09.md`. |
+| Pending owner decisions | Run A gates (decisions of the owner, HIGH risk; nothing applied): step 14 has two failed gates (dropped names against names with no MASTER match in the same category; 12 Select drops against a limit of 8, waivable only by the owner with `--accept-drops` after confirming); 5 deck names have no MASTER match (pins or `add_reckoner_funds.js` would be needed); step 15 AIF coverage 12 to 7 fails. Run B inputs: the Regular and SIF monitor re-exports as on 31-Oct-2026; the Bond file answers; DEC-OPEN-11 (four desk labels; before steps 14 and 14a); DEC-OPEN-33 (the provisional data pack, at run time); later DEC-OPEN-04, -05, -09 and -10. |
+| Current blocker | Three, all open on 17-Nov-2026. (1) The owner decisions at the Reckoner gates (above). (2) The Regular and SIF monitor re-exports as on 31-Oct-2026: the 29-Oct and 2-Nov files supplied earlier are superseded (on the 2-Nov Regular file MTD equals 1 Day on 2,296 of 2,505 rows, so its NAV is the first trading day of November). The owner had said on 9-Nov-2026 to use them as if they were 30-Oct; MOD-02 did not, on that evidence, and asked for a re-export (the account of MOD-02, not verifiable from the repository). `monthly-updates/2026-10_Oct-2026/` holds only the Direct monitor (NAV 30-Oct, label 31st October 2026 under D91), the Bond Options file and the Offshore deck, plus `_review` and `_superseded`. (3) The weekly-limit stop of 9-Nov-2026 (the allowance reset on 13-Nov-2026 06:30 IST according to its launch packet; the session has not been resumed). The October MF cycle (expected about 13-17 Nov) has not started. |
+| Current handover document | none (it is idle, not replaced). Its brief is the first message of its transcript (`efcf80ca...jsonl` in the project folder of its worktree under `%USERPROFILE%\.claude\projects\`; VERIFIED: it starts with the OPS-01 launch packet). At its own context-loss trigger it hands over with the sub-chat template (launch packet, field 14). |
 | Successor | none |
 | Retirement reason | not applicable |
 
@@ -273,8 +322,8 @@ is not a status.
 
 | ID | Session id | Title in the app | Folder | Note (28-Oct-2026; update 2-Nov-2026) |
 |---|---|---|---|---|
-| EXT-PR-01 | `local_7f5b5474-442a-45e7-9fc1-9c285043394e` | Portfolio Review Dashboard architecture | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Portfolio Review Dashboard` (its own repository) | EXTERNAL - separate project. Running. It received the same handover master prompt at about 05:33 UTC and handles that project's own handover. Update 2-Nov-2026: not running (last activity 30-Oct-2026 07:57 UTC). |
-| EXT-PR-02 | `local_aa7a56d6-843d-4d2f-9ed2-537e38a53c86` | Build the new Portfolio Review dashboard | the same other folder | EXTERNAL - separate project. Not running. Update 2-Nov-2026: running (last activity 08:54 UTC). |
+| EXT-PR-01 | `local_7f5b5474` | Portfolio Review Dashboard architecture | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Portfolio Review Dashboard` (its own repository) | EXTERNAL - separate project. Running. It received the same handover master prompt at about 05:33 UTC and handles that project's own handover. Update 2-Nov-2026: not running (last activity 30-Oct-2026 07:57 UTC). |
+| EXT-PR-02 | `local_aa7a56d6` | Build the new Portfolio Review dashboard | the same other folder | EXTERNAL - separate project. Not running. Update 2-Nov-2026: running (last activity 08:54 UTC). |
 | EXT-PR-03 | `local_53858000` (first 8 characters) | Portfolio review dashboard | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Portfolio Review Dashboard` (its own repository) | EXTERNAL - separate project. First seen 2-Nov-2026; running on 2-Nov-2026 about 08:55 UTC (MOD-02 observation; purpose not asked). |
 | EXT-PR-04 | `local_ffb5b6ce` (first 8 characters) | `ARC-01 \| Project-Wide \| Codebase Integrity & Integration Guardian \| ACTIVE` | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Portfolio Review Dashboard` (its own repository) | EXTERNAL - separate project. First seen 2-Nov-2026; running on 2-Nov-2026 about 08:55 UTC (MOD-02 observation; purpose not asked). |
 | EXT-PR-05 | `local_3d9680d2` (first 8 characters) | `EX-01 \| Workstream A (existing dashboard) \| Existing-dashboard implementation \| ACTIVE` | `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL DISTRIBUTION PRIVATE LIMITED\Desktop\Claude Code-Portfolio Review Dashboard` (its own repository) | EXTERNAL - separate project. First seen 2-Nov-2026; running on 2-Nov-2026 about 08:55 UTC (MOD-02 observation; purpose not asked). |
@@ -285,6 +334,7 @@ is not a status.
   recommendation is one Moderator per project, because the repositories, folders, data and releases are
   separate; each registry lists the other project's chats as external.
 - `EXT-PR-nn` are labels of this registry only; the other project numbers its own chats.
+- Update 17-Nov-2026 (VERIFIED `list_sessions`, metadata only): EXT-PR-03 is running (last activity 17-Nov-2026 06:52 UTC); EXT-PR-01, -02, -04 and -05 are not running (last activity 30-Oct-2026 07:57 UTC, 9-Nov-2026 12:02 UTC, 9-Nov-2026 21:49 UTC and 9-Nov-2026 12:29 UTC). No new external session. This project does not touch them.
 - Name collision (2-Nov-2026): the sister project's chats use the same ID scheme and two of their titles
   start with `ARC-01` and `EX-01`. They are not this project's chats. From 2-Nov-2026 the app title of
   each of this project's sub-chats starts with the chat ID and the word Playbook and stays under 60
@@ -311,8 +361,8 @@ is not a status.
 
 1. **IDs.** `<PREFIX>-<nn>` with the prefixes MOD (Moderator), ARC (Guardian), EX, NB, OPS, GOV
    (workstream sub-chats). Unique and sequential within a prefix; never reused or renumbered, even after a
-   chat is retired or superseded. Next free on 2-Nov-2026: EX-02, NB-04, OPS-01, GOV-02, ARC-02, MOD-03
-   (EX-01 and GOV-01 were allocated on 2-Nov-2026); external labels: EXT-PR-06. A successor always gets
+   chat is retired or superseded. Next free on 17-Nov-2026: EX-02, NB-04, OPS-02, GOV-02, ARC-02, MOD-04
+   (EX-01 and GOV-01 were allocated on 2-Nov-2026, OPS-01 on 9-Nov-2026 and MOD-03 on 17-Nov-2026); external labels: EXT-PR-06. A successor always gets
    a new ID (MOD-02 is not "MOD-01 continued").
 2. **One record per chat**, headed by its name line `[CHAT-ID] | [WORKSTREAM] | [RESPONSIBILITY] | [STATUS]`
    and filled in for every field of section 3. Write "none" or "not created yet"; never leave a field blank.
@@ -352,10 +402,12 @@ is not a status.
 | Date | From -> to | Kind | Branch (base) | Documents | Reason | State (28-Oct-2026; update 2-Nov-2026) |
 |---|---|---|---|---|---|---|
 | 28-Oct-2026 | MOD-01 -> MOD-02 | Moderator replacement; successor scenario B, clean tree (no work in progress to carry) | `handover/mod-01-to-mod-02-20261028` (from `2b2a397`) | [MASTER_HANDOVER_2026-10-28_v1.md](../handover/MASTER_HANDOVER_2026-10-28_v1.md), [EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md](../handover/EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md), [NEW_BUILD_HANDOVER_2026-10-28_v1.md](../handover/NEW_BUILD_HANDOVER_2026-10-28_v1.md), [CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md](../handover/CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md), [MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md](../handover/continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md), the `docs/project-control/` registers | The owner's order (27-Oct-2026 15:25 UTC, re-issued 28-Oct-2026 05:33 UTC) | IN PROGRESS. Complete when the branch is merged (MOD-02 records the merge SHA and PR number in this row) and MOD-02 confirms the handover (TASK-016). Update 2-Nov-2026: COMPLETE. Merged as PR #29, merge `f5c2431` (30-Oct-2026 07:46:59 UTC). MOD-02 confirmed the handover after TASK-016 (record: `docs/update-log/2026-11-02_task-016-validation.md`). |
+| 17-Nov-2026 | MOD-02 -> MOD-03 | Moderator replacement; successor scenario B, clean tree (no work in progress to carry; OPS-01 holds a worktree with no commit) | `handover/mod-02-to-mod-03-20261117` (cut from `origin/main`, `b47069b` on 17-Nov-2026) | [MASTER_HANDOVER_2026-11-17_v2.md](../handover/MASTER_HANDOVER_2026-11-17_v2.md), [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md), the `docs/project-control/` registers | The owner order (handover master prompt pasted 17-Nov-2026 06:27 UTC) and four automatic compactions of MOD-02 (2-Nov-2026 11:22 and 19:14 UTC, 9-Nov-2026 07:36 UTC, 17-Nov-2026 06:28 UTC) | IN PROGRESS. Complete when the branch is merged (MOD-03 records the merge SHA and PR number in this row) and MOD-03 has validated and confirmed the handover. |
 
 Notes:
 - A first attempt started on 27-Oct-2026 15:25 UTC stopped at 15:31 UTC; nothing was committed.
 - NB-01, NB-02 and NB-03 ended by completing their tasks; there was no handover.
+- GOV-01 (9-Nov-2026) and EX-01 (2-Nov-2026) ended by completing their tasks; there was no handover. OPS-01 is idle with no commit and needs no continuation yet.
 - NB-01, NB-02 and NB-03 were archived on or before 2-Nov-2026 (`list_sessions` shows isArchived true;
   that the owner did it is INFERRED).
 - Not a chat handover, recorded for context: the project's transfer from the outgoing owner (baseline of
@@ -374,7 +426,7 @@ Notes:
 3. A running chat that is not in this registry: ask the owner what it is for; give it an ID only once its
    purpose is known.
 4. Commit registry changes in the Moderator's next register PR (docs only, OneDrive-safe method in
-   [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md); never `checkout` / `switch`).
+   [REPOSITORY_AND_ENVIRONMENT_STATE.md](REPOSITORY_AND_ENVIRONMENT_STATE.md); never `checkout`, `switch`, `merge` or `pull`).
 
 **MOD-02's first updates (done 2-Nov-2026, TASK-016):** its own session id, title and start time and
 ACTIVE; PR #29 and `f5c2431` in section 7; MOD-01 RETIRED with the date; ARC-01 ACTIVE after its first

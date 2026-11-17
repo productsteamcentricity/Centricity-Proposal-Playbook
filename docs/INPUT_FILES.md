@@ -75,7 +75,7 @@ level of the month folder. Senders, by role only (from the outgoing owner's hand
 - **#13:** a research or products-desk analyst.
 - **#14:** the PMS-data vendor's format, about four weeks after month-end.
 - **P1:** an internal colleague, irregularly.
-- **#12 and #17:** **made in-house** by the outgoing owner, not sent by anyone (`KNOWN_ISSUES.md`
+- **#12 and #17:** **made in-house** by the outgoing owner, not sent by anyone; from the October cycle they come from the MF dashboard (D86) (`KNOWN_ISSUES.md`
   B8).
 - **Not determined:** the rest.
 
@@ -95,12 +95,12 @@ Portfolio Review Portal"), and a re-issue sometimes reaches only one of them: ch
 | 9 | `Exit Load_<Month>.xlsx` | Monthly | desk/vendor | `merge_expense_exitload.js --exitload` | Top | `Scheme Name` and `Remark` (prose). Since Sep-2026 also a numeric `Exit Load` column. |
 | 10 | `SIF Monitor_<date>.xlsx` | Monthly | desk/vendor | `merge_sif_monitor.js` | Top | One sheet with about 30 scheme rows. Returns columns plus `Category`, `Asset Type` (`Equity`/`Hybrid`), `Class Name`, `Sub Category`, `Remark`. |
 | 11 | `Fund Manager Data_<date>.xlsx` | Monthly | desk/vendor | `merge_fund_managers.js` (after the bake) | Top | `Scheme Name`, `Inception Date`, `Fund Manager`, `From Date`, `To Date`, with interleaved `Scheme Name: …` group rows. About 13,600 rows. |
-| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Monthly | **made in-house** (no producer now, B8) | `merge_risk_matrix.js` | Top | Sheets `Risk Ratios & 3Y Rolling` and `Data Flags`. A1 reads `RISK RATIOS & 3Y ROLLING RETURNS - ALL MUTUAL FUNDS (AS ON …)`. Header row 4: `Fund Name`, `CMV`, `Wt %`, `Beta`, `SD (Ann.)`, `Alpha` …, `3Y Rolling`. |
+| 12 | `Fund Risk Ratios & 3Y Rolling - All Funds (as on <date>).xlsx` | Monthly | **made in-house** (no producer now, B8; from the October cycle the inputs come from the MF dashboard, D86, D92, D93: the tool that turns its data pack into this layout, TASK-022, is not built) | `merge_risk_matrix.js` | Top | Sheets `Risk Ratios & 3Y Rolling` and `Data Flags`. A1 reads `RISK RATIOS & 3Y ROLLING RETURNS - ALL MUTUAL FUNDS (AS ON …)`. Header row 4: `Fund Name`, `CMV`, `Wt %`, `Beta`, `SD (Ann.)`, `Alpha` …, `3Y Rolling`. |
 | 13 | `Monthly Outlook Pagers_<ship month>.pptx` | Monthly | desk | PowerPoint render, then `update_market_slides.js` | Top | 5–6 slides titled `EQUITY UPDATE`, `DEBT UPDATE`, `COMMODITY UPDATE`, `OVERALL MARKET UPDATE`. |
 | 14 | `PMS_Scheme_Performance_<Month Year>.xlsx` | Reckoner cycle | vendor | `merge_pms_performance.js`, then `pin_pms_alias.js` | Top | A sheet whose row 1 has `Scheme Name` and `Scheme Return 1 Year` among 25 required columns. **Never in the pack.** |
 | 15 | `Monthly Investment Reckoner - <ship Month Year>.pptx` | Reckoner cycle | desk/vendor | `merge_reckoner.js`, `merge_aif_performance.js`, `add_reckoner_funds.js` (on demand) | Top | 100+ slides. Slide 1 reads `Investment Reckoner <Month Year>`, then `INDEX` slides. Grid slides `PMS – EQUITY` and `AIF PERFORMANCE …` have a "Performance as on …" footnote. |
 | 16 | `PMS & AIF Analytics <Month Year>.xlsx` | Reckoner cycle, when supplied | desk/vendor | `merge_pms_aif_analytics.js` | Top | `Product Category`, `Scheme Name`, `Company Name`, `Corrected Name`, `Holding(%)`, `Sector`, `ISIN`, `SEBI Mcap`. Each scheme's `Holding(%)` sums to about 1.0. |
-| 17 | `NAV Data as on <date>.xlsx` (optional) | Monthly, optional | **made in-house** (no producer now, B8) | `build_risk_matrix.py` | Top | Sheets `NAV Data-MF`, `CATEGORY FOR MF`, `NAV Data-Benchmark`. About 1,088 fund columns. |
+| 17 | `NAV Data as on <date>.xlsx` (optional) | Monthly, optional | **made in-house** (no producer now, B8; from the October cycle the NAV inputs come from the MF dashboard, D86: not a desk file) | `build_risk_matrix.py` | Top | Sheets `NAV Data-MF`, `CATEGORY FOR MF`, `NAV Data-Benchmark`. About 1,088 fund columns. |
 | P1 | `Bond List_<date>.xlsx` | When it changes | desk | `merge_bond_list.js` | Top | Either two sheets, `OneDigital Bonds Options` and `Invictus Bonds Options`, or one `Sheet1` that names no desk (06-Aug-2026, Invictus). Row 1: `Tenure`/`Structure`, `Issuer`, `Rating`, `Expected Pre Tax IRR` … `Face Value`. |
 | P2 | `Gift City Master List.xlsx` | When it changes | desk | none: `NEW_GIFT` in `site/Centricity_June_Refresh.js` **and** the embedded MASTER block (D24; the block only through `tools/lib/blocklib.js`); Off Shore funds in `site/Centricity_IRR_Offshore.js` | Top | `Fund Name`, `Type`, `In/Out`, `Minimum Investment`, `Expected IRR Range`. `Type` values are MF Feeder, GIFT CITY and Off Shore. |
 | P3 | `SIF Master List_<Month>.xlsx` | When it changes | desk | none: hand-edit `var SIF` in `site/Centricity_SIF_Refresh.js` | Top | `Scheme Name`, `AMC`, `Category`, `Remark`, `Range`. About 30 rows. |
@@ -367,7 +367,7 @@ exceptions are noted under their files:
 - **Who makes it (25-Oct-2026, handover export):** nobody sends this file. The outgoing owner
   computed it in-house from #17 with a PowerShell + C# toolchain (export
   `05_project_working_folder/_nav_risk_toolchain/`): Rf 4.5% (C11) and, since August, the textbook
-  Sortino (C35). Until the owner decides who builds it, the October risk matrix has no producer
+  Sortino (C35). On 2-Nov-2026 the owner decided (D86) that the inputs come from the MF dashboard (the Moderator reads this as its monthly data pack, INFERRED), and on 9-Nov-2026 accepted its definitions (D92, D93: the dashboard's Sortino with a note; date, coverage, benchmark and alpha, daggers and wording); until the tool that turns the pack into this layout (TASK-022) is merged, the October risk matrix has no producer
   (`KNOWN_ISSUES.md` B8).
 
 ### 13. Market Update deck ("Monthly Outlook Pagers")
@@ -479,7 +479,7 @@ exceptions are noted under their files:
   `NAV_Data_31May2021_31May2026` (May). The May and July files came with the handover export.
 - **Who makes it:** the outgoing owner, in-house (AMFI NAV history plus five Nifty index files
   downloaded by hand from niftyindices.com; export `_nav_risk_toolchain/`). Nobody sends it, and
-  nobody builds it now (`KNOWN_ISSUES.md` B8).
+  nobody builds it now (`KNOWN_ISSUES.md` B8); from the October cycle the owner gets the inputs from the MF dashboard (D86).
 - **Layout:** three sheets, read by exact name (`build_risk_matrix.py:66`, `:82`, `:90`):
   - `NAV Data-MF`: row 1 is `Date | <one column per fund>`, about 1,088 funds. Row 2 holds AMFI codes
     and is dropped when it is not a date (`:68-74`).
@@ -705,7 +705,7 @@ first written 16-Oct-2026, updated 25-Oct-2026 with the handover export):
 | Bond lists name the desk only by sheet; the 06-Aug list names none | The desk depends on the owner's instruction | The current Bond List for both desks, with the desk named in the file |
 | The latest `Exit Load & Expected IRR Return Range` is the 23-Jun-2026 file | 99 MF/ETF/SIF records have no IRR band (C24) | The current version |
 | The GIFT City list dates from June-2026 | — | Confirmation that it is unchanged, or a new list |
-| #12 Fund Risk Ratios and #17 NAV Data were made in-house by the outgoing owner | No producer for the Oct-2026 risk matrix (B8) | Not a desk request: the owner decides who builds them |
+| #12 Fund Risk Ratios and #17 NAV Data were made in-house by the outgoing owner | No producer for the Oct-2026 risk matrix (B8) | Not a desk request: the owner answered on 2-Nov-2026 (D86) that they come from the MF dashboard; the bridge (TASK-022) is not built |
 
 **Next regular cycle (data as on 31-Oct-2026).** Ask for inputs #1–#11 and #13 after month-end; #12
 and #17 are not sent by anyone (B8). Ask for the "November 2026" Reckoner cycle (#14–#16) when it is

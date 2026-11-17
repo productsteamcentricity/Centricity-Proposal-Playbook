@@ -2,16 +2,16 @@
 
 | Field | Value |
 |---|---|
-| Version | 4 |
-| Date | 9-Nov-2026 |
-| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026) |
+| Version | 5 |
+| Date | 17-Nov-2026 |
+| Author chat | MOD-01 (28-Oct-2026); MOD-02 (update of 2-Nov-2026 and package v2 of 17-Nov-2026); GOV-01 (errata ERR-9 and ERR-10, TASK-018, 9-Nov-2026) |
 | Status | Authoritative (index of this folder) |
-| Supersedes | version 3 of 2-Nov-2026 |
-| Next review | at every handover (the TASK-016 review was done on 2-Nov-2026) |
+| Supersedes | version 4 of 9-Nov-2026 |
+| Next review | when MOD-03 completes its validation task (TASK-080), and at every handover |
 
 ## 1. Chat handover packages
 
-**Authoritative now: package v1 of 28-Oct-2026 (MOD-01 -> MOD-02).**
+**Authoritative now: package v2 of 17-Nov-2026 (MOD-02 -> MOD-03) for the state of the project; package v1 of 28-Oct-2026 (MOD-01 -> MOD-02) stays authoritative for the project's history (architecture, replication, errata below).**
 
 > **Warning.** A handover document is a snapshot of its date. It explains what was true and intended
 > then; it does not prove the current working tree, branches, pull requests, CI or live site. Before
@@ -21,24 +21,28 @@
 
 | File | Status | What it holds | Give it to the next Moderator? |
 |---|---|---|---|
-| [`MASTER_HANDOVER_2026-10-28_v1.md`](MASTER_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) (dated snapshot; errata below) | project history, architecture, current state, replication, decisions, blockers, uncertainty (section 12), ordered plan (section 13) | yes: the successor prompt names it |
+| [`MASTER_HANDOVER_2026-11-17_v2.md`](MASTER_HANDOVER_2026-11-17_v2.md) | Authoritative (v2) (dated snapshot of 17-Nov-2026) | the state of the project: repository and tests, work done and not done, chats, claims, the owner's queue, local-only files, the plan, uncertainty (section 11), the crosswalk to the owner's handover prompt (section 15) | yes: the successor prompt names it |
+| [`MASTER_HANDOVER_2026-10-28_v1.md`](MASTER_HANDOVER_2026-10-28_v1.md) | Historical snapshot, superseded by [`MASTER_HANDOVER_2026-11-17_v2.md`](MASTER_HANDOVER_2026-11-17_v2.md) for the state; still the history (dated snapshot; errata below) | project history, architecture, replication, decisions, blockers, uncertainty (section 12), ordered plan (section 13) as of 28-Oct-2026 | yes, for the history |
 | [`../update-log/2026-11-02_task-016-validation.md`](../update-log/2026-11-02_task-016-validation.md) | Authoritative record (2-Nov-2026) | the TASK-016 validation of package v1 and the audit findings, with where each went | yes, with the master handover |
 | [`EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md`](EXISTING_DASHBOARD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream A (EX): replication, parity, transfer, old-site retirement | yes, for EX work |
 | [`NEW_BUILD_HANDOVER_2026-10-28_v1.md`](NEW_BUILD_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | Workstream B (NB) and monthly operations (OPS) | yes, for NB and OPS work |
 | [`CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md`](CODEBASE_GUARDIAN_HANDOVER_2026-10-28_v1.md) | Authoritative (v1) | ARC-01: dependency map, shared interfaces, ownership, integration state, risks | yes; also input to every Guardian review |
-| [`MODERATOR_BOOTSTRAP_PROMPT.md`](MODERATOR_BOOTSTRAP_PROMPT.md) | Authoritative (standing rules) | copy-ready instruction set for any Moderator | yes: the successor prompt tells MOD-02 to read it |
-| [`MODERATOR_HANDOVER_TEMPLATE.md`](MODERATOR_HANDOVER_TEMPLATE.md) | Template | fields for a Moderator or Guardian handover, with the MOD-01 example | when MOD-02 hands over |
+| [`MODERATOR_BOOTSTRAP_PROMPT.md`](MODERATOR_BOOTSTRAP_PROMPT.md) | Authoritative (standing rules) | copy-ready instruction set for any Moderator | yes: the successor prompt tells MOD-03 to read it |
+| [`MODERATOR_HANDOVER_TEMPLATE.md`](MODERATOR_HANDOVER_TEMPLATE.md) | Template | fields for a Moderator or Guardian handover, with the MOD-01 example | used for v2; use it again when MOD-03 hands over |
 | [`SUBCHAT_HANDOVER_TEMPLATE.md`](SUBCHAT_HANDOVER_TEMPLATE.md) | Template | fields for a sub-chat handover, with the NB-03 example | to every sub-chat at its handover |
 | [`continuations/README.md`](continuations/README.md) | Authoritative (procedure and index) | triggers, continuation branches, cases A-D, verification, successor prompt A-J, the owner's message 1-10, index of prompts | when a chat is replaced |
-| [`continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 has been ACTIVE since 2-Nov-2026 | the exact prompt that starts MOD-02 | no (only if MOD-02 must be replaced: use a new successor prompt) |
+| [`continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](continuations/MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 has been ACTIVE since 2-Nov-2026 | the exact prompt that starts MOD-02 | no (MOD-02 was replaced: use the MOD-03 prompt below) |
+| [`continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | Authoritative (the prompt that starts MOD-03); becomes a historical snapshot once MOD-03 is ACTIVE | the exact prompt that starts MOD-03 | yes: the only prompt to give |
 | [`DATA_EXTRACTION_PROMPT.md`](DATA_EXTRACTION_PROMPT.md) | Historical (sent; the export arrived on 23-Oct-2026) | the prompt the outgoing owner ran to export their files (section 2) | no; reference only |
 | [`../project-control/README.md`](../project-control/README.md) | Authoritative (living registers) | chats, tasks, requirements, open decisions, ownership, integration log, interfaces, dependency map, repository state | yes: read after the master handover |
 
 ### What to give the next Moderator
 
-Update 2-Nov-2026: MOD-02 has been ACTIVE since 2-Nov-2026, so the prompt named below is a historical snapshot.
-To replace MOD-02, write a new successor prompt ([`continuations/README.md`](continuations/README.md)) and give only
-that one; the rest of this subsection describes how MOD-02 was started.
+Update 17-Nov-2026: MOD-02 hands over to MOD-03. Give only
+[`continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md):
+the owner clicks the session card MOD-02 offers, or opens a new chat in the Code tab on the repository folder (main
+checkout, no worktree), and pastes everything between `BEGIN PROMPT` and `END PROMPT`. The rest of this subsection
+describes how MOD-02 was started and is a historical snapshot.
 
 Only the successor prompt. The owner opens a new chat in the Claude desktop app's Code tab on the
 repository folder (the main checkout, no worktree), or clicks the session card MOD-01 offers, and pastes
@@ -57,9 +61,10 @@ prompts name their predecessor and successor IDs.
 
 | Package | Date | From -> To | Status |
 |---|---|---|---|
-| v1 | 28-Oct-2026 | MOD-01 -> MOD-02 | Authoritative (current) |
+| v1 | 28-Oct-2026 | MOD-01 -> MOD-02 | Historical snapshot for the state; authoritative for the history |
+| v2 | 17-Nov-2026 | MOD-02 -> MOD-03 | Authoritative (current) |
 
-MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the authoritative package.
+MOD-02 validated package v1 on 2-Nov-2026 (TASK-016); it stays the history of the project. MOD-03 validates package v2 (TASK-080).
 
 ### 1.1 Errata to the 28-Oct-2026 snapshot documents (found 2-Nov-2026)
 

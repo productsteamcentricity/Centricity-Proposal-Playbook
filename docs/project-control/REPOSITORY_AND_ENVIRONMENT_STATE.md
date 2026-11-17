@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | Version | 2 |
-| Date | 28-Oct-2026 (snapshot 05:40-07:55 UTC); refreshed 2-Nov-2026 (section 19) |
+| Date | 28-Oct-2026 (snapshot 05:40-07:55 UTC); refreshed 2-Nov-2026 (section 19) and 17-Nov-2026 (section 20) |
 | Author chat | MOD-01 (writer W-state); MOD-02 (refresh of 2-Nov-2026, TASK-016) |
 | Status | Authoritative for the environment and the safe git procedures. Sections 2-18 are the 28-Oct-2026 snapshot unless a line says Update 2-Nov-2026; section 19 is the 2-Nov-2026 refresh. Re-run section 18 before relying on the state tables |
 | Supersedes | version 1 of 28-Oct-2026 (its sections 2-18 are kept as the dated snapshot) |
-| Next review | after any change to branches, worktrees, the stash, the machine or OneDrive (next: when the owner pins the folder, TASK-017) |
+| Next review | after any change to branches, worktrees, the stash, the machine or OneDrive (TASK-017 passed on 9-Nov-2026; next: any change to the machine, OneDrive, branches or worktrees) |
 
 Labels: **VERIFIED** (command run, cited), **INFERRED** (reasoned from cited evidence), **UNCERTAIN**, **UNKNOWN**.
 Times are UTC unless marked IST (UTC+5:30). Paths: `<repo>` = `%USERPROFILE%\OneDrive - CENTRICITY FINANCIAL
@@ -37,7 +37,7 @@ Current project state: [`../PROJECT_STATE.md`](../PROJECT_STATE.md). Defects: [`
 3. **Only what is committed and pushed is backed up.** OneDrive.exe is not running, so nothing in the OneDrive
    folder is syncing, and `%TEMP%` and `%USERPROFILE%\.claude` are not in OneDrive at all (section 16).
    Update 2-Nov-2026: OneDrive.exe is running since 11:47 IST but the folder is not pinned and the same `.git`
-   files are still cloud-only (section 19.2); the rule stays.
+   files are still cloud-only (section 19.2); the rule stays. Update 17-Nov-2026: OneDrive is running, the folder is pinned and 0 `.git` files are cloud-only (section 20): TASK-017 passed on 9-Nov-2026, and the ban applies again only when OneDrive is not running or any `.git` file is cloud-only.
 
 ---
 
@@ -546,12 +546,12 @@ time. Only committed and pushed content (`origin`) is known to be safe. Inventor
 | ID | Item | Status |
 |---|---|---|
 | TASK-016 | MOD-02 validates this snapshot against the repo (section 18) and records the result | VERIFIED COMPLETE 2-Nov-2026 |
-| TASK-017 | Restore OneDrive health (owner) and verify | IN PROGRESS (owner) |
-| TASK-018 | Docs-consistency PR (E7, E10, E11, E12 and others) | PLANNED (widened, gates OPS/NB) |
+| TASK-017 | Restore OneDrive health (owner) and verify | VERIFIED COMPLETE 9-Nov-2026; re-verified 17-Nov-2026 (section 20) |
+| TASK-018 | Docs-consistency PR (E7, E10, E11, E12 and others) | MERGED 9-Nov-2026 (PR #35, `ddd0304`) |
 | TASK-037 / DEC-OPEN-19 | Move the clone out of OneDrive | BLOCKED (owner decision) |
 | TASK-059, TASK-060, TASK-061, TASK-062 / DEC-OPEN-22 | Delete merged branches, remove worktrees, export then drop the stash | NOT STARTED (owner OK needed) |
 | TASK-063 | Retention rule for `backups/` | UNKNOWN / NEEDS INVESTIGATION |
-| TASK-064 | Full browser acceptance on S7 | PLANNED |
+| TASK-064 | Full browser acceptance on S7 | IN PROGRESS (EX-01 ran on 2-Nov-2026: all 11 checks PASS per its local report; the owner's acceptance is pending) |
 | TASK-070 | Inventory and secure local-only artefacts | NOT STARTED |
 | TASK-071 | Move memory-only procedures and side-note traps into operator docs | PLANNED |
 | TASK-072 | Fresh-clone setup test outside OneDrive | NOT STARTED |
@@ -622,6 +622,7 @@ Get-Process OneDrive -ErrorAction SilentlyContinue          # nothing printed = 
 ([int](Get-Item -Force .).Attributes -band 0x80000) -ne 0   # True = pinned ("Always keep on this device")
 Get-ChildItem -Force .git\objects\pack | Select-Object Name, Length, Attributes
 (Get-ChildItem -Force -Recurse -File .git | Where-Object { ([int]$_.Attributes -band 0x1000) -ne 0 }).Count   # Offline (cloud-only) files; 229 on 28-Oct
+(Get-ChildItem -Force -Recurse -File | Where-Object { ($_.FullName.Length - $env:OneDriveCommercial.Length - 1) -gt 400 }).Count   # files whose path from the OneDrive root exceeds the sync limit of 400 characters (KNOWN_ISSUES R13); 0 on 17-Nov-2026, longest 298
 ```
 
 Browser startup (section 13.4): in the Claude desktop app `preview_start` with name `playbook` (or
@@ -766,6 +767,34 @@ with `git update-ref` (old-value guarded) and `git reset -q`; no checkout, switc
 was clean afterwards (0 status entries) and `git worktree list` still shows 5 entries (unchanged). The values in 19.1,
 19.5 and 19.6 and the worktree table in 19.3 were measured while `main` was `f5c2431`.
 
+## 20. Refresh of 17-Nov-2026 (register sweep; TASK-017 passed)
+
+Update 17-Nov-2026. The read-only parts of section 18 were re-run against `origin/main` `b47069b` (the merge of PR #36)
+for the register sweep. Times are UTC unless marked IST. Every value was measured on 17-Nov-2026 (VERIFIED) unless marked.
+Sections 2-19 stay as dated snapshots.
+
+| Check | Result on 17-Nov-2026 | Label |
+|---|---|---|
+| Sync | `main` = `origin/main` = `b47069bf3e6d73973cf48a3a754ec2ad4b5cd289` (PR #36, merged 17-Nov-2026 06:37:48Z); `git status --porcelain` empty; 0 open PRs (`gh pr list --state open`); `git diff --stat origin/main -- CLAUDE.md .claude docs` empty | VERIFIED |
+| Site content | unchanged (S7): the tree objects of `site/`, `tools/`, `.github/`, `package.json` and `package-lock.json` at `b47069b` equal those at `5d39821` (PR #26) and at `32172f5` (PR #30) | VERIFIED |
+| `node tools/verify_page.js site` | exit 0; counts as in section 19.1 (MASTER 7682; Select 178 (178 in MASTER); PMS 692 / AIF 12 / benchmarks 4; EQUITY_ANALYTICS 1205; RISK_MATRIX 1088; 0 duplicates; 0 script errors) | VERIFIED |
+| `npm test` | exit 0; 5 of 5 files, 903 checks, 0 failures | VERIFIED |
+| Live site | 7 of 7 published files SHA-256-identical to `site/`; `Centricity_Risk_Matrix.js` returns 404; `index.html` Last-Modified Tue, 17 Nov 2026 06:38:21 GMT | VERIFIED |
+| CI | push run 44032631708 (`b47069b`): verify success 06:38:08Z, publish success 06:38:26Z; deployment 7846135755; `gh run list --limit 200`: 74 runs, 74 success (38 pull_request, 36 push) | VERIFIED |
+| OneDrive client | `OneDrive.exe` running (started 10:34 IST on 17-Nov-2026) | VERIFIED |
+| Folder pinned | yes: the Pinned attribute (0x80000) is set on the repository root | VERIFIED |
+| Cloud-only files | 0 of 923 files under `.git`; 0 of 5,274 files under the whole repository folder (all folders, worktrees and local-only folders) with the Offline (0x1000), RecallOnDataAccess (0x400000) or RecallOnOpen (0x40000) attribute | VERIFIED |
+| Path lengths | the longest file path from the OneDrive root is 298 characters; 0 files over 300; the sync limit is 400 (KNOWN_ISSUES R13) | VERIFIED |
+| Object store | `git fsck --connectivity-only --no-dangling` exit 0 (3.7 s); a `git cat-file` of the first object listed in `pack-631ec788` succeeded (a blob of 44,878 bytes) | VERIFIED |
+| Worktrees, branches, stash | `git worktree list` shows 5 entries (the main checkout on `main` `b47069b`; `cpp-old` under `%TEMP%` detached at `bf20c08`; `.claude/worktrees/adoring-boyd-7028f6` on `data/2026-09-4` at `ddd0304`; `.claude/worktrees/focused-wright-d50bee` on `docs/gov-01-rule-consistency-20261102` at `29e0d32`; `.claude/worktrees/investment-proposal-dashboard-c68580` detached at `f5c2431`); 39 local branches; 1 stash entry | VERIFIED |
+
+TASK-017 acceptance (section 19.2): OneDrive.exe running: met; folder pinned: met; 0 Offline files under `.git`: met;
+`git fsck --connectivity-only` exit 0: met; a read from `pack-631ec788` succeeds: met. TASK-017 passed. It was first
+recorded by MOD-02 on 9-Nov-2026 15:10 IST after 34 folders with over-long paths in the git-ignored local archive had been
+renamed (KNOWN_ISSUES R13, INC-20 in the integration log; MOD-02's record, not re-measurable). The ban on `git checkout`,
+`git switch`, `git merge` and `git pull` in the main checkout still applies whenever OneDrive is not running or any `.git`
+file is cloud-only (CLAUDE.md, "Project control").
+
 ## Appendix A. Key numbers K01-K35 and site states S0-S7 (snapshot of 28-Oct-2026)
 
 Other package files cite these labels (for example "K11" for the `verify_page` counts). This table is the
@@ -812,7 +841,7 @@ Re-check a value with the commands in this file before relying on it; the code a
 | K35 | Package branch | `handover/mod-01-to-mod-02-20261028`, created and merged by MOD-01. Its merge SHA and PR number are not known yet: write "the merge of `handover/mod-01-to-mod-02-20261028`". | package_design | PLANNED |
 
 Update 2-Nov-2026: K04, K08, K09, K15, K24, K25, K27, K29 and K35 changed; their current values are in section 19.6.
-K07 and K19 are corrected in place above. K20 (D84, D85 and D86 were taken on 2-Nov-2026, next free D87), K21 (REQ-PPT-150
+K07 and K19 are corrected in place above. K20 (D84, D85 and D86 were taken on 2-Nov-2026, next free D87; update 17-Nov-2026: D87 to D96 were taken on 9-Nov-2026, next free D97), K21 (REQ-PPT-150
 and the REQ-063..095 statuses were updated; the current counts are in the requirements register) and K33 (DEC-OPEN-02 and
 DEC-OPEN-03 are decided; only DEC-OPEN-08 is due about 13-Nov-2026;
 DEC-OPEN-01 answered 2-Nov-2026 (D86); DEC-OPEN-30 and -31 are the decisions needed early) also moved.
