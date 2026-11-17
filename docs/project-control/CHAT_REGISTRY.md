@@ -4,7 +4,7 @@
 |---|---|
 | Version | 2 |
 | Date | 17-Nov-2026 |
-| Author chat | MOD-01 (first version, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026 and 17-Nov-2026) |
+| Author chat | MOD-01 (first version, 28-Oct-2026); MOD-02 (updates of 2-Nov-2026, 3-Nov-2026 and 17-Nov-2026); MOD-03 (TASK-080, 17-Nov-2026) |
 | Status | Authoritative (live register; only the Moderator edits it) |
 | Supersedes | the version of 28-Oct-2026 (kept in git history) |
 | Next review | at the start of every Moderator session and at every chat status change |
@@ -28,6 +28,11 @@ the state of the GOV-01 and EX-01 sessions, the GOV-01 worktree and branch (read
 Guardian pre-check result for the GOV-01 contract (ARC-01: GO WITH CONDITIONS).
 17-Nov-2026: MOD-02 re-read `list_sessions` (including archived sessions) and `get_session` for the chats of this
 project, and `git worktree list`, the branch heads and `gh pr list` (VERIFIED; the results are in sections 1 and 3).
+17-Nov-2026, later (TASK-080): the owner started MOD-03 in a different Claude account. There `list_sessions` (including
+archived sessions) shows none of this project's earlier chats (MOD-01, MOD-02, NB-01 to NB-03, GOV-01, EX-01, OPS-01), so
+MOD-03 could not compare the app with this file; their states below are MOD-02's record of 17-Nov-2026, not re-checked
+in the app. MOD-03's own session is VERIFIED (`get_session self`). Record:
+[`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md).
 
 **Effective date of the 2-Nov-2026 and 3-Nov-2026 entries.** The entries of 2-Nov-2026 that PR #30 carried (MOD-01
 RETIRED, MOD-02 and ARC-01 ACTIVE, TASK-016 done, the NB archive state, the new external sessions) took
@@ -36,7 +41,8 @@ proposed to the owner on 2-Nov-2026) and the other updates that PR #31 carried t
 (2-Nov-2026 14:41 UTC, `c0fb2dd`). The later 2-Nov-2026 entries of this file (the chats started by the
 owner, DEC-OPEN-01 answered) took effect when PR #32 merged (2-Nov-2026 19:50 UTC, `703b975`). The 3-Nov-2026
 entries (the shortened session ids of GOV-01 and EX-01, the GOV-01 claim and its Guardian pre-check,
-DEC-OPEN-34 as a pending owner decision) took effect when PR #33 merged (2-Nov-2026 21:24 UTC, `8aeabfc`). The 17-Nov-2026 entries (the handover to MOD-03, GOV-01 and EX-01 COMPLETED, OPS-01 recorded) take effect when the record that adds them merges.
+DEC-OPEN-34 as a pending owner decision) took effect when PR #33 merged (2-Nov-2026 21:24 UTC, `8aeabfc`). The 17-Nov-2026 entries (the handover to MOD-03, GOV-01 and EX-01 COMPLETED, OPS-01 recorded) take effect when the record that adds them merges. PR #37 (`8278f85`) and PR #38 (`cd4aaa5`) carried them (merged 17-Nov-2026
+08:42 and 08:55 UTC). The TASK-080 entries (MOD-02 RETIRED, MOD-03 ACTIVE) take effect when the docs PR of TASK-080 merges.
 
 ---
 
@@ -46,8 +52,8 @@ Registry names, in the format `[CHAT-ID] | [WORKSTREAM] | [RESPONSIBILITY] | [ST
 
 ```text
 MOD-01 | Project-Wide | Master Project Moderator                    | RETIRED
-MOD-02 | Project-Wide | Master Project Moderator                    | HANDOVER REQUIRED
-MOD-03 | Project-Wide | Master Project Moderator                    | QUEUED
+MOD-02 | Project-Wide | Master Project Moderator                    | RETIRED
+MOD-03 | Project-Wide | Master Project Moderator                    | ACTIVE
 ARC-01 | Project-Wide | Codebase Integrity & Integration Guardian   | ACTIVE
 NB-01  | NB - New build     | P1 tool risks A1, A3, A4 (TASK-003)         | COMPLETED (archived)
 NB-02  | NB - New build     | Five P3 tool and UI follow-ups (TASK-011)   | COMPLETED (archived)
@@ -60,8 +66,8 @@ OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Re
 | ID | Status | Session id | Title in the app | Tasks | Works in | Successor |
 |---|---|---|---|---|---|---|
 | MOD-01 | RETIRED | `local_11e29451` | Investment Proposal Dashboard architecture | none open (TASK-015 released at the merge of PR #29); 12 completed incl. TASK-015 | main checkout, `main` | MOD-02 |
-| MOD-02 | HANDOVER REQUIRED (from 17-Nov-2026) | `local_cecc2f4c` | Investment Proposal Dashboard | TASK-016 (done 2-Nov-2026); TASK-018 (GOV-01; merged 9-Nov-2026 as PR #35); the handover to MOD-03 | main checkout, `main` | MOD-03 |
-| MOD-03 | QUEUED | not created yet | not created yet | the open tasks of [TASK_REGISTER.md](TASK_REGISTER.md) (from the MOD-02 handover) | main checkout, `main` (when it starts) | none |
+| MOD-02 | RETIRED (17-Nov-2026) | `local_cecc2f4c` | Investment Proposal Dashboard | none open; done: TASK-016, TASK-079 (the handover, PRs #37 and #38); TASK-018 (GOV-01; merged 9-Nov-2026 as PR #35) | main checkout, `main` | MOD-03 |
+| MOD-03 | ACTIVE (from 17-Nov-2026) | `local_ce891716` (another Claude account than MOD-02) | File path reference | TASK-080 (done); the open tasks of [TASK_REGISTER.md](TASK_REGISTER.md) | main checkout, `main` | none |
 | ARC-01 | ACTIVE | none (subagent `integration-guardian`) | none | Gate B reviews; first review 2-Nov-2026 (TASK-015, GO WITH CONDITIONS); contract pre-check of TASK-018 3-Nov-2026 (GO WITH CONDITIONS, C1-C9); DIFF REVIEW (head `28e1d4e`) and DELTA REVIEW (`29e0d32`) of the TASK-018 branch 9-Nov-2026 (GO WITH CONDITIONS) | read-only | none |
 | NB-01 | COMPLETED (archived) | `local_d2d575b3` | Fix the three P1 tool risks before the next refresh | TASK-003 | worktree `focused-wright-d50bee` | none |
 | NB-02 | COMPLETED (archived) | `local_1f914af1` | Small tool and UI follow-ups from the 19-Oct fixes | TASK-011 | worktree `adoring-boyd-7028f6` (the app reuses the folder for OPS-01 since 9-Nov-2026) | none |
@@ -124,7 +130,13 @@ is not a status.
 | Successor | MOD-02 |
 | Retirement reason | The owner ordered a new Moderator and the Moderator / Guardian multi-chat model with project-control registers (master prompt sections 1, 7 and 14-16). Proactive handover is preferred because MOD-01 has been compacted twice. The three-compaction trigger is **not** met and is not the reason. Retired on 2-Nov-2026 after TASK-016. |
 
-### MOD-02 | Project-Wide | Master Project Moderator | HANDOVER REQUIRED
+### MOD-02 | Project-Wide | Master Project Moderator | RETIRED
+
+**Update 17-Nov-2026 (MOD-03, TASK-080).** RETIRED from the merge of the TASK-080 docs PR. Reason: replaced on the owner's
+instruction of 17-Nov-2026 after four automatic compactions; successor MOD-03. The retirement conditions are met: the
+handover branch merged (PR #37 `8278f85`, repaired by PR #38 `cd4aaa5`); MOD-03 validated the package and confirms it in
+writing ([`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md)); no claim was
+held. MOD-02 makes no further change. The fields below are its record as of the handover.
 
 | Field | Value |
 |---|---|
@@ -143,25 +155,26 @@ is not a status.
 | Pending owner decisions | Answered since 2-Nov-2026: DEC-OPEN-01, -02 and -03 (D86, D84, D85; 2-Nov-2026); DEC-OPEN-34 (D87) and the owner yes to the operator-run Gate B in every monthly refresh (D88), both 9-Nov-2026, whose recorded wording the owner has still to confirm; DEC-OPEN-07, -08, -30, -31 and -32 (D94, D96, D92, D93 and a note on D86; 9-Nov-2026, recorded by PR #36 on 17-Nov-2026). Open: 27 (DECISION_LOG section 1.3; DEC-OPEN-35 and -36 are new). Needed first for the October update: DEC-OPEN-11 (four desk labels, before TASK-020 steps 14 and 14a), DEC-OPEN-04 (the PMS date label; D95 names the Reckoner as the source), DEC-OPEN-33 (the provisional data pack; at run time) and the decisions at the Reckoner gates that OPS-01 holds (see its record); later DEC-OPEN-05, -09 and -10. The order to ask is in DECISION_LOG section 1.2. |
 | Current blocker | none for the handover itself. History of the conditions on work: the ARC-01 condition of 2-Nov-2026 (no `/monthly-update`, no tool `--apply` and no OPS or NB sub-chat before the widened TASK-018 PR merges) was lifted when PR #35 merged on 9-Nov-2026 (C9 VERIFIED 17-Nov-2026: local `main` = `origin/main`; empty diff of `CLAUDE.md`, `.claude` and `docs`). TASK-017 (a run on the real `site/` and any tool `--apply`): its checks were met when re-run on 17-Nov-2026 (OneDrive.exe running; folder pinned; 0 of 923 `.git` files cloud-only; `git fsck --connectivity-only` exit 0; a read from the pack `pack-631ec788...` succeeds); the PR of TASK-079 records the pass in `docs/PROJECT_STATE.md`, so the ban of `CLAUDE.md` "Project control" (no checkout, switch, merge or pull in the main checkout) applies from its merge only while OneDrive is not running or a `.git` file is cloud-only. |
 | Current handover document | [MASTER_HANDOVER_2026-11-17_v2.md](../handover/MASTER_HANDOVER_2026-11-17_v2.md) and the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md), both written on 17-Nov-2026. The package of the previous handover, [MASTER_HANDOVER_2026-10-28_v1.md](../handover/MASTER_HANDOVER_2026-10-28_v1.md), is a historical snapshot. |
-| Successor | MOD-03 (QUEUED; the owner starts it with the successor prompt above) |
-| Retirement reason | not applicable yet. MOD-02 stays HANDOVER REQUIRED until MOD-03 has validated the handover and confirmed it (continuations README section 9); then RETIRED, reason: replaced after four automatic compactions on the owner order of 17-Nov-2026. |
+| Successor | MOD-03 (ACTIVE from 17-Nov-2026) |
+| Retirement reason | Replaced on the owner's instruction of 17-Nov-2026 after four automatic compactions; successor MOD-03. RETIRED at the merge of the TASK-080 docs PR, after MOD-03 validated the handover (continuations README section 9). |
 
-### MOD-03 | Project-Wide | Master Project Moderator | QUEUED
+### MOD-03 | Project-Wide | Master Project Moderator | ACTIVE
 
 | Field | Value |
 |---|---|
-| Session id | not created yet (QUEUED). The owner starts it; the app then shows its id and title, which the Moderator records here. |
-| Title in the app | not created yet |
-| How it starts | The owner opens a new chat in the Code tab of the Claude desktop app on the main checkout and pastes the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) (continuations README section 8). |
+| Session id | `local_ce891716` (VERIFIED `get_session self`, 17-Nov-2026). It runs in a different Claude account from MOD-02, OPS-01, EX-01 and GOV-01, so their sessions are not visible to it and it cannot message them (`SendMessage`); the owner relays where needed. |
+| Title in the app | File path reference (set by the app, VERIFIED `get_session self`; not renamed: the owner may rename it) |
+| How it starts | Started 17-Nov-2026 14:22:10 UTC by the owner in a new chat on the main checkout (Code tab), with the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) and MOD-02's note of 17-Nov-2026 on top (the local file `01_PASTE_THIS_INTO_THE_NEW_CHAT.md`, version 2.1). |
 | Responsibility | As MOD-02: the primary contact of the owner; coordinates EX, NB, OPS and GOV; decomposes requirements into tasks and assigns them; grants and records file claims; keeps the registers; consults ARC-01; runs Gate D (merge = publish) and docs-only changes itself; manages the handover of sub-chats and of itself. |
-| Status | QUEUED (defined 17-Nov-2026 by MOD-02; not started). It becomes ACTIVE when it has validated the handover (continuations README section 9). Model and settings: the choice of the owner (UNKNOWN until it starts). |
-| Assigned tasks | Everything open in [TASK_REGISTER.md](TASK_REGISTER.md), starting with the validation of the handover, the record of the TASK-017 pass, the register sweep that the handover lists and the October update with OPS-01. |
-| Working directory and branch | The main checkout on `main`; it never leaves it and never runs `git checkout`, `git switch`, `git merge` or `git pull` there (`CLAUDE.md` "Project control"). |
-| Reserved files and shared components | The Moderator-owned group (`docs/project-control/**`, `docs/handover/**`) from the moment it is ACTIVE. No file claim is active. |
-| Dependencies | The MOD-02 -> MOD-03 handover merged (branch `handover/mod-02-to-mod-03-20261117`, named by the continuations rule). |
-| Last known commit and deliverable | none (not started) |
-| Pending owner decisions | The open decisions of DECISION_LOG section 1.3, in the order of its section 1.2; the owner confirmation of the recorded wording of D87 and D88; the October inputs held by OPS-01. |
-| Current blocker | The owner has not started it yet. |
+| Status | ACTIVE from the merge of the TASK-080 docs PR (17-Nov-2026), after it validated the handover ([`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md)). QUEUED from 17-Nov-2026 (defined by MOD-02) until then. Model and settings: claude-opus-5-5, effort high, permission mode auto (VERIFIED `get_session self`). |
+| Context state | 0 compactions (17-Nov-2026). |
+| Assigned tasks | TASK-080 (VERIFIED COMPLETE at the merge of its docs PR). Next: the owner's decisions in the order of DECISION_LOG section 1.2 (DEC-OPEN-35 first), TASK-081, the October update (who runs it, OPS-01 in the old account or OPS-02 here, is the owner's choice), then the rest of [TASK_REGISTER.md](TASK_REGISTER.md). |
+| Working directory and branch | The main checkout on `main`; it never leaves it. The ban on `git checkout`, `git switch`, `git merge` and `git pull` there applies whenever OneDrive is not running or any `.git` file is cloud-only (`CLAUDE.md` "Project control"; 17-Nov-2026: running, 0 of 988 cloud-only). |
+| Reserved files and shared components | The Moderator-owned group (`docs/project-control/**`, `docs/handover/**`). No file claim is active. |
+| Dependencies | The MOD-02 -> MOD-03 handover merged: PR #37 (`8278f85`) and PR #38 (`cd4aaa5`). |
+| Last known commit and deliverable | the TASK-080 docs PR (validation record and these register updates). |
+| Pending owner decisions | The open decisions of DECISION_LOG section 1.3, in the order of its section 1.2 (DEC-OPEN-35 first; until it is answered MOD-03 asks the owner before any merge that changes a deploy file); the owner's confirmation of the recorded wording of D87 to D96; the Regular and SIF re-exports as on 31-Oct-2026; whether OPS-01 carries on in the old account or OPS-02 starts here. |
+| Current blocker | none for coordination; the October update waits for the owner (above). |
 | Current handover document | [MASTER_HANDOVER_2026-11-17_v2.md](../handover/MASTER_HANDOVER_2026-11-17_v2.md) and the successor prompt [MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md](../handover/continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) |
 | Successor | none |
 | Retirement reason | not applicable |

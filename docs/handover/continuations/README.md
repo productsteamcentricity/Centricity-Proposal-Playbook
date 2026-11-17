@@ -281,7 +281,7 @@ Newest last. The status column uses the chat statuses; update it when the succes
 | Date | From -> To | Scenario | Tasks | Branch | Handover document | Successor prompt | Status |
 |---|---|---|---|---|---|---|---|
 | 28-Oct-2026 | MOD-01 -> MOD-02 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-015 (package), TASK-016 (validation by MOD-02) | `handover/mod-01-to-mod-02-20261028` | [`../MASTER_HANDOVER_2026-10-28_v1.md`](../MASTER_HANDOVER_2026-10-28_v1.md) | [`MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md`](MOD-01_TO_MOD-02_SUCCESSOR_PROMPT_2026-10-28.md) | Historical snapshot: MOD-02 ACTIVE since 2-Nov-2026 |
-| 17-Nov-2026 | MOD-02 -> MOD-03 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-079 (package), TASK-080 (validation by MOD-03) | `handover/mod-02-to-mod-03-20261117` | [`../MASTER_HANDOVER_2026-11-17_v2.md`](../MASTER_HANDOVER_2026-11-17_v2.md) | [`MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | QUEUED: MOD-03 not started |
+| 17-Nov-2026 | MOD-02 -> MOD-03 | B (Moderator); clean tree, no WIP checkpoint needed | TASK-079 (package), TASK-080 (validation by MOD-03) | `handover/mod-02-to-mod-03-20261117` | [`../MASTER_HANDOVER_2026-11-17_v2.md`](../MASTER_HANDOVER_2026-11-17_v2.md) | [`MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`](MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md) | Historical snapshot: MOD-03 ACTIVE since 17-Nov-2026 (validated in TASK-080; read with errata 1.2 of `../README.md`) |
 
 No sub-chat continuation has been needed so far: NB-01, NB-02 and NB-03 each finished their task and
 are COMPLETED (`docs/project-control/CHAT_REGISTRY.md`).

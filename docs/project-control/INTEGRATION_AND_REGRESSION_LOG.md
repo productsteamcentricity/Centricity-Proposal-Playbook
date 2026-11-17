@@ -77,6 +77,12 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 17-Nov-2026 (MOD-03, TASK-080): `main` = `origin/main` = `cd4aaa5` (PR #38, docs only; PR #37 `8278f85` before it,
+docs only) - VERIFIED COMPLETE at parity level: `git diff --stat b47069b origin/main -- site/ tools/ .github/ package.json
+package-lock.json` empty; `verify_page` and `npm test` (903 checks) as recorded; live 7 of 7 equal `site/` (section 7.5);
+CI 78 of 78 green. Site content S7, unchanged. Recovery point for page code, tools or docs: `cd4aaa5` (or `b47069b`; same
+`site/` bytes). The paragraphs below are the 17-Nov-2026 morning record at `b47069b`.**
+
 **`main` = `origin/main` = `b47069b` (PR #36, docs only; PR #30 `32172f5` and PR #29 `f5c2431` before it; site content S7: `site/`, `tools/` and `.github/` are tree-identical to `5d39821` and `32172f5`) - VERIFIED COMPLETE at parity level (17-Nov-2026: `verify_page`, `npm test`, live 7 of 7, section 7.4). The check table below is the 2-Nov-2026 record at `32172f5` (S7 content unchanged).**
 Held at `32172f5` for the S7 content: PR #31 (`c0fb2dd`, 2-Nov-2026) changed documents only (`site/` and `tools/` identical); its release record and the Gate B / Gate D rows of the D86 records change set are added with the next register update.
 Full browser acceptance of S7: EX-01's pass of 2-Nov-2026 (TASK-064; report local-only) found all 11 checks PASS; the owner's acceptance (Gate E, DEC-OPEN-24) is pending, so the status stays **IMPLEMENTED NOT FULLY VERIFIED** until the Moderator records it.
@@ -105,9 +111,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#36)
+## 4. Per-PR integration table (#1-#38)
 
-Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 36 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 and #38 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`). Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 36 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -157,6 +163,8 @@ written down at the time.
 | #34 | 9-Nov-2026 08:59 | `3fd1eab` / 42589947603 | docs/mod-02-d87-d88-20261109 | GOV | MOD-02 | Record D87 (Gate E scope: the owner accepts client-facing changes) and D88 (operator-run Gate B in every monthly refresh); answer DEC-OPEN-34 | 3 files, +141/-69: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md` | PR run 42589809315 success | not recorded | D87, D88; DEC-OPEN-34 answered; site stays S7; opened to merged 73 s; risk class Low per the PR text |
 | #35 | 9-Nov-2026 12:16 | `ddd0304` / 42615584473 | docs/gov-01-rule-consistency-20261102 | GOV | GOV-01 | TASK-018 (widened): make the rule documents agree; answer ARC-01's conditions; Gate E and Gate B text final (D87, D88) | 23 files, all modified, +709/-285: `CLAUDE.md`, `CHANGELOG.md`, 4 under `.claude/` (2 agents, 2 skills), 10 under `docs/`, 3 under `docs/handover/`, 2 under `docs/project-control/`, 1 under `docs/update-log/`, `monthly-updates/00_INBOX/README.md`; none under `site/`, `tools/`, `.github/` or the package files | PR run 42615211842 success | not recorded at merge; 7 of 7 = `site/` on 17-Nov-2026 | TASK-018; KNOWN_ISSUES E6-E10, E13-E15, E17 closed, E11 partly fixed, E12 open; D87, D88 cited; site stays S7; opened to merged 160 s; Material (section 11 entry) |
 | #36 | 17-Nov-2026 06:37 | `b47069b` / 44032631708 | docs/mod-02-d89-d93-20261109 | GOV | MOD-02 | Record D89 to D96 (the owner's answers of 9-Nov-2026); answer DEC-OPEN-07, -08, -30, -31, -32 | 3 files, +512/-226: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md` | PR run 42619217382 success | 7 of 7 = `site/` on 17-Nov-2026 (SHA-256) | D89-D96; site stays S7; opened 9-Nov-2026 12:42 UTC, merged 17-Nov-2026 06:37 UTC (7.7 days later); risk class Low per the PR text |
+| #37 | 17-Nov-2026 08:42 | `8278f85` / 44048985175 | handover/mod-02-to-mod-03-20261117 | GOV | MOD-02 | MOD-02 -> MOD-03 Moderator handover package (TASK-079) and the record catch-up after PRs #34 to #36 | 17 files, +1967/-344, `docs/` and `CHANGELOG.md` only (new `MASTER_HANDOVER_2026-11-17_v2.md` and `continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`) | PR run 44048900727 success | 7 of 7 = `site/` on 17-Nov-2026 (MOD-03, section 7.5) | TASK-079; site stays S7; opened to merged 37 s; validated by TASK-080 |
+| #38 | 17-Nov-2026 08:55 | `cd4aaa5` / 44050921509 | docs/mod-02-fix-handover-slips-20261117 | GOV | MOD-02 | Repair two lines of PR #37 (a literal `$1` in the master handover and in ACTIVE_CHANGE_REGISTER) | 2 files, +3/-2 | PR run 44050842827 success | 7 of 7 = `site/` on 17-Nov-2026 (section 7.5) | TASK-079; site stays S7; opened to merged 34 s |
 
 ### 4.1 Totals (VERIFIED)
 
@@ -337,6 +345,13 @@ Centricity_June_Refresh.js 54,408; Centricity_IRR_Offshore.js 110,356; Centricit
 re-deployed identical bytes). The tree objects of `site/`, `tools/`, `.github/`, `package.json` and
 `package-lock.json` at `b47069b` equal those at `5d39821` and at `32172f5`. Push run 44032631708: verify success
 06:38:08Z, publish success 06:38:26Z; deployment 7846135755.
+
+### 7.5 17-Nov-2026, after PR #38 (`cd4aaa5`): the current check
+
+**Date:** 17-Nov-2026, about 14:30 UTC (MOD-03, TASK-080, read-only). **Method:** the 7-file loop of `docs/DEPLOYMENT.md`
+(`curl -s --compressed`, `sha256sum`), compared with `site/` in the working tree (HEAD = `origin/main` = `cd4aaa5`).
+**Result: 7 of 7 MATCH (VERIFIED)**, the same bytes as sections 7.1 to 7.4; `index.html` 12,864,963 B
+(`916f2455...62ce3`). Push runs 44048985175 (PR #37) and 44050921509 (PR #38): success.
 
 ---
 
@@ -611,3 +626,16 @@ PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records wer
 | Gate E - acceptance | the owner's confirmation of the recorded wording of D89 to D96: UNKNOWN (DECISION_LOG section 1.5 step 2) |
 | Regressions found after merge | none found |
 | Rollback | `git revert -m 1 b47069bf3e6d73973cf48a3a754ec2ad4b5cd289` in a new PR (docs only) |
+
+### TASK-080 - validation of the MOD-02 -> MOD-03 package (17-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task | TASK-080 (MOD-03, session `local_ce891716`) |
+| Record | [`../update-log/2026-11-17_task-080-validation.md`](../update-log/2026-11-17_task-080-validation.md): 18 checks with commands and results, differences V1 to V11 |
+| State checked | `origin/main` = local `main` = `cd4aaa5`; clean; 0 open PRs; `site/`, `tools/`, `.github/` and package files unchanged since `b47069b` (and since PR #26) |
+| Tests | `node tools/verify_page.js site` exit 0, counts as recorded; `npm test` exit 0, 903 checks, 0 failures; live 7 of 7 (section 7.5); `git fsck --connectivity-only --no-dangling` exit 0; OneDrive running, 0 of 988 `.git` files cloud-only; CI 78 of 78 green. NOT RUN: browser start-up, PowerPoint render, Excel in Office, `npm ci` |
+| Sessions | not comparable: MOD-03 runs in another Claude account, whose `list_sessions` shows none of this project's earlier chats (V4) |
+| Verdict | the package is usable; no check failed; MOD-02 RETIRED and MOD-03 ACTIVE at the merge of the TASK-080 docs PR |
+| Gate B | not run: docs only, risk class Low (records and errata; no rule text changes) |
+| Baseline update | yes (section 3: `cd4aaa5`) |
