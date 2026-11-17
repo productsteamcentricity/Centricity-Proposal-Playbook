@@ -880,6 +880,15 @@ Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; K
   records each pin with the confirmation date (D75). Prepare the relay message for OPS-01 (DECISION_LOG section
   1.5 step 4).
 
+- **Partial answer 17-Nov-2026 (question a) -> D98.** Answer: the owner first chose the button 'Ask the desk first'
+  (the other button was 'Yes, same funds') in answer to "Are October's "Series VII" and "Fund 3" AIFs the same funds as ours?", then wrote in the same
+  chat, minutes later: "YEs they are the same fund" (17-Nov-2026, MOD-03 chat). The later message is the answer =
+  option (a1): "Motilal Oswal Founders Fund Series VII" is our record "Motilal Oswal Founders Fund" and "Alchemy Long
+  Term Ventures Fund 3" is our record "Alchemy Long Term Ventures Fund" (D98). The pins are made in the refresh run
+  (a reviewed edit of `tools/data/pins.json`, sections `reckoner` and `aif_performance`), which makes that run High
+  risk. Questions (c), (d) and (b) stay open; the desk is still asked the facts behind (c) and (d) and the labels of
+  DEC-OPEN-11. Status: OPEN (three questions left).
+
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
@@ -1422,8 +1431,8 @@ the dashboard wait for your explicit yes?"; the other button was 'Yes, wait for 
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D97 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D98**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D98 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D99**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1519,3 +1528,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 9-Nov-2026 | DEC-OPEN-07 answered ("Yes, clear them", 11:38 UTC) = D94 and DEC-OPEN-08 answered ("Confirm all 8", 12:01 UTC) = D96; both moved to section 1.6; D95 recorded (PMS and AIF performance from the Reckoner, the owner's message of 07:19 UTC) with a note on DEC-OPEN-04; sections 1.2, 2.1 and 2.3, the counts and the next-free ids updated. | MOD-02 |
 | 17-Nov-2026 | DEC-OPEN-35 opened (approval gate before publishing: the owner's handover prompt of 17-Nov-2026 against D61, D87 and D88) and DEC-OPEN-36 opened (the October Reckoner run: the Select list and the AIF performance stop at their gates, from OPS-01's dry runs of 9-Nov-2026). Sections 1.1 to 1.3 (sources, order to ask, counts: 36 entries, 9 answered, 27 open, next free DEC-OPEN-37) and the D61, D71 and D75 rows of section 2.1 updated; the statement in section 1.2 that TASK-018 had not merged corrected (PR #35 merged 9-Nov-2026). | MOD-02 |
 | 17-Nov-2026 | DEC-OPEN-35 answered ('Keep automatic refreshes') = D97 (D61, D87, D88 and FILE_OWNERSHIP section 7 stay as they are); moved to section 1.6. | MOD-03 |
+| 17-Nov-2026 | DEC-OPEN-36 question (a) answered ("YEs they are the same fund", after a first click on 'Ask the desk first') = option (a1) -> D98: both deck names are our two AIF records; pins made in the refresh run. DEC-OPEN-36 stays open for (c), (d), (b). | MOD-03 |

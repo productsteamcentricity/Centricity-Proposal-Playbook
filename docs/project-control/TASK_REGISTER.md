@@ -152,7 +152,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-017 | Restore OneDrive health | OPS | VERIFIED COMPLETE | - | owner (machine setting); MOD-02 verified | Done |
 | TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gated OPS/NB) | GOV | VERIFIED COMPLETE | - | GOV-01 (PR #35, `ddd0304`) | Done |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
-| TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED | P1 | OPS-01 (dry runs only; idle); MOD-02 assigns | R |
+| TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED (17-Nov-2026: D98 settles DEC-OPEN-36 a; (c), (d), (b) and the desk facts remain) | P1 | OPS-01 (dry runs only; idle); MOD-03 assigns | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | BLOCKED | P1 | MOD-02 assigns | R |
 | TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-04 (proposed; MOD-02 launches it) | R |
 | TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | PLANNED | P1 | MOD-02 assigns | R |
@@ -254,6 +254,10 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
   arrive are dropped in `monthly-updates/00_INBOX/`.
 - Next: MOD-02 asks the owner which requests were already sent and gives the pack (Appendix A) as a
   ready-to-send list. Order: DESK-01, -02, -03, -04 first (they block TASK-020).
+- Update 17-Nov-2026 (MOD-03): MOD-03 gave the owner one copy-ready desk message for the October Reckoner run (the three
+  AIFs missing from the deck and their performance; the gold ETF and equity replacements; the details of Aionios Alpha
+  Fund I, Sundaram SISOP and Equinova Edge PMS; the four labels of DEC-OPEN-11). The two AIF series names need no desk
+  answer (D98). Sent: UNKNOWN until the owner confirms; the owner forwards the reply.
 - Rel: B1, B2, B4-B7, C4-C6, C11, C23, C24, C26, C27, C31, C33, C35, C38.
 
 #### TASK-078 Owner asks the MF dashboard team

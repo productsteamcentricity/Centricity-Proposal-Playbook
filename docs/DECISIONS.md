@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D89 to D91 and D94 to D96 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98 under "Reckoner / PMS / AIF", D89 to D91 and D94 to D96 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -131,6 +131,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D95 | 9-Nov-2026 | PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction) | Data | Active |
 | D96 | 9-Nov-2026 | The eight scheme renames are confirmed (owner) | Data | Active |
 | D97 | 17-Nov-2026 | Monthly refreshes keep publishing automatically when every check passes: D61 kept, DEC-OPEN-35 option (a) (owner) | Process | Active |
+| D98 | 17-Nov-2026 | The October deck's "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" are our two AIF records: pin them (owner; extends D75) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1259,6 +1260,28 @@ and the entry says so. "—" means no date is recorded.
   refuses the mirror, a drop of more than 5% and an emptied category itself.
 - **Source:** `OPERATING_MANUAL.md:1090-1156`; `tools/merge_reckoner.js:146-158, 265, 321` (lines as of
   D71, which added the drop gates).
+
+#### D98 - The October deck's "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" are our two AIF records
+`Active` - 17-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** The dry run of the "October 2026" Reckoner deck (OPS-01, 9-Nov-2026; nothing applied) found five Select
+  AIFs dropping while the deck listed three names with no record (`docs/project-control/DECISION_LOG.md` DEC-OPEN-36).
+  Two of them carry the series numbers of our records: `tools/data/pins.json` pins the previous spellings
+  "Motilal Oswal Founders Fund*" and "Alchemy Long Term Ventures Fund*" (the asterisk marks a footnoted series), and the
+  live Select entries say "Series VII" and "Series 3". A pin needs the owner (D75).
+- **Decision:** In answer to "Are October's "Series VII" and "Fund 3" AIFs the same funds as ours?" the owner first clicked "Ask the desk first", then
+  wrote "YEs they are the same fund" (17-Nov-2026, MOD-03 chat). Both deck names are the same funds as our records
+  "Motilal Oswal Founders Fund" and "Alchemy Long Term Ventures Fund".
+- **Rationale:** the owner's knowledge of the products; the series numbers match (VII and 3).
+- **Alternatives / supersedes:** new series added as new products (a2), or a desk confirmation first (a3): not chosen.
+  Supersedes nothing; extends D75 with two pins.
+- **Consequences:** the refresh run adds "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3"
+  to the `reckoner` pins and the `aif_performance` list of `tools/data/pins.json`, with this decision as the
+  confirmation (D75), in a reviewed change; the run is High risk (FILE_OWNERSHIP section 7). The two AIFs keep their
+  Select badge and get the deck's performance; the Select drops fall from 12 to about 10 (INFERRED until the dry run is
+  repeated). DEC-OPEN-36 (c), (d) and (b) and the AIF performance of the three AIFs the deck leaves out are still open.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-36 (partial answer of 17-Nov-2026); the owner's chat
+  message of 17-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5
+  step 2).
 
 ### Risk matrix
 
