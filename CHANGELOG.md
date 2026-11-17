@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-17 - D98: the two October AIF series names are our records (DEC-OPEN-36 question a; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change. The pins themselves are made in the
+refresh run.
+
+### Added
+- D98 in `docs/DECISIONS.md` (Reckoner): "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3"
+  are the same funds as our records (the owner, 17-Nov-2026).
+
+### Changed
+- `docs/project-control/DECISION_LOG.md` (DEC-OPEN-36 partial answer; next D99), `TASK_REGISTER.md` (TASK-019, TASK-020),
+  `docs/project-control/README.md` (next free ids).
+
 ## 2026-11-17 - The owner keeps automatic monthly refreshes: D97 (DEC-OPEN-35 answered; docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
