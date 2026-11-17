@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-17 - The owner keeps automatic monthly refreshes: D97 (DEC-OPEN-35 answered; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Added
+- D97 in `docs/DECISIONS.md`: the owner chose "Keep automatic refreshes". D61, D87, D88 and
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 stay as they are; the interim "ask before every deploy merge" rule of
+  the MOD-03 successor prompt ends. The owner still decides first in the section 7 cases (so DEC-OPEN-36 still applies).
+
+### Changed
+- `docs/project-control/DECISION_LOG.md`: DEC-OPEN-35 moved to section 1.6 with the answer; 10 answered, 26 open; next D98.
+- `docs/project-control/README.md` (next free ids), `CHAT_REGISTRY.md` (MOD-03 record), `docs/PROJECT_STATE.md`.
+
 ## 2026-11-17 - MOD-03 validates the Moderator handover (TASK-080; docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.

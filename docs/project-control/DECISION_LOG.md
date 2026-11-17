@@ -74,7 +74,7 @@ DEC-OPEN-36. DEC-OPEN-33's date (about 11-Nov-2026) has passed without an answer
 
 Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
 
-1. DEC-OPEN-35 (the approval gate before publishing). It decides how every later change that alters `site/` is
+1. DEC-OPEN-35 (the approval gate before publishing) was ANSWERED on 17-Nov-2026 (D97: keep the recorded rules). It decided how every later change that alters `site/` is
    approved, so it comes first.
 2. DEC-OPEN-36 (the October Reckoner run: the Select list and AIF gates), one question at a time in the order a,
    c, d, b; together with DEC-OPEN-11 (the four desk labels), which the same run needs before its steps 14 and
@@ -95,7 +95,7 @@ Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 9 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32 and -34; section 1.6) and 27
+Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 10 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32, -34 and -35; section 1.6) and 26
 are open. Next free: DEC-OPEN-37.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
@@ -134,7 +134,7 @@ are open. Next free: DEC-OPEN-37.
 | DEC-OPEN-32 | May the Screener's computed ratios appear on the public page and in client decks, and the pack's contract be described in this public repository | owner (+ the Screener's owner, compliance) | first apply (TASK-021 step 10) | ANSWERED 9-Nov-2026 (note on D86; the repository part is MOD-02's reading, INFERRED) | n/a (answered) |
 | DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
 | DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | ANSWERED 9-Nov-2026 (D87) | n/a (answered) |
-| DEC-OPEN-35 | Approval gate before publishing: the owner approves before every merge that changes `site/`, or only in the listed cases | owner | every publish of the October update; the publish rule in `CLAUDE.md`, the skill and the release rules | before the next merge that changes `site/` | yes (MOD-02, 17-Nov-2026; INFERRED) |
+| DEC-OPEN-35 | Approval gate before publishing: the owner approves before every merge that changes `site/`, or only in the listed cases | owner | every publish of the October update; the publish rule in `CLAUDE.md`, the skill and the release rules | ANSWERED 17-Nov-2026 (D97) | n/a (answered) |
 | DEC-OPEN-36 | October Reckoner run: pin the two AIF series names, accept the drops, add the new names, confirm the removals | owner (+ desk for the fund facts) | TASK-020 steps 14, 14a and 15 (OPS-01's Run A) | as soon as possible (OPS-01 has waited since 9-Nov-2026) | MOD-02's reading only (17-Nov-2026; INFERRED) |
 
 ## 1.4 The open decisions
@@ -757,111 +757,7 @@ TASK-021, TASK-022.
 
 ### DEC-OPEN-34 Who accepts a finished change (Gate E)? - ANSWERED 9-Nov-2026: moved to section 1.6 (D87)
 
-### DEC-OPEN-35 Approval gate before publishing: does the owner approve before every merge that changes `site/`, or only in the listed cases?
-
-Decider: owner. Raised: 17-Nov-2026 by MOD-02 from the owner's handover prompt (pasted 17-Nov-2026 06:27 UTC in
-the MOD-02 chat; its sections 2 (item 14), 7.3 (steps 7 and 8), 8, 9, 17.1 and 23). Deadline: before the next
-merge that changes any of the six deploy files; every wave of the October update waits on it (the first wave was
-targeted for 11-Nov-2026 in the ETA of 9-Nov-2026). Unblocks: every publish of the October update (OPS-01's Run
-A and the later waves) and the final wording of the publish rule in `CLAUDE.md`, the `monthly-update` skill and
-the release rules. Related: D61, D63, D68, D87, D88; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7, 8 and
-10; `CLAUDE.md` "How every change is made" step 6; `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and 7.6.
-
-- **Words used in this entry.** A merge puts a change on the live site; the deploy files are the six files the live page is made of; Gate B is an independent code review of the change; the head commit is the exact saved version of a change.
-- **The problem.** The owner's prompt of 17-Nov-2026 says that coding done is not a task done: the owner's
-  explicit approval comes before a sprint is closed and before roll-out, the last approved version is never
-  overwritten with unapproved work, and silence, a lack of feedback or the passage of time is never approval. It
-  also asks for the owner's approval of a data update before the updated dashboard becomes the new baseline (its
-  section 6.8). In this project a merge to `main` is the roll-out: it publishes the live site within minutes
-  (D63), and the site and the repository are public (D60). The recorded rules say something different. D61
-  (owner, 16-Oct-2026): a routine monthly refresh is merged, and so published, as soon as every check has
-  passed, and the owner accepts it afterwards (D87; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8: "the owner
-  reads the closing report"). D88 (9-Nov-2026) adds one more check to every refresh, a Guardian review of the
-  diff run by the operator, but the refresh still publishes by itself when every check passes. `CLAUDE.md` step
-  6 merges other changes when they are verified, unless the owner asked to review first or section 7 applies.
-- **What the recorded rule asks the owner first, in plain words** (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
-  section 7, "Owner approval before the merge"). Five cases only: (1) the tools cannot tell which fund or file
-  is meant, or the product list would change (an unclear rename, a PMS name pin, a deck name that matches
-  nothing, adding or removing products, a file that cannot be identified, that competes for one slot, that is
-  older than what is live or that belongs to another month); (2) a correction to data that is already live, or a
-  change that alters every client deck; (3) getting past a safety gate with an override flag, or pinning a name
-  to a record by hand; (4) anything the project's "Never" list keeps for the owner (repository settings and
-  visibility, force-push or history rewrite, library upgrades); (5) anything the owner has asked to see first.
-  For everything else the owner's yes before the merge is not required.
-- **Facts (VERIFIED 17-Nov-2026).** No merge since 22-Oct-2026 has changed `site/`:
-  `git diff --stat 5d39821 origin/main -- site` prints nothing (5d39821 is the merge of PR #26, which was merged
-  after the owner had seen the sample deck: D82). D61's automatic route has never been used (section 2.1: "never
-  yet exercised"), so the October waves would be its first use. Which version is "the last approved" one is not
-  recorded as such (UNKNOWN; INFERRED: the live content of PR #26, from the owner's go-ahead of 22-Oct-2026
-  15:36 UTC in section 2.2). OPS-01's launch packet (point 11) lets it merge its own pull request when every
-  check passes and no High-risk trigger applies, so the answer changes its instructions too.
-- **Why a decision is needed.** Two instructions of the owner point different ways. D61 is an approved decision;
-  the new prompt says to follow the latest explicit instruction, but also never to override an established
-  decision silently (its section 17.1). Only the owner can say whether the prompt is meant to replace D61 for
-  publishing. A change to publishing or approvals needs the owner's approval and a new `Dnn`
-  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10).
-- **Options.**
-  - (a) Keep the recorded rules (D61, D87, D88 and section 7 as they are). A routine refresh publishes when
-    every check passes, Gate B included; the owner decides first only in the five cases above and accepts the
-    rest afterwards.
-  - (b) The owner approves before every merge that changes `site/` (any of the six deploy files), routine
-    refreshes included. The work is finished in a branch, every check and Gate B pass, and the owner gets a
-    one-page plain-language summary (what changes for clients, counts before and after, dates, funds added or
-    dropped) with the result on the local preview. The merge follows an explicit "approved" for that exact head
-    commit; a new commit means a new approval; silence is never approval. Merges that cannot change what clients
-    see (documents, registers, tests, tool code that publishes nothing) stay on the Moderator's evidence (D87).
-    A rollback that puts back the last approved version needs no new approval; the owner is told at once.
-  - (c) A middle rule, approval on the preview. For each refresh run the owner approves once, explicitly, the
-    one-page preview made from the dry runs. The operator then applies, tests and merges alone if every check
-    passes and the outcome equals the preview (same files, same counts, same dates). Any difference, any failed
-    gate and any of the five cases send it back for a new yes. Changes to the page, the exports or the tools
-    that alter what clients see are treated as in (b), and a rollback is as in (b).
-- **What each changes.** (a) Nothing. (b) A refresh no longer publishes by itself; Gate E for client-facing
-  changes moves from after the merge to before it; the wording changes in `CLAUDE.md` (step 6),
-  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and
-  7.6, the `monthly-update` skill, `docs/MONTHLY_UPDATE_PROCESS.md`, the `release-manager` agent and OPS-01's
-  launch packet; a new `Dnn` supersedes D61 in part and amends D87 and D88. (c) The same files change, but only
-  the refresh route, and the preview becomes a named output of every run.
-- **Benefits and disadvantages.** (a) Fastest, and the owner's time goes only where a judgement is needed; but a
-  publish can reach clients before the owner has seen it, which is not what the prompt asks (INFERRED), and the
-  automatic route has not been tried yet. (b) The owner controls every publish and the last approved version can
-  always be named; the price is one yes per merge (three to five merges in a month while the October update runs
-  in waves: INFERRED from the ETA of 9-Nov-2026), delay when the owner is away, and a branch that has to be
-  brought up to date and re-checked if `main` moves while it waits. (c) Fewer round trips than (b), and nothing
-  reaches clients without an explicit yes; the risk is a gap between the preview and the final result that the
-  equality check does not catch (INFERRED), and that check is new and has to be written down.
-- **Impact on existing functionality.** None on the dashboard, its data or the tools: only who says yes, and
-  when.
-- **Maintenance.** (b) and (c): the Moderator records each approval (date, head commit, the owner's words) in
-  `INTEGRATION_AND_REGRESSION_LOG.md`, so that the latest owner-approved version can always be named, as the
-  prompt requires. (a): nothing new.
-- **Risks and reversibility.** Reversible: a rule change by a docs PR with the owner's approval. Under (a) the
-  risk is a mistake published before the owner has seen it; a bad publish is rolled back by reverting the merge
-  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 9), but decks already sent to clients are not recalled. Under
-  (b) the risk is a stale dashboard while an approval is awaited (INFERRED); under (c) see above.
-- **Related question inside this entry (INFERRED).** The prompt also asks for the owner's approval before any
-  sprint (task) is closed. D87 (9-Nov-2026) lets the Moderator accept changes that clients do not see
-  (registers, tests, internal documents) on evidence. This entry keeps D87 for changes that publish nothing; the
-  owner can say that the prompt is meant to override D87 as well.
-- **Documented recommendation (not a decision).** MOD-02, 17-Nov-2026 (INFERRED from the prompt and the recorded
-  rules): option (b), at least for the October update. It is the owner's latest explicit instruction (the
-  prompt's own order of precedence puts that first), a merge is a public roll-out, the automatic route has never
-  been used so no working practice is disturbed, there is no hosted staging copy (INFERRED), so the owner's
-  first sight of a hosted change would be the live site, and the cost is one short yes per merge. Keep (c) as
-  the fallback if waiting becomes a problem, and let the owner relax to (a) later with a new decision. What
-  stays the same under all three: gates A to D (Gate B runs before the owner is asked), the six-file deploy
-  rule, the CI `verify` check, `security-reviewer` before every push, the stop list of D61 (a judgement call
-  always asks first), and the Moderator's acceptance of internal documents on evidence (D87).
-- **Record the answer as.** A new `Dnn` (for (b) or (c): it supersedes D61 for publishing and amends D87 and
-  D88); update `CLAUDE.md`, `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8 and
-  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` in the same PR (the rule is in section 10 of
-  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`); tell OPS-01 and every later OPS chat, because the merge rule in the
-  launch packet changes.
-- **Not covered here (INFERRED).** The same prompt asks for other process changes that this project's rules do
-  not contain: a Stage 0 reconstruction of the dashboard, a roadmap of phases and sprints that the owner
-  approves before new development, and a numbered-chat system. Whether they apply to a project that already has
-  a verified baseline and its own chat numbering is a separate question for the owner; MOD-03 puts it as the
-  next free entry once it has read the prompt.
+### DEC-OPEN-35 Approval gate before publishing: does the owner approve before every merge that changes `site/`, or only in the listed cases? - ANSWERED 17-Nov-2026: moved to section 1.6 (D97)
 
 ### DEC-OPEN-36 October Reckoner run: the Centricity Select list and the AIF performance stop at their gates (four questions)
 
@@ -1004,7 +900,7 @@ Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; K
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -1410,14 +1306,124 @@ Motilal Oswal one?"; 9-Nov-2026 12:01 UTC, MOD-02 chat) = confirm all eight -> D
   Oswal pair until an AMC notice or the desk confirms it). The owner confirmed all eight; the apply step re-checks the
   eighth pair first. TASK-024 becomes PLANNED inside TASK-021; KNOWN_ISSUES A6 is updated in the register sweep.
 
+### DEC-OPEN-35 Approval gate before publishing: does the owner approve before every merge that changes `site/`, or only in the listed cases?
+
+Decider: owner. Raised: 17-Nov-2026 by MOD-02 from the owner's handover prompt (pasted 17-Nov-2026 06:27 UTC in
+the MOD-02 chat; its sections 2 (item 14), 7.3 (steps 7 and 8), 8, 9, 17.1 and 23). Deadline: before the next
+merge that changes any of the six deploy files; every wave of the October update waits on it (the first wave was
+targeted for 11-Nov-2026 in the ETA of 9-Nov-2026). Unblocks: every publish of the October update (OPS-01's Run
+A and the later waves) and the final wording of the publish rule in `CLAUDE.md`, the `monthly-update` skill and
+the release rules. Related: D61, D63, D68, D87, D88; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7, 8 and
+10; `CLAUDE.md` "How every change is made" step 6; `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and 7.6.
+
+- **Words used in this entry.** A merge puts a change on the live site; the deploy files are the six files the live page is made of; Gate B is an independent code review of the change; the head commit is the exact saved version of a change.
+- **The problem.** The owner's prompt of 17-Nov-2026 says that coding done is not a task done: the owner's
+  explicit approval comes before a sprint is closed and before roll-out, the last approved version is never
+  overwritten with unapproved work, and silence, a lack of feedback or the passage of time is never approval. It
+  also asks for the owner's approval of a data update before the updated dashboard becomes the new baseline (its
+  section 6.8). In this project a merge to `main` is the roll-out: it publishes the live site within minutes
+  (D63), and the site and the repository are public (D60). The recorded rules say something different. D61
+  (owner, 16-Oct-2026): a routine monthly refresh is merged, and so published, as soon as every check has
+  passed, and the owner accepts it afterwards (D87; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 8: "the owner
+  reads the closing report"). D88 (9-Nov-2026) adds one more check to every refresh, a Guardian review of the
+  diff run by the operator, but the refresh still publishes by itself when every check passes. `CLAUDE.md` step
+  6 merges other changes when they are verified, unless the owner asked to review first or section 7 applies.
+- **What the recorded rule asks the owner first, in plain words** (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 7, "Owner approval before the merge"). Five cases only: (1) the tools cannot tell which fund or file
+  is meant, or the product list would change (an unclear rename, a PMS name pin, a deck name that matches
+  nothing, adding or removing products, a file that cannot be identified, that competes for one slot, that is
+  older than what is live or that belongs to another month); (2) a correction to data that is already live, or a
+  change that alters every client deck; (3) getting past a safety gate with an override flag, or pinning a name
+  to a record by hand; (4) anything the project's "Never" list keeps for the owner (repository settings and
+  visibility, force-push or history rewrite, library upgrades); (5) anything the owner has asked to see first.
+  For everything else the owner's yes before the merge is not required.
+- **Facts (VERIFIED 17-Nov-2026).** No merge since 22-Oct-2026 has changed `site/`:
+  `git diff --stat 5d39821 origin/main -- site` prints nothing (5d39821 is the merge of PR #26, which was merged
+  after the owner had seen the sample deck: D82). D61's automatic route has never been used (section 2.1: "never
+  yet exercised"), so the October waves would be its first use. Which version is "the last approved" one is not
+  recorded as such (UNKNOWN; INFERRED: the live content of PR #26, from the owner's go-ahead of 22-Oct-2026
+  15:36 UTC in section 2.2). OPS-01's launch packet (point 11) lets it merge its own pull request when every
+  check passes and no High-risk trigger applies, so the answer changes its instructions too.
+- **Why a decision is needed.** Two instructions of the owner point different ways. D61 is an approved decision;
+  the new prompt says to follow the latest explicit instruction, but also never to override an established
+  decision silently (its section 17.1). Only the owner can say whether the prompt is meant to replace D61 for
+  publishing. A change to publishing or approvals needs the owner's approval and a new `Dnn`
+  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 10).
+- **Options.**
+  - (a) Keep the recorded rules (D61, D87, D88 and section 7 as they are). A routine refresh publishes when
+    every check passes, Gate B included; the owner decides first only in the five cases above and accepts the
+    rest afterwards.
+  - (b) The owner approves before every merge that changes `site/` (any of the six deploy files), routine
+    refreshes included. The work is finished in a branch, every check and Gate B pass, and the owner gets a
+    one-page plain-language summary (what changes for clients, counts before and after, dates, funds added or
+    dropped) with the result on the local preview. The merge follows an explicit "approved" for that exact head
+    commit; a new commit means a new approval; silence is never approval. Merges that cannot change what clients
+    see (documents, registers, tests, tool code that publishes nothing) stay on the Moderator's evidence (D87).
+    A rollback that puts back the last approved version needs no new approval; the owner is told at once.
+  - (c) A middle rule, approval on the preview. For each refresh run the owner approves once, explicitly, the
+    one-page preview made from the dry runs. The operator then applies, tests and merges alone if every check
+    passes and the outcome equals the preview (same files, same counts, same dates). Any difference, any failed
+    gate and any of the five cases send it back for a new yes. Changes to the page, the exports or the tools
+    that alter what clients see are treated as in (b), and a rollback is as in (b).
+- **What each changes.** (a) Nothing. (b) A refresh no longer publishes by itself; Gate E for client-facing
+  changes moves from after the merge to before it; the wording changes in `CLAUDE.md` (step 6),
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8, `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` 7.4 and
+  7.6, the `monthly-update` skill, `docs/MONTHLY_UPDATE_PROCESS.md`, the `release-manager` agent and OPS-01's
+  launch packet; a new `Dnn` supersedes D61 in part and amends D87 and D88. (c) The same files change, but only
+  the refresh route, and the preview becomes a named output of every run.
+- **Benefits and disadvantages.** (a) Fastest, and the owner's time goes only where a judgement is needed; but a
+  publish can reach clients before the owner has seen it, which is not what the prompt asks (INFERRED), and the
+  automatic route has not been tried yet. (b) The owner controls every publish and the last approved version can
+  always be named; the price is one yes per merge (three to five merges in a month while the October update runs
+  in waves: INFERRED from the ETA of 9-Nov-2026), delay when the owner is away, and a branch that has to be
+  brought up to date and re-checked if `main` moves while it waits. (c) Fewer round trips than (b), and nothing
+  reaches clients without an explicit yes; the risk is a gap between the preview and the final result that the
+  equality check does not catch (INFERRED), and that check is new and has to be written down.
+- **Impact on existing functionality.** None on the dashboard, its data or the tools: only who says yes, and
+  when.
+- **Maintenance.** (b) and (c): the Moderator records each approval (date, head commit, the owner's words) in
+  `INTEGRATION_AND_REGRESSION_LOG.md`, so that the latest owner-approved version can always be named, as the
+  prompt requires. (a): nothing new.
+- **Risks and reversibility.** Reversible: a rule change by a docs PR with the owner's approval. Under (a) the
+  risk is a mistake published before the owner has seen it; a bad publish is rolled back by reverting the merge
+  (`FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 9), but decks already sent to clients are not recalled. Under
+  (b) the risk is a stale dashboard while an approval is awaited (INFERRED); under (c) see above.
+- **Related question inside this entry (INFERRED).** The prompt also asks for the owner's approval before any
+  sprint (task) is closed. D87 (9-Nov-2026) lets the Moderator accept changes that clients do not see
+  (registers, tests, internal documents) on evidence. This entry keeps D87 for changes that publish nothing; the
+  owner can say that the prompt is meant to override D87 as well.
+- **Documented recommendation (not a decision).** MOD-02, 17-Nov-2026 (INFERRED from the prompt and the recorded
+  rules): option (b), at least for the October update. It is the owner's latest explicit instruction (the
+  prompt's own order of precedence puts that first), a merge is a public roll-out, the automatic route has never
+  been used so no working practice is disturbed, there is no hosted staging copy (INFERRED), so the owner's
+  first sight of a hosted change would be the live site, and the cost is one short yes per merge. Keep (c) as
+  the fallback if waiting becomes a problem, and let the owner relax to (a) later with a new decision. What
+  stays the same under all three: gates A to D (Gate B runs before the owner is asked), the six-file deploy
+  rule, the CI `verify` check, `security-reviewer` before every push, the stop list of D61 (a judgement call
+  always asks first), and the Moderator's acceptance of internal documents on evidence (D87).
+- **Record the answer as.** A new `Dnn` (for (b) or (c): it supersedes D61 for publishing and amends D87 and
+  D88); update `CLAUDE.md`, `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` sections 7 and 8 and
+  `docs/handover/MODERATOR_BOOTSTRAP_PROMPT.md` in the same PR (the rule is in section 10 of
+  `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`); tell OPS-01 and every later OPS chat, because the merge rule in the
+  launch packet changes.
+- **Not covered here (INFERRED).** The same prompt asks for other process changes that this project's rules do
+  not contain: a Stage 0 reconstruction of the dashboard, a roadmap of phases and sprints that the owner
+  approves before new development, and a numbered-chat system. Whether they apply to a project that already has
+  a verified baseline and its own chat numbering is a separate question for the owner; MOD-03 puts it as the
+  next free entry once it has read the prompt.
+
+Answer: 'Keep automatic refreshes' (a button offered by MOD-03, in answer to "Should every publish that changes
+the dashboard wait for your explicit yes?"; the other button was 'Yes, wait for my yes'; 17-Nov-2026, MOD-03 chat)
+= option (a) -> D97. Status: ANSWERED. The owner did not say that the handover prompt overrides D87, so D87 stays.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D96 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D97**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D97 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D98**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1436,7 +1442,7 @@ before acting on it.
 | D50 | SIF Monitor baked into the SIF sibling; always /100 | Active | CLAUDE.md rule 4 |
 | D58 | Rf = 4.5%, pending desk confirmation | Open | = DEC-OPEN-02 (owner kept 4.5% for now: D84; desk confirmation open) |
 | D60 | Public repository on free GitHub Pages (owner, 16-Oct-2026) | Active | no client names or files in the repo (R1: de-identified sample figures remain in pushed history); DEC-OPEN-18 |
-| D61 | Monthly updates publish automatically once every check passes (owner, 16-Oct-2026) | Active | never yet exercised; data corrections are not covered; the owner's handover prompt of 17-Nov-2026 asks for approval before roll-out: DEC-OPEN-35 |
+| D61 | Monthly updates publish automatically once every check passes (owner, 16-Oct-2026) | Active | never yet exercised; data corrections are not covered; the owner's handover prompt of 17-Nov-2026 asked for approval before roll-out (DEC-OPEN-35); the owner kept D61 on 17-Nov-2026: D97 |
 | D62 | Repository reorganised into `site/`, `tools/`, `tools/lib/`, `docs/` | Active | repository layout |
 | D63 | Pages built by GitHub Actions from `site/`, behind a parity gate | Active | Gate D; no branch protection (R9, DEC-OPEN-17) |
 | D64 | History migrated sanitised, not verbatim | Active | never push `upstream/*`; R1 |
@@ -1512,3 +1518,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 9-Nov-2026 | D89, D90 and D91 recorded from the owner's answers of 9-Nov-2026 (07:19, 08:07 and about 09:12 UTC): the Direct Equity price source, the product-list rules (one Bond List, reading INFERRED), the performance label. | MOD-02 |
 | 9-Nov-2026 | DEC-OPEN-07 answered ("Yes, clear them", 11:38 UTC) = D94 and DEC-OPEN-08 answered ("Confirm all 8", 12:01 UTC) = D96; both moved to section 1.6; D95 recorded (PMS and AIF performance from the Reckoner, the owner's message of 07:19 UTC) with a note on DEC-OPEN-04; sections 1.2, 2.1 and 2.3, the counts and the next-free ids updated. | MOD-02 |
 | 17-Nov-2026 | DEC-OPEN-35 opened (approval gate before publishing: the owner's handover prompt of 17-Nov-2026 against D61, D87 and D88) and DEC-OPEN-36 opened (the October Reckoner run: the Select list and the AIF performance stop at their gates, from OPS-01's dry runs of 9-Nov-2026). Sections 1.1 to 1.3 (sources, order to ask, counts: 36 entries, 9 answered, 27 open, next free DEC-OPEN-37) and the D61, D71 and D75 rows of section 2.1 updated; the statement in section 1.2 that TASK-018 had not merged corrected (PR #35 merged 9-Nov-2026). | MOD-02 |
+| 17-Nov-2026 | DEC-OPEN-35 answered ('Keep automatic refreshes') = D97 (D61, D87, D88 and FILE_OWNERSHIP section 7 stay as they are); moved to section 1.6. | MOD-03 |
