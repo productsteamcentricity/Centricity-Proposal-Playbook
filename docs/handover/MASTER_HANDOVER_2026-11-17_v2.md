@@ -31,7 +31,8 @@ The project's history, architecture and replication story stay in `MASTER_HANDOV
 | Trigger (`continuations/README.md` section 1) | Two items. (1) "The chat has had three context compactions": FOUR, with distinct `compact_boundary` timestamps 2-Nov-2026 11:22:16Z, 2-Nov 19:14:48Z, 9-Nov 07:36:47Z and 17-Nov 06:28:46Z (VERIFIED: a script over the transcript; the trigger was already met on 9-Nov). (2) The owner's instruction: the owner pasted a handover master prompt on 17-Nov-2026 at 06:27:07Z asking for a package a new chat can continue from ("a chat is being retired or replaced", "the Moderator itself must be replaced") |
 | What the outgoing chat can no longer reconstruct | The detail of 2-Nov to 9-Nov that is not in a register, a D-number, a `DEC-OPEN` entry, an update log or a PR body: the full text of the subagent reviews (security, consistency and Guardian reviews of PRs #34, #35 and #36) and of the data-pack feasibility workflow survive only in the transcript; their results are in the PR bodies, `INTEGRATION_AND_REGRESSION_LOG.md` and `docs/update-log/2026-11-02_datapack-feasibility.md`. The owner's own words are kept verbatim in the local package (the register of the owner's instructions). Everything said in chat that was not recorded is UNKNOWN to the successor except through that register |
 
-$1
+### 2. Repository and git state (commands run on 17-Nov-2026, 06:48 to 07:47 UTC)
+
 (Line numbers cited in sections 2 to 8 are those of `b47069b`, before this PR's edits. Scratch files named here (`state_raw_*.log`, `check_live.js`, `check_commit.js`, `assistant_questions.json`, `owner_view.txt`, the edit lists) are MOD-02's local working files; copies are in the package folder `06_WORKING_FILES`.)
 
 | Field | Value |
