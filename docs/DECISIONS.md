@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87 and D88 under "Process", D89 to D91 and D94 to D96 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D89 to D91 and D94 to D96 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -130,6 +130,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D94 | 9-Nov-2026 | Returns for periods longer than a fund's life are cleared: the 13 JioBlackRock Regular records and very young funds (owner) | Data | Active |
 | D95 | 9-Nov-2026 | PMS and AIF performance can be taken from the Monthly Investment Reckoner (the owner's instruction) | Data | Active |
 | D96 | 9-Nov-2026 | The eight scheme renames are confirmed (owner) | Data | Active |
+| D97 | 17-Nov-2026 | Monthly refreshes keep publishing automatically when every check passes: D61 kept, DEC-OPEN-35 option (a) (owner) | Process | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1563,6 +1564,31 @@ and the entry says so. "—" means no date is recorded.
   on 9-Nov-2026 (to be recorded in `INTEGRATION_AND_REGRESSION_LOG.md`). The wording is MOD-02's summary of the
   owner's button answer; the owner confirms it (DECISION_LOG section 1.5 step 2); MOD-02 plans to ask at TASK-018's
   Gate E.
+
+#### D97 - Monthly refreshes keep publishing automatically when every check passes (D61 kept; DEC-OPEN-35)
+`Active` - 17-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** The owner's handover prompt of 17-Nov-2026 asked for the owner's explicit approval before roll-out. The
+  recorded rules differ: D61 (a routine refresh publishes once every check passes), D87 (the owner accepts
+  client-facing changes, a refresh afterwards), D88 (operator-run Gate B) and `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md`
+  section 7 (five cases where the owner says yes before the merge). MOD-02 opened DEC-OPEN-35 and recommended option
+  (b), the owner's yes before every merge that changes `site/`.
+- **Decision:** The owner chose the button "Keep automatic refreshes" (the other button was "Yes, wait for my yes";
+  17-Nov-2026, MOD-03 chat) in answer to the question "Should every publish that changes the dashboard wait for your
+  explicit yes?" = option (a) of DEC-OPEN-35: keep the recorded rules as they are.
+- **Rationale:** the owner's choice. MOD-03's text beside the question recommended option (b) for October; option (a) is
+  the fastest and keeps the owner's time for the cases that need a judgement.
+- **Alternatives / supersedes:** (b) the owner's yes before every merge that changes `site/`; (c) one yes per refresh on a
+  preview, then an automatic publish if the result equals it: neither chosen. Supersedes nothing: D61, D87, D88 and
+  section 7 stay unchanged; the handover prompt's request for approval before roll-out does not apply to refreshes.
+- **Consequences:** the interim rule of the MOD-03 successor prompt (section A item 7: ask the owner before any merge
+  that changes a deploy file) ends. A routine monthly refresh merges, and so publishes, when every check passes, Gate B
+  included; the owner still decides first in the five cases of section 7 (unclear matches, universe changes, override
+  flags and pins, corrections of live data, anything the owner asked to see), so the October Reckoner run (pins,
+  `--accept-drops`, additions: DEC-OPEN-36) still waits for the owner. Changes that publish nothing stay on the
+  Moderator's evidence (D87). No change to `CLAUDE.md` or the rule documents is needed.
+- **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-35 (section 1.6); the owner's chat answer of 17-Nov-2026
+  (MOD-03). The wording is MOD-03's summary of the owner's button answer; the owner confirms it (DECISION_LOG section
+  1.5 step 2).
 
 ---
 

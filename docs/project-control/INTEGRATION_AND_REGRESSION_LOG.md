@@ -111,9 +111,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#38)
+## 4. Per-PR integration table (#1-#39)
 
-Rows #37 and #38 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`). Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 36 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`). Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 39 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -165,6 +165,7 @@ written down at the time.
 | #36 | 17-Nov-2026 06:37 | `b47069b` / 44032631708 | docs/mod-02-d89-d93-20261109 | GOV | MOD-02 | Record D89 to D96 (the owner's answers of 9-Nov-2026); answer DEC-OPEN-07, -08, -30, -31, -32 | 3 files, +512/-226: `docs/DECISIONS.md`, `docs/project-control/DECISION_LOG.md`, `docs/project-control/README.md` | PR run 42619217382 success | 7 of 7 = `site/` on 17-Nov-2026 (SHA-256) | D89-D96; site stays S7; opened 9-Nov-2026 12:42 UTC, merged 17-Nov-2026 06:37 UTC (7.7 days later); risk class Low per the PR text |
 | #37 | 17-Nov-2026 08:42 | `8278f85` / 44048985175 | handover/mod-02-to-mod-03-20261117 | GOV | MOD-02 | MOD-02 -> MOD-03 Moderator handover package (TASK-079) and the record catch-up after PRs #34 to #36 | 17 files, +1967/-344, `docs/` and `CHANGELOG.md` only (new `MASTER_HANDOVER_2026-11-17_v2.md` and `continuations/MOD-02_TO_MOD-03_SUCCESSOR_PROMPT_2026-11-17.md`) | PR run 44048900727 success | 7 of 7 = `site/` on 17-Nov-2026 (MOD-03, section 7.5) | TASK-079; site stays S7; opened to merged 37 s; validated by TASK-080 |
 | #38 | 17-Nov-2026 08:55 | `cd4aaa5` / 44050921509 | docs/mod-02-fix-handover-slips-20261117 | GOV | MOD-02 | Repair two lines of PR #37 (a literal `$1` in the master handover and in ACTIVE_CHANGE_REGISTER) | 2 files, +3/-2 | PR run 44050842827 success | 7 of 7 = `site/` on 17-Nov-2026 (section 7.5) | TASK-079; site stays S7; opened to merged 34 s |
+| #39 | 17-Nov-2026 14:32 | `a2a84ee` / 44104188090 | docs/mod-03-task-080-validation-20261117 | GOV | MOD-03 | TASK-080: validation of the MOD-02 -> MOD-03 handover; MOD-03 ACTIVE, MOD-02 RETIRED | 8 files, +203/-38, `docs/` and `CHANGELOG.md` only (new `docs/update-log/2026-11-17_task-080-validation.md`) | PR run 44104083167 success (publish skipped) | 7 of 7 = `site/` after the push run (verify and publish success; MOD-03, 17-Nov-2026) | TASK-080; site stays S7; `security-reviewer` 0 BLOCKER, 0 MAJOR before the push; Gate B not run (docs only, Low) |
 
 ### 4.1 Totals (VERIFIED)
 
