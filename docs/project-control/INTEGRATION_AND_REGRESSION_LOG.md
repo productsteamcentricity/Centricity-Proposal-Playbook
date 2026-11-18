@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 18-Nov-2026 (MOD-03): `main` = `origin/main` = `44590d4` (PR #47, TASK-067: tools only, the young-fund rule in the MF bake). `site/` unchanged (S7); `npm test` 6 of 6 files, 968 checks; `verify_page` unchanged; live 7 of 7 equal `site/`; push run 44303328861 success. Recovery point for page code, tools or docs: `44590d4` (revert PR #47 with `git revert -m 1 44590d4` if the rule must go). PRs #42 to #46 were documents only.**
+
 **Update 17-Nov-2026 (MOD-03, TASK-080): `main` = `origin/main` = `cd4aaa5` (PR #38, docs only; PR #37 `8278f85` before it,
 docs only) - VERIFIED COMPLETE at parity level: `git diff --stat b47069b origin/main -- site/ tools/ .github/ package.json
 package-lock.json` empty; `verify_page` and `npm test` (903 checks) as recorded; live 7 of 7 equal `site/` (section 7.5);
@@ -111,9 +113,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#41)
+## 4. Per-PR integration table (#1-#47)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 and #41 on 18-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 41 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #47 on 18-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 47 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -168,6 +170,12 @@ written down at the time.
 | #39 | 17-Nov-2026 14:32 | `a2a84ee` / 44104188090 | docs/mod-03-task-080-validation-20261117 | GOV | MOD-03 | TASK-080: validation of the MOD-02 -> MOD-03 handover; MOD-03 ACTIVE, MOD-02 RETIRED | 8 files, +203/-38, `docs/` and `CHANGELOG.md` only (new `docs/update-log/2026-11-17_task-080-validation.md`) | PR run 44104083167 success (publish skipped) | 7 of 7 = `site/` after the push run (verify and publish success; MOD-03, 17-Nov-2026) | TASK-080; site stays S7; `security-reviewer` 0 BLOCKER, 0 MAJOR before the push; Gate B not run (docs only, Low) |
 | #40 | 17-Nov-2026 14:43 | `0f68d49` / 44106262642 | docs/mod-03-d97-dec-open-35-20261117 | GOV | MOD-03 | Record D97 (the owner keeps automatic monthly refreshes); DEC-OPEN-35 answered | 7 files, `docs/` and `CHANGELOG.md` only | PR run 44106122291 success (publish skipped) | 7 of 7 = `site/` after the push run (MOD-03) | D97; site stays S7; `security-reviewer` 0 BLOCKER, 0 MAJOR |
 | #41 | 17-Nov-2026 14:50 | `59ce0ec` / 44107537066 | docs/mod-03-d98-reckoner-pins-20261117 | GOV | MOD-03 | Record D98 (the two October AIF series names are our records); DEC-OPEN-36 question a answered | 5 files, +56/-6, `docs/` and `CHANGELOG.md` only | PR run success (publish skipped) | 7 of 7 = `site/` after the push run (MOD-03) | D98; site stays S7; `security-reviewer` 0 findings |
+| #42 | 18-Nov-2026 | `91d11cd` | docs/mod-03-d99-d101-october-answers-20261118 | GOV | MOD-03 | Record D99 to D101 | 8 files, docs only | success | 7 of 7 | site stays S7 |
+| #43 | 18-Nov-2026 | `a3dce51` | docs/mod-03-ops-02-registry-20261118 | GOV | MOD-03 | OPS-02 ACTIVE, OPS-01 SUPERSEDED | 4 files, docs only | success | 7 of 7 | site stays S7 |
+| #44 | 18-Nov-2026 | `14c5af1` | docs/mod-03-d102-reckoner-answers-20261118 | GOV | MOD-03 | Record D102; DEC-OPEN-36 answered | 6 files, docs only | success | 7 of 7 | site stays S7 |
+| #45 | 18-Nov-2026 | `ec4252a` | docs/mod-03-d103-d104-20261118 | GOV | MOD-03 | Record D103, D104; NB-04 recorded | 7 files, docs only | success | 7 of 7 | site stays S7 |
+| #46 | 18-Nov-2026 | `4623a48` | docs/mod-03-task-067-claim-20261118 | GOV | MOD-03 | TASK-067 claim; D104 exit-load correction | 4 files, docs only | success | 7 of 7 | site stays S7 |
+| #47 | 18-Nov-2026 | `44590d4` / 44303328861 | feat/task-067-young-fund-rule | NB | NB-04 | TASK-067: the young-fund rule in the MF bake (D94, D103) | 14 files, tools and docs, +536/-33; no site/ | PR run 44301499590 success | 7 of 7 = site/ (MOD-03) | High risk; Gate B GO WITH CONDITIONS (G1 accepted; G2 checked; G3 and G4 carried to TASK-021); npm test 968 |
 
 ### 4.1 Totals (VERIFIED)
 
@@ -642,3 +650,18 @@ PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records wer
 | Verdict | the package is usable; no check failed; MOD-02 RETIRED and MOD-03 ACTIVE at the merge of the TASK-080 docs PR |
 | Gate B | not run: docs only, risk class Low (records and errata; no rule text changes) |
 | Baseline update | yes (section 3: `cd4aaa5`) |
+
+### PR #47 - TASK-067: the young-fund rule in the MF bake (18-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / decisions | TASK-067; D94, D103; KNOWN_ISSUES C16, C20, C43 (stay open: data applied by the October bake), C51 (new) |
+| Chat and worktree | NB-04; `.claude/worktrees/competent-neumann-0880fa` |
+| Branch / base / head / merge | `feat/task-067-young-fund-rule` / `4623a48` / `95d4739` / `44590d4` |
+| Files | 14 (the claim), tools and docs only; no `site/`, `.github/`, package or `blocklib.js` change |
+| Gate A | PR body (contract v3, tests, rehearsal, October dry run, security-reviewer, financial-data-reviewer, qa-verifier) |
+| Gate B | ARC-01 pre-check GO WITH CONDITIONS (C1-C9, met); DIFF REVIEW GO WITH CONDITIONS: G1 (two additions to contract v3: an inception after the NAV date FAILs with a return and WARNs without; a print-only WARN for published values the rule clears) accepted by MOD-03; G2 (base and head unchanged) checked; G3 (no October bake before this merge; OPS-02 merges main and uses `--nav-date 2026-11-02 --nav-date-direct 2026-10-30`; OPS-02 fixes tools/README.md line ~159) and G4 (the owner answers the mid-point "*" on three cleared JioBlackRock r1y values before the October refresh merges) carried to TASK-021 |
+| Gate C | ARC-01 ran `npm test` (6 of 6 files, 968 checks) and `verify_page` (unchanged) on the head; rehearsal mf-chain-sep 14 records / 28 fields, mf-chain-aug 143 / 211, direct-perf 0 (per the PR body) |
+| Gate D | merged by MOD-03 with `--match-head-commit 95d4739`; push run 44303328861 success; live 7 of 7 = `site/`; local `main` advanced (14.4 E, files written from their blobs) |
+| Gate E | internal tool change, accepted by MOD-03 on evidence (D87); the client-facing effect is accepted with the October refresh |
+| Rollback | `git revert -m 1 44590d4316ade5a82fb77aeec2bdca78f6d2125e` in a PR (no data to restore) |

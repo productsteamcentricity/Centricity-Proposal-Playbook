@@ -310,7 +310,7 @@ every owner message, and checked against the code (record:
 
 ## In progress / blockers
 
-- **TASK-067, the young-fund rule (NB-04; D94, D103), 18-Nov-2026: PR open, waiting for Gate B and the merge.**
+- **TASK-067, the young-fund rule (NB-04; D94, D103), 18-Nov-2026: merged as PR #47 (`44590d4`) after Gate B; tools only.**
   `tools/bake_month.js` and `tools/lib/direct_perf.js` clear returns for periods longer than a fund's life and a
   young fund's `si` beyond +-300% (`tools/lib/fund_life.js`). No `site/` change: the October bake (TASK-021, OPS-02)
   applies it, with `--nav-date 2026-11-02 --nav-date-direct 2026-10-30` (D99), and must run on these tools (merge
