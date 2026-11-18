@@ -95,7 +95,7 @@ Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 12 are answered (DEC-OPEN-01, -02, -03, -07, -08, -11, -30, -31, -32, -34, -35 and -36; section 1.6) and 24
+Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 13 are answered (DEC-OPEN-01, -02, -03, -04, -07, -08, -11, -30, -31, -32, -34, -35 and -36; section 1.6) and 23
 are open. Next free: DEC-OPEN-37.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
@@ -103,7 +103,7 @@ are open. Next free: DEC-OPEN-37.
 | DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022 (re-scoped); TASK-057 and TASK-053 are MOD-02 proposals only (update-log T8) | ANSWERED 2-Nov-2026 (D86) | n/a (answered) |
 | DEC-OPEN-02 | Risk-free rate | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D84) | n/a (answered) |
 | DEC-OPEN-03 | Sortino definition | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D85) | n/a (answered) |
-| DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | now: D102 item 5 points to "30th September 2026" (to be confirmed by the owner) | no |
+| DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | ANSWERED 18-Nov-2026 (D105) | n/a (answered) |
 | DEC-OPEN-05 | Two client items in the export | owner + compliance | TASK-032 | - | no |
 | DEC-OPEN-06 | File the true 30-Apr Monitor | owner | TASK-035 | - | no |
 | DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | ANSWERED 9-Nov-2026 (D94) | n/a (answered) |
@@ -145,33 +145,7 @@ are open. Next free: DEC-OPEN-37.
 
 ### DEC-OPEN-03 Which Sortino definition to use - ANSWERED 2-Nov-2026: moved to section 1.6 (D85)
 
-### DEC-OPEN-04 The PMS date label (31-Jul data shown as "31st August 2026")
-
-Decider: owner. Asked: 27-Oct-2026 by MOD-01. Deadline: needed before TASK-020 if the desk will not send the PMS
-files (TASK-020 Dep). Unblocks: TASK-025. Related: B1 (P2), C26, C30; DESK-01; REQ-PPT-64.
-
-- **The problem.** The PMS returns on the page, in Excel and in the deck are July data, but the label says
-  "31st August 2026" (`DATA_DATES.pms`, grep `DATA_DATES` in `site/index.html`). The label makes the numbers
-  look one month fresher than they are.
-- **Why a decision is needed.** A client-facing date is wrong. Changing a data label is a data change the owner
-  decides.
-- **Options.** (a) Relabel now to the true date in a reviewed data PR. (b) Leave it and replace the data when the
-  desk sends the August and September PMS files (DESK-01), inside the Sep-2026 Reckoner catch-up (TASK-020).
-- **What each changes.** (a) Footer, Excel and deck PMS dates read July from the next publish. (b) Nothing until
-  the files arrive; then data and label change together.
-- **Benefits and disadvantages.** (a) Honest at once and a small change, but the dashboard visibly shows older
-  PMS data (INFERRED). (b) One change instead of two, but the wrong label stays live until an unknown date.
-- **Impact on existing functionality.** The PMS/AIF date stamp only; no numbers change under (a).
-- **Maintenance.** None beyond the normal monthly PMS step.
-- **Risks and reversibility.** Reversible either way.
-- **Documented recommendation (not a decision).** No recommendation documented (only the desk request is
-  documented).
-- **Record the answer as.** A new `Dnn`; update B1; set TASK-025 to PLANNED (option a) or fold it into TASK-020
-  (option b).
-- **Note 9-Nov-2026.** The owner's October task list (9-Nov-2026 07:19 UTC) says the PMS and AIF performance can be
-  taken from the Monthly Investment Reckoner (D95). MOD-02 reads this as option (b) with the Reckoner as the source
-  (INFERRED): the label changes together with the data. The entry stays open until the first Reckoner-fed PMS update
-  closes B1 and folds TASK-025 into it.
+### DEC-OPEN-04 The PMS date label (31-Jul data shown as "31st August 2026") - ANSWERED 18-Nov-2026: moved to section 1.6 (D105)
 
 ### DEC-OPEN-05 The two client items found in the outgoing owner's export
 
@@ -759,7 +733,7 @@ TASK-021, TASK-022.
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97), DEC-OPEN-11 (D101), DEC-OPEN-36 (D98, D101, D102).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97), DEC-OPEN-11 (D101), DEC-OPEN-36 (D98, D101, D102), DEC-OPEN-04 (D105).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -1447,14 +1421,46 @@ Answer: (a) D98 (17-Nov-2026); (c) and part of (d) D101 (18-Nov-2026); the rest 
 kept; the deck's replacements added); (b) not needed: with these answers the drops are 2, within the 5% gate (OPS-02 dry
 run of 18-Nov-2026, local). Status: ANSWERED.
 
+### DEC-OPEN-04 The PMS date label (31-Jul data shown as "31st August 2026")
+
+Decider: owner. Asked: 27-Oct-2026 by MOD-01. Deadline: needed before TASK-020 if the desk will not send the PMS
+files (TASK-020 Dep). Unblocks: TASK-025. Related: B1 (P2), C26, C30; DESK-01; REQ-PPT-64.
+
+- **The problem.** The PMS returns on the page, in Excel and in the deck are July data, but the label says
+  "31st August 2026" (`DATA_DATES.pms`, grep `DATA_DATES` in `site/index.html`). The label makes the numbers
+  look one month fresher than they are.
+- **Why a decision is needed.** A client-facing date is wrong. Changing a data label is a data change the owner
+  decides.
+- **Options.** (a) Relabel now to the true date in a reviewed data PR. (b) Leave it and replace the data when the
+  desk sends the August and September PMS files (DESK-01), inside the Sep-2026 Reckoner catch-up (TASK-020).
+- **What each changes.** (a) Footer, Excel and deck PMS dates read July from the next publish. (b) Nothing until
+  the files arrive; then data and label change together.
+- **Benefits and disadvantages.** (a) Honest at once and a small change, but the dashboard visibly shows older
+  PMS data (INFERRED). (b) One change instead of two, but the wrong label stays live until an unknown date.
+- **Impact on existing functionality.** The PMS/AIF date stamp only; no numbers change under (a).
+- **Maintenance.** None beyond the normal monthly PMS step.
+- **Risks and reversibility.** Reversible either way.
+- **Documented recommendation (not a decision).** No recommendation documented (only the desk request is
+  documented).
+- **Record the answer as.** A new `Dnn`; update B1; set TASK-025 to PLANNED (option a) or fold it into TASK-020
+  (option b).
+- **Note 9-Nov-2026.** The owner's October task list (9-Nov-2026 07:19 UTC) says the PMS and AIF performance can be
+  taken from the Monthly Investment Reckoner (D95). MOD-02 reads this as option (b) with the Reckoner as the source
+  (INFERRED): the label changes together with the data. The entry stays open until the first Reckoner-fed PMS update
+  closes B1 and folds TASK-025 into it.
+
+Answer: 'Approve all' (a button offered by MOD-03, 18-Nov-2026, MOD-03 chat), approving point 1 of the October Reckoner
+list: the PMS and AIF tables are labelled "as on 30th September 2026", with every row as on that date (D102 item 5) -> D105.
+Status: ANSWERED.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D104 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D105**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D105 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D106**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1554,3 +1560,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 18-Nov-2026 | The owner's message of 18-Nov-2026: D99 (October Regular and SIF from the 2-Nov files, label "31st October 2026"; the re-export question closed), D100 (October analytics), D101 (Reckoner answers); DEC-OPEN-11 answered and moved to section 1.6; DEC-OPEN-36 partial answer (c, part of d). | MOD-03 |
 | 18-Nov-2026 | D102 recorded from the owner's second message of 18-Nov-2026; DEC-OPEN-36 answered (D98, D101, D102) and moved to section 1.6; DEC-OPEN-04: D102 item 5 points to a "30th September 2026" label, to be confirmed. | MOD-03 |
 | 18-Nov-2026 | D103 (young-fund `si` only beyond +-300%; NB-04's question) and D104 (Karma's 30-Sep factsheet, Equinova exit load Nil, Alchemy Leaders row 30-Sep, three AIFs Cat II/III) recorded. | MOD-03 |
+| 18-Nov-2026 | D105 recorded (the owner's "Approve all" of the October Reckoner list); DEC-OPEN-04 answered (label "30th September 2026") and moved to section 1.6. | MOD-03 |

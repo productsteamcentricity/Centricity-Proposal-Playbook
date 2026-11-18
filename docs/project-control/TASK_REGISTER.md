@@ -152,7 +152,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-017 | Restore OneDrive health | OPS | VERIFIED COMPLETE | - | owner (machine setting); MOD-02 verified | Done |
 | TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gated OPS/NB) | GOV | VERIFIED COMPLETE | - | GOV-01 (PR #35, `ddd0304`) | Done |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
-| TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED (18-Nov-2026: D98, D101, D102 settle the gates; open: Karma's AIF row, the AIF gate route, Equinova's exit load, the PMS label; claim pending) | P1 | OPS-02 (phase 1, read-only; started 18-Nov-2026) | R |
+| TASK-020 | Sep-2026 Reckoner catch-up | OPS | PLANNED (18-Nov-2026: owner approvals D105; contract v2.1 ready; claim after the October analytics run, the owner's first priority) | P1 | OPS-02 (phase 1, read-only; started 18-Nov-2026) | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | BLOCKED (18-Nov-2026: inputs settled by D99 and D100; the bake waits for TASK-067/TASK-023 (D94)) | P1 | OPS-02 (preparation only) | R |
 | TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-05 (proposed; MOD-03 launches it) | R |
 | TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | PLANNED (folded into TASK-021: applied by the October bake with TASK-067's rule; that refresh is HIGH risk and needs the owner's yes before its merge) | P1 | OPS-02 | R |
