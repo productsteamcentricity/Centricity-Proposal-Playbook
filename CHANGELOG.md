@@ -18,6 +18,15 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - OPS-02 starts the October update; OPS-01 superseded (docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Changed
+- `docs/project-control/CHAT_REGISTRY.md`: OPS-02 ACTIVE (phase 1, read-only preparation of the October update; the owner's
+  choice of 18-Nov-2026), OPS-01 SUPERSEDED (it runs in the earlier Claude account); next free OPS-03.
+- `docs/project-control/TASK_REGISTER.md`: TASK-020, TASK-021 and TASK-029 assigned to OPS-02; `docs/project-control/README.md`.
+
 ## 2026-11-18 - The owner's October answers recorded as D99 to D101 (docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change; the answers are applied by the October runs.

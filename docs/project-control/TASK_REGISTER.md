@@ -152,16 +152,16 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-017 | Restore OneDrive health | OPS | VERIFIED COMPLETE | - | owner (machine setting); MOD-02 verified | Done |
 | TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gated OPS/NB) | GOV | VERIFIED COMPLETE | - | GOV-01 (PR #35, `ddd0304`) | Done |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
-| TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED (18-Nov-2026: D98 and D101 settle most gates; open: Kotak Iconic II and ICICI Pru Alpha Opportunities, the new products' ranges, the drop count) | P1 | OPS-01 (dry runs only; idle); MOD-03 assigns | R |
-| TASK-021 | Oct-2026 MF cycle | OPS | BLOCKED (18-Nov-2026: inputs settled by D99 and D100; waits for TASK-067/TASK-023 (D94) and its operator chat) | P1 | MOD-03 assigns | R |
+| TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED (18-Nov-2026: D98 and D101 settle most gates; open: Kotak Iconic II and ICICI Pru Alpha Opportunities, the new products' ranges, the drop count) | P1 | OPS-02 (phase 1, read-only; started 18-Nov-2026) | R |
+| TASK-021 | Oct-2026 MF cycle | OPS | BLOCKED (18-Nov-2026: inputs settled by D99 and D100; the bake waits for TASK-067/TASK-023 (D94)) | P1 | OPS-02 (preparation only) | R |
 | TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-04 (proposed; MOD-02 launches it) | R |
 | TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | PLANNED | P1 | MOD-02 assigns | R |
-| TASK-024 | Apply the 8 confirmed scheme renames (D96) | OPS | PLANNED | P1 | MOD-02 assigns | R |
+| TASK-024 | Apply the 8 confirmed scheme renames (D96) | OPS | PLANNED | P1 | OPS-02 (preparation; applied in the October bake) | R |
 | TASK-025 | PMS label (B1) | OPS | BLOCKED | P1 | MOD-02 assigns | O |
 | TASK-026 | One rule for the headline expected return | NB | BLOCKED | P2 | MOD-02 assigns | D |
 | TASK-027 | Bond 3Y/5Y = band average | OPS | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-028 | Remove 4 segregated side-pocket records | OPS/NB | BLOCKED | P3 | MOD-02 assigns | O |
-| TASK-029 | Labels and AMCs (C4, C5, C6, C38) | OPS | PLANNED (18-Nov-2026: answered, D101; applied in the Reckoner run) | P2 | MOD-03 assigns | D |
+| TASK-029 | Labels and AMCs (C4, C5, C6, C38) | OPS | PLANNED (18-Nov-2026: answered, D101; applied in the Reckoner run) | P2 | OPS-02 | D |
 | TASK-030 | Select popover alpha and ratio dating | NB | BLOCKED | P2 | MOD-02 assigns | D |
 | TASK-031 | Return basis in the data (C28) | OPS/NB | BLOCKED | P2 | MOD-02 assigns | D |
 | TASK-032 | R8 client items decision | GOV | BLOCKED | P1 | owner + compliance; MOD-02 records | O |
