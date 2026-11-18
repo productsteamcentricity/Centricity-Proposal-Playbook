@@ -218,7 +218,8 @@ in `bake_month`, `merge_analytics`, `merge_pms_performance`; `replaceOnce` in `m
 | Module | API | Contract | Users |
 |---|---|---|---|
 | `tools/lib/dates.js` | `isoDay(date)`, `isoDayFromSerial(XLSX, n)` | nearest local calendar day `YYYY-MM-DD`; `null` otherwise | `rename_schemes`, `fold_duplicate_names`, `merge_fund_managers`, `dates.test`; mirrored in the page and the SIF sibling |
-| `tools/lib/direct_perf.js` | `buildDirectPerf(src, master) -> {store, matched, unmatched, sampleUnmatched}` | builds a new DIRECT_PERF keyed by the Regular name; never merges | `bake_month`, `rebuild_directperf` (the page's `parseMfMonitorDirect` is a second, different builder: A7) |
+| `tools/lib/direct_perf.js` | `buildDirectPerf(src, master, {navDate}) -> {store, matched, unmatched, sampleUnmatched, cleared, inceptionIssues: {fail, warn}}` (TASK-067: `navDate` YYYY-MM-DD is required, it throws without it) | builds a new DIRECT_PERF keyed by the Regular name; never merges; applies the young-fund rule (`fund_life.js`, D94, D103) per key against the Direct row's own inception and DELETES a cleared field; inception is not stored | `bake_month`, `rebuild_directperf` (the page's `parseMfMonitorDirect` is a second, different builder: A7) |
+| `tools/lib/fund_life.js` | `lifeClears(rec, inception, navIso)`, `periodStart(navIso, months)`, `isYoung`, `isIsoDate`, `asOnToIso`, `checkNavDate(nav, asOn, 7)`, `hasReturn`, `outlierKeys`; constants `MF_CLASSES` (incl. `Mutual Funds`), `BOUND` = 3.0, `PERIODS`, `RETURN_KEYS` | the young-fund rule (D94, D103, TASK-067): a period whose start (NAV date minus N calendar months, day clamped; `mtd` from the previous month end) is before the inception is cleared; a fund younger than one year loses an `si` beyond +-3.0 (decimals); pure, rescales nothing | `bake_month` (MASTER), `direct_perf.js` (so `rebuild_directperf`), `fund_life.test` |
 | `tools/lib/pptx.js` | `entries(file)`, `slideText(xml)`, `slideTables(xml)` | dependency-free `.pptx` reader (A28 open) | `merge_aif_performance` directly; `reck_parse.js` and `reck_narrative.js` (so every Reckoner tool) |
 | `tools/lib/reck_parse.js` | `parse(pptx)` | Reckoner performance grids in order; as a command it always writes its second argument | `merge_reckoner` |
 | `tools/lib/reck_narrative.js` | `slides(pptx)`, `about(slide)`, `details(slide)` | narrative slides | `merge_reckoner`, `add_reckoner_funds` |
@@ -357,7 +358,7 @@ section 3, and every chat that reads gate lines.
 | Tool | CLI (`[...]` optional) | Writes with `--apply` |
 |---|---|---|
 | `rename_schemes.js` | `--monitor "<Regular monitor>.xlsx" [--html p] [--apply]` | MASTER names, six name-keyed stores, `var IRR` |
-| `bake_month.js` | `--dir "<month folder>" --as-on "<long>" [--as-on-analytics "<long>"] [--html p] [--apply]` | DIRECT_PERF, MASTER, three analytics stores, MF_BENCHMARK_PERF, DATA_DATES performance + analytics |
+| `bake_month.js` | `--dir "<month folder>" --as-on "<long>" [--as-on-analytics "<long>"] [--nav-date YYYY-MM-DD] [--nav-date-direct YYYY-MM-DD] [--html p] [--apply]` (NAV dates default to the as-on date and must be real dates within 7 days of it, else exit 2; TASK-067) | DIRECT_PERF, MASTER, three analytics stores, MF_BENCHMARK_PERF, DATA_DATES performance + analytics |
 | `fill_variant_analytics.js` | `--dir "<month folder>" [--html p] [--apply]` | three analytics stores |
 | `rekey_sif_analytics.js` | `[--html p] [--allow-shrink] [--apply]` | three analytics stores |
 | `merge_de_universe.js` | `"<Listed Direct Equity_<Month>.xlsx>" [--apply] [--html p]` | MASTER Direct Equity |
@@ -376,7 +377,7 @@ section 3, and every chat that reads gate lines.
 | `merge_bond_list.js` | `"<Bond List.xlsx>" --desk <Invictus or OneDigital> [--sheet "<tab>"] [--apply] [--html p]` | MASTER Bonds of that desk |
 | `update_closing_slides.js` | `--dir "<render dir>" [--sibling p] [--apply]` | `EXTRA_SLIDES.disclaimer`, `.thankyou` |
 | `merge_analytics.js` | `--hybrid "<xlsx>" --as-on "<long>" [--equity x] [--debt x] [--html p] [--apply]` (any one workbook) | given stores + DATA_DATES.analytics |
-| `rebuild_directperf.js` | `"<Direct monitor.xlsx>" [--html p] [--apply]` | DIRECT_PERF (full) |
+| `rebuild_directperf.js` | `"<Direct monitor.xlsx>" --nav-date YYYY-MM-DD [--html p] [--apply]` (`--nav-date` required since TASK-067; checked after the source and page paths, exit 2) | DIRECT_PERF (full) |
 | `fold_duplicate_names.js` | `--monitor "<monitor>.xlsx" [--html p] [--apply]` | MASTER, six stores, `var IRR` (only when a fold exists) |
 | `fold_index_funds.js` | `[--html p] [--apply]` | MASTER |
 | `split_sif_add_mld.js` | `[--html p] [--apply]` | MASTER (MLD record if missing), `var SIF` |

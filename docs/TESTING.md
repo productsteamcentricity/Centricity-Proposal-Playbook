@@ -65,6 +65,15 @@ Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
   counted and never merged; missing or empty expected sheets listed; `Debt Oriented34` read
   debt-style; and a mapped sheet still creating a new fund. It fails on `main`'s parser from before
   the change.
+- `fund_life.test.js` (65 checks, added 18-Nov-2026 with TASK-067, D94 and D103). The young-fund rule of
+  `tools/lib/fund_life.js`: the period-start formula (a month-end NAV, 31-Mar minus one month, 29-Feb,
+  January crossing the year, the October 2026 NAV 2026-11-02 with `mtd`), an inception equal to the start
+  kept (the 1-year boundary), the +-300% `si` bound for funds under one year (3.0 kept, just above cleared,
+  an old fund untouched), the as-on label to ISO, the +-7-day NAV-date window and idempotence; the rule
+  inside `buildDirectPerf` on a small synthetic Direct workbook (fields deleted, two rows collapsing to
+  one key, rows disagreeing on inception, missing or text inception, an inception after the NAV date with and without a return,
+  inception not stored); and the exit-2 cases of `--nav-date` / `--nav-date-direct` in `bake_month.js`
+  and of the required `--nav-date` in `rebuild_directperf.js` (dry runs that stop before any workbook).
 - `tool_inputs.test.js` (43 checks, added 21-Oct-2026, D72). Runs every tool at the top of `tools/`
   (dry run, no workbooks) with a source path that does not exist and with an `--html` page that does
   not exist: each must exit 2 with its usage line and no stack trace. A tool added without a case

@@ -8,20 +8,27 @@
 // on every page load, so the baseline block must stay pre-sibling or their edits would be
 // baked in and then re-applied on top.
 //
-//   node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html site/index.html] [--apply]
+// After the Regular merge the young-fund rule (D94, D103; tools/lib/fund_life.js) clears, on every MF
+// record this Monitor refreshed, each return for a period longer than the fund's life and a young
+// fund's since-inception return beyond +-300%; the Direct store gets the same rule in direct_perf.js.
+// Fund life is measured to the monitors' real NAV dates: --nav-date (Regular; default the --as-on
+// date) and --nav-date-direct (default --nav-date), each within 7 days of the as-on date (D91, D99).
+//
+//   node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--nav-date YYYY-MM-DD] [--nav-date-direct YYYY-MM-DD] [--html site/index.html] [--apply]
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const XLSX = require('xlsx');
 const B = require('./lib/blocklib');
+const FL = require('./lib/fund_life');
 const { buildDirectPerf } = require('./lib/direct_perf');
 
-const USAGE = 'Usage: node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--html site/index.html] [--apply]';
+const USAGE = 'Usage: node tools/bake_month.js --dir "<month folder>" --as-on "31st July 2026" [--as-on-analytics "..."] [--nav-date YYYY-MM-DD] [--nav-date-direct YYYY-MM-DD] [--html site/index.html] [--apply]';
 const argv = process.argv.slice(2);
-const unknown = argv.filter(a => a.startsWith('--') && !['--dir', '--as-on', '--as-on-analytics', '--html', '--apply'].includes(a));
+const unknown = argv.filter(a => a.startsWith('--') && !['--dir', '--as-on', '--as-on-analytics', '--nav-date', '--nav-date-direct', '--html', '--apply'].includes(a));
 if (unknown.length) { console.error(`unknown option(s): ${unknown.join(' ')}\n${USAGE}`); process.exit(2); }
 // A value flag needs a value, and a word that belongs to no flag is a mistake, not something to ignore.
-const VALUED = ['--dir', '--as-on', '--as-on-analytics', '--html'];
+const VALUED = ['--dir', '--as-on', '--as-on-analytics', '--nav-date', '--nav-date-direct', '--html'];
 for (const f of VALUED) { const i = argv.indexOf(f); if (i >= 0 && (argv[i + 1] == null || argv[i + 1].startsWith('--'))) { console.error(`${f} needs a value\n${USAGE}`); process.exit(2); } }
 const stray = argv.filter((a, i) => !a.startsWith('--') && !VALUED.includes(argv[i - 1]));
 if (stray.length) { console.error(`unexpected argument(s): ${stray.join(' ')}\n${USAGE}`); process.exit(2); }
@@ -37,6 +44,15 @@ if (!fs.existsSync(DIR) || !fs.statSync(DIR).isDirectory()) { console.error('***
 // Both labels are pasted into DATA_DATES string literals: plain dates only (A9).
 for (const [label, flagName] of [[ASON, '--as-on'], [ASON_AN, '--as-on-analytics']]) {
   try { B.checkAsOn(label, 'long'); } catch (e) { console.error('*** ' + e.message.replace(/^--as-on /, flagName + ' ')); process.exit(2); }
+}
+// NAV dates for the fund-life rule: real dates within 7 days of the performance as-on date.
+const ASON_ISO = FL.asOnToIso(ASON);
+if (!ASON_ISO) { console.error(`*** --as-on "${ASON}" is not a real calendar date\n${USAGE}`); process.exit(2); }
+const NAV_DATE = flag('--nav-date') || ASON_ISO;
+const NAV_DATE_DIRECT = flag('--nav-date-direct') || NAV_DATE;
+for (const [v, flagName] of [[NAV_DATE, '--nav-date'], [NAV_DATE_DIRECT, '--nav-date-direct']]) {
+  const err = FL.checkNavDate(v, ASON_ISO);
+  if (err) { console.error(`*** ${flagName} ${err}\n${USAGE}`); process.exit(2); }
 }
 
 // One file per stem. A duplicate download such as "… (1).xlsx" must never be baked silently, and
@@ -146,6 +162,9 @@ console.log('BEFORE:', JSON.stringify(before));
 
   // ---------- 2. MF Monitor — Regular ----------
   const mBefore = new Set(W.MASTER.map(r => r.name));
+  // Return values before the merge: a value the merge changed was published by this Monitor (used to
+  // flag a young-fund clear that overrides the source, below).
+  const retBefore = new Map(W.MASTER.map(r => [r.name, FL.RETURN_KEYS.map(k => r[k])]));
   const r1 = await W.REFRESH.parseMfMonitor(fileOf(P.reg), { asOn: ASON });
   console.log(`  parseMfMonitor(Regular): ${r1.ok ? r1.message : 'FAILED ' + r1.error}`);
   if (!r1.ok) process.exit(1);
@@ -161,19 +180,60 @@ console.log('BEFORE:', JSON.stringify(before));
   (Array.isArray(r1.emptySheets) ? r1.emptySheets : []).forEach(s =>
     console.log(`  WARN expected Monitor sheet missing or with no fund rows: "${s}" — renamed by the desk, or its header moved?`));
   // Funds in MASTER that this Monitor does not list at all keep last month's figures (C19's symptom).
-  if (Array.isArray(r1.monitorNames)) {
-    const onMonitor = new Set(r1.monitorNames);
-    const MF_CLASSES = new Set(['Mutual Fund', 'Mutual Funds', 'ETF', 'Index Fund']);
-    const notListed = W.MASTER.filter(r => MF_CLASSES.has(r.product_class) && !onMonitor.has(r.name));
+  const monitorKnown = Array.isArray(r1.monitorNames);
+  const onMonitor = new Set(monitorKnown ? r1.monitorNames : []);
+  if (monitorKnown) {
+    const notListed = W.MASTER.filter(r => FL.MF_CLASSES.has(r.product_class) && !onMonitor.has(r.name));
     console.log(`  CHECK MASTER MF/ETF funds on no sheet of this Monitor (kept as they are): ${notListed.length}`);
     notListed.slice(0, 12).forEach(r => console.log(`      - ${r.name}   [${r.product_class} / ${r.sub_category}]`));
     if (notListed.length > 12) console.log(`      ... +${notListed.length - 12} more`);
   }
 
+  // ---------- 2b. young-fund rule on MASTER (D94, D103) ----------
+  // Only MF records this Monitor refreshed: their figures are as on NAV_DATE. A cleared field is set
+  // to null (on the page a cleared r1y/r3y/r5y with an IRR band shows the band mid-point with "*",
+  // H.effectiveReturn; any other cleared field shows "-").
+  const mCleared = [], incFail = [], incWarn = [], afterNav = [];
+  for (const r of W.MASTER) {
+    if (!FL.MF_CLASSES.has(r.product_class) || !onMonitor.has(r.name)) continue;
+    if (!FL.isIsoDate(r.inception)) { (FL.hasReturn(r) ? incFail : incWarn).push(r); continue; }
+    if (r.inception > NAV_DATE) { (FL.hasReturn(r) ? afterNav : incWarn).push(r); continue; }
+    for (const field of FL.lifeClears(r, r.inception, NAV_DATE)) {
+      mCleared.push({ name: r.name, field, value: r[field], inception: r.inception });
+      r[field] = null;
+    }
+  }
+  const listClears = (rows, keyOf) => {
+    const by = new Map();
+    for (const c of rows) (by.get(keyOf(c)) || by.set(keyOf(c), []).get(keyOf(c))).push(c);
+    for (const [k, cs] of by) console.log(`      - ${k} [inception ${cs[0].inception}]: ${cs.map(c => `${c.field} ${c.value} -> cleared`).join(', ')}`);
+    return by.size;
+  };
+  console.log(`  YOUNG-FUND RULE (D94, D103) on MASTER, NAV date ${NAV_DATE}: ${mCleared.length} field(s) cleared on ${new Set(mCleared.map(c => c.name)).size} record(s)`);
+  listClears(mCleared, c => c.name);
+  // A period value this Monitor itself published (it changed in the merge, or the record is new) and
+  // the rule then cleared: the Monitor's inception and its own figures disagree (e.g. a June-2026 ETF
+  // with a 3-year return and a younger inception). Reported, never guessed (CLAUDE.md rule 5).
+  // The D103 si clear is intended and is not listed here.
+  const published = mCleared.filter(c => {
+    if (c.field === 'si') return false;
+    const b = retBefore.get(c.name);
+    return !b || b[FL.RETURN_KEYS.indexOf(c.field)] !== c.value;
+  });
+  console.log(`  WARN period values this Monitor published and the rule cleared (check the fund's inception with the owner): ${published.length}`);
+  published.forEach(c => console.log(`      ! ${c.name} [inception ${c.inception}]: ${c.field} ${c.value}`));
+
   // ---------- 3. MF Monitor — Direct -> DIRECT_PERF (a new store, never merged) ----------
   const dpBefore = new Set(Object.keys(W.DIRECT_PERF || {}));
-  const rd = buildDirectPerf(P.dir, W.MASTER);
+  const rd = buildDirectPerf(P.dir, W.MASTER, { navDate: NAV_DATE_DIRECT });
   W.DIRECT_PERF = rd.store;
+  console.log(`  YOUNG-FUND RULE (D94, D103) on DIRECT_PERF, NAV date ${NAV_DATE_DIRECT}: ${rd.cleared.length} field(s) cleared on ${new Set(rd.cleared.map(c => c.key)).size} entr(y/ies)`);
+  listClears(rd.cleared, c => c.key);
+  // H.toDirect falls back to the Regular value for a field DIRECT_PERF does not carry.
+  const masterByName = new Map(W.MASTER.map(r => [r.name, r]));
+  const fallback = rd.cleared.filter(c => { const m = masterByName.get(c.key); return m && m[c.field] != null; });
+  console.log(`  Direct field cleared while the Regular value is non-null (Direct mode shows the Regular value): ${fallback.length}`);
+  fallback.forEach(c => console.log(`      - ${c.key}: ${c.field} (Regular ${masterByName.get(c.key)[c.field]})`));
   const dpAfter = new Set(Object.keys(W.DIRECT_PERF));
   const lostDp = [...dpBefore].filter(k => !dpAfter.has(k));
   console.log(`  DIRECT_PERF: ${before.DP} -> ${Object.keys(W.DIRECT_PERF).length}  (matched ${rd.matched}, unmatched ${rd.unmatched})`);
@@ -220,6 +280,30 @@ console.log('BEFORE:', JSON.stringify(before));
     ? '*** FAIL (this index.html predates the C19 parser fix and does not report them)'
     : unclRows ? `*** FAIL ${Object.entries(uncl).map(([s, n]) => `"${s}": ${n}`).join(', ')} — add each sheet to SHEET_MAP or REFRESH_ONLY_SHEETS in site/index.html` : 'PASS (0)'}`);
   if (!unclKnown || unclRows) fail = true;
+  // ---- young-fund rule gates (D94, D103; Q2 of the TASK-067 pre-check) ----
+  const regSrc = flag('--nav-date') ? '--nav-date' : 'from --as-on';
+  const dirSrc = flag('--nav-date-direct') ? '--nav-date-direct' : flag('--nav-date') ? 'from --nav-date' : 'from --as-on';
+  console.log(`GATE fund-life NAV dates: Regular ${NAV_DATE} (${regSrc}), Direct ${NAV_DATE_DIRECT} (${dirSrc})`);
+  console.log(`GATE refreshed MF records report monitorNames: ${monitorKnown ? 'PASS' : '*** FAIL (this index.html does not report the Monitor names; the young-fund rule cannot run)'}`);
+  if (!monitorKnown) fail = true;
+  console.log(`GATE refreshed MF inception (missing or not YYYY-MM-DD, with a return): ${incFail.length ? `*** FAIL ${incFail.length}: ${incFail.slice(0, 8).map(r => `${r.name} (${JSON.stringify(r.inception)})`).join(' | ')}` : 'PASS (0)'}`);
+  if (incFail.length) fail = true;
+  if (incWarn.length) console.log(`  WARN refreshed MF records with no usable inception, or an inception after the NAV date, and no return (left as they are): ${incWarn.map(r => `${r.name} (${JSON.stringify(r.inception)})`).join(' | ')}`);
+  console.log(`GATE refreshed MF inception after the NAV date ${NAV_DATE} (with a return): ${afterNav.length ? `*** FAIL ${afterNav.map(r => `${r.name} (${r.inception})`).join(' | ')}` : 'PASS (0)'}`);
+  if (afterNav.length) fail = true;
+  const dpIss = rd.inceptionIssues;
+  console.log(`GATE Direct inception (missing or after the NAV date with a return; rows disagreeing): ${dpIss.fail.length ? `*** FAIL ${dpIss.fail.length}: ${dpIss.fail.slice(0, 8).map(i => `${i.key}: ${i.reason} (${JSON.stringify(i.inception)})`).join(' | ')}` : 'PASS (0)'}`);
+  if (dpIss.fail.length) fail = true;
+  if (dpIss.warn.length) console.log(`  WARN Direct rows with no usable inception, or an inception after the NAV date, and no return: ${dpIss.warn.map(i => i.row).join(' | ')}`);
+  const fmtOut = (name, rec) => `${name} ${FL.outlierKeys(rec).map(k => `${k}=${rec[k]}`).join(' ')}`;
+  const mOut = W.MASTER.filter(r => FL.MF_CLASSES.has(r.product_class) && onMonitor.has(r.name) && FL.outlierKeys(r).length);
+  const dOut = Object.entries(W.DIRECT_PERF).filter(([, v]) => FL.outlierKeys(v).length);
+  console.log(`GATE returns within +-${FL.BOUND * 100}% (refreshed MF records and DIRECT_PERF, after the rule): ${mOut.length + dOut.length
+    ? `*** FAIL ${mOut.map(r => fmtOut(r.name, r)).concat(dOut.map(([k, v]) => fmtOut('[Direct] ' + k, v))).slice(0, 10).join(' | ')}` : 'PASS (0)'}`);
+  if (mOut.length || dOut.length) fail = true;
+  const offOut = W.MASTER.filter(r => FL.MF_CLASSES.has(r.product_class) && !onMonitor.has(r.name) && FL.outlierKeys(r).length);
+  console.log(`  MF records on no sheet of this Monitor with a return beyond +-${FL.BOUND * 100}% (listed, not failed): ${offOut.length}`);
+  offOut.forEach(r => console.log(`      - ${fmtOut(r.name, r)}`));
   const withR1y = W.MASTER.filter(r => r.r1y != null).length;
   console.log(`GATE MASTER records carrying r1y: ${withR1y}`);
   console.log(`GATE DATA_DATES: ${JSON.stringify(W.DATA_DATES)}`);

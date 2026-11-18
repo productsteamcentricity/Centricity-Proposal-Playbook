@@ -41,7 +41,9 @@ module.exports = [
   },
   {
     name: 'direct-perf', desc: 'rebuild_directperf.js from the Aug Direct monitor', steps: [
-      { tool: 'rebuild_directperf.js', args: [`${AUG}/Daily MF Monitor_Direct_31st August 2026.xlsx`, '--html', '{HTML}'] },
+      { tool: 'rebuild_directperf.js', args: [`${AUG}/Daily MF Monitor_Direct_31st August 2026.xlsx`, '--html', '{HTML}'],
+        // TASK-067: the new tool requires the Direct monitor's NAV date (31-Aug-2026, a Monday).
+        newArgs: [`${AUG}/Daily MF Monitor_Direct_31st August 2026.xlsx`, '--nav-date', '2026-08-31', '--html', '{HTML}'] },
     ],
   },
   {

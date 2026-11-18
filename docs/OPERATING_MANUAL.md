@@ -772,6 +772,36 @@ The bake prints the refresh-only rows it did not merge, a `WARN` for each expect
 missing or empty, and a `CHECK` of MASTER funds on no sheet, and it fails on any fund row on a sheet
 in neither list. What to do with each: `tools/README.md` §6.
 
+(Added 18-Nov-2026, TASK-067; owner decisions D94 and D103.) **The young-fund rule runs inside the bake,
+not in the page.** After the Regular merge, `bake_month.js` applies `tools/lib/fund_life.js` to every
+MF record (`Mutual Fund`, `Mutual Funds`, `ETF`, `Index Fund`) that this Monitor refreshed:
+- a return for a period longer than the fund's life is set to null. A period's start is the NAV date
+  minus N calendar months, the day clamped to the month end (`mtd`: the last day of the previous
+  month); the field is cleared when the inception is after that start, kept when it equals it;
+- a fund younger than one year (inception after the NAV date minus 12 months) loses its `si` only
+  when it is beyond ±300% (3.0 as a decimal, D103); every other young-fund `si` stays.
+
+Why it is needed: the Monitor itself leaves such cells blank, but the parser's non-null merge (D81)
+never clears a stored value, so a Regular plan renamed from its older Direct plan kept the Direct
+plan's 3-, 6- and 12-month returns (C20, C16), and a two-week-old ETF showed an annualised
+since-inception return of 297,765% (C43). `tools/lib/direct_perf.js` applies the same rule to
+DIRECT_PERF, per key after its rows merge, against the Direct row's own inception; a cleared Direct
+field is deleted, so Direct mode shows the Regular value (`H.toDirect`). On the page a cleared
+`r1y`/`r3y`/`r5y` of a record with an IRR band shows the band mid-point marked "*"
+(`H.effectiveReturn`), and that mid-point also enters the weighted totals (the r1y total and
+`H.weightedReturns` use `effectiveReturn`); any other cleared field shows "-". A cleared period value that
+the Monitor itself published (the merge changed it) is listed under `WARN period values this Monitor
+published and the rule cleared`: the Monitor's inception and its own figure disagree, so ask the owner. Fund life is measured to the monitors'
+**real NAV dates**: `--nav-date` (Regular) and `--nav-date-direct` (Direct), both defaulting to the
+as-on date and limited to 7 days from it (D91, D99; October 2026: 2026-11-02 and 2026-10-30).
+`rebuild_directperf.js` requires `--nav-date`. New gates fail the bake on a refreshed MF record with a
+missing or non-ISO inception, or an inception after the NAV date, that carries a return (without a
+return it is a WARN: the August 2026 monitors list funds before their allotment), a Direct key
+whose rows disagree on inception, and any return beyond ±300% left on a refreshed MF record or in
+DIRECT_PERF. **Trap:** the page's Section 7 uploader does not apply this rule, and SIF, PMS and AIF
+young funds keep their `si` (KNOWN_ISSUES C51): an upload in the browser can bring the cleared values
+back until the next bake.
+
 The full monthly order, as run for Aug-2026. **`rename_schemes.js` comes first** — see the next
 section for why. Every step is dry-run by default; read the gates before adding `--apply`.
 
