@@ -137,7 +137,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D101 | 18-Nov-2026 | Answers for the October Reckoner run and the four labels: Karma kept, three products added, C4, C5, C6, C38 settled (owner; DEC-OPEN-11, DEC-OPEN-36 c and part of d) | Reckoner | Active |
 | D102 | 18-Nov-2026 | October Reckoner run: 2 Select drops, keep list confirmed, ranges for Aionios, Sundaram SISOP and Equinova Edge, Mosaic Series I badge removed, PMS performance as on 30-Sep-2026 (owner; DEC-OPEN-36) | Reckoner | Active |
 | D103 | 18-Nov-2026 | A fund younger than one year loses its since-inception figure only beyond +-300% (owner; refines D94) | Data | Active |
-| D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load Nil, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
+| D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load 1% for 1 year, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1403,7 +1403,7 @@ and the entry says so. "—" means no date is recorded.
   Jasmine Fund's September figures, Equinova Edge PMS's exit load, the status of a deck row and the deck's other
   list changes.
 - **Decision (the owner's words in quotes):** (1) Karma Capital Jasmine Fund's September 2026 factsheet was supplied:
-  its 30-Sep figures are used. (2) Equinova Edge PMS exit load: "Nil". (3) Alchemy Leaders of Tomorrow: "These
+  its 30-Sep figures are used. (2) Equinova Edge PMS exit load: "1% for 1 Year" (the owner first wrote "Nil", then corrected it the same day: "Correction Equinova Edge PMS exit load: 1% for 1 Year"). (3) Alchemy Leaders of Tomorrow: "These
   performance list is as of Sep 30, 2026" (the desk's AIF CAT III table, sent as a picture, shows the deck's values).
   (4) "None of them are Gift City funds and don't categorise them as such; Vivriti and Promaft are Cat II AIFs; ICICI
   Prudential PIPE Fund - Cat III AIF" (Vivriti Diversified Bond Fund III, PROMAFT Partners Fund I, ICICI Prudential
