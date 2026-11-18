@@ -18,6 +18,13 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - October analytics run claim recorded (OPS-02; docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the TASK-021 part A + TASK-024 claim (the October analytics run, the
+  owner's first priority) and its condensed contract (Guardian pre-check GO WITH CONDITIONS). `TASK_REGISTER.md`
+  (TASK-021, TASK-024), `CHAT_REGISTRY.md` (OPS-02).
+
 ## 2026-11-18 - D105: the October Reckoner list approved (docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.

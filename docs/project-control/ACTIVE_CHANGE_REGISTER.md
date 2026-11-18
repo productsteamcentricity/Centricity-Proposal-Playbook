@@ -35,13 +35,26 @@ and the October cycle (TASK-021, expected about 13-17 Nov) also wait for the ans
 
 | Task | Chat | Workstream | Worktree / working directory | Source branch and baseline commit | Task branch | Files and modules being modified | Shared interfaces affected | Dependencies and overlaps | Status | Latest commit | Review and integration status | Blockers | Ownership released? |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| No active claim (18-Nov-2026, after the merge of PR #47) | - | - | - | - | - | - | - | - | - | - | - | - | - |
+| TASK-021 part A + TASK-024 (the October 2026 analytics run: the 8 D96 renames, then the three October analytics workbooks; D96, D100) | OPS-02 (`local_61c7130f`) | OPS | `.claude/worktrees/investment-proposal-dashboard-c68580` | `origin/main` `baf5218` or later (the branch is cut from it, not from 44590d4) | `data/2026-10-analytics` | the six deploy files held whole; written: `site/index.html` (MASTER 8 names and prev_name, EQUITY/HYBRID/DEBT_ANALYTICS, DATA_DATES.analytics) and `site/Centricity_IRR_Offshore.js` (`var IRR`, 8 keys); docs: new `docs/update-log/2026-10_Oct-2026.md`, `tools/README.md` (the rename notes ~154-155, ~495-496), `docs/KNOWN_ISSUES.md` (A6), `CHANGELOG.md`, `docs/PROJECT_STATE.md`, `CLAUDE.md` (headline only) | MASTER names (prev_name resolution), the three analytics stores, DATA_DATES.analytics (screen, Excel, deck labels), `var IRR` | First of the October runs (the owner's first priority); the Reckoner run (TASK-020/029) and part B (the MF bake, TASK-021/023) follow on the same files and re-run their dry runs on the post-merge main; OPS-01's `data/2026-09-4` untouched | IN PROGRESS (claim in force from the merge of this record, 18-Nov-2026) | - | Guardian pre-check GO WITH CONDITIONS (18-Nov-2026). Gate B by MOD-03; the owner's yes before the merge (High risk; no auto-publish) | none | no |
 
 TASK-018 (GOV-01) was released at the merge of PR #35 (`ddd0304`, 9-Nov-2026 12:16 UTC): its row moved to section 4 and its contract (v2) stays in section 2 until the register sweep condenses it into the integration log. Every row of section 3 is a forecast and holds nothing. OPS-01 (VERIFIED 17-Nov-2026: worktree `.claude/worktrees/adoring-boyd-7028f6`, task branch `data/2026-09-4` at `ddd0304`, 0 commits, local only) holds no claim: it has made dry runs only and its claim record is not on `origin/main`. That is a coding worktree without a row (section 5 item 5); it is recorded here so that nobody reads the worktree as an active claim.
 
 ---
 
 ## 2. Change-impact contracts for active tasks
+
+### TASK-021 part A + TASK-024 (risk class: High; applies D96, analytics-only route, client-facing label and look-through; contract of 18-Nov-2026)
+
+The full contract (12 fields) is OPS-02's local file `monthly-updates/2026-10_Oct-2026/_review/ops02_analytics_contract_2026-11-18.md`; it goes into the PR description. Condensed:
+
+| # | Field | Contract |
+|---|---|---|
+| 2 | Acceptance | after the four steps, verify_page: EQUITY_ANALYTICS 1,205 -> 1,231; DATA_DATES.analytics "31st October 2026"; every other count and date unchanged; 0 duplicates; 0 script errors; only `index.html` and the IRR sibling change; each applied step equals its rehearsal output |
+| 4 | Changes | 8 renames (D96, Motilal pair first); analytics stores refreshed from the October workbooks; plan-variant fills; the Altiva SIF key re-keyed; about 84 records (60 MF/ETF, 24 SIF) keep September-or-older holdings under the new label (full list in the update log, names and counts only); added keys without a MASTER record stay orphans until part B |
+| 10 | Steps | backups of the six files to `<MAIN>/backups/2026-11-18_pre-2026-10-analytics/` -> `rename_schemes.js` -> `merge_analytics.js --equity/--hybrid/--debt <*_31stOct26.xlsx> --as-on "31st October 2026"` -> `fill_variant_analytics.js --dir <Oct folder>` -> `rekey_sif_analytics.js` (no `--allow-shrink`); each dry run read before its --apply; any deviation from the rehearsal stops and goes to the owner |
+| 10b | Tests | verify_page before and after; block comparison with the rehearsal; `npm test` (968); financial-data-reviewer; verify-dashboard (labels on screen, Excel, deck; a renamed fund found by its new name); merge-base check; Gate B |
+| 11 | Rollback | restore the six backed-up files, or `git revert -m 1 <merge>` |
+| 12 | Non-goals | no performance, SIF monitor, Direct Equity universe or PMS/AIF look-through update; no reclassification (the Motilal record keeps "Equity ETF") |
 
 ### TASK-067 (risk class: High; `tools/lib/`, gates, client-facing returns; contract v3 of 18-Nov-2026) - RELEASED at the merge of PR #47 (`44590d4`, 18-Nov-2026)
 
