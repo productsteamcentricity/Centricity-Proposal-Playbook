@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98 and D101 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99 and D100 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101 and D102 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99 and D100 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -135,6 +135,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D99 | 18-Nov-2026 | October Regular and SIF performance uses the owner's files exported on 2-Nov-2026 (NAV date 2-Nov), labelled "31st October 2026"; D91's mixed-date stop waived for October only (owner) | Data | Active |
 | D100 | 18-Nov-2026 | October analytics as on 31-Oct-2026 replace the 30-Sep analytics (owner) | Data | Active |
 | D101 | 18-Nov-2026 | Answers for the October Reckoner run and the four labels: Karma kept, three products added, C4, C5, C6, C38 settled (owner; DEC-OPEN-11, DEC-OPEN-36 c and part of d) | Reckoner | Active |
+| D102 | 18-Nov-2026 | October Reckoner run: 2 Select drops, keep list confirmed, ranges for Aionios, Sundaram SISOP and Equinova Edge, Mosaic Series I badge removed, PMS performance as on 30-Sep-2026 (owner; DEC-OPEN-36) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1350,6 +1351,32 @@ and the entry says so. "—" means no date is recorded.
   31-Oct, APMI) gives the PMS and AIF table mixed dates under one label (`DATA_DATES.pms`): the run reports the dates
   and asks the owner before it applies them (CLAUDE.md rule 6; KNOWN_ISSUES B1).
 - **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), sent with nine files (copied to `monthly-updates/00_INBOX/`, manifest in the October month folder's `_review/`). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D102 - October Reckoner run: two Select drops, the keep list confirmed, ranges for the three new products, Mosaic Series I loses its badge, PMS performance as on 30-Sep-2026
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** D101 left five points open; OPS-02's dry runs of 18-Nov-2026 (read-only) showed what each changes.
+- **Decision (the owner's words in quotes):**
+  1. Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities: "Drop them from Sele[ct]". They lose their
+     Centricity Select entries (2 drops, within the 5% gate; no `--accept-drops`).
+  2. "Keep tracking them" (D101 item 2) means: the five gold ETFs, 360 ONE Focused Fund and Tata Large & Mid Cap Fund
+     keep their Select entries and the deck's five replacements are added ("Yes").
+  3. Expected ranges: Aionios Alpha Fund I 17%-19%; Sundaram SISOP 16%-18%; Equinova Edge PMS 16%-18% (the tool's peer
+     band for the two PMS would have been 15%-17%).
+  4. Mosaic Multiyield Series I loses its Select entry ("Yes").
+  5. "Then Keep the performance as on 30th September for all the PMS." MOD-03's reading (INFERRED; the label is put to
+     the owner): the PMS and AIF performance shown on the page and in the deck is as on 30-Sep-2026 for every product,
+     from the deck's 30-Sep grid and, where a product has no 30-Sep deck row, from APMI's 30-Sep figures; no 31-Oct
+     figure (October factsheets, APMI October) is used in this run.
+- **Rationale:** the owner's choice; one as-on date for the PMS and AIF tables instead of mixed dates.
+- **Alternatives / supersedes:** keeping the two AIFs; the tool's peer bands; mixed dates under one label: not chosen.
+  Item 5 extends D95 (PMS and AIF performance from the Reckoner) to this run.
+- **Consequences:** DEC-OPEN-36 is answered (D98, D101, D102). The Reckoner run (TASK-020, OPS-02) writes PMS
+  performance as on 30-Sep through a reviewed route (part of TASK-082's scope), which ends the 31-Jul-under-31-Aug
+  mismatch of KNOWN_ISSUES B1 if the label becomes "30th September 2026" (DEC-OPEN-04, to be confirmed). Still open:
+  Karma Capital Jasmine Fund's performance row (its factsheet is as on 31-Oct), the route through the AIF coverage gate,
+  Equinova Edge PMS's exit load and young-fund periods, the Prism record name, the deck's other list changes, a stale
+  deck row (Alchemy Leaders of Tomorrow), the five new refresh-only funds of the MF cycle.
+- **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), answering MOD-03's five open points of D101 after OPS-02's phase 1 report (local, `monthly-updates/2026-09_Sep-2026/_review/`). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
 
 ### Risk matrix
 
