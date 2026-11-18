@@ -95,7 +95,7 @@ Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 10 are answered (DEC-OPEN-01, -02, -03, -07, -08, -30, -31, -32, -34 and -35; section 1.6) and 26
+Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 11 are answered (DEC-OPEN-01, -02, -03, -07, -08, -11, -30, -31, -32, -34 and -35; section 1.6) and 25
 are open. Next free: DEC-OPEN-37.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
@@ -110,7 +110,7 @@ are open. Next free: DEC-OPEN-37.
 | DEC-OPEN-08 | The 8 scheme renames | owner | TASK-024 | ANSWERED 9-Nov-2026 (D96) | n/a (answered) |
 | DEC-OPEN-09 | Bond 3Y/5Y: band top or band average | owner | TASK-027 | - | documented next step only |
 | DEC-OPEN-10 | Segregated side-pocket records | owner | TASK-028 | - | yes (drop and tighten) |
-| DEC-OPEN-11 | Deck labels and AMCs (C4, C5, C6, C38) | owner + desk | TASK-029 | before TASK-020 steps 14/14a | partly (C5 pin) |
+| DEC-OPEN-11 | Deck labels and AMCs (C4, C5, C6, C38) | owner + desk | TASK-029 | ANSWERED 18-Nov-2026 (D101) | n/a (answered) |
 | DEC-OPEN-12 | Select popover alpha and ratio dates | owner + desk | TASK-030 | - | partly (C23 approach) |
 | DEC-OPEN-13 | Upstream repo purge and old-site notice (R1) | owner (+ compliance) | TASK-033 | - | yes (the R1 action list) |
 | DEC-OPEN-14 | When and how the old site is retired | owner (+ outgoing owner) | TASK-034 | after DEC-OPEN-24 | yes (tell users now; notice or redirect) |
@@ -262,29 +262,7 @@ Decider: owner. Asked: 27-Oct-2026 by MOD-01. Unblocks: TASK-028. Related: C39, 
   documented proposal in C39, awaiting approval).
 - **Record the answer as.** A new `Dnn`; update C39; set TASK-028 to PLANNED.
 
-### DEC-OPEN-11 Deck labels and fund houses that need the desk (C4, C5, C6, C38)
-
-Decider: owner + desk (DESK-11, DESK-12, DESK-13). Asked by MOD-01: 19-Oct-2026 (C4, C5 as desk questions) and
-27-Oct-2026 (C5, C6, C38). Needed before steps 14/14a of
-TASK-020. Unblocks: TASK-029. Related: C4, C5, C6, C38, A20; D75.
-
-- **The problem.** Four small labelling questions only the desk can answer: (C5) the Reckoner deck's "Motilal
-  Oswal Gift City India Equity Fund - Inbound" is very likely our record "Motilal Oswal Alternative Investment
-  (Inbound)", and its Centricity Select badge is lost until they are matched; (C6) the fund house of Prism Hybrid
-  Long-Short Fund is unknown; (C38) the fund house of Magnum Equity Ex-Top 100 Long-Short SIF is inferred as SBI;
-  (C4) whether Mosaic Multiyield Series I is retired or closed, and whether Series II should be added.
-- **Why a decision is needed.** Wrong labels reach the deck's fund-house charts and the Select badge.
-- **Options.** C5: add a Reckoner pin once the desk confirms. C6/C38: set the fund house when confirmed. C4:
-  remove the badge from a retired Series I; adding Series II is a fund-list change (`tools/add_reckoner_funds.js`).
-- **What each changes.** Badge restored (no fund added); fund-house labels; possibly one fund added.
-- **Benefits and disadvantages.** Correct labels; each needs a desk answer first.
-- **Impact on existing functionality.** Select badges, fund-house charts, the fund list (C4 only).
-- **Maintenance.** Pins live in `tools/data/pins.json` (D75).
-- **Risks and reversibility.** Reversible.
-- **Documented recommendation (not a decision).** C5: "once the desk confirms, add a Reckoner pin and re-run the
-  Reckoner step". C6, C38, C4: ask the desk.
-- **Record the answer as.** Update C4, C5, C6, C38; pins recorded in `tools/data/pins.json` with the desk's
-  confirmation date; no `Dnn` unless the owner sets a rule.
+### DEC-OPEN-11 Deck labels and fund houses that need the desk (C4, C5, C6, C38) - ANSWERED 18-Nov-2026: moved to section 1.6 (D101)
 
 ### DEC-OPEN-12 The Centricity Select popover: alpha unit and undated ratios
 
@@ -889,6 +867,13 @@ Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; K
   risk. Questions (c), (d) and (b) stay open; the desk is still asked the facts behind (c) and (d) and the labels of
   DEC-OPEN-11. Status: OPEN (three questions left).
 
+- **Partial answer 18-Nov-2026 (questions c and part of d) -> D101.** The owner answered the desk questions (MOD-03 chat):
+  (c) add Aionios Alpha Fund I, Sundaram SISOP (= "Sundaram Alternate - SISOP") and Equinova Edge PMS, class Equity;
+  (d) Karma Capital Jasmine Fund was not dropped on purpose (its October factsheet attached); the gold ETFs and the two
+  equity funds: "Keep tracking them" (reading INFERRED: they keep their Select entries; to be confirmed). Still open:
+  Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities (no answer); the ranges and exit loads of the three
+  new products; then (b), the exact `--accept-drops` count from a fresh dry run. Status: OPEN.
+
 ## 1.5 How to record the owner's answer (every decision)
 
 1. **Write it down the same day.** Add to the decision's entry: `Answer: <owner's words> (dd-Mmm-yyyy hh:mm UTC,
@@ -909,7 +894,7 @@ Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; K
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97), DEC-OPEN-11 (D101).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -1425,14 +1410,44 @@ Answer: 'Keep automatic refreshes' (a button offered by MOD-03, in answer to "Sh
 the dashboard wait for your explicit yes?"; the other button was 'Yes, wait for my yes'; 17-Nov-2026, MOD-03 chat)
 = option (a) -> D97. Status: ANSWERED. The owner did not say that the handover prompt overrides D87, so D87 stays.
 
+### DEC-OPEN-11 Deck labels and fund houses that need the desk (C4, C5, C6, C38)
+
+Decider: owner + desk (DESK-11, DESK-12, DESK-13). Asked by MOD-01: 19-Oct-2026 (C4, C5 as desk questions) and
+27-Oct-2026 (C5, C6, C38). Needed before steps 14/14a of
+TASK-020. Unblocks: TASK-029. Related: C4, C5, C6, C38, A20; D75.
+
+- **The problem.** Four small labelling questions only the desk can answer: (C5) the Reckoner deck's "Motilal
+  Oswal Gift City India Equity Fund - Inbound" is very likely our record "Motilal Oswal Alternative Investment
+  (Inbound)", and its Centricity Select badge is lost until they are matched; (C6) the fund house of Prism Hybrid
+  Long-Short Fund is unknown; (C38) the fund house of Magnum Equity Ex-Top 100 Long-Short SIF is inferred as SBI;
+  (C4) whether Mosaic Multiyield Series I is retired or closed, and whether Series II should be added.
+- **Why a decision is needed.** Wrong labels reach the deck's fund-house charts and the Select badge.
+- **Options.** C5: add a Reckoner pin once the desk confirms. C6/C38: set the fund house when confirmed. C4:
+  remove the badge from a retired Series I; adding Series II is a fund-list change (`tools/add_reckoner_funds.js`).
+- **What each changes.** Badge restored (no fund added); fund-house labels; possibly one fund added.
+- **Benefits and disadvantages.** Correct labels; each needs a desk answer first.
+- **Impact on existing functionality.** Select badges, fund-house charts, the fund list (C4 only).
+- **Maintenance.** Pins live in `tools/data/pins.json` (D75).
+- **Risks and reversibility.** Reversible.
+- **Documented recommendation (not a decision).** C5: "once the desk confirms, add a Reckoner pin and re-run the
+  Reckoner step". C6, C38, C4: ask the desk.
+- **Record the answer as.** Update C4, C5, C6, C38; pins recorded in `tools/data/pins.json` with the desk's
+  confirmation date; no `Dnn` unless the owner sets a rule.
+
+Answer: the owner's message of 18-Nov-2026 (MOD-03 chat), answering MOD-03's desk questions 4 to 6: C5 "Yes" (the
+Gift City fund is our Motilal Oswal Alternative Investment (Inbound)); C6 Prism Hybrid Long-Short Fund is run by
+JioBlackRock Mutual Fund, range 9%-11%; C38 Magnum Equity Ex-Top 100 Long-Short SIF is run by SBI Mutual Fund, range
+14%-16%; C4 Series I closed its subscriptions and Series II is open, same return expectation and terms -> D101.
+Status: ANSWERED.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D98 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D99**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D101 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D102**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1529,3 +1544,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 17-Nov-2026 | DEC-OPEN-35 opened (approval gate before publishing: the owner's handover prompt of 17-Nov-2026 against D61, D87 and D88) and DEC-OPEN-36 opened (the October Reckoner run: the Select list and the AIF performance stop at their gates, from OPS-01's dry runs of 9-Nov-2026). Sections 1.1 to 1.3 (sources, order to ask, counts: 36 entries, 9 answered, 27 open, next free DEC-OPEN-37) and the D61, D71 and D75 rows of section 2.1 updated; the statement in section 1.2 that TASK-018 had not merged corrected (PR #35 merged 9-Nov-2026). | MOD-02 |
 | 17-Nov-2026 | DEC-OPEN-35 answered ('Keep automatic refreshes') = D97 (D61, D87, D88 and FILE_OWNERSHIP section 7 stay as they are); moved to section 1.6. | MOD-03 |
 | 17-Nov-2026 | DEC-OPEN-36 question (a) answered ("YEs they are the same fund", after a first click on 'Ask the desk first') = option (a1) -> D98: both deck names are our two AIF records; pins made in the refresh run. DEC-OPEN-36 stays open for (c), (d), (b). | MOD-03 |
+| 18-Nov-2026 | The owner's message of 18-Nov-2026: D99 (October Regular and SIF from the 2-Nov files, label "31st October 2026"; the re-export question closed), D100 (October analytics), D101 (Reckoner answers); DEC-OPEN-11 answered and moved to section 1.6; DEC-OPEN-36 partial answer (c, part of d). | MOD-03 |

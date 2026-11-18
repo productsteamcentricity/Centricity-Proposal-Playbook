@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98 under "Reckoner / PMS / AIF", D89 to D91 and D94 to D96 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98 and D101 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99 and D100 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -132,6 +132,9 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D96 | 9-Nov-2026 | The eight scheme renames are confirmed (owner) | Data | Active |
 | D97 | 17-Nov-2026 | Monthly refreshes keep publishing automatically when every check passes: D61 kept, DEC-OPEN-35 option (a) (owner) | Process | Active |
 | D98 | 17-Nov-2026 | The October deck's "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" are our two AIF records: pin them (owner; extends D75) | Reckoner | Active |
+| D99 | 18-Nov-2026 | October Regular and SIF performance uses the owner's files exported on 2-Nov-2026 (NAV date 2-Nov), labelled "31st October 2026"; D91's mixed-date stop waived for October only (owner) | Data | Active |
+| D100 | 18-Nov-2026 | October analytics as on 31-Oct-2026 replace the 30-Sep analytics (owner) | Data | Active |
+| D101 | 18-Nov-2026 | Answers for the October Reckoner run and the four labels: Karma kept, three products added, C4, C5, C6, C38 settled (owner; DEC-OPEN-11, DEC-OPEN-36 c and part of d) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1025,6 +1028,39 @@ and the entry says so. "—" means no date is recorded.
   12:01 UTC (MOD-02). The wording is MOD-02's summary of the owner's button answer; the owner confirms it
   (DECISION_LOG section 1.5 step 2).
 
+#### D99 - October Regular and SIF performance uses the owner's files exported on 2-Nov-2026 (NAV date 2-Nov), labelled "31st October 2026"
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** D91 labels performance with the calendar month-end and stops a refresh whose inputs carry different NAV
+  dates. The Regular and SIF monitors the owner supplied for October were exported "as on 2-Nov-2026" and carry 2-Nov
+  NAVs (`docs/KNOWN_ISSUES.md` B10: month-to-date equals 1 Day on 2,296 of 2,505 Regular rows; the 30-Oct move implied
+  by the 29-Oct and 2-Nov Regular files equals the Direct file's 1 Day for 512 of 520 schemes); the Direct monitor
+  carries 30-Oct NAVs. A re-export as on 31-Oct-2026 was asked on 9-Nov and 17-Nov-2026.
+- **Decision:** The owner wrote on 18-Nov-2026: "Keep the Regular and SIF same as shared earlier. Update the date to
+  31st October". MOD-03's reading (INFERRED): "shared earlier" means the files the owner told MOD-02 to use on
+  9-Nov-2026 ("Use these files"), `Daily MF monitor_2 November 2026.xlsx` and `SIF Monitor_(2-November-26).xlsx`
+  (now in `monthly-updates/2026-10_Oct-2026/_superseded/wrong_nav_date_2026-11-09/`), not the 29-Oct files.
+- **Rationale:** the owner's choice; no re-export.
+- **Alternatives / supersedes:** a re-export as on 31-Oct-2026 (MOD-03's recommendation): not chosen. For the October
+  2026 cycle only, the owner waives D91's stop on mixed NAV dates for these two files; D91 stays for later months.
+- **Consequences:** the October run takes the two files back from `_superseded/` into the October folder. On the
+  page, in Excel and in the deck, Regular and SIF figures carry 2-Nov NAVs (one more trading day than the label) and
+  Direct figures 30-Oct NAVs, all under "31st October 2026"; the update log and `docs/PROJECT_STATE.md` record the true
+  NAV dates. B10 stays open as a process rule: a later deviation needs its own owner decision.
+- **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), sent with nine files (copied to `monthly-updates/00_INBOX/`, manifest in the October month folder's `_review/`). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D100 - October analytics as on 31-Oct-2026 replace the 30-Sep analytics
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** The look-through analytics on the page are as on 30-Sep-2026, and the October bake needs an `Analytics/`
+  folder (OPS-01's bake dry run of 9-Nov-2026 exited 2 without one); MOD-02 planned to reuse the September workbooks.
+- **Decision:** The owner wrote on 18-Nov-2026: "I am also attaching analytics as on October; update that as well",
+  with `Debt Analytics_31stOct26.xlsx`, `Equity Analytics_31stOct26.xlsx` and `Hybrid Analytics_31stoct26.xlsx`.
+- **Rationale:** the owner's instruction; the workbooks have the September layout (VERIFIED: same sheet and header row)
+  and new values. They carry no date inside (the date is in the file name only).
+- **Alternatives / supersedes:** reusing the 30-Sep workbooks: no longer needed.
+- **Consequences:** the October bake uses the three workbooks (filed under the October folder's `Analytics/`) with the
+  analytics label "31st October 2026"; the 30-Sep analytics are replaced in the same run.
+- **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), sent with nine files (copied to `monthly-updates/00_INBOX/`, manifest in the October month folder's `_review/`).
+
 ### Analytics & credit
 
 #### D17 · Fixed seven-bucket credit vocabulary
@@ -1282,6 +1318,38 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-36 (partial answer of 17-Nov-2026); the owner's chat
   message of 17-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5
   step 2).
+
+#### D101 - Answers for the October Reckoner run and the four labels (DEC-OPEN-11; DEC-OPEN-36 c and part of d)
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** MOD-03 gave the owner six questions for the desk on 17-Nov-2026 (DEC-OPEN-36 and DEC-OPEN-11); the owner
+  answered them on 18-Nov-2026 and attached factsheets.
+- **Decision (the owner's words in quotes):**
+  1. Karma Capital Jasmine Fund was not dropped on purpose: "Attached performance for Karma" (its factsheet, data as on
+     31-Oct-2026). It keeps its Centricity Select entry.
+  2. The five gold ETFs (HDFC, ICICI Pru, Mirae Asset, Nippon India BeES, SBI) and 360 ONE Focused Fund and Tata Large
+     & Mid Cap Fund: "Keep tracking them". MOD-03's reading (INFERRED, to be confirmed): they keep their Select entries
+     and the deck's replacements are added (as D90: existing products stay, additional ones are added).
+  3. Add Aionios Alpha Fund I (AIF), Sundaram SISOP (PMS) and Equinova Edge PMS (PMS); "For all three Class is Equity".
+     "Sundaram SISOP" is the same product as "Sundaram Alternate - SISOP" ("Yes"). Performance: the attached documents
+     (Aionios and Equinova, October 2026; the SISOP product note, September 2026) and, for the latest figures, the APMI
+     website ("check APMI for latest performance for the funds which are not yet updated in the deck").
+  4. Motilal Oswal Gift City India Equity Fund (Inbound) is Motilal Oswal Alternative Investment (Inbound): "Yes" (C5).
+  5. Prism Hybrid Long-Short Fund is run by JioBlackRock Mutual Fund, expected range 9%-11% (C6); Magnum Equity Ex-Top
+     100 Long-Short SIF is run by SBI Mutual Fund, expected range 14%-16% (C38).
+  6. Mosaic Multiyield is close-ended: Series I has closed subscriptions and Series II is open; add Series II with the
+     same return expectation and other terms as Series I (C4).
+- **Rationale:** the owner's (and the desk's) knowledge of the products.
+- **Alternatives / supersedes:** none chosen against; answers DEC-OPEN-11 and questions (c) and part of (d) of
+  DEC-OPEN-36; extends D75 (one more pin, C5) and D90.
+- **Consequences:** each item is applied in the October Reckoner run (TASK-020, TASK-029), which is High risk (pins, a
+  universe change, label and range edits in the SIF sibling): a change-impact contract, the Guardian pre-check and
+  Gate B. Still open (asked separately): Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities (no answer);
+  the expected-return ranges and exit loads of the three new products (not given: `add_reckoner_funds.js` would
+  inherit a peer-group band); the reading of item 2 and whether Mosaic Series I keeps its badge; the final
+  `--accept-drops` count (DEC-OPEN-36 b). Performance from three sources (the deck as on 30-Sep, factsheets as on
+  31-Oct, APMI) gives the PMS and AIF table mixed dates under one label (`DATA_DATES.pms`): the run reports the dates
+  and asks the owner before it applies them (CLAUDE.md rule 6; KNOWN_ISSUES B1).
+- **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), sent with nine files (copied to `monthly-updates/00_INBOX/`, manifest in the October month folder's `_review/`). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
 
 ### Risk matrix
 

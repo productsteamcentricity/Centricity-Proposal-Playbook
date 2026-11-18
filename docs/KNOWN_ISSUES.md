@@ -1251,6 +1251,8 @@ History only: no live data depends on April.
 ### B10. A monitor's "As on" cell is not its NAV date
 **P2 | Open (process: test the NAV date before every bake; re-exports as on 31-Oct-2026 requested) | Affects every MF and SIF cycle**
 
+**Update 18-Nov-2026 (D99).** The owner chose to keep the 2-Nov Regular and SIF files for October under the label "31st October 2026" (no re-export); D91's stop is waived for October only. The process rule stays for later months.
+
 - **What (found 9-Nov-2026 in the October preparation, MOD-02 and OPS-01):** the "As on" text of a monitor (cell A2 of
   the Regular and Direct monitors; an Excel serial in cell A2 of the SIF monitor) is the export setting, not the date of
   the NAVs. A Regular monitor exported "as on 2-Nov-2026" carried 2-Nov NAVs, not 30-Oct as believed; the Direct monitor
@@ -1334,6 +1336,8 @@ commit adds a new root `README.md`.
 ### C4. Mosaic Multiyield Series I keeps a Select badge
 **P2 · Open (desk) · Affects the Reckoner step**
 
+**Update 18-Nov-2026 (D101).** The desk via the owner: Mosaic Multiyield is close-ended; Series I has closed subscriptions and Series II is open with the same return expectation and terms: add Series II in the Reckoner run. Whether Series I keeps its badge: to be confirmed (INFERRED: no).
+
 MASTER has `Mosaic Multiyield Fund Series I`, which is a `CENTRICITY_SELECT` key; Series II, which
 the Sep-2026 deck recommends, is not in MASTER (checked 16-Oct-2026). The badge therefore sits on an
 instrument the deck no longer recommends. Adding Series II is a universe change
@@ -1342,6 +1346,8 @@ new money.
 
 ### C5. Motilal Oswal Gift City India Equity Fund – Inbound: very likely our existing record under a new deck label
 **P2 · Open (desk to confirm, then a pin) · Affects the Reckoner step**
+
+**Update 18-Nov-2026 (D101).** Confirmed ("Yes"): one product under two labels. Add the Reckoner pin in the October Reckoner run.
 
 The Sep-2026 deck's replacement fund appears nowhere in `site/index.html` or the siblings. The fund
 it replaced, `Motilal Oswal Alternative Investment (Inbound)`, is still in MASTER and in `NEW_GIFT`,
@@ -1362,6 +1368,8 @@ without adding a fund.
 
 ### C6. Prism Hybrid Long-Short Fund has no AMC prefix
 **P3 · Open · —**
+
+**Update 18-Nov-2026 (D101).** Prism Hybrid Long-Short Fund is run by JioBlackRock Mutual Fund; expected range 9%-11%. Applied in the October run (SIF sibling).
 
 The record exists only in `site/Centricity_SIF_Refresh.js`; the Monitor gives no AMC. New SIFs
 appended by `merge_sif_monitor.js` arrive without an AMC prefix or IRR band
@@ -1903,6 +1911,8 @@ reviewed data change, and record it in DECISIONS. Related: C28.
 
 ### C38. The "SBI" AMC of the Magnum Equity Ex-Top 100 SIF was inferred, not sourced
 **P3 · Open (desk) · —**
+
+**Update 18-Nov-2026 (D101).** Confirmed: Magnum Equity Ex-Top 100 Long-Short SIF is run by SBI Mutual Fund; expected range 14%-16%. Applied in the October run (SIF sibling).
 
 The SIF Monitor's raw name is `Magnum Equity Ex-Top 100 Long-Short Fund-Reg(G)`, with no AMC. The
 outgoing owner's Claude chose `sif_amc` "SBI" from the Magnum brand (export KT-3.8). That is plausible,
