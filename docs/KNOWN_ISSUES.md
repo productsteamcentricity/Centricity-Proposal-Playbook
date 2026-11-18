@@ -2017,6 +2017,8 @@ as at `2b2a397`; re-find them with the grep pattern given.
 ### C43. A two-week-old ETF shows a since-inception return of ~297,765%
 **P1 | Open (decided 9-Nov-2026 with C20, D94; the `si` bound is TASK-067, not yet built) | Affects every MF bake (scan `si` for outliers)**
 
+**Update 18-Nov-2026 (D103).** The owner chose the +-300% rule for funds younger than one year: the MF bake will clear this ETF's `si` (TASK-067, NB-04); other young-fund figures stay.
+
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** the MASTER record
   `UTI BSE India Sector Leaders ETF` (Mutual Fund / Index Fund, inception 15-Sep-2026) carries
   `si` = 2977.646195, which the screen and the deck print as 297764.62% (the Excel cell holds the raw

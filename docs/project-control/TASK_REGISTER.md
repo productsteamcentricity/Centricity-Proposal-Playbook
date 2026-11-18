@@ -154,8 +154,8 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
 | TASK-020 | Sep-2026 Reckoner catch-up | OPS | BLOCKED (18-Nov-2026: D98, D101, D102 settle the gates; open: Karma's AIF row, the AIF gate route, Equinova's exit load, the PMS label; claim pending) | P1 | OPS-02 (phase 1, read-only; started 18-Nov-2026) | R |
 | TASK-021 | Oct-2026 MF cycle | OPS | BLOCKED (18-Nov-2026: inputs settled by D99 and D100; the bake waits for TASK-067/TASK-023 (D94)) | P1 | OPS-02 (preparation only) | R |
-| TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-04 (proposed; MOD-02 launches it) | R |
-| TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | PLANNED | P1 | MOD-02 assigns | R |
+| TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-05 (proposed; MOD-03 launches it) | R |
+| TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | PLANNED (applied by OPS-02's October bake with TASK-067's rule) | P1 | OPS-02 | R |
 | TASK-024 | Apply the 8 confirmed scheme renames (D96) | OPS | PLANNED | P1 | OPS-02 (preparation; applied in the October bake) | R |
 | TASK-025 | PMS label (B1) | OPS | BLOCKED | P1 | MOD-02 assigns | O |
 | TASK-026 | One rule for the headline expected return | NB | BLOCKED | P2 | MOD-02 assigns | D |
@@ -199,7 +199,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-064 | Full browser acceptance on the live build | EX | IMPLEMENTED NOT FULLY VERIFIED | P1 | EX-01 (idle; results to be recorded by TASK-081) | R |
 | TASK-065 | PMS/AIF benchmark rows from the decided source | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-066 | 12 unreachable RISK_MATRIX keys; effective-MASTER key check (sequence after TASK-022: same file) | NB | NOT STARTED | P2 | MOD-02 assigns | E |
-| TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | PLANNED | P1 | MOD-02 assigns | R |
+| TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | IN PROGRESS (phase 1: contract; D103 = +-300% rule) | P1 | NB-04 | R |
 | TASK-068 | Compare the two PMS/AIF holdings parsers | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-069 | Deck: Construct/NAA through the design system; all `listTable` pages | NB | NOT STARTED | P2 | MOD-02 assigns | E |
 | TASK-070 | Inventory and secure local-only artefacts | GOV | NOT STARTED | P2 | MOD-02 + owner | H |
