@@ -18,6 +18,42 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - TASK-067: the young-fund rule in the MF bake (NB-04; D94, D103)
+
+Tools only: no `site/` file and no data block changes. The data changes arrive with the October bake (TASK-021).
+
+### Added
+- `tools/lib/fund_life.js`: the young-fund rule. A return for a period longer than the fund's life is cleared
+  (period start = NAV date minus N calendar months, day clamped to the month end; `mtd` from the previous month
+  end; cleared when the inception is after the start). A fund younger than one year loses its `si` only when it is
+  beyond +-300% (3.0, D103). One `MF_CLASSES` set (incl. `Mutual Funds`) and one `BOUND`.
+- `tools/test/fund_life.test.js` (65 checks): the date formula, the boundaries, the bound, idempotence, the rule
+  inside `buildDirectPerf` on a synthetic workbook, and the exit-2 cases of the new flags. `npm test`: 968 checks.
+
+### Changed
+- `tools/bake_month.js`: applies the rule to every MF record the Regular Monitor refreshed (cleared fields set to
+  null) and lists each clear; new optional `--nav-date` / `--nav-date-direct` (default: the `--as-on` date; a real
+  date within 7 days of it, else exit 2; D91, D99). New gates (exit 1): monitorNames reported; a missing or non-ISO
+  inception, or one after the NAV date, on a record that carries a return (no return: WARN); a Direct key whose
+  rows disagree on inception; any return beyond +-300% left on a refreshed MF record or in DIRECT_PERF (MF records
+  on no sheet of the Monitor are listed, not failed). A WARN lists any period value this Monitor itself published
+  and the rule cleared (the Monitor's inception disagrees with its own figure: ask the owner).
+- `tools/lib/direct_perf.js`: `buildDirectPerf(src, master, { navDate })` applies the same rule per key after its
+  rows merge, against the Direct row's own inception, and deletes a cleared field; it throws without `navDate`.
+- `tools/rebuild_directperf.js`: `--nav-date` is required (exit 2 when missing or not a real date).
+- `tools/dev/rehearsal_cases.js`: the `direct-perf` case passes `--nav-date 2026-08-31` to the new tool.
+- Docs: `tools/README.md` (the `bake_month`, `rebuild_directperf` and `direct_perf` rows, a `fund_life` row),
+  `docs/MONTHLY_UPDATE_PROCESS.md` (process row 2), `docs/OPERATING_MANUAL.md` (the monthly bake), `docs/TESTING.md`
+  2.1, `docs/project-control/INTERFACE_CONTRACTS.md`; `docs/KNOWN_ISSUES.md` C16, C20, C43 (rule merged; data
+  applied by the October bake) and the new C51 (the Section 7 uploader and SIF/PMS/AIF young funds).
+
+### Verified
+- Rehearsal (old `main` tools against these): `mf-chain-sep` differs in MASTER only, 28 fields on 14 records (the
+  13 JioBlackRock Regular records of C20 and the C43 ETF's `si`), DIRECT_PERF none; `mf-chain-aug` 211 fields on
+  143 records (September values the non-null merge keeps under the August label), DIRECT_PERF none; `direct-perf`
+  identical. October dry run (`--nav-date 2026-11-02 --nav-date-direct 2026-10-30`): the same 14 records, every gate
+  PASS. `verify_page` on `site/` unchanged.
+
 ## 2026-11-18 - TASK-067 claim recorded (NB-04, the young-fund rule; docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.

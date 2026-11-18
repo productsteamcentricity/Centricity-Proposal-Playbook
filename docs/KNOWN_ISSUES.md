@@ -189,11 +189,11 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C13 | Cosmetic UI inconsistencies kept for parity | UI | P3 | Closed 19-Oct-2026 (PR #12), frozen-pane classes kept | — | `site/index.html` Master Editor heading; tab `num` 6.1–6.9 |
 | C14 | Shared links drop funds renamed since the link was made | UI | P2 | Closed 19-Oct-2026 (PR #12) | — | `hashPick` in `site/index.html` |
 | C15 | Fund-manager roster overwritten by the Sep bake | Data | P2 | Open (desk) | **Affects** | MASTER `fund_mgr`; `tools/merge_fund_managers.js` |
-| C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided 9-Nov-2026 with C20, D94; TASK-023 releases it) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
+| C16 | JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception | Data | P3 | Open (decided 9-Nov-2026 with C20, D94; rule merged (TASK-067); data applied by the October bake (TASK-021)) | — | MASTER `inception`, `prev_name`; Sep-2026 Monitor |
 | C17 | Risk-flag footnote overlaps a long Portfolio Matrix slide | UI | P3 | Closed 21-Oct-2026 (PR #21) | — | `planTable` / `footerBlock` in `buildDeck`, `site/index.html` (corrected 28-Oct-2026: `NOTE_Y` and `mk` were removed by PR #26) |
 | C18 | Select popover ratios are never marked unreliable | UI | P3 | Closed 21-Oct-2026 (PR #22) | — | `CentricitySelectPopover`, `site/index.html` |
 | C19 | 215 funds on four unmapped Monitor sheets carry pre-September performance | Data | P1 | Fixed: code 19-Oct-2026 (PR #17), data 21-Oct-2026 (PR #18, 214 funds; 1 held for C20) | **Affects** (read the new bake lines) | `REFRESH_ONLY_SHEETS`, `site/index.html:3248-3250`, `:3420-3426`; `tools/bake_month.js:152-169`, `:212-220` |
-| C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (decided 9-Nov-2026, D94: clear the returns; not yet applied); G-Sec record held | — | MASTER returns; non-null merge `site/index.html:3437-3438` |
+| C20 | JioBlackRock Regular records show Direct-plan returns from before their launch | Data | P1 | Open (decided 9-Nov-2026, D94: clear the returns; rule merged (TASK-067); data applied by the October bake (TASK-021)); G-Sec record held until then | — | MASTER returns; non-null merge `site/index.html:3437-3438` |
 | C21 | Taxonomy oddities on the Monitor's ETF and FoF sheets | Data | P3 | Open | — | `SHEET_MAP['Debt Oriented']`, `site/index.html:3198`; MASTER |
 | C22 | A long Portfolio Matrix slide without a flagged fund runs past its notes and the slide | UI | P3 | Closed 22-Oct-2026 (PR #26, D82) | — | `planTable` in `buildDeck`, `site/index.html` |
 | C23 | Select popover Alpha shown 100 times too large (source-confirmed) | UI/data | P2 | Open (desk: confirm the period) | — | `fmtPctRaw(info.alpha)` in `CentricitySelectPopover`; `CENTRICITY_SELECT[].alpha` |
@@ -216,7 +216,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C40 | `rename_schemes.js` "new to MASTER" counts rows the bake never adds | Tools | P3 | Open | — | `tools/rename_schemes.js` (count line) |
 | C41 | PMS/AIF benchmark rows (screen, Excel, deck) show static values held since 20-May-2026; the monthly `PMS_PERFORMANCE.benchmarks` is never read | UI/data | P2 | Open (owner decision: source and refresh) | **Affects** (the AIF step's benchmark refresh reaches no page) | `window.PMS_BENCHMARK_PERF`, `site/index.html:3057`; `pmsBenchmarkPerfFor` `:3069`; readers `:4099`, `:5200`, `:7934` |
 | C42 | 12 RISK_MATRIX keys name rows the SIF sibling removes at load; no effective SIF has a risk row | Data | P2 | Open | **Affects** the next risk build (B8) | `tools/merge_risk_matrix.js:141-143`; `site/Centricity_SIF_Refresh.js:27-54` |
-| C43 | `UTI BSE India Sector Leaders ETF` shows a since-inception return of ~297,765% (`si` 2977.646); the MF bake has no `si` bound | Data | P1 | Open (decided 9-Nov-2026 with C20, D94; the bound is TASK-067) | **Affects** (scan `si` after the bake) | MASTER `si`; `tools/bake_month.js:194-228`; readers `site/index.html:4063-4072`, `:5151-5154`, `:7844` |
+| C43 | `UTI BSE India Sector Leaders ETF` shows a since-inception return of ~297,765% (`si` 2977.646); the MF bake has no `si` bound | Data | P1 | Open (decided with C20, D94; bound D103: a young fund's `si` beyond +-300% is cleared; rule merged (TASK-067); data applied by the October bake (TASK-021)) | **Affects** the live page until the October bake | MASTER `si`; `tools/bake_month.js:194-228`; readers `site/index.html:4063-4072`, `:5151-5154`, `:7844` |
 | C44 | Construct and Net Asset Allocation slides draw their tables with `slide.addTable` at fixed positions, not `drawTable` | UI | P3 | Open | — | `buildDeck`, `site/index.html:4720-4773`, `:4784-4825` |
 | C45 | Analytics `listTable` tables (Top Underlying Holdings, Top Issuers) draw only their first page | UI | P2 | Open (latent) | — | `buildDeck`, `site/index.html:5055-5057`, `:5102-5104` |
 | C46 | Portfolio Matrix definitions change from October when the MF Screener pack becomes the source | Data | P2 | Open (owner decisions taken 9-Nov-2026: D92, D93; build TASK-022 pending) | **Affects** the October risk table | `tools/merge_risk_matrix.js`; `RISK_MATRIX` block in `site/index.html` |
@@ -224,6 +224,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C48 | Excel export has no number formats and no cached formula values (EX-01 N2) | UI | P3 | Open | - | `exportXlsx` in `site/index.html` |
 | C49 | Net Asset Allocation counts every "Global Funds" record as equity, including a GIFT City G-Sec feeder, and REIT/InvIT as direct equity (EX-01 N3) | UI/data | P3 | Open (owner rule) | - | Net Asset Allocation slide, `buildDeck` in `site/index.html` |
 | C50 | Watch item: one unexplained, unreproduced misrouting of a Direct monitor file through the Regular parser in the Data Refresh upload (EX-01 N4) | UI | P3 | Open (watch; not reproduced in 4 further runs) | - | Section 7 upload, `REFRESH` in `site/index.html` |
+| C51 | The young-fund rule (D94, D103) runs only in the monthly bake: the page's Section 7 uploader does not apply it, and SIF, PMS and AIF young funds keep their `si` | Data | P2 | Open (TASK-039 must not start meanwhile) | - | `REFRESH.parseMfMonitor` / `parseMfMonitorDirect` in `site/index.html`; `tools/lib/fund_life.js`; SIF sibling, PMS/AIF tools |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -1502,7 +1503,7 @@ rule (checked 16-Oct-2026).
   Singh), so they are real updates. Step 9 still restores the full teams.
 
 ### C16. JioBlackRock Nifty 8-13 yr G-Sec Index Fund: the Regular record carries the Direct plan's inception
-**P3 | Open (decided 9-Nov-2026 with C20, D94; TASK-023 releases the held record) | -**
+**P3 | Open (decided 9-Nov-2026 with C20, D94; rule merged (TASK-067); data applied by the October bake (TASK-021)) | -**
 
 - **Corrected 19-Oct-2026 (financial-data review): not a source conflict.** MASTER gives
   `JioBlackRock Nifty 8-13 yr G-Sec Index Fund-Reg(G)` an inception of 2025-08-18; the 30-Sep-2026
@@ -1519,6 +1520,7 @@ rule (checked 16-Oct-2026).
   still carries the Direct plan's inception and June figures. Release it together with the C20
   decision. `rename_schemes.js` has nothing to rename here.
 - **Update 9-Nov-2026 (D94):** the owner chose to clear returns shown for periods before a fund existed, and to release this held record in the same change as the other 12 (TASK-023). Not yet applied: the `site/` data is unchanged since PR #26.
+- **Update 18-Nov-2026 (TASK-067, NB-04):** rule merged (TASK-067); data applied by the October bake (TASK-021). `bake_month.js` now applies `tools/lib/fund_life.js` after the Regular merge: on each MF record the Monitor refreshed, every return for a period longer than the fund's life (to the Regular monitor's real NAV date, `--nav-date`) is set to null, and a fund younger than one year loses an `si` beyond +-300% (D103; every other young-fund `si` stays); DIRECT_PERF gets the same rule against each Direct row's own inception. No tool holds this record: the Run 3 hold was a restore by hand, so the October bake refreshes it (inception 2026-08-17 from the Monitor) and the rule clears its r3m 3.476% and r6m 2.4055% (seen in the rehearsal of the September inputs and in a dry run of the October inputs). TASK-023 is folded into TASK-021. Close this item when the October bake is published and checked.
 
 ### C17. Risk-flag footnote overlaps a long Portfolio Matrix slide
 **P3 · Closed 21-Oct-2026 (PR #21) · —**
@@ -1635,7 +1637,7 @@ the new bake lines)**
   the desk about the four absent Debt ETFs; release the held G-Sec record with the C20 decision.
 
 ### C20. JioBlackRock Regular records show Direct-plan returns from before their launch
-**P1 | Open (decided 9-Nov-2026, D94: clear the returns; not yet applied) | -** (on 21-Oct-2026 the owner published the C19 re-run without
+**P1 | Open (decided 9-Nov-2026, D94: clear the returns; rule merged (TASK-067); data applied by the October bake (TASK-021)) | -** (on 21-Oct-2026 the owner published the C19 re-run without
 waiting for this decision and held the G-Sec record instead)
 
 - **What:** 12 JioBlackRock `-Reg(G)` records on mapped sheets were renamed from Direct-plan names in
@@ -1659,6 +1661,7 @@ waiting for this decision and held the G-Sec record instead)
   ETF`, launched 15-Sep-2026, carries `si` = 2977.646195, which the screen and the deck print as
   297764.62% (wording corrected 2-Nov-2026). Decide it with this item.
 - **Decision 9-Nov-2026 (D94):** the owner chose "Yes, clear them": show "-" for every return period longer than the fund's life, release the held G-Sec record in the same change, and add a limit in the monthly bake so that a very young fund cannot show an absurd annualised figure (the last part is MOD-02's reading of the click, INFERRED). TASK-023 (the 13 records: one reviewed data PR written through `tools/lib/blocklib.js`, with `financial-data-reviewer` sign-off) and TASK-067 (the since-inception bound) ship before or with the October bake. Status: decided, not applied. Some cells will show "-" for new funds, and proposal totals that include these funds can change.
+- **Update 18-Nov-2026 (TASK-067, NB-04):** rule merged (TASK-067); data applied by the October bake (TASK-021). `bake_month.js` now applies `tools/lib/fund_life.js` after the Regular merge: on each MF record the Monitor refreshed, every return for a period longer than the fund's life (to the Regular monitor's real NAV date, `--nav-date`) is set to null, and a fund younger than one year loses an `si` beyond +-300% (D103; every other young-fund `si` stays); DIRECT_PERF gets the same rule against each Direct row's own inception. On the September inputs it clears 27 fields on the 13 Regular records (r3m on 13, r6m on 11, r1y on Overnight, Liquid and Money Market); the October dry run (NAV 2026-11-02) clears the same 27. A cleared r1y of a record with an IRR band (the three debt funds) shows the band mid-point marked "*" (`H.effectiveReturn`); r3m and r6m show "-". The 44-day `si` values (e.g. Large Cap -45.35%) are within +-300% and stay (D103). Close this item when the October bake is published and checked.
 
 ### C21. Taxonomy oddities on the Monitor's ETF and FoF sheets
 **P3 · Open · —**
@@ -2015,7 +2018,7 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **Related:** A15, A26, B8, C1, D43, D74; TASK-066.
 
 ### C43. A two-week-old ETF shows a since-inception return of ~297,765%
-**P1 | Open (decided 9-Nov-2026 with C20, D94; the `si` bound is TASK-067, not yet built) | Affects every MF bake (scan `si` for outliers)**
+**P1 | Open (decided with C20, D94 and D103; rule merged (TASK-067); data applied by the October bake (TASK-021)) | Affects the live page until the October bake**
 
 **Update 18-Nov-2026 (D103).** The owner chose the +-300% rule for funds younger than one year: the MF bake will clear this ETF's `si` (TASK-067, NB-04); other young-fund figures stay.
 
@@ -2040,6 +2043,7 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **Decision (owner) and fix:** treat very young funds' since-inception values with the C20 rule
   (DEC-OPEN-07: answered 9-Nov-2026, D94, "Yes, clear them"), then add an `si` bound to the MF bake's gates (TASK-067). Not yet applied; the owner's click is read as covering the bound (INFERRED, D94).
 - **Related:** C16, C20, D81; DEC-OPEN-07, TASK-067.
+- **Update 18-Nov-2026 (TASK-067, NB-04):** rule merged (TASK-067); data applied by the October bake (TASK-021). `bake_month.js` now applies `tools/lib/fund_life.js` after the Regular merge: on each MF record the Monitor refreshed, every return for a period longer than the fund's life (to the Regular monitor's real NAV date, `--nav-date`) is set to null, and a fund younger than one year loses an `si` beyond +-300% (D103; every other young-fund `si` stays); DIRECT_PERF gets the same rule against each Direct row's own inception. On the September inputs it clears this ETF's `si` 2977.646195 (the only MF record beyond +-300%); in the October dry run its `si` is 13.790453 (1,379%) and is cleared too. Shriram Gold ETF Passive FOF (107%) and Mirae Asset BSE IT Index Fund (-69%) stay under D103. A new bake gate fails on any return beyond +-300% left on a refreshed MF record or in DIRECT_PERF; MF records on no sheet of the Monitor are listed, not failed. The uploader gap is C51. Close this item when the October bake is published and checked.
 - **EX-01 (2-Nov-2026, report local-only):** reproduced on the live build: S.I. 297764.62% on the Performance Sheet tab, on the deck's Fund Performance slide and in Excel (raw 2977.646); the "Portfolio Weighted (by % allocation)" row then reads S.I. 14198.19% at a 1% weight, so every client deck that holds this ETF carries both figures.
 - **Update 2-Nov-2026 (TASK-016 audit, issues-code):** the screen and the deck print 297764.62% (the
   Excel cell holds the raw 2977.646195), so "297,765%" is a rounded figure; two other very young
@@ -2158,6 +2162,14 @@ as at `2b2a397`; re-find them with the grep pattern given.
 
 - **What (EX-01, 2-Nov-2026; EX01-N4):** in the first Data Refresh run the Regular upload showed no status in 60 s; after choosing "Direct" and loading the Direct workbook the status read "Updated 12 schemes (+1542 new)" with "49 rows not merged" and "213 rows on unrecognised sheets", and MASTER grew from 7,682 to 9,224 (session only), so the status text was the Regular parser's. Four further runs on fresh loads (Regular only; Direct only; Regular then Direct; the same script again) were correct. The cause is unknown (a harness timing effect is possible; not shown). The "unrecognised sheets" guard worked as designed.
 - **Workaround:** if a user ever sees "(+N new)" after a Direct upload, reload the page: the data are session-only.
+
+### C51. The young-fund rule runs only in the monthly bake
+**P2 | Open (TASK-039 must not start meanwhile) | -**
+
+- **What (TASK-067, 18-Nov-2026):** the D94 / D103 rule (`tools/lib/fund_life.js`: returns for periods longer than a fund's life are cleared; a young fund's `si` beyond +-300% is cleared) is applied by `tools/bake_month.js` after the page parser runs, and by `tools/lib/direct_perf.js` (so also by `rebuild_directperf.js`). Two gaps remain. (1) The page's Section 7 uploader (`REFRESH.parseMfMonitor`, `parseMfMonitorDirect` in `site/index.html`) does not apply it, so a browser upload can bring cleared values back for that session; the bake and the uploader no longer produce the same MASTER, against the "one parser for both" of D42 and D80. (2) SIF, PMS and AIF young funds keep their `si` whatever its size (live MASTER, 18-Nov-2026: 6 SIF and 4 AIF records under one year carry `si`; 14 SIF-type long-short funds filed as "Mutual Fund" are on no Monitor sheet, so the bake lists them rather than ruling them). The SIF merge keeps its own +-300% gate (`merge_sif_monitor.js`). (3) Funds added to MASTER by hand or by another tool are not ruled until the next bake: the October 2026 Regular Monitor carries four funds not in MASTER with `si` above 300% (ICICI Pru Nifty Pharma ETF, Kotak Nifty 500 Index, Quant Nifty 100 Index, Quant Nifty 50 Index; financial-data review of 18-Nov-2026); added by hand, they would show those figures until the November bake.
+- **Impact:** low today: the uploader is a fallback route and its changes last only for the session; SIF, PMS and AIF figures come from their own tools.
+- **Suggested fix:** move the rule into the page parsers together with TASK-039 (one Direct-plan parser for the bake and the upload), with the owner deciding whether D94 / D103 extend to SIF, PMS and AIF. TASK-039 must not start until this item is planned with it.
+- **Related:** C16, C20, C43; D94, D103, D42, D80; TASK-067, TASK-039.
 
 ---
 

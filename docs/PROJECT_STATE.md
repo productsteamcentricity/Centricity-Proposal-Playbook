@@ -310,6 +310,13 @@ every owner message, and checked against the code (record:
 
 ## In progress / blockers
 
+- **TASK-067, the young-fund rule (NB-04; D94, D103), 18-Nov-2026: PR open, waiting for Gate B and the merge.**
+  `tools/bake_month.js` and `tools/lib/direct_perf.js` clear returns for periods longer than a fund's life and a
+  young fund's `si` beyond +-300% (`tools/lib/fund_life.js`). No `site/` change: the October bake (TASK-021, OPS-02)
+  applies it, with `--nav-date 2026-11-02 --nav-date-direct 2026-10-30` (D99), and must run on these tools (merge
+  first). Expected October effect (dry run): 28 fields on 14 records, the 13 JioBlackRock Regular records (C20, C16:
+  the held G-Sec record is released) and the C43 ETF's `si`. Open follow-up: KNOWN_ISSUES C51 (the Section 7 uploader
+  and SIF/PMS/AIF young funds; TASK-039 must not start meanwhile).
 - **ARC-01 conditions (2-Nov-2026) - LIFTED:** TASK-018 merged on 9-Nov-2026 (PR #35, `ddd0304`), local `main` equals `origin/main` and `git diff --stat origin/main -- CLAUDE.md .claude docs` is empty (checked 17-Nov-2026), and TASK-017 passed on 9-Nov-2026 (see "Git in this folder" above). The rest of this bullet is the historical text of the conditions: the widened TASK-018 PR (rule documents) must merge before any
   `/monthly-update` run, any tool `--apply` or any OPS or NB sub-chat launch; until then every launch packet
   states four things: no checkout, switch, merge or pull in the main checkout; no `--delete-branch`; where
