@@ -62,6 +62,7 @@ GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (
 EX-01  | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | COMPLETED (report delivered 2-Nov-2026; its findings are recorded as KNOWN_ISSUES C47 to C50 by the PR of TASK-079; the update log is still to be written)
 OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | SUPERSEDED
 OPS-02 | Playbook OPS - Monthly data operations | October 2026 update (Reckoner run and funds run)          | ACTIVE
+NB-04  | NB - New build     | Young-fund rule in the MF bake (TASK-067, D94, D103) | ACTIVE
 ```
 
 | ID | Status | Session id | Title in the app | Tasks | Works in | Successor |
@@ -76,7 +77,8 @@ OPS-02 | Playbook OPS - Monthly data operations | October 2026 update (Reckoner 
 | GOV-01 | COMPLETED (9-Nov-2026) | `local_622b2ebd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | GOV-01 Playbook: rule documents consistency | TASK-018 (widened): merged as PR #35 (`ddd0304`, 9-Nov-2026 12:16 UTC); claim released at the merge (ACTIVE_CHANGE_REGISTER section 4); Guardian reviews GO WITH CONDITIONS, conditions met | worktree `focused-wright-d50bee` (the folder that was NB-01 worktree; idle, not retired: on the merged task branch `docs/gov-01-rule-consistency-20261102` at `29e0d32`, clean; app session branch `claude/affectionate-lovelace-f11b67` at `c0fb2dd`, 0 commits; TASK-061 must skip the folder until the owner decides DEC-OPEN-22) | none |
 | EX-01 | COMPLETED (report delivered 2-Nov-2026; record in the repository pending) | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | EX-01 Playbook: browser acceptance | TASK-064: 11 of 11 checks PASS on the live S7 build at `c0fb2dd`; four new findings EX01-N1 to EX01-N4 (P3; recorded as KNOWN_ISSUES C47 to C50 by this PR, mapping INFERRED); the full report is local only | shared main checkout (no worktree); read-only, no branch, no commit | none |
 | OPS-01 | SUPERSEDED (18-Nov-2026, by OPS-02: the owner chose a new chat in MOD-03's account; not running since 9-Nov-2026 21:49 UTC) | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | OPS-01 October update: Reckoner run | TASK-020 (steps 14, 14a, 15, 17: dry runs only, stopped at gates), TASK-021 and TASK-024 (read-only preparation); no claim | worktree `adoring-boyd-7028f6` (the folder that was NB-02 worktree, reused by the app; app session branch `claude/ops-01-reckoner-a11e94` and task branch `data/2026-09-4`, both at `ddd0304`, local only, 0 commits; TASK-061 must skip it) | OPS-02 |
-| OPS-02 | ACTIVE (phase 1, read-only preparation; no claim) | `local_61c7130f` | OPS-02 October 2026 update: preparation | TASK-020 (Reckoner run), TASK-029 (labels), read-only preparation of TASK-021 and TASK-024; no claim yet | its own worktree under `.claude/worktrees/` (cut from `91d11cd`); no task branch yet | none |
+| OPS-02 | ACTIVE (phase 1, read-only preparation; no claim) | `local_61c7130f` | OPS-02 October 2026 update: preparation | TASK-020 (Reckoner run), TASK-029 (labels), read-only preparation of TASK-021 and TASK-024; no claim yet | worktree `.claude/worktrees/investment-proposal-dashboard-c68580` (the app reused the unused folder; app branch `claude/ops-02-october-prep-55402a`, at `91d11cd`); no task branch yet | none |
+| NB-04 | ACTIVE (phase 1, read-only; no claim) | `local_20daef41` | NB-04 Young-fund rule in the MF bake (D94) | TASK-067 (and TASK-023 through the October bake) | worktree `.claude/worktrees/competent-neumann-0880fa` (app branch `claude/competent-neumann-0880fa`, cut from `a3dce51`); no task branch yet | none |
 
 Workstreams (prefixes): **EX** existing dashboard, **NB** new build, **OPS** monthly data operations,
 **GOV** governance and continuity. EX-01 and GOV-01 were started by the owner on 2-Nov-2026; OPS-01 was started by MOD-02 on 9-Nov-2026 (before that no OPS
@@ -346,12 +348,32 @@ owner decides DEC-OPEN-22. The fields below are its record as of 17-Nov-2026.
 | Responsibility | The operator of the October 2026 update: the Reckoner run on the "October 2026" deck (TASK-020, with TASK-029) and later the October MF cycle (TASK-021, with TASK-024). Phase 1 is read-only preparation (fresh dry runs, the gate report, the proposed PMS and AIF table, a draft change-impact contract and claim); phase 2 (apply) starts only when its claim is on `origin/main`. |
 | Status | ACTIVE (phase 1). It does not merge or publish: the Moderator merges, after the owner's yes (the run has section 7 cases: pins, a universe change, an override). |
 | Assigned tasks | TASK-020, TASK-029; read-only preparation of TASK-021 and TASK-024. |
-| Working directory and branch | Its own worktree under `.claude/worktrees/`, cut from `91d11cd`; no task branch until the claim names one. |
+| Working directory and branch | Worktree `.claude/worktrees/investment-proposal-dashboard-c68580` (the app reused the folder that was unused since 2-Nov-2026), app branch `claude/ops-02-october-prep-55402a` at `91d11cd`; no task branch until the claim names one. |
 | Reserved files and shared components | none yet (phase 1 edits no tracked file). The claim (all six deploy files, `tools/data/pins.json`, the update log and state files) follows the Guardian pre-check of its contract. |
 | Dependencies | Moderator: MOD-03. Guardian: ARC-01 (contract pre-check and Gate B, run by MOD-03: High risk). The owner (the open items of D101 and DEC-OPEN-36 b). The funds bake waits for the young-fund rule (D94: TASK-067, TASK-023). |
 | Last known commit and deliverable | none yet |
 | Pending owner decisions | DEC-OPEN-36 (b) and the rest of (d); the ranges and exit loads of the new products; the mixed dates of the PMS and AIF table; DEC-OPEN-04. |
 | Current blocker | none for phase 1. |
+| Current handover document | none (its brief is the first message of its transcript) |
+| Successor | none |
+| Retirement reason | not applicable |
+
+### NB-04 | NB - New build | Young-fund rule in the MF bake (TASK-067, D94, D103) | ACTIVE
+
+| Field | Value |
+|---|---|
+| Session id | `local_20daef41` |
+| Title in the app | NB-04 Young-fund rule in the MF bake (D94) |
+| How it starts | Proposed by MOD-03 as a card on 18-Nov-2026 with a launch packet (bootstrap section 8.2); started by the owner from the card the same day. |
+| Responsibility | TASK-067: the MF bake (`tools/bake_month.js`, `tools/lib/`) clears return periods longer than a fund's life and, for funds younger than one year, `si` beyond +-300% (D94, D103); tests and docs. TASK-023 is then applied by OPS-02's October bake. |
+| Status | ACTIVE (phase 1, read-only: contract and claim drafted; Guardian pre-check by MOD-03 running). It does not merge: MOD-03 merges. |
+| Assigned tasks | TASK-067 |
+| Working directory and branch | Worktree `.claude/worktrees/competent-neumann-0880fa`, app branch `claude/competent-neumann-0880fa` at `a3dce51`; task branch `feat/task-067-young-fund-rule` when the claim is in force. |
+| Reserved files and shared components | none yet; proposed: `tools/bake_month.js`, new `tools/lib/fund_life.js`, `tools/lib/direct_perf.js`, `tools/rebuild_directperf.js`, new `tools/test/fund_life.test.js`, and docs (sequenced with OPS-02 where files overlap). |
+| Dependencies | Moderator: MOD-03. Guardian: ARC-01 (pre-check and Gate B by MOD-03: High risk, `tools/lib/`). Must merge before OPS-02's October MF bake. |
+| Last known commit and deliverable | none yet |
+| Pending owner decisions | none (D103 answered its question) |
+| Current blocker | the claim (after the Guardian pre-check) |
 | Current handover document | none (its brief is the first message of its transcript) |
 | Successor | none |
 | Retirement reason | not applicable |
@@ -401,8 +423,8 @@ owner decides DEC-OPEN-22. The fields below are its record as of 17-Nov-2026.
 
 1. **IDs.** `<PREFIX>-<nn>` with the prefixes MOD (Moderator), ARC (Guardian), EX, NB, OPS, GOV
    (workstream sub-chats). Unique and sequential within a prefix; never reused or renumbered, even after a
-   chat is retired or superseded. Next free on 18-Nov-2026: EX-02, NB-04, OPS-03, GOV-02, ARC-02, MOD-04
-   (EX-01 and GOV-01 were allocated on 2-Nov-2026, OPS-01 on 9-Nov-2026, MOD-03 on 17-Nov-2026 and OPS-02 on 18-Nov-2026); external labels: EXT-PR-06. A successor always gets
+   chat is retired or superseded. Next free on 18-Nov-2026: EX-02, NB-05, OPS-03, GOV-02, ARC-02, MOD-04
+   (EX-01 and GOV-01 were allocated on 2-Nov-2026, OPS-01 on 9-Nov-2026, MOD-03 on 17-Nov-2026, OPS-02 and NB-04 on 18-Nov-2026); external labels: EXT-PR-06. A successor always gets
    a new ID (MOD-02 is not "MOD-01 continued").
 2. **One record per chat**, headed by its name line `[CHAT-ID] | [WORKSTREAM] | [RESPONSIBILITY] | [STATUS]`
    and filled in for every field of section 3. Write "none" or "not created yet"; never leave a field blank.

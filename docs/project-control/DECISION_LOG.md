@@ -1453,8 +1453,8 @@ run of 18-Nov-2026, local). Status: ANSWERED.
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D102 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D103**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D104 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D105**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1553,3 +1553,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 17-Nov-2026 | DEC-OPEN-36 question (a) answered ("YEs they are the same fund", after a first click on 'Ask the desk first') = option (a1) -> D98: both deck names are our two AIF records; pins made in the refresh run. DEC-OPEN-36 stays open for (c), (d), (b). | MOD-03 |
 | 18-Nov-2026 | The owner's message of 18-Nov-2026: D99 (October Regular and SIF from the 2-Nov files, label "31st October 2026"; the re-export question closed), D100 (October analytics), D101 (Reckoner answers); DEC-OPEN-11 answered and moved to section 1.6; DEC-OPEN-36 partial answer (c, part of d). | MOD-03 |
 | 18-Nov-2026 | D102 recorded from the owner's second message of 18-Nov-2026; DEC-OPEN-36 answered (D98, D101, D102) and moved to section 1.6; DEC-OPEN-04: D102 item 5 points to a "30th September 2026" label, to be confirmed. | MOD-03 |
+| 18-Nov-2026 | D103 (young-fund `si` only beyond +-300%; NB-04's question) and D104 (Karma's 30-Sep factsheet, Equinova exit load Nil, Alchemy Leaders row 30-Sep, three AIFs Cat II/III) recorded. | MOD-03 |

@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101 and D102 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99 and D100 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102 and D104 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100 and D103 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -136,6 +136,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D100 | 18-Nov-2026 | October analytics as on 31-Oct-2026 replace the 30-Sep analytics (owner) | Data | Active |
 | D101 | 18-Nov-2026 | Answers for the October Reckoner run and the four labels: Karma kept, three products added, C4, C5, C6, C38 settled (owner; DEC-OPEN-11, DEC-OPEN-36 c and part of d) | Reckoner | Active |
 | D102 | 18-Nov-2026 | October Reckoner run: 2 Select drops, keep list confirmed, ranges for Aionios, Sundaram SISOP and Equinova Edge, Mosaic Series I badge removed, PMS performance as on 30-Sep-2026 (owner; DEC-OPEN-36) | Reckoner | Active |
+| D103 | 18-Nov-2026 | A fund younger than one year loses its since-inception figure only beyond +-300% (owner; refines D94) | Data | Active |
+| D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load Nil, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1062,6 +1064,23 @@ and the entry says so. "—" means no date is recorded.
   analytics label "31st October 2026"; the 30-Sep analytics are replaced in the same run.
 - **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), sent with nine files (copied to `monthly-updates/00_INBOX/`, manifest in the October month folder's `_review/`).
 
+#### D103 - A fund younger than one year loses its since-inception figure only beyond +-300%
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** D94 clears returns for periods longer than a fund's life and asked for a limit on absurd annualised
+  since-inception figures of very young funds (KNOWN_ISSUES C43: 297,765% on a two-week-old ETF). NB-04's analysis
+  (TASK-067, 18-Nov-2026, September inputs) gave two rules: blank `si` for every fund younger than one year (252
+  records), or blank it only beyond +-300% (1 record today; figures such as 107% and -69% stay).
+- **Decision:** The owner chose the button "Only clear extremes" (the other button was "Blank under 1 year", MOD-03's
+  recommendation; 18-Nov-2026, MOD-03 chat) in answer to "For funds under one year old, how should the
+  since-inception return be handled?".
+- **Rationale:** the owner's choice; keeps the young funds' figures except the impossible ones.
+- **Alternatives / supersedes:** blank under one year: not chosen. Refines D94 (the period-clearing part of D94 is
+  unchanged).
+- **Consequences:** the MF bake (TASK-067, NB-04) clears `si` beyond +-300% (3.0 as a decimal) for funds younger than
+  one year, in MASTER and in DIRECT_PERF, and clears every return period longer than the fund's life; the rehearsal
+  differs only in the 13 JioBlackRock records and the C43 ETF. Reversible by a tool change and a re-bake.
+- **Source:** the owner's chat answer of 18-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
 ### Analytics & credit
 
 #### D17 · Fixed seven-bucket credit vocabulary
@@ -1377,6 +1396,25 @@ and the entry says so. "—" means no date is recorded.
   Equinova Edge PMS's exit load and young-fund periods, the Prism record name, the deck's other list changes, a stale
   deck row (Alchemy Leaders of Tomorrow), the five new refresh-only funds of the MF cycle.
 - **Source:** the owner's chat message of 18-Nov-2026 (MOD-03 chat), answering MOD-03's five open points of D101 after OPS-02's phase 1 report (local, `monthly-updates/2026-09_Sep-2026/_review/`). The wording is MOD-03's summary; the owner confirms it (DECISION_LOG section 1.5 step 2).
+
+#### D104 - Further desk facts for the October Reckoner run (Karma, Equinova, Alchemy Leaders, AIF categories)
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** D102 set one as-on date (30-Sep-2026) for the PMS and AIF tables; MOD-03 asked for Karma Capital
+  Jasmine Fund's September figures, Equinova Edge PMS's exit load, the status of a deck row and the deck's other
+  list changes.
+- **Decision (the owner's words in quotes):** (1) Karma Capital Jasmine Fund's September 2026 factsheet was supplied:
+  its 30-Sep figures are used. (2) Equinova Edge PMS exit load: "Nil". (3) Alchemy Leaders of Tomorrow: "These
+  performance list is as of Sep 30, 2026" (the desk's AIF CAT III table, sent as a picture, shows the deck's values).
+  (4) "None of them are Gift City funds and don't categorise them as such; Vivriti and Promaft are Cat II AIFs; ICICI
+  Prudential PIPE Fund - Cat III AIF" (Vivriti Diversified Bond Fund III, PROMAFT Partners Fund I, ICICI Prudential
+  PIPE Fund).
+- **Rationale:** the owner's and the desk's product facts.
+- **Alternatives / supersedes:** none. Extends D101 and D102.
+- **Consequences:** the Reckoner run writes Karma's 30-Sep AIF row (the AIF step then misses only Kotak Iconic Fund II
+  and ICICI Prudential Alpha Opportunities, both dropped by D102); the three AIFs of item 4 are not added in this run
+  unless the owner asks (no record exists for them today).
+- **Source:** the owner's chat messages of 18-Nov-2026 (MOD-03), with the factsheet (filed locally in
+  `monthly-updates/2026-09_Sep-2026/`). The wording is MOD-03's summary; the owner confirms it.
 
 ### Risk matrix
 

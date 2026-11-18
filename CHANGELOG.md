@@ -18,6 +18,21 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - D103 and D104; NB-04 recorded (docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Added
+- D103: a fund younger than one year loses its since-inception figure only beyond +-300% (refines D94).
+- D104: Karma Capital Jasmine Fund's 30-Sep factsheet; Equinova Edge PMS exit load Nil; Alchemy Leaders of Tomorrow's
+  deck row is 30-Sep data; Vivriti Diversified Bond Fund III and PROMAFT Partners Fund I are Cat II AIFs, ICICI
+  Prudential PIPE Fund a Cat III AIF (not GIFT City).
+
+### Changed
+- `docs/project-control/CHAT_REGISTRY.md`: NB-04 ACTIVE (TASK-067), OPS-02's worktree named; next free NB-05.
+- `TASK_REGISTER.md` (TASK-022, TASK-023, TASK-067), `DECISION_LOG.md` (next D105), `docs/KNOWN_ISSUES.md` (C43),
+  `docs/project-control/README.md`.
+
 ## 2026-11-18 - D102: the owner's answers on the October Reckoner run; DEC-OPEN-36 answered (docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
