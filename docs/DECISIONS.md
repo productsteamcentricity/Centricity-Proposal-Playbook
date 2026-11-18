@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102 and D104 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100 and D103 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102, D104 and D105 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100 and D103 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -138,6 +138,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D102 | 18-Nov-2026 | October Reckoner run: 2 Select drops, keep list confirmed, ranges for Aionios, Sundaram SISOP and Equinova Edge, Mosaic Series I badge removed, PMS performance as on 30-Sep-2026 (owner; DEC-OPEN-36) | Reckoner | Active |
 | D103 | 18-Nov-2026 | A fund younger than one year loses its since-inception figure only beyond +-300% (owner; refines D94) | Data | Active |
 | D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load 1% for 1 year, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
+| D105 | 18-Nov-2026 | The October Reckoner run as approved ("Approve all"): label "30th September 2026", the blanks (one expected figure per fund), APMI-derived figures, 5 PMS name links, the three-AIF override, Phillip Growth, Mosaic II exit load, SageOne from the deck; Karma WB AUM and Neo net figures pending (owner; answers DEC-OPEN-04) | Reckoner | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1415,6 +1416,38 @@ and the entry says so. "—" means no date is recorded.
   unless the owner asks (no record exists for them today).
 - **Source:** the owner's chat messages of 18-Nov-2026 (MOD-03), with the factsheet (filed locally in
   `monthly-updates/2026-09_Sep-2026/`). The wording is MOD-03's summary; the owner confirms it.
+
+#### D105 - The October Reckoner run as approved: the PMS/AIF label, the blanks, the derived figures, the name links and the AIF override
+`Active` - 18-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** OPS-02's plan for the Reckoner run (contract v2.1, Guardian re-check GO WITH CONDITIONS) left eleven points
+  and one display question for the owner. MOD-03 put them as one list, each with a recommendation.
+- **Decision:** The owner chose the button "Approve all" (the other button was "I'll answer each"; 18-Nov-2026, MOD-03
+  chat) in answer to "Do you approve the October Reckoner list as recommended?". The recommendations so approved:
+  1. The PMS and AIF tables are labelled "as on 30th September 2026" (answers DEC-OPEN-04).
+  2. Return fields with no 30-Sep source are blanked, and each fund shows one expected figure from its current band
+     (the stored mid-points that would mix two bands are blanked too: about 50 fields, the exact list from the dry run).
+  3. The 30-Sep period returns of ICICI Pru Contra, AlfAccurate IOP, Julius Baer Premier Focused and Abakkus Diversified
+     Alpha are derived from APMI's monthly series; Equinova Edge PMS's from the manager's monthly table.
+  4. Those APMI rows keep their 31-Jul AUM and older market-cap splits.
+  5. Five PMS name links (Burman, Julius Baer, Phillip, Equinova Edge, Sundaram SISOP) and APMI's "AAA India
+     Opportunity PMS" = our AlfAccurate IOP.
+  6. A new owner-only override in the AIF step: exactly three named AIFs lose their row (Kotak Iconic Fund II, ICICI
+     Prudential Alpha Opportunities, Karma Capital Jasmine Fund); Karma's row is then written from its 30-Sep factsheet.
+  7. Phillip Conservative Credit: the Growth option figures.
+  8. Mosaic Multiyield Series II exit load: "Close Ended; Avg 5 years".
+  9. SageOne Core PMS: the deck's figures (the vendor row is frozen at about 30-Nov-2023).
+  10. Karma Capital Wealth Builder AUM: the vendor figure (about 296 Cr) stays until the owner confirms which figure is
+      the strategy's AUM.
+  11. Neo Yield Enhancer: net 30-Sep figures are asked from Neo or APMI; until they arrive the current net figures stay
+      (the deck's gross figures are not used).
+- **Rationale:** the owner accepted MOD-03's recommendations.
+- **Alternatives / supersedes:** answering point by point; keeping stored mid-points that mix two bands: not chosen.
+  Answers DEC-OPEN-04 (KNOWN_ISSUES B1 closes when the run is merged).
+- **Consequences:** OPS-02 runs the Reckoner run (TASK-020, TASK-029) under contract v2.1 with these inputs; it is High
+  risk and needs the owner's yes on the final summary before its merge. Open owner actions: Karma Capital Wealth
+  Builder's strategy AUM; Neo's net 30-Sep figures. Deferred: the Prism record name (C6), the five new refresh-only MF
+  funds (added by hand in the October funds run, MOD-03's earlier recommendation, INFERRED as covered by this approval). The same day the owner made the October analytics the first priority ("Update the analytics to October as a first priority task"): the analytics run (D100, with the D96 renames first) goes before this run.
+- **Source:** the owner's chat answer of 18-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Risk matrix
 

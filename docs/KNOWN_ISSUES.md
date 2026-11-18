@@ -1097,6 +1097,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 ### B1. No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label
 **P2 · Open (desk) · Blocks the PMS step**
 
+**Update 18-Nov-2026 (D105).** The owner approved the label "30th September 2026" (DEC-OPEN-04 answered). B1 closes when the October Reckoner run (TASK-020) is merged.
+
 **Update 18-Nov-2026 (D102).** The owner chose one date for the PMS and AIF tables: performance as on 30-Sep-2026 (the deck, and APMI where the deck has no 30-Sep row). The label (DEC-OPEN-04) is to be confirmed; if it becomes "30th September 2026", B1 closes with the October Reckoner run.
 
 - **Evidence:** No `PMS_Scheme_Performance_*` file is in any `monthly-updates/` folder. The

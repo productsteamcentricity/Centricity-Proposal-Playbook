@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - D105: the October Reckoner list approved (docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Added
+- D105: the owner approved the October Reckoner list as recommended (label "30th September 2026", the blanks with one
+  expected figure per fund, APMI-derived figures, 5 PMS name links, the three-AIF override, Phillip Growth, Mosaic II
+  exit load, SageOne from the deck); Karma Capital Wealth Builder AUM and Neo net figures pending.
+
+### Changed
+- `DECISION_LOG.md` (DEC-OPEN-04 answered; next D106), `TASK_REGISTER.md` (TASK-020: claim after the October analytics
+  run, the owner's first priority), `docs/KNOWN_ISSUES.md` (B1), `docs/project-control/README.md`.
+
 ## 2026-11-18 - Release record of PR #47 (TASK-067, the young-fund rule; docs only)
 
 ### Changed
