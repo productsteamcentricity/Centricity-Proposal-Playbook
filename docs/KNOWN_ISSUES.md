@@ -1096,6 +1096,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 ### B1. No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label
 **P2 · Open (desk) · Blocks the PMS step**
 
+**Update 18-Nov-2026 (D102).** The owner chose one date for the PMS and AIF tables: performance as on 30-Sep-2026 (the deck, and APMI where the deck has no 30-Sep row). The label (DEC-OPEN-04) is to be confirmed; if it becomes "30th September 2026", B1 closes with the October Reckoner run.
+
 - **Evidence:** No `PMS_Scheme_Performance_*` file is in any `monthly-updates/` folder. The
   "PMS & AIF Performance <Month>" files of Apr and May are a different format and are not
   substitutes. `site/index.html:1451` has `pms: "31st August 2026"`; `docs/PRD.md` §11.3 marks PMS as
@@ -1335,6 +1337,8 @@ commit adds a new root `README.md`.
 
 ### C4. Mosaic Multiyield Series I keeps a Select badge
 **P2 · Open (desk) · Affects the Reckoner step**
+
+**Update 18-Nov-2026 (D102).** Series I loses its Select entry in the October Reckoner run.
 
 **Update 18-Nov-2026 (D101).** The desk via the owner: Mosaic Multiyield is close-ended; Series I has closed subscriptions and Series II is open with the same return expectation and terms: add Series II in the Reckoner run. Whether Series I keeps its badge: to be confirmed (INFERRED: no).
 

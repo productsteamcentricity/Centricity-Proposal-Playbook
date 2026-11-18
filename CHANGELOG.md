@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - D102: the owner's answers on the October Reckoner run; DEC-OPEN-36 answered (docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Added
+- D102: Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities leave Centricity Select; the keep list confirmed;
+  ranges Aionios Alpha Fund I 17%-19%, Sundaram SISOP 16%-18%, Equinova Edge PMS 16%-18%; Mosaic Series I loses its
+  badge; PMS and AIF performance as on 30-Sep-2026 (the label is to be confirmed).
+
+### Changed
+- `docs/project-control/DECISION_LOG.md` (DEC-OPEN-36 answered and moved to section 1.6; DEC-OPEN-04 note; next D103),
+  `TASK_REGISTER.md` (TASK-020), `docs/KNOWN_ISSUES.md` (B1, C4), `docs/project-control/README.md`.
+
 ## 2026-11-18 - OPS-02 starts the October update; OPS-01 superseded (docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.

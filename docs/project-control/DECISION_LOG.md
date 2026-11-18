@@ -95,7 +95,7 @@ Suggested order for the owner's decision session (re-ordered on 17-Nov-2026):
 
 ## 1.3 Summary
 
-Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 11 are answered (DEC-OPEN-01, -02, -03, -07, -08, -11, -30, -31, -32, -34 and -35; section 1.6) and 25
+Entries DEC-OPEN-01 to DEC-OPEN-36 exist: 12 are answered (DEC-OPEN-01, -02, -03, -07, -08, -11, -30, -31, -32, -34, -35 and -36; section 1.6) and 24
 are open. Next free: DEC-OPEN-37.
 
 | ID | Decision (short) | Decider | Unblocks | Deadline | Recommendation documented? |
@@ -103,7 +103,7 @@ are open. Next free: DEC-OPEN-37.
 | DEC-OPEN-01 | Who makes the NAV and risk-ratio workbooks | owner | TASK-022 (re-scoped); TASK-057 and TASK-053 are MOD-02 proposals only (update-log T8) | ANSWERED 2-Nov-2026 (D86) | n/a (answered) |
 | DEC-OPEN-02 | Risk-free rate | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D84) | n/a (answered) |
 | DEC-OPEN-03 | Sortino definition | owner + desk | TASK-022 | ANSWERED 2-Nov-2026 (D85) | n/a (answered) |
-| DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | before TASK-020 | no |
+| DEC-OPEN-04 | PMS date label (B1) | owner | TASK-025 | now: D102 item 5 points to "30th September 2026" (to be confirmed by the owner) | no |
 | DEC-OPEN-05 | Two client items in the export | owner + compliance | TASK-032 | - | no |
 | DEC-OPEN-06 | File the true 30-Apr Monitor | owner | TASK-035 | - | no |
 | DEC-OPEN-07 | 13 JioBlackRock Regular records; very young funds | owner | TASK-023, TASK-067 | ANSWERED 9-Nov-2026 (D94) | n/a (answered) |
@@ -135,7 +135,7 @@ are open. Next free: DEC-OPEN-37.
 | DEC-OPEN-33 | Use the PROVISIONAL October pack if the final one is late | owner (at run time, in chat) | October step 10 (TASK-021) | ~11-Nov-2026 | yes (use it, with an explicit yes) |
 | DEC-OPEN-34 | Who accepts a finished change (Gate E) | owner | TASK-018 Gate D | ANSWERED 9-Nov-2026 (D87) | n/a (answered) |
 | DEC-OPEN-35 | Approval gate before publishing: the owner approves before every merge that changes `site/`, or only in the listed cases | owner | every publish of the October update; the publish rule in `CLAUDE.md`, the skill and the release rules | ANSWERED 17-Nov-2026 (D97) | n/a (answered) |
-| DEC-OPEN-36 | October Reckoner run: pin the two AIF series names, accept the drops, add the new names, confirm the removals | owner (+ desk for the fund facts) | TASK-020 steps 14, 14a and 15 (OPS-01's Run A) | as soon as possible (OPS-01 has waited since 9-Nov-2026) | MOD-02's reading only (17-Nov-2026; INFERRED) |
+| DEC-OPEN-36 | October Reckoner run: pin the two AIF series names, accept the drops, add the new names, confirm the removals | owner (+ desk for the fund facts) | TASK-020 steps 14, 14a and 15 (OPS-01's Run A) | ANSWERED 18-Nov-2026 (D98, D101, D102) | n/a (answered) |
 
 ## 1.4 The open decisions
 
@@ -737,142 +737,7 @@ TASK-021, TASK-022.
 
 ### DEC-OPEN-35 Approval gate before publishing: does the owner approve before every merge that changes `site/`, or only in the listed cases? - ANSWERED 17-Nov-2026: moved to section 1.6 (D97)
 
-### DEC-OPEN-36 October Reckoner run: the Centricity Select list and the AIF performance stop at their gates (four questions)
-
-Decider: owner (with the desk for the facts about the funds). Raised: 17-Nov-2026 by MOD-02 from OPS-01's
-dry-run report of 9-Nov-2026 (local-only; `tools/merge_reckoner.js` and `tools/merge_aif_performance.js` on the
-deck "Monthly Investment Reckoner - October 2026", data as on 30-Sep-2026; nothing was applied). Deadline: as
-soon as possible. OPS-01 stopped on 9-Nov-2026 and waits; the first October wave (the Reckoner products) was
-targeted for 11-Nov-2026. The same names will come back with the next deck (expected about 20-28-Nov-2026:
-INFERRED from the monthly cadence in `monthly-updates/00_INBOX/README.md`), so the answers are needed in any
-case. Unblocks: TASK-020 steps 14, 14a and 15 (the Reckoner steps of Run A) and with them the refreshed
-Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; KNOWN_ISSUES A4 and A20; D61
-(stop list), D71, D75, D76, D90; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 (high-risk triggers 9 and 10).
-
-- **The problem.** Each month the Reckoner deck decides which funds carry the Centricity Select badge (the house
-  recommendation, with its rationale) and supplies the AIF performance table. OPS-01's dry run on the October
-  deck found the following (nothing applied; both steps exit 1):
-  - Step 14 (Select list): 178 would become 171 (5 added, 12 dropped, 166 kept). Two gates fail. (i) 12 drops
-    against a limit of 8 (5% of 178): only the owner can waive it, with `--accept-drops 12`, after reading the
-    list. (ii) In the category "EQUITY AIFs- Listed Equities" five Select AIFs drop (Alchemy Long Term Ventures
-    Fund, ICICI Prudential Alpha Opportunities, Karma Capital Jasmine Fund, Kotak Iconic Fund II, Motilal Oswal
-    Founders Fund) while the deck lists three names that match nothing in our records (Motilal Oswal Founders
-    Fund Series VII, Alchemy Long Term Ventures Fund 3, Aionios Alpha Fund I). The tool reads that as a possible
-    join failure (a respelled name), not as a deliberate removal, and `--accept-drops` does not waive it (D71).
-  - The 12 drops are those 5 AIFs; 5 gold ETFs (HDFC Gold ETF, ICICI Pru Gold ETF, Mirae Asset Gold ETF, Nippon
-    India ETF Gold BeES, SBI Gold ETF), while the deck lists three gold ETF funds of funds (HDFC, Quantum, UTI)
-    among the 5 additions; and 2 diversified equity funds (360 ONE Focused Fund, Tata Large & Mid Cap Fund),
-    while the deck lists two others (Aditya Birla SL Flexi Cap Fund, Invesco India Large & Mid Cap Fund) among
-    the additions. The 5 additions have no rationale text yet (the deck's fund pages are performance grids
-    only).
-  - Five deck names have no MASTER record: the three AIF names above and two PMS names (Sundaram SISOP, Equinova
-    Edge PMS). Adding a record is a universe change (`tools/add_reckoner_funds.js`, step 14a: "always confirm
-    with the owner"), and that tool keeps its own hard-coded list of the products to add (four entries today),
-    so adding means editing that list first (VERIFIED in code).
-  - Step 15 (AIF performance): the deck's AIF grid has ten rows; seven match our AIF records and the three names
-    above match nothing. The page holds performance for 12 AIF records and the tool rebuilds it from the deck,
-    so 12 would become 7 and the gate "MASTER AIF funds with performance" fails. The five that would lose it are
-    the five AIFs that drop out of Select (VERIFIED: the 12 keys of `PMS_PERFORMANCE.aif` on `origin/main` less
-    the 7 matched rows). That gate has no override flag (VERIFIED in `tools/merge_aif_performance.js`: its flags
-    are `--apply`, `--html` and `--allow-layout-change`, which concerns the deck layout only).
-  - The two "successor series" names. OPS-01 read them as successor series of our two records (UNCERTAIN). Our
-    live Select entries for Motilal Oswal Founders Fund and Alchemy Long Term Ventures Fund carry the previous
-    deck's spellings "Motilal Oswal Founders Series VII" and "Alchemy Long Term Ventures Fund Series 3"
-    (VERIFIED: the `CENTRICITY_SELECT` block on `origin/main`), and `tools/data/pins.json` already pins "Motilal
-    Oswal Founders Fund*" and "Alchemy Long Term Ventures Fund*" to those records. The October deck writes
-    "Series VII" and "3": the same series numbers, spelled differently (INFERRED: a respelling and not a new
-    series; only the desk or the funds' own documents can confirm). For the other names: VERIFIED that no MASTER
-    name contains Aionios, Equinova or SISOP; the PMS performance block already holds a key "Sundaram Alternate
-    - SISOP".
-- **Why a decision is needed.** Every way out of the stop is the owner's under the project's rules: a pin needs
-  the owner (D75; a Reckoner name mismatch is on D61's stop list), adding a record is a universe change (D61),
-  and `--accept-drops` is an owner-only override (D71). A wrong pin puts another fund's numbers on a client's
-  fund. Any of them makes Run A a High-risk change (section 7, triggers 9 and 10): a change-impact contract, a
-  Gate B review run by the Moderator and the owner's approval before the merge. OPS-01's claim record (a draft
-  exists, local only) assumes a routine refresh and has to be redone (INFERRED). The owner's words of 9-Nov-2026
-  "All the existing products stay; additional ones will be added" (D90) were said about the bond file; whether
-  they also cover Select badges is not said (INFERRED: these tools never delete a MASTER record, and a Select
-  badge is a different thing).
-- **Options.** One decision per question. Ask in the order a, c, d, b, because the count in (b) depends on the
-  others.
-  - (a) Are "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" the same funds as
-    our two records? (a1) Yes: pin both names to the records (a reviewed edit of `tools/data/pins.json`, in two
-    sections, with the desk's or the fund house's confirmation quoted). (a2) No, they are new series: leave the
-    old records as they are and add the two names as new products (see c). (a3) Ask the desk first and hold
-    steps 14 and 15 until it answers.
-  - (b) After a, c and d, accept the drops that are left? (b1) Yes: apply with `--accept-drops <n>`, where n is
-    the exact count of the final list (12 if nothing is pinned, about 10 if both names are pinned: INFERRED),
-    after the owner has read the DROPPED list. (b2) No: hold the Select refresh and keep the current list until
-    the next deck. The flag never waives the gate on unmatched deck names, so (a) and (c) come first.
-  - (c) May the new names be added to the product list? The names are Aionios Alpha Fund I (an AIF) and Sundaram
-    SISOP and Equinova Edge PMS (PMS), plus the two series names if (a2). (c1) Yes: add them with
-    `tools/add_reckoner_funds.js` after a reviewed change to its list; each new product's expected-return band
-    is inherited from its peer group, not taken from a source for that product (the tool's own header), and its
-    facts come from its own page of the deck. (c2) Not now: leave them out and let the run record them as known
-    gaps (a small change to the `NO_MASTER_NOTE` list in `tools/merge_reckoner.js`), to be added later. (c3) Ask
-    the desk for the details first.
-  - (d) Are the removals the desk's own decision? Three groups: the 5 gold ETFs (replaced by 3 gold ETF funds of
-    funds), the 2 equity funds (replaced by 2 others) and the 3 AIFs the deck leaves out altogether (Karma
-    Capital Jasmine Fund, Kotak Iconic Fund II, ICICI Prudential Alpha Opportunities: editorial or omission is
-    UNKNOWN). (d1) Accept the deck: the funds lose the Select badge and stay in the product list. (d2) Keep the
-    existing Select entries ("existing products stay", D90): the tools take membership from the deck, so this
-    needs a tool change or a hand edit (INFERRED), and it leaves badges on funds the desk no longer lists
-    (INFERRED). (d3) Ask the desk which removals are deliberate before deciding, at least for the three AIFs.
-    Whatever is chosen, step 15 cannot pass until the AIF performance of the AIFs the deck leaves out (those
-    three, if a1 is chosen) is settled too, because the gate has no override: (i) show no performance for them
-    (an owner-only override flag must be added to the tool: High risk); (ii) keep their old performance with its
-    old date (INFERRED: a table of mixed dates, in conflict with CLAUDE.md rule 6 if shown as current); (iii)
-    get their current performance from the desk.
-- **What each changes (what clients see).** A fund dropped from Select loses its badge, rationale and ratio
-  details in the picker, the popover and the rationale pages (INFERRED from the tool's header: "Retained funds
-  keep their rationale, risk ratios and details"); it stays in the product list and can still be picked. An
-  added fund shows the badge without rationale text (INFERRED from the tool's list of "new entries with no
-  rationale"). An AIF without performance shows no returns in the AIF table on screen, in Excel and in the deck
-  (INFERRED). New products become selectable and appear in the deck. (a1) keeps two AIFs with badge, rationale
-  and refreshed performance; (a2) drops them and adds two new products. Holding the run keeps the page as it is:
-  the Select list and the AIF performance as on 31-Aug-2026 (the September deck), including funds the desk has
-  dropped.
-- **Benefits and disadvantages.** (a1) Fewest changes for clients; it depends on the sameness being right, and a
-  wrong pin is the worst case (D75). (a3) is the safest and the slowest. (c1) completes the list as the deck
-  shows it, with bands that are inherited and so a judgement (INFERRED). (c2) is quick, but the deck and the
-  page differ until the names are added. (d1) follows the desk's own list, but some clients lose a badge on a
-  fund they know. (d2) keeps continuity, but the badge may contradict the desk (INFERRED). (b1) refreshes
-  October with an exact, owner-only override. (b2) changes nothing for clients, who stay on last month's view.
-- **Impact on existing functionality.** The Select badges and rationale pages and the AIF and PMS tables; the
-  product count only under (a2) and (c1). Nothing else.
-- **Maintenance.** A pin is a standing line in `tools/data/pins.json` that every later deck run uses; each added
-  product needs its monthly performance and rationale kept up (INFERRED). The same names return with every deck,
-  so a note recorded now saves asking again.
-- **Risks and reversibility.** The pins, the override and the data merge are reversible in git (restore the six
-  deploy files from `backups/`, or revert the merge); decks already sent to clients are not recalled. A wrong
-  pin or a wrong addition is the real risk.
-- **Documented recommendation (not a decision).** None is documented. MOD-02, 17-Nov-2026 (INFERRED): put (a),
-  (d) and the details for (c) to the desk in one message (the owner contacts the desk). If the desk confirms a
-  respelling, take (a1). Take (c1) for the three names, as a small tool change in its own reviewed task with the
-  owner's approval of each band. Take (d1) for the gold ETFs and the equity funds if the desk confirms, and (d3)
-  for the three AIFs. Take (b1) last, with the exact count. If the desk cannot answer soon, (b2) keeps the page
-  as it is rather than guessing.
-- **Record the answer as.** A new `Dnn` (pins and additions are owner decisions on the product list: D75) with
-  the owner's words and the exact `--accept-drops` count quoted; update TASK-020 and the OPS-01 claim (High
-  risk), KNOWN_ISSUES (A20, or a new entry if a tool change is needed) and DEC-OPEN-11; `tools/data/pins.json`
-  records each pin with the confirmation date (D75). Prepare the relay message for OPS-01 (DECISION_LOG section
-  1.5 step 4).
-
-- **Partial answer 17-Nov-2026 (question a) -> D98.** Answer: the owner first chose the button 'Ask the desk first'
-  (the other button was 'Yes, same funds') in answer to "Are October's "Series VII" and "Fund 3" AIFs the same funds as ours?", then wrote in the same
-  chat, minutes later: "YEs they are the same fund" (17-Nov-2026, MOD-03 chat). The later message is the answer =
-  option (a1): "Motilal Oswal Founders Fund Series VII" is our record "Motilal Oswal Founders Fund" and "Alchemy Long
-  Term Ventures Fund 3" is our record "Alchemy Long Term Ventures Fund" (D98). The pins are made in the refresh run
-  (a reviewed edit of `tools/data/pins.json`, sections `reckoner` and `aif_performance`), which makes that run High
-  risk. Questions (c), (d) and (b) stay open; the desk is still asked the facts behind (c) and (d) and the labels of
-  DEC-OPEN-11. Status: OPEN (three questions left).
-
-- **Partial answer 18-Nov-2026 (questions c and part of d) -> D101.** The owner answered the desk questions (MOD-03 chat):
-  (c) add Aionios Alpha Fund I, Sundaram SISOP (= "Sundaram Alternate - SISOP") and Equinova Edge PMS, class Equity;
-  (d) Karma Capital Jasmine Fund was not dropped on purpose (its October factsheet attached); the gold ETFs and the two
-  equity funds: "Keep tracking them" (reading INFERRED: they keep their Select entries; to be confirmed). Still open:
-  Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities (no answer); the ranges and exit loads of the three
-  new products; then (b), the exact `--accept-drops` count from a fresh dry run. Status: OPEN.
+### DEC-OPEN-36 October Reckoner run: the Centricity Select list and the AIF performance stop at their gates (four questions) - ANSWERED 18-Nov-2026: moved to section 1.6 (D98, D101, D102)
 
 ## 1.5 How to record the owner's answer (every decision)
 
@@ -894,7 +759,7 @@ Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; K
 
 ## 1.6 Decided (closed) open decisions
 
-Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97), DEC-OPEN-11 (D101).
+Decided so far: DEC-OPEN-01 (D86), DEC-OPEN-02 (D84), DEC-OPEN-03 (D85), DEC-OPEN-07 (D94), DEC-OPEN-08 (D96), DEC-OPEN-30 (D92), DEC-OPEN-31 (D93), DEC-OPEN-32 (note on D86), DEC-OPEN-34 (D87), DEC-OPEN-35 (D97), DEC-OPEN-11 (D101), DEC-OPEN-36 (D98, D101, D102).
 
 ### DEC-OPEN-01 Who makes the two monthly risk workbooks from October 2026
 
@@ -1440,14 +1305,156 @@ JioBlackRock Mutual Fund, range 9%-11%; C38 Magnum Equity Ex-Top 100 Long-Short 
 14%-16%; C4 Series I closed its subscriptions and Series II is open, same return expectation and terms -> D101.
 Status: ANSWERED.
 
+### DEC-OPEN-36 October Reckoner run: the Centricity Select list and the AIF performance stop at their gates (four questions)
+
+Decider: owner (with the desk for the facts about the funds). Raised: 17-Nov-2026 by MOD-02 from OPS-01's
+dry-run report of 9-Nov-2026 (local-only; `tools/merge_reckoner.js` and `tools/merge_aif_performance.js` on the
+deck "Monthly Investment Reckoner - October 2026", data as on 30-Sep-2026; nothing was applied). Deadline: as
+soon as possible. OPS-01 stopped on 9-Nov-2026 and waits; the first October wave (the Reckoner products) was
+targeted for 11-Nov-2026. The same names will come back with the next deck (expected about 20-28-Nov-2026:
+INFERRED from the monthly cadence in `monthly-updates/00_INBOX/README.md`), so the answers are needed in any
+case. Unblocks: TASK-020 steps 14, 14a and 15 (the Reckoner steps of Run A) and with them the refreshed
+Centricity Select list and AIF performance. Related: DEC-OPEN-11, DEC-OPEN-04; KNOWN_ISSUES A4 and A20; D61
+(stop list), D71, D75, D76, D90; `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7 (high-risk triggers 9 and 10).
+
+- **The problem.** Each month the Reckoner deck decides which funds carry the Centricity Select badge (the house
+  recommendation, with its rationale) and supplies the AIF performance table. OPS-01's dry run on the October
+  deck found the following (nothing applied; both steps exit 1):
+  - Step 14 (Select list): 178 would become 171 (5 added, 12 dropped, 166 kept). Two gates fail. (i) 12 drops
+    against a limit of 8 (5% of 178): only the owner can waive it, with `--accept-drops 12`, after reading the
+    list. (ii) In the category "EQUITY AIFs- Listed Equities" five Select AIFs drop (Alchemy Long Term Ventures
+    Fund, ICICI Prudential Alpha Opportunities, Karma Capital Jasmine Fund, Kotak Iconic Fund II, Motilal Oswal
+    Founders Fund) while the deck lists three names that match nothing in our records (Motilal Oswal Founders
+    Fund Series VII, Alchemy Long Term Ventures Fund 3, Aionios Alpha Fund I). The tool reads that as a possible
+    join failure (a respelled name), not as a deliberate removal, and `--accept-drops` does not waive it (D71).
+  - The 12 drops are those 5 AIFs; 5 gold ETFs (HDFC Gold ETF, ICICI Pru Gold ETF, Mirae Asset Gold ETF, Nippon
+    India ETF Gold BeES, SBI Gold ETF), while the deck lists three gold ETF funds of funds (HDFC, Quantum, UTI)
+    among the 5 additions; and 2 diversified equity funds (360 ONE Focused Fund, Tata Large & Mid Cap Fund),
+    while the deck lists two others (Aditya Birla SL Flexi Cap Fund, Invesco India Large & Mid Cap Fund) among
+    the additions. The 5 additions have no rationale text yet (the deck's fund pages are performance grids
+    only).
+  - Five deck names have no MASTER record: the three AIF names above and two PMS names (Sundaram SISOP, Equinova
+    Edge PMS). Adding a record is a universe change (`tools/add_reckoner_funds.js`, step 14a: "always confirm
+    with the owner"), and that tool keeps its own hard-coded list of the products to add (four entries today),
+    so adding means editing that list first (VERIFIED in code).
+  - Step 15 (AIF performance): the deck's AIF grid has ten rows; seven match our AIF records and the three names
+    above match nothing. The page holds performance for 12 AIF records and the tool rebuilds it from the deck,
+    so 12 would become 7 and the gate "MASTER AIF funds with performance" fails. The five that would lose it are
+    the five AIFs that drop out of Select (VERIFIED: the 12 keys of `PMS_PERFORMANCE.aif` on `origin/main` less
+    the 7 matched rows). That gate has no override flag (VERIFIED in `tools/merge_aif_performance.js`: its flags
+    are `--apply`, `--html` and `--allow-layout-change`, which concerns the deck layout only).
+  - The two "successor series" names. OPS-01 read them as successor series of our two records (UNCERTAIN). Our
+    live Select entries for Motilal Oswal Founders Fund and Alchemy Long Term Ventures Fund carry the previous
+    deck's spellings "Motilal Oswal Founders Series VII" and "Alchemy Long Term Ventures Fund Series 3"
+    (VERIFIED: the `CENTRICITY_SELECT` block on `origin/main`), and `tools/data/pins.json` already pins "Motilal
+    Oswal Founders Fund*" and "Alchemy Long Term Ventures Fund*" to those records. The October deck writes
+    "Series VII" and "3": the same series numbers, spelled differently (INFERRED: a respelling and not a new
+    series; only the desk or the funds' own documents can confirm). For the other names: VERIFIED that no MASTER
+    name contains Aionios, Equinova or SISOP; the PMS performance block already holds a key "Sundaram Alternate
+    - SISOP".
+- **Why a decision is needed.** Every way out of the stop is the owner's under the project's rules: a pin needs
+  the owner (D75; a Reckoner name mismatch is on D61's stop list), adding a record is a universe change (D61),
+  and `--accept-drops` is an owner-only override (D71). A wrong pin puts another fund's numbers on a client's
+  fund. Any of them makes Run A a High-risk change (section 7, triggers 9 and 10): a change-impact contract, a
+  Gate B review run by the Moderator and the owner's approval before the merge. OPS-01's claim record (a draft
+  exists, local only) assumes a routine refresh and has to be redone (INFERRED). The owner's words of 9-Nov-2026
+  "All the existing products stay; additional ones will be added" (D90) were said about the bond file; whether
+  they also cover Select badges is not said (INFERRED: these tools never delete a MASTER record, and a Select
+  badge is a different thing).
+- **Options.** One decision per question. Ask in the order a, c, d, b, because the count in (b) depends on the
+  others.
+  - (a) Are "Motilal Oswal Founders Fund Series VII" and "Alchemy Long Term Ventures Fund 3" the same funds as
+    our two records? (a1) Yes: pin both names to the records (a reviewed edit of `tools/data/pins.json`, in two
+    sections, with the desk's or the fund house's confirmation quoted). (a2) No, they are new series: leave the
+    old records as they are and add the two names as new products (see c). (a3) Ask the desk first and hold
+    steps 14 and 15 until it answers.
+  - (b) After a, c and d, accept the drops that are left? (b1) Yes: apply with `--accept-drops <n>`, where n is
+    the exact count of the final list (12 if nothing is pinned, about 10 if both names are pinned: INFERRED),
+    after the owner has read the DROPPED list. (b2) No: hold the Select refresh and keep the current list until
+    the next deck. The flag never waives the gate on unmatched deck names, so (a) and (c) come first.
+  - (c) May the new names be added to the product list? The names are Aionios Alpha Fund I (an AIF) and Sundaram
+    SISOP and Equinova Edge PMS (PMS), plus the two series names if (a2). (c1) Yes: add them with
+    `tools/add_reckoner_funds.js` after a reviewed change to its list; each new product's expected-return band
+    is inherited from its peer group, not taken from a source for that product (the tool's own header), and its
+    facts come from its own page of the deck. (c2) Not now: leave them out and let the run record them as known
+    gaps (a small change to the `NO_MASTER_NOTE` list in `tools/merge_reckoner.js`), to be added later. (c3) Ask
+    the desk for the details first.
+  - (d) Are the removals the desk's own decision? Three groups: the 5 gold ETFs (replaced by 3 gold ETF funds of
+    funds), the 2 equity funds (replaced by 2 others) and the 3 AIFs the deck leaves out altogether (Karma
+    Capital Jasmine Fund, Kotak Iconic Fund II, ICICI Prudential Alpha Opportunities: editorial or omission is
+    UNKNOWN). (d1) Accept the deck: the funds lose the Select badge and stay in the product list. (d2) Keep the
+    existing Select entries ("existing products stay", D90): the tools take membership from the deck, so this
+    needs a tool change or a hand edit (INFERRED), and it leaves badges on funds the desk no longer lists
+    (INFERRED). (d3) Ask the desk which removals are deliberate before deciding, at least for the three AIFs.
+    Whatever is chosen, step 15 cannot pass until the AIF performance of the AIFs the deck leaves out (those
+    three, if a1 is chosen) is settled too, because the gate has no override: (i) show no performance for them
+    (an owner-only override flag must be added to the tool: High risk); (ii) keep their old performance with its
+    old date (INFERRED: a table of mixed dates, in conflict with CLAUDE.md rule 6 if shown as current); (iii)
+    get their current performance from the desk.
+- **What each changes (what clients see).** A fund dropped from Select loses its badge, rationale and ratio
+  details in the picker, the popover and the rationale pages (INFERRED from the tool's header: "Retained funds
+  keep their rationale, risk ratios and details"); it stays in the product list and can still be picked. An
+  added fund shows the badge without rationale text (INFERRED from the tool's list of "new entries with no
+  rationale"). An AIF without performance shows no returns in the AIF table on screen, in Excel and in the deck
+  (INFERRED). New products become selectable and appear in the deck. (a1) keeps two AIFs with badge, rationale
+  and refreshed performance; (a2) drops them and adds two new products. Holding the run keeps the page as it is:
+  the Select list and the AIF performance as on 31-Aug-2026 (the September deck), including funds the desk has
+  dropped.
+- **Benefits and disadvantages.** (a1) Fewest changes for clients; it depends on the sameness being right, and a
+  wrong pin is the worst case (D75). (a3) is the safest and the slowest. (c1) completes the list as the deck
+  shows it, with bands that are inherited and so a judgement (INFERRED). (c2) is quick, but the deck and the
+  page differ until the names are added. (d1) follows the desk's own list, but some clients lose a badge on a
+  fund they know. (d2) keeps continuity, but the badge may contradict the desk (INFERRED). (b1) refreshes
+  October with an exact, owner-only override. (b2) changes nothing for clients, who stay on last month's view.
+- **Impact on existing functionality.** The Select badges and rationale pages and the AIF and PMS tables; the
+  product count only under (a2) and (c1). Nothing else.
+- **Maintenance.** A pin is a standing line in `tools/data/pins.json` that every later deck run uses; each added
+  product needs its monthly performance and rationale kept up (INFERRED). The same names return with every deck,
+  so a note recorded now saves asking again.
+- **Risks and reversibility.** The pins, the override and the data merge are reversible in git (restore the six
+  deploy files from `backups/`, or revert the merge); decks already sent to clients are not recalled. A wrong
+  pin or a wrong addition is the real risk.
+- **Documented recommendation (not a decision).** None is documented. MOD-02, 17-Nov-2026 (INFERRED): put (a),
+  (d) and the details for (c) to the desk in one message (the owner contacts the desk). If the desk confirms a
+  respelling, take (a1). Take (c1) for the three names, as a small tool change in its own reviewed task with the
+  owner's approval of each band. Take (d1) for the gold ETFs and the equity funds if the desk confirms, and (d3)
+  for the three AIFs. Take (b1) last, with the exact count. If the desk cannot answer soon, (b2) keeps the page
+  as it is rather than guessing.
+- **Record the answer as.** A new `Dnn` (pins and additions are owner decisions on the product list: D75) with
+  the owner's words and the exact `--accept-drops` count quoted; update TASK-020 and the OPS-01 claim (High
+  risk), KNOWN_ISSUES (A20, or a new entry if a tool change is needed) and DEC-OPEN-11; `tools/data/pins.json`
+  records each pin with the confirmation date (D75). Prepare the relay message for OPS-01 (DECISION_LOG section
+  1.5 step 4).
+
+- **Partial answer 17-Nov-2026 (question a) -> D98.** Answer: the owner first chose the button 'Ask the desk first'
+  (the other button was 'Yes, same funds') in answer to "Are October's "Series VII" and "Fund 3" AIFs the same funds as ours?", then wrote in the same
+  chat, minutes later: "YEs they are the same fund" (17-Nov-2026, MOD-03 chat). The later message is the answer =
+  option (a1): "Motilal Oswal Founders Fund Series VII" is our record "Motilal Oswal Founders Fund" and "Alchemy Long
+  Term Ventures Fund 3" is our record "Alchemy Long Term Ventures Fund" (D98). The pins are made in the refresh run
+  (a reviewed edit of `tools/data/pins.json`, sections `reckoner` and `aif_performance`), which makes that run High
+  risk. Questions (c), (d) and (b) stay open; the desk is still asked the facts behind (c) and (d) and the labels of
+  DEC-OPEN-11. Status: OPEN (three questions left).
+
+- **Partial answer 18-Nov-2026 (questions c and part of d) -> D101.** The owner answered the desk questions (MOD-03 chat):
+  (c) add Aionios Alpha Fund I, Sundaram SISOP (= "Sundaram Alternate - SISOP") and Equinova Edge PMS, class Equity;
+  (d) Karma Capital Jasmine Fund was not dropped on purpose (its October factsheet attached); the gold ETFs and the two
+  equity funds: "Keep tracking them" (reading INFERRED: they keep their Select entries; to be confirmed). Still open:
+  Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities (no answer); the ranges and exit loads of the three
+  new products; then (b), the exact `--accept-drops` count from a fresh dry run. Status: OPEN.
+
+Answer: (a) D98 (17-Nov-2026); (c) and part of (d) D101 (18-Nov-2026); the rest of (d) and the keep-list reading D102
+(18-Nov-2026: Kotak Iconic Fund II and ICICI Prudential Alpha Opportunities dropped; the gold ETFs and two equity funds
+kept; the deck's replacements added); (b) not needed: with these answers the drops are 2, within the 5% gate (OPS-02 dry
+run of 18-Nov-2026, local). Status: ANSWERED.
+
 ---
 
 # Part 2. Approved decisions (index only; `docs/DECISIONS.md` is authoritative)
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D101 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D102**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D102 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D103**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1545,3 +1552,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 17-Nov-2026 | DEC-OPEN-35 answered ('Keep automatic refreshes') = D97 (D61, D87, D88 and FILE_OWNERSHIP section 7 stay as they are); moved to section 1.6. | MOD-03 |
 | 17-Nov-2026 | DEC-OPEN-36 question (a) answered ("YEs they are the same fund", after a first click on 'Ask the desk first') = option (a1) -> D98: both deck names are our two AIF records; pins made in the refresh run. DEC-OPEN-36 stays open for (c), (d), (b). | MOD-03 |
 | 18-Nov-2026 | The owner's message of 18-Nov-2026: D99 (October Regular and SIF from the 2-Nov files, label "31st October 2026"; the re-export question closed), D100 (October analytics), D101 (Reckoner answers); DEC-OPEN-11 answered and moved to section 1.6; DEC-OPEN-36 partial answer (c, part of d). | MOD-03 |
+| 18-Nov-2026 | D102 recorded from the owner's second message of 18-Nov-2026; DEC-OPEN-36 answered (D98, D101, D102) and moved to section 1.6; DEC-OPEN-04: D102 item 5 points to a "30th September 2026" label, to be confirmed. | MOD-03 |
