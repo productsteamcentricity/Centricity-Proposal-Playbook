@@ -18,6 +18,20 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - The owner's October answers recorded as D99 to D101 (docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change; the answers are applied by the October runs.
+
+### Added
+- D99: October Regular and SIF performance uses the owner's 2-Nov files under the label "31st October 2026" (D91's
+  mixed-date stop waived for October only). D100: October analytics as on 31-Oct-2026. D101: the Reckoner and label
+  answers (Karma Capital Jasmine Fund kept; Aionios Alpha Fund I, Sundaram SISOP and Equinova Edge PMS to be added; C4,
+  C5, C6, C38 settled).
+
+### Changed
+- `docs/project-control/DECISION_LOG.md` (DEC-OPEN-11 answered; DEC-OPEN-36 partial answer; next D102), `TASK_REGISTER.md`
+  (TASK-020, TASK-021, TASK-029), `docs/KNOWN_ISSUES.md` (B10, C4, C5, C6, C38), `docs/project-control/README.md`.
+
 ## 2026-11-17 - D98: the two October AIF series names are our records (DEC-OPEN-36 question a; docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change. The pins themselves are made in the
