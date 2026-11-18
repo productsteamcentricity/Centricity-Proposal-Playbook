@@ -140,14 +140,15 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 
 ## Headline state (update after every refresh; full detail in `docs/PROJECT_STATE.md`)
 
-Data as on **30-Sep-2026** (performance, analytics, SIF, risk matrix; the 214 funds on the four
+Data as on **30-Sep-2026** (performance, SIF, risk matrix; the 214 funds on the four
 refresh-only Monitor sheets since Sep Run 3, 21-Oct-2026; the JioBlackRock G-Sec record is held at
-earlier values until the owner decides KNOWN_ISSUES C20); AIF performance and
+earlier values until the owner decides KNOWN_ISSUES C20); MF analytics (look-through) **31-Oct-2026**
+(October analytics run, 18-Nov-2026, with the 8 D96 renames applied); AIF performance and
 Centricity Select **31-Aug-2026**; PMS performance 31-Jul-2026 data under the page's "31st August 2026"
 label (KNOWN_ISSUES B1); PMS/AIF look-through 31-Jul-2026; fund managers = the 30-Sep
 Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,682 ·
 Centricity Select 178 (178 in MASTER) · PMS 692 / AIF 12 / benchmarks 4 · RISK_MATRIX 1,088 ·
-EQUITY_ANALYTICS 1,205 · 0 duplicates · 0 script errors. Next due: the Sep-2026 Reckoner catch-up ("October 2026" deck,
+EQUITY_ANALYTICS 1,231 · 0 duplicates · 0 script errors. Next due: the Sep-2026 Reckoner catch-up ("October 2026" deck,
 `/monthly-update September 2026`), then the Oct-2026 MF cycle (mid-November). Its Portfolio Matrix
 is to be fed from the MF dashboard from the October cycle (D86; the data-pack reading is INFERRED); the
 build is TASK-022, and until it is merged the page keeps '30 Sep 2026' (KNOWN_ISSUES B8, C46).

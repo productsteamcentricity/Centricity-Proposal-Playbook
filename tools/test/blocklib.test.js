@@ -34,11 +34,16 @@ for (const bad of ['31st Octobr 2026', '31st October 2026"', '30th Sep 2026', '$
 }
 t('checkAsOn short rejects the long style', () => expectThrow(() => B.checkAsOn('31st October 2026', 'short'), /not a plain/));
 t('setDataDate changes exactly one line and is reversible', () => {
-  const out = B.setDataDate(html, 'analytics', '31st October 2026');
+  // Read the page's current label and set a different one, so the test does not depend on the data month.
+  const m = html.match(/window\.DATA_DATES = \{[\s\S]*?\banalytics\s*:\s*"([^"\n]*)"/);
+  if (!m) throw new Error('DATA_DATES.analytics not found');
+  const current = m[1];
+  const next = current === '31st October 2026' ? '30th November 2026' : '31st October 2026';
+  const out = B.setDataDate(html, 'analytics', next);
   const a = html.split('\n'), b = out.split('\n');
   const d = a.map((l, i) => (l === b[i] ? null : i)).filter(x => x !== null);
-  if (d.length !== 1 || !/analytics:\s+"31st October 2026",/.test(b[d[0]])) throw new Error('unexpected diff');
-  if (B.setDataDate(out, 'analytics', '30th September 2026') !== html) throw new Error('not reversible');
+  if (d.length !== 1 || !b[d[0]].includes('analytics:') || !b[d[0]].includes('"' + next + '",')) throw new Error('unexpected diff');
+  if (B.setDataDate(out, 'analytics', current) !== html) throw new Error('not reversible');
 });
 t('setDataDate refuses an unknown key', () => expectThrow(() => B.setDataDate(html, 'nokey', '31st October 2026'), /found 0/));
 t('replaceOnce treats $ literally', () => { if (B.replaceOnce('a "x" b', /"x"/, '"$&"') !== 'a "$&" b') throw new Error('$ interpreted'); });
