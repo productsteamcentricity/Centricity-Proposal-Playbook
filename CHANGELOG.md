@@ -18,6 +18,15 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - TASK-067 claim recorded (NB-04, the young-fund rule; docs only)
+
+No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
+
+### Changed
+- `docs/DECISIONS.md` D104: Equinova Edge PMS exit load corrected to 1% for 1 year (the owner's correction).
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the TASK-067 claim (NB-04) and its condensed contract v3 (Guardian
+  pre-check GO WITH CONDITIONS, conditions met). `TASK_REGISTER.md`: TASK-067 claim in force; TASK-023 folded into TASK-021.
+
 ## 2026-11-18 - D103 and D104; NB-04 recorded (docs only)
 
 No `site/`, `tools/`, `.github/`, `.claude/`, `CLAUDE.md` or package-file change.
