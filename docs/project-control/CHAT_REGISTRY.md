@@ -62,7 +62,7 @@ GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (
 EX-01  | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | COMPLETED (report delivered 2-Nov-2026; its findings are recorded as KNOWN_ISSUES C47 to C50 by the PR of TASK-079; the update log is still to be written)
 OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | SUPERSEDED
 OPS-02 | Playbook OPS - Monthly data operations | October 2026 update (Reckoner run and funds run)          | ACTIVE
-NB-04  | NB - New build     | Young-fund rule in the MF bake (TASK-067, D94, D103) | ACTIVE
+NB-04  | NB - New build     | Young-fund rule in the MF bake (TASK-067, D94, D103) | COMPLETED
 ```
 
 | ID | Status | Session id | Title in the app | Tasks | Works in | Successor |
@@ -78,7 +78,7 @@ NB-04  | NB - New build     | Young-fund rule in the MF bake (TASK-067, D94, D10
 | EX-01 | COMPLETED (report delivered 2-Nov-2026; record in the repository pending) | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | EX-01 Playbook: browser acceptance | TASK-064: 11 of 11 checks PASS on the live S7 build at `c0fb2dd`; four new findings EX01-N1 to EX01-N4 (P3; recorded as KNOWN_ISSUES C47 to C50 by this PR, mapping INFERRED); the full report is local only | shared main checkout (no worktree); read-only, no branch, no commit | none |
 | OPS-01 | SUPERSEDED (18-Nov-2026, by OPS-02: the owner chose a new chat in MOD-03's account; not running since 9-Nov-2026 21:49 UTC) | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | OPS-01 October update: Reckoner run | TASK-020 (steps 14, 14a, 15, 17: dry runs only, stopped at gates), TASK-021 and TASK-024 (read-only preparation); no claim | worktree `adoring-boyd-7028f6` (the folder that was NB-02 worktree, reused by the app; app session branch `claude/ops-01-reckoner-a11e94` and task branch `data/2026-09-4`, both at `ddd0304`, local only, 0 commits; TASK-061 must skip it) | OPS-02 |
 | OPS-02 | ACTIVE (phase 1, read-only preparation; no claim) | `local_61c7130f` | OPS-02 October 2026 update: preparation | TASK-020 (Reckoner run), TASK-029 (labels), read-only preparation of TASK-021 and TASK-024; no claim yet | worktree `.claude/worktrees/investment-proposal-dashboard-c68580` (the app reused the unused folder; app branch `claude/ops-02-october-prep-55402a`, at `91d11cd`); no task branch yet | none |
-| NB-04 | ACTIVE (phase 1, read-only; no claim) | `local_20daef41` | NB-04 Young-fund rule in the MF bake (D94) | TASK-067 (and TASK-023 through the October bake) | worktree `.claude/worktrees/competent-neumann-0880fa` (app branch `claude/competent-neumann-0880fa`, cut from `a3dce51`); no task branch yet | none |
+| NB-04 | COMPLETED (18-Nov-2026: PR #47 merged, `44590d4`; holds nothing) | `local_20daef41` | NB-04 Young-fund rule in the MF bake (D94) | TASK-067 (and TASK-023 through the October bake) | worktree `.claude/worktrees/competent-neumann-0880fa` (app branch `claude/competent-neumann-0880fa`, cut from `a3dce51`); task branch `feat/task-067-young-fund-rule` (merged as PR #47) | none |
 
 Workstreams (prefixes): **EX** existing dashboard, **NB** new build, **OPS** monthly data operations,
 **GOV** governance and continuity. EX-01 and GOV-01 were started by the owner on 2-Nov-2026; OPS-01 was started by MOD-02 on 9-Nov-2026 (before that no OPS
@@ -358,7 +358,7 @@ owner decides DEC-OPEN-22. The fields below are its record as of 17-Nov-2026.
 | Successor | none |
 | Retirement reason | not applicable |
 
-### NB-04 | NB - New build | Young-fund rule in the MF bake (TASK-067, D94, D103) | ACTIVE
+### NB-04 | NB - New build | Young-fund rule in the MF bake (TASK-067, D94, D103) | COMPLETED
 
 | Field | Value |
 |---|---|
@@ -366,10 +366,10 @@ owner decides DEC-OPEN-22. The fields below are its record as of 17-Nov-2026.
 | Title in the app | NB-04 Young-fund rule in the MF bake (D94) |
 | How it starts | Proposed by MOD-03 as a card on 18-Nov-2026 with a launch packet (bootstrap section 8.2); started by the owner from the card the same day. |
 | Responsibility | TASK-067: the MF bake (`tools/bake_month.js`, `tools/lib/`) clears return periods longer than a fund's life and, for funds younger than one year, `si` beyond +-300% (D94, D103); tests and docs. TASK-023 is then applied by OPS-02's October bake. |
-| Status | ACTIVE (phase 1, read-only: contract and claim drafted; Guardian pre-check by MOD-03 running). It does not merge: MOD-03 merges. |
+| Status | COMPLETED 18-Nov-2026: PR #47 merged by MOD-03 (`44590d4`) after Gate B; the claim is released. The session may still exist in the app; it holds nothing. |
 | Assigned tasks | TASK-067 |
-| Working directory and branch | Worktree `.claude/worktrees/competent-neumann-0880fa`, app branch `claude/competent-neumann-0880fa` at `a3dce51`; task branch `feat/task-067-young-fund-rule` when the claim is in force. |
-| Reserved files and shared components | none yet; proposed: `tools/bake_month.js`, new `tools/lib/fund_life.js`, `tools/lib/direct_perf.js`, `tools/rebuild_directperf.js`, new `tools/test/fund_life.test.js`, and docs (sequenced with OPS-02 where files overlap). |
+| Working directory and branch | Worktree `.claude/worktrees/competent-neumann-0880fa`; task branch `feat/task-067-young-fund-rule` (head `95d4739`), merged as PR #47 (`44590d4`, 18-Nov-2026). |
+| Reserved files and shared components | none (the TASK-067 claim of 14 files was released at the merge of PR #47; ACTIVE_CHANGE_REGISTER section 4). |
 | Dependencies | Moderator: MOD-03. Guardian: ARC-01 (pre-check and Gate B by MOD-03: High risk, `tools/lib/`). Must merge before OPS-02's October MF bake. |
 | Last known commit and deliverable | none yet |
 | Pending owner decisions | none (D103 answered its question) |

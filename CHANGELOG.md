@@ -18,6 +18,13 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - Release record of PR #47 (TASK-067, the young-fund rule; docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-067 released (PR #47, `44590d4`); `TASK_REGISTER.md`: TASK-067 VERIFIED
+  COMPLETE; `CHAT_REGISTRY.md`: NB-04 COMPLETED; `INTEGRATION_AND_REGRESSION_LOG.md`: baseline `44590d4`, rows #42 to #47, the
+  PR #47 entry (Gate B conditions G1 to G4); `docs/PROJECT_STATE.md`.
+
 ## 2026-11-18 - TASK-067: the young-fund rule in the MF bake (NB-04; D94, D103)
 
 Tools only: no `site/` file and no data block changes. The data changes arrive with the October bake (TASK-021).

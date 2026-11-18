@@ -199,7 +199,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-064 | Full browser acceptance on the live build | EX | IMPLEMENTED NOT FULLY VERIFIED | P1 | EX-01 (idle; results to be recorded by TASK-081) | R |
 | TASK-065 | PMS/AIF benchmark rows from the decided source | NB | BLOCKED | P2 | MOD-02 assigns | O |
 | TASK-066 | 12 unreachable RISK_MATRIX keys; effective-MASTER key check (sequence after TASK-022: same file) | NB | NOT STARTED | P2 | MOD-02 assigns | E |
-| TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | IN PROGRESS (18-Nov-2026: claim in force; contract v3, Guardian pre-check GO WITH CONDITIONS met) | P1 | NB-04 | R |
+| TASK-067 | Since-inception outliers: `si` bound in the MF bake | OPS/NB | VERIFIED COMPLETE (PR #47, `44590d4`, 18-Nov-2026; data applied by the October bake, TASK-021) | - | NB-04 | Done |
 | TASK-068 | Compare the two PMS/AIF holdings parsers | NB | NOT STARTED | P3 | MOD-02 assigns (on request) | E |
 | TASK-069 | Deck: Construct/NAA through the design system; all `listTable` pages | NB | NOT STARTED | P2 | MOD-02 assigns | E |
 | TASK-070 | Inventory and secure local-only artefacts | GOV | NOT STARTED | P2 | MOD-02 + owner | H |
@@ -675,7 +675,7 @@ acceptance criteria; **Next** next step; **Rel** related REQ / KNOWN_ISSUES / Dn
 Most of these are backlog: done only when the owner asks, except where the priority is P1.
 
 #### TASK-067 Since-inception outliers: an `si` bound in the MF bake; young-fund treatment
-- WS OPS/NB | Status PLANNED (D94, 9-Nov-2026; MOD-02 reads the click as covering the bake limit, INFERRED) | P1 | Owner: MOD-02 assigns | Dep: DEC-OPEN-07 (answered: D94) | Blk: -
+- WS OPS/NB | Status VERIFIED COMPLETE (18-Nov-2026: PR #47, merge `44590d4`, head `95d4739`; D94 and D103; Gate B GO WITH CONDITIONS, G1 accepted; npm test 968 checks; verify_page unchanged; live 7 of 7; the data changes arrive with the October bake, TASK-021, which closes C16, C20 and C43) | P1 | Owner: NB-04 | Dep: DEC-OPEN-07 (answered: D94) | Blk: -
 - `UTI BSE India Sector Leaders ETF` (inception 15-Sep-2026) carries `si` = 2977.646 (297,765%), printed on
   screen, in Excel and in the deck; the MF bake has no `si` bound (`tools/bake_month.js:194-225`); the SIF
   bake has +-300%.
