@@ -60,7 +60,8 @@ NB-02  | NB - New build     | Five P3 tool and UI follow-ups (TASK-011)   | COMP
 NB-03  | NB - New build     | PowerPoint export design system (TASK-013)  | COMPLETED (archived)
 GOV-01 | Playbook GOV - Governance and continuity | Rule documents consistency (TASK-018 widened) | COMPLETED
 EX-01  | Playbook EX - Existing dashboard | Full browser acceptance (TASK-064) | COMPLETED (report delivered 2-Nov-2026; its findings are recorded as KNOWN_ISSUES C47 to C50 by the PR of TASK-079; the update log is still to be written)
-OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | BLOCKED
+OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | SUPERSEDED
+OPS-02 | Playbook OPS - Monthly data operations | October 2026 update (Reckoner run and funds run)          | ACTIVE
 ```
 
 | ID | Status | Session id | Title in the app | Tasks | Works in | Successor |
@@ -74,7 +75,8 @@ OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Re
 | NB-03 | COMPLETED (archived) | `local_00b57be9` | Fix and standardise the proposal PowerPoint export | TASK-013 | main checkout (no worktree) | none |
 | GOV-01 | COMPLETED (9-Nov-2026) | `local_622b2ebd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | GOV-01 Playbook: rule documents consistency | TASK-018 (widened): merged as PR #35 (`ddd0304`, 9-Nov-2026 12:16 UTC); claim released at the merge (ACTIVE_CHANGE_REGISTER section 4); Guardian reviews GO WITH CONDITIONS, conditions met | worktree `focused-wright-d50bee` (the folder that was NB-01 worktree; idle, not retired: on the merged task branch `docs/gov-01-rule-consistency-20261102` at `29e0d32`, clean; app session branch `claude/affectionate-lovelace-f11b67` at `c0fb2dd`, 0 commits; TASK-061 must skip the folder until the owner decides DEC-OPEN-22) | none |
 | EX-01 | COMPLETED (report delivered 2-Nov-2026; record in the repository pending) | `local_4a9736cd`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | EX-01 Playbook: browser acceptance | TASK-064: 11 of 11 checks PASS on the live S7 build at `c0fb2dd`; four new findings EX01-N1 to EX01-N4 (P3; recorded as KNOWN_ISSUES C47 to C50 by this PR, mapping INFERRED); the full report is local only | shared main checkout (no worktree); read-only, no branch, no commit | none |
-| OPS-01 | BLOCKED (owner answers and desk re-exports; not running since 9-Nov-2026 21:49 UTC) | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | OPS-01 October update: Reckoner run | TASK-020 (steps 14, 14a, 15, 17: dry runs only, stopped at gates), TASK-021 and TASK-024 (read-only preparation); no claim | worktree `adoring-boyd-7028f6` (the folder that was NB-02 worktree, reused by the app; app session branch `claude/ops-01-reckoner-a11e94` and task branch `data/2026-09-4`, both at `ddd0304`, local only, 0 commits; TASK-061 must skip it) | none |
+| OPS-01 | SUPERSEDED (18-Nov-2026, by OPS-02: the owner chose a new chat in MOD-03's account; not running since 9-Nov-2026 21:49 UTC) | `local_ab19558f`; session ids of sub-chats are recorded shortened to 8 characters (SEC-05, DEC-OPEN-29) | OPS-01 October update: Reckoner run | TASK-020 (steps 14, 14a, 15, 17: dry runs only, stopped at gates), TASK-021 and TASK-024 (read-only preparation); no claim | worktree `adoring-boyd-7028f6` (the folder that was NB-02 worktree, reused by the app; app session branch `claude/ops-01-reckoner-a11e94` and task branch `data/2026-09-4`, both at `ddd0304`, local only, 0 commits; TASK-061 must skip it) | OPS-02 |
+| OPS-02 | ACTIVE (phase 1, read-only preparation; no claim) | `local_61c7130f` | OPS-02 October 2026 update: preparation | TASK-020 (Reckoner run), TASK-029 (labels), read-only preparation of TASK-021 and TASK-024; no claim yet | its own worktree under `.claude/worktrees/` (cut from `91d11cd`); no task branch yet | none |
 
 Workstreams (prefixes): **EX** existing dashboard, **NB** new build, **OPS** monthly data operations,
 **GOV** governance and continuity. EX-01 and GOV-01 were started by the owner on 2-Nov-2026; OPS-01 was started by MOD-02 on 9-Nov-2026 (before that no OPS
@@ -309,7 +311,12 @@ held. MOD-02 makes no further change. The fields below are its record as of the 
 | Successor | none |
 | Retirement reason | Not retired: its work is complete. Same recommendation as NB-01: no new work (use EX-02 for a later pass). |
 
-### OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | BLOCKED
+### OPS-01 | Playbook OPS - Monthly data operations | October 2026 update, run A (Reckoner) and read-only preparation of run B | SUPERSEDED
+
+**Update 18-Nov-2026 (MOD-03).** SUPERSEDED: the owner chose "New OPS-02 here" (18-Nov-2026, MOD-03 chat), because OPS-01 runs
+in the earlier Claude account, which MOD-03 cannot see or message. Its planned work moved to OPS-02; it made no commit and held
+no claim. Its worktree `.claude/worktrees/adoring-boyd-7028f6` (branch `data/2026-09-4` at `ddd0304`) stays untouched until the
+owner decides DEC-OPEN-22. The fields below are its record as of 17-Nov-2026.
 
 | Field | Value |
 |---|---|
@@ -326,6 +333,26 @@ held. MOD-02 makes no further change. The fields below are its record as of the 
 | Pending owner decisions | Run A gates (decisions of the owner, HIGH risk; nothing applied): step 14 has two failed gates (dropped names against names with no MASTER match in the same category; 12 Select drops against a limit of 8, waivable only by the owner with `--accept-drops` after confirming); 5 deck names have no MASTER match (pins or `add_reckoner_funds.js` would be needed); step 15 AIF coverage 12 to 7 fails. Run B inputs: the Regular and SIF monitor re-exports as on 31-Oct-2026; the Bond file answers; DEC-OPEN-11 (four desk labels; before steps 14 and 14a); DEC-OPEN-33 (the provisional data pack, at run time); later DEC-OPEN-04, -05, -09 and -10. |
 | Current blocker | Three, all open on 17-Nov-2026. (1) The owner decisions at the Reckoner gates (above). (2) The Regular and SIF monitor re-exports as on 31-Oct-2026: the 29-Oct and 2-Nov files supplied earlier are superseded (on the 2-Nov Regular file MTD equals 1 Day on 2,296 of 2,505 rows, so its NAV is the first trading day of November). The owner had said on 9-Nov-2026 to use them as if they were 30-Oct; MOD-02 did not, on that evidence, and asked for a re-export (the account of MOD-02, not verifiable from the repository). `monthly-updates/2026-10_Oct-2026/` holds only the Direct monitor (NAV 30-Oct, label 31st October 2026 under D91), the Bond Options file and the Offshore deck, plus `_review` and `_superseded`. (3) The weekly-limit stop of 9-Nov-2026 (the allowance reset on 13-Nov-2026 06:30 IST according to its launch packet; the session has not been resumed). The October MF cycle (expected about 13-17 Nov) has not started. |
 | Current handover document | none (it is idle, not replaced). Its brief is the first message of its transcript (`efcf80ca...jsonl` in the project folder of its worktree under `%USERPROFILE%\.claude\projects\`; VERIFIED: it starts with the OPS-01 launch packet). At its own context-loss trigger it hands over with the sub-chat template (launch packet, field 14). |
+| Successor | OPS-02 |
+| Retirement reason | SUPERSEDED 18-Nov-2026: moved to OPS-02 (another Claude account; the owner's choice). |
+
+### OPS-02 | Playbook OPS - Monthly data operations | October 2026 update (Reckoner run and funds run) | ACTIVE
+
+| Field | Value |
+|---|---|
+| Session id | `local_61c7130f` (started by MOD-03 with `start_session`, 18-Nov-2026; MOD-03 can message it) |
+| Title in the app | OPS-02 October 2026 update: preparation |
+| How it starts | Started by MOD-03 on 18-Nov-2026 on the owner's instruction ("New OPS-02 here"), with a launch packet (bootstrap section 8.2) in its first message. |
+| Responsibility | The operator of the October 2026 update: the Reckoner run on the "October 2026" deck (TASK-020, with TASK-029) and later the October MF cycle (TASK-021, with TASK-024). Phase 1 is read-only preparation (fresh dry runs, the gate report, the proposed PMS and AIF table, a draft change-impact contract and claim); phase 2 (apply) starts only when its claim is on `origin/main`. |
+| Status | ACTIVE (phase 1). It does not merge or publish: the Moderator merges, after the owner's yes (the run has section 7 cases: pins, a universe change, an override). |
+| Assigned tasks | TASK-020, TASK-029; read-only preparation of TASK-021 and TASK-024. |
+| Working directory and branch | Its own worktree under `.claude/worktrees/`, cut from `91d11cd`; no task branch until the claim names one. |
+| Reserved files and shared components | none yet (phase 1 edits no tracked file). The claim (all six deploy files, `tools/data/pins.json`, the update log and state files) follows the Guardian pre-check of its contract. |
+| Dependencies | Moderator: MOD-03. Guardian: ARC-01 (contract pre-check and Gate B, run by MOD-03: High risk). The owner (the open items of D101 and DEC-OPEN-36 b). The funds bake waits for the young-fund rule (D94: TASK-067, TASK-023). |
+| Last known commit and deliverable | none yet |
+| Pending owner decisions | DEC-OPEN-36 (b) and the rest of (d); the ranges and exit loads of the new products; the mixed dates of the PMS and AIF table; DEC-OPEN-04. |
+| Current blocker | none for phase 1. |
+| Current handover document | none (its brief is the first message of its transcript) |
 | Successor | none |
 | Retirement reason | not applicable |
 
@@ -374,8 +401,8 @@ held. MOD-02 makes no further change. The fields below are its record as of the 
 
 1. **IDs.** `<PREFIX>-<nn>` with the prefixes MOD (Moderator), ARC (Guardian), EX, NB, OPS, GOV
    (workstream sub-chats). Unique and sequential within a prefix; never reused or renumbered, even after a
-   chat is retired or superseded. Next free on 17-Nov-2026: EX-02, NB-04, OPS-02, GOV-02, ARC-02, MOD-04
-   (EX-01 and GOV-01 were allocated on 2-Nov-2026, OPS-01 on 9-Nov-2026 and MOD-03 on 17-Nov-2026); external labels: EXT-PR-06. A successor always gets
+   chat is retired or superseded. Next free on 18-Nov-2026: EX-02, NB-04, OPS-03, GOV-02, ARC-02, MOD-04
+   (EX-01 and GOV-01 were allocated on 2-Nov-2026, OPS-01 on 9-Nov-2026, MOD-03 on 17-Nov-2026 and OPS-02 on 18-Nov-2026); external labels: EXT-PR-06. A successor always gets
    a new ID (MOD-02 is not "MOD-01 continued").
 2. **One record per chat**, headed by its name line `[CHAT-ID] | [WORKSTREAM] | [RESPONSIBILITY] | [STATUS]`
    and filled in for every field of section 3. Write "none" or "not created yet"; never leave a field blank.

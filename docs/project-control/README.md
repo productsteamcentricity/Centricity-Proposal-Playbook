@@ -72,7 +72,7 @@ with the code or git, the code wins. Fix the register with a dated correction.
 
 1. **Stable IDs.** Never renumber, reuse or delete an ID. A withdrawn item becomes SUPERSEDED with a
    pointer to what replaced it. A new item takes the next free number. As of 18-Nov-2026 (counted on
-   `origin/main`, except the chat numbers, which follow `CHAT_REGISTRY.md`): REQ-096, REQ-PPT-154, TASK-086, DEC-OPEN-37, D102, A33, B11, C51, R14, E18, F4, INC-21; chats EX-02, NB-04, OPS-02, GOV-02, ARC-02, MOD-04 (MOD-03 is ACTIVE since 17-Nov-2026); external labels EXT-PR-06.
+   `origin/main`, except the chat numbers, which follow `CHAT_REGISTRY.md`): REQ-096, REQ-PPT-154, TASK-086, DEC-OPEN-37, D102, A33, B11, C51, R14, E18, F4, INC-21; chats EX-02, NB-04, OPS-03, GOV-02, ARC-02, MOD-04 (MOD-03 is ACTIVE since 17-Nov-2026); external labels EXT-PR-06.
 2. **Dated entries.** Dates as 28-Oct-2026 (with UTC time where order matters). A status change adds a
    dated note; it does not silently rewrite history. A correction is marked "Correction <date>:" with
    what was wrong.
