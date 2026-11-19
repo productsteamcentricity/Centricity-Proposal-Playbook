@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `15129cb` (PR #52, the October analytics run: the 8 D96 renames and the October analytics; site content S8). verify_page: EQUITY_ANALYTICS 1,231, DATA_DATES.analytics "31st October 2026", every other count and date unchanged; npm test 968; live 7 of 7 equal `site/`; push run 44470666872 success. Recovery: restore `backups/2026-11-18_pre-2026-10-analytics/` (six files) or `git revert -m 1 15129cb`.**
+
 **Update 18-Nov-2026 (MOD-03): `main` = `origin/main` = `44590d4` (PR #47, TASK-067: tools only, the young-fund rule in the MF bake). `site/` unchanged (S7); `npm test` 6 of 6 files, 968 checks; `verify_page` unchanged; live 7 of 7 equal `site/`; push run 44303328861 success. Recovery point for page code, tools or docs: `44590d4` (revert PR #47 with `git revert -m 1 44590d4` if the rule must go). PRs #42 to #46 were documents only.**
 
 **Update 17-Nov-2026 (MOD-03, TASK-080): `main` = `origin/main` = `cd4aaa5` (PR #38, docs only; PR #37 `8278f85` before it,
@@ -113,9 +115,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#47)
+## 4. Per-PR integration table (#1-#52)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #47 on 18-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 47 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #52 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 52 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -176,6 +178,11 @@ written down at the time.
 | #45 | 18-Nov-2026 | `ec4252a` | docs/mod-03-d103-d104-20261118 | GOV | MOD-03 | Record D103, D104; NB-04 recorded | 7 files, docs only | success | 7 of 7 | site stays S7 |
 | #46 | 18-Nov-2026 | `4623a48` | docs/mod-03-task-067-claim-20261118 | GOV | MOD-03 | TASK-067 claim; D104 exit-load correction | 4 files, docs only | success | 7 of 7 | site stays S7 |
 | #47 | 18-Nov-2026 | `44590d4` / 44303328861 | feat/task-067-young-fund-rule | NB | NB-04 | TASK-067: the young-fund rule in the MF bake (D94, D103) | 14 files, tools and docs, +536/-33; no site/ | PR run 44301499590 success | 7 of 7 = site/ (MOD-03) | High risk; Gate B GO WITH CONDITIONS (G1 accepted; G2 checked; G3 and G4 carried to TASK-021); npm test 968 |
+| #48 | 18-Nov-2026 | `daa46f7` | docs/mod-03-release-pr47-20261118 | GOV | MOD-03 | Release record of PR #47 | 6 files, docs only | success | 7 of 7 | site stays S7 |
+| #49 | 18-Nov-2026 | `baf5218` | docs/mod-03-d105-20261118 | GOV | MOD-03 | Record D105; DEC-OPEN-04 answered | 6 files, docs only | success | 7 of 7 | site stays S7 |
+| #50 | 18-Nov-2026 | `002400f` | docs/mod-03-oct-analytics-claim-20261118 | GOV | MOD-03 | Claim of the October analytics run | 4 files, docs only | success | 7 of 7 | site stays S7 |
+| #51 | 18-Nov-2026 | `04d0fb2` | docs/mod-03-claim-amend-blocklib-test-20261118 | GOV | MOD-03 | Add tools/test/blocklib.test.js to that claim | 1 file, docs only | success | 7 of 7 | site stays S7; no security-reviewer run before the push (one register line; MOD-03 checked ASCII, paths and data by hand) |
+| #52 | 19-Nov-2026 | `15129cb` / 44470666872 | data/2026-10-analytics | OPS | OPS-02 | October analytics run: the 8 D96 renames, the October Equity/Hybrid/Debt analytics (D100) | 9 files: site/index.html, site/Centricity_IRR_Offshore.js, tools/test/blocklib.test.js, tools/README.md, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S8 (analytics 31-Oct-2026); High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 
@@ -665,3 +672,17 @@ PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records wer
 | Gate D | merged by MOD-03 with `--match-head-commit 95d4739`; push run 44303328861 success; live 7 of 7 = `site/`; local `main` advanced (14.4 E, files written from their blobs) |
 | Gate E | internal tool change, accepted by MOD-03 on evidence (D87); the client-facing effect is accepted with the October refresh |
 | Rollback | `git revert -m 1 44590d4316ade5a82fb77aeec2bdca78f6d2125e` in a PR (no data to restore) |
+
+### PR #52 - the October 2026 analytics run (19-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / decisions | TASK-021 part A, TASK-024; D96, D100 |
+| Chat and worktree | OPS-02; `.claude/worktrees/investment-proposal-dashboard-c68580` |
+| Branch / base / head / merge | `data/2026-10-analytics` / `04d0fb2` / `4c4a36c` / `15129cb` |
+| Gate B | ARC-01 pre-check and DIFF REVIEW GO WITH CONDITIONS: only MASTER (8 names), the three analytics stores, DATA_DATES.analytics and 8 `var IRR` keys changed; ARC-01 re-ran verify_page and npm test (968) on the head |
+| Gate C | rename, merge_analytics, fill_variant_analytics, rekey_sif_analytics each equal to the rehearsal; financial-data-reviewer PASS; browser checks 5 of 5 (screen, Excel 13 sheets, PowerPoint 23 slides) per OPS-02 |
+| Gate D | the owner's "Yes, publish" (19-Nov-2026) after MOD-03 named the 84 residual-stale records and the 17 Zerodha funds; merged with `--match-head-commit 4c4a36c`; push run 44470666872 success; live 7 of 7 = `site/`; local `main` advanced (14.4 E) |
+| Gate E | client-facing: accepted by the owner before the merge |
+| Follow-ups | C52 (Zerodha alias), C53 (Kotak Corporate Bond equity entry); a stray extract folder that ARC-01 wrote outside the repository was removed by MOD-03 |
+| Rollback | `git revert -m 1 15129cb49116565760843b521c6c194c54801f80`, or restore `backups/2026-11-18_pre-2026-10-analytics/` |
