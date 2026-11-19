@@ -137,7 +137,7 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | A3 | PMS/AIF look-through tool re-dates the MF analytics | Tools: PMS/AIF | P1 | Closed 16-Oct-2026 (`71fa58a`); hardened 19-Oct-2026 (PR #10) | — | `tools/merge_pms_aif_analytics.js:200-205` |
 | A4 | Reckoner merge has no gate against dropped funds | Tools: Reckoner | P1 | Closed 16-Oct-2026 (`2ad7f61`); fourth gate 19-Oct-2026 (PR #10) | — | `tools/merge_reckoner.js:283-317` |
 | A5 | Rename tool keeps orphan keys and loses earliest names | Tools: rename | P2 | Closed 19-Oct-2026 (PR #7; page lookup PR #12) | — | `tools/rename_schemes.js:225-281` |
-| A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) | **Affects** (8 renames confirmed by the owner 9-Nov-2026, D96; not yet applied) | `tools/lib/dates.js`; `isoDay` in `site/index.html` |
+| A6 | Excel dates read one day early on an IST machine | Tools + page | P2 | Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) | — (8 renames confirmed 9-Nov-2026, D96; applied 18-Nov-2026, October analytics run) | `tools/lib/dates.js`; `isoDay` in `site/index.html` |
 | A7 | Two DIRECT_PERF builders; unchecked splice in `rebuild_directperf.js` | Tools: Direct | P2 | Partly fixed 19-Oct-2026 (PR #7) | — | `tools/lib/direct_perf.js`; `REFRESH.parseMfMonitorDirect` in `site/index.html` |
 | A8 | Writes are in place, non-atomic and without backup | Tools | P2 | Closed 19-Oct-2026 (PRs #3, #7–#11) | — | `tools/lib/blocklib.js:60-82` |
 | A9 | Date labels spliced in unescaped, by first match | Tools | P2 | Closed 19-Oct-2026 (PRs #3, #7, #9, #10) | — | `tools/lib/blocklib.js:115-151` |
@@ -426,7 +426,15 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
   history list.
 
 ### A6. Excel dates read one day early on an IST machine
-**P2 | Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) | Affects the next rename step (8 renames confirmed 9-Nov-2026, D96; not yet applied)**
+**P2 | Closed 19-Oct-2026 (PRs #7, #8, #11, #12, #13, #14) | The 8 renames confirmed 9-Nov-2026 (D96) were applied on 18-Nov-2026**
+
+**Update 18-Nov-2026 (OPS-02, October analytics run, branch `data/2026-10-analytics`):** `rename_schemes.js` applied
+exactly the 8 D96 pairs (all matched on the exact inception day and fund house, 0 ambiguous; the Motilal Oswal pair
+checked first), with `prev_name` / `prev_names` kept (D79) and 8 keys of `var IRR` renamed in
+`site/Centricity_IRR_Offshore.js`. The renamed records keep their older return figures until the October MF bake
+(TASK-021 part B) refreshes them through the refresh-only sheets. The Motilal Oswal Multi Asset Passive FoF-Reg(G)
+record keeps its "Equity ETF" class and has no analytics-store entry; it is not reclassified in this run. Record:
+`docs/update-log/2026-10_Oct-2026.md`.
 
 - **Fixed 19-Oct-2026 (D73):**
   - Tools: `tools/lib/dates.js` `isoDay` (round to the nearest local day) is used by

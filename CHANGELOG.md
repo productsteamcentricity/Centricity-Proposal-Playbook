@@ -18,6 +18,20 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-18 - Oct-2026 analytics and the 8 renames (data/2026-10-analytics)
+
+### Changed
+- `site/index.html`: the 8 scheme renames confirmed by the owner (D96) applied to MASTER (`prev_name` / `prev_names`
+  kept); the Equity, Hybrid and Debt look-through analytics replaced from the October workbooks (as on 31-Oct-2026,
+  D100) through `merge_analytics.js`, `fill_variant_analytics.js` and `rekey_sif_analytics.js`;
+  `DATA_DATES.analytics` "31st October 2026". EQUITY_ANALYTICS 1,205 -> 1,231 (`verify_page`); every other count and
+  date unchanged. 60 MF/ETF and 24 SIF entries not in the October workbooks keep earlier holdings.
+- `site/Centricity_IRR_Offshore.js`: 8 `var IRR` keys renamed with the schemes.
+- `tools/test/blocklib.test.js`: the `setDataDate` test reads the page's current analytics label instead of assuming
+  "30th September 2026" (it failed once the page said October); same intent, test only. `npm test` 968 of 968.
+- `tools/README.md`, `docs/KNOWN_ISSUES.md` (A6), `docs/PROJECT_STATE.md`, `CLAUDE.md` (headline): the renames are
+  applied; the analytics date. Record: `docs/update-log/2026-10_Oct-2026.md`.
+
 ## 2026-11-18 - October analytics run claim recorded (OPS-02; docs only)
 
 ### Changed

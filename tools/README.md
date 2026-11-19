@@ -151,8 +151,9 @@ same numbering, so "step 12" means the same tool in both.
 **MF cycle (after month-end):**
 
 1. **Renames: always first.** If you bake without this step, about 200 renamed schemes are
-   duplicated. Inception is compared on the exact day. Until the owner decides, 8 renames are
-   pending (`docs/PROJECT_STATE.md`): never `--apply` them without that decision.
+   duplicated. Inception is compared on the exact day. The 8 renames the owner confirmed on
+   9-Nov-2026 (D96) were applied on 18-Nov-2026 (the October analytics run); later runs re-apply them
+   from `prev_name`. A new pair that is not obviously the same fund still needs the owner before `--apply`.
    `node tools/rename_schemes.js --monitor "$M/Daily MF monitor_<date>.xlsx"`
 2. **Bake.** This step needs the Regular and Direct monitors at the top of `$M` and the three
    Analytics workbooks in `$M/Analytics/`.
@@ -493,8 +494,8 @@ Only what an operator must know before running each tool. Line references are to
   `prev_names`, but writes only the blocks that change.
 - A stale old-name entry is dropped and listed when the live name already has one (D79); about 15
   per run, most of them re-created by the bake under old workbook names. Harmless.
-- The 8 renames it finds in the Sep-2026 Monitor are not applied and wait for the owner
-  (`docs/PROJECT_STATE.md`).
+- The 8 renames it found in the Sep-2026 Monitor were confirmed by the owner (D96) and applied on
+  18-Nov-2026 (`docs/update-log/2026-10_Oct-2026.md`).
 - The four refresh-only Monitor sheets are left out of `SHEET_SUB` on purpose (`:50-52`): they mix
   classes, and giving them a sub-category lets tier 3 invent a rename. Do not add them.
 - The NUL key separator is now the `'\u0000'` escape; `.gitattributes` still forces textual diffs

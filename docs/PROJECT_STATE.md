@@ -1,6 +1,8 @@
 # Project state
 
-_Last updated: 18-Nov-2026 - the owner's October answers are recorded (docs only; nothing published yet): D98 (the two October AIF series names are our records), D99 (October Regular and SIF performance from the owner's 2-Nov files, NAV date 2-Nov, under the label "31st October 2026"; Direct stays 30-Oct), D100 (October analytics as on 31-Oct-2026) and D101 (the Reckoner and label answers: Karma Capital Jasmine Fund kept; Aionios Alpha Fund I, Sundaram SISOP and Equinova Edge PMS to be added; C4, C5, C6, C38 settled). The new input files are in `monthly-updates/00_INBOX/`. The October runs wait for an operator chat and, before the funds bake, the young-fund rule (D94: TASK-067, TASK-023)._
+_Last updated: 18-Nov-2026 (evening) - the October analytics run (OPS-02, TASK-021 part A + TASK-024, branch `data/2026-10-analytics`, not merged until Gate B and the owner's yes): the 8 D96 renames applied, then the three October analytics workbooks (as on 31-Oct-2026, D100), fill-variant and the SIF re-key. `DATA_DATES.analytics` "31st October 2026"; EQUITY_ANALYTICS 1,205 -> 1,231; every other `verify_page` count unchanged; performance, PMS, SIF and risk-matrix dates unchanged. Residual stale after the run: 60 MF/ETF and 24 SIF entries keep earlier holdings (names in `update-log/2026-10_Oct-2026.md`); 17 of the 60 are Zerodha funds that the October workbooks spell "Zerodha CASE …" (an owner decision: accept for October, or a reviewed analytics-name alias). Next: the Reckoner run (TASK-020, contract v2.1, D105), then the October MF bake (TASK-021 part B)._
+
+_Previous update: 18-Nov-2026 - the owner's October answers are recorded (docs only; nothing published yet): D98 (the two October AIF series names are our records), D99 (October Regular and SIF performance from the owner's 2-Nov files, NAV date 2-Nov, under the label "31st October 2026"; Direct stays 30-Oct), D100 (October analytics as on 31-Oct-2026) and D101 (the Reckoner and label answers: Karma Capital Jasmine Fund kept; Aionios Alpha Fund I, Sundaram SISOP and Equinova Edge PMS to be added; C4, C5, C6, C38 settled). The new input files are in `monthly-updates/00_INBOX/`. The October runs wait for an operator chat and, before the funds bake, the young-fund rule (D94: TASK-067, TASK-023)._
 
 _Previous update: 17-Nov-2026 (afternoon) - MOD-03 validated the MOD-02 handover (TASK-080; record [`update-log/2026-11-17_task-080-validation.md`](update-log/2026-11-17_task-080-validation.md)) and is the Moderator; MOD-02 is retired. `origin/main` = `a2a84ee` (PR #39, this validation; before it PR #37 `8278f85`, the handover, and PR #38 `cd4aaa5`; all docs only); `site/` and `tools/` unchanged; `verify_page` and `npm test` (903 checks) as recorded; the 7 live files equal `site/`; OneDrive running with 0 cloud-only `.git` files. MOD-03 runs in a different Claude account from the earlier chats (errata ERR-13 in `handover/README.md`). The owner answered DEC-OPEN-35 the same day: D97 keeps the recorded publish rules (a routine refresh publishes when every check passes, D61; the owner decides first in the cases of `FILE_OWNERSHIP_AND_CHANGE_CONTROL.md` section 7). Nothing of the October list is published yet._
 
@@ -72,7 +74,7 @@ on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 
 | Domain | As on | Next due |
 |---|---|---|
 | MF performance (Regular + Direct), MF benchmarks | 30-Sep-2026 (the 214 refresh-only-sheet funds since Run 3, PR #18). Exceptions: the JioBlackRock G-Sec fund, held at earlier values for C20; 12 Debt ETF durations / maturities kept from earlier months where the Monitor cell is blank (D81); funds absent from the Monitor (bake CHECK, 42) | Oct-2026 MF cycle |
-| Equity / Hybrid / Debt analytics | 30-Sep-2026 (SIF look-through from Aug) | Oct-2026 MF cycle |
+| Equity / Hybrid / Debt analytics | 31-Oct-2026 (October analytics run, 18-Nov-2026; 60 MF/ETF and 24 SIF entries not in the October workbooks keep earlier holdings; 5 SIFs have no analytics anywhere) | Nov-2026 MF cycle |
 | Listed Direct Equity universe + returns | 30-Sep-2026 | Oct-2026 MF cycle |
 | Expense ratio, exit load | Sep-2026 | Oct-2026 MF cycle |
 | SIF performance | 30-Sep-2026 | Oct-2026 MF cycle |
@@ -90,6 +92,8 @@ plan's date, and one legacy "Mutual Funds" record). Detail: `docs/update-log/202
 Run 2.
 
 ## Latest verification
+
+18-Nov-2026 (October analytics run, branch `data/2026-10-analytics` at `origin/main` `04d0fb2` plus the run; OPS-02): `verify_page` exit 0, identical to the block below except EQUITY_ANALYTICS 1205 -> 1231 and `DATA_DATES.analytics` "31st October 2026"; `npm test` 6 of 6 files, 968 checks (blocklib 34, dates 10, fund_life 65, parser_refresh_only 18, pptx_layout 798, tool_inputs 43), 0 failures, after the `blocklib` test fix; the applied page and IRR sibling are byte-identical to the rehearsal copy; financial-data review PASS (every scheme re-aggregated from the workbooks matches; the 8 renames; MASTER otherwise identical) with the Zerodha spelling finding; browser checks 5 of 5 PASS (headless Edge, worktree page; Excel 13 sheets, PowerPoint 23 slides, no layout warning). Not yet merged or published. Record: `update-log/2026-10_Oct-2026.md`.
 
 17-Nov-2026 (the register sweep; `main` `b47069b`, PR #36): `verify_page` output identical to the block below, exit 0; `npm test` 5 of 5 files, 903 checks (blocklib 34, dates 10, parser_refresh_only 18, pptx_layout 798, tool_inputs 43), 0 failures; the 7 live files equal `site/` (SHA-256, 7 of 7; `Centricity_Risk_Matrix.js` returns 404; `index.html` Last-Modified 17-Nov-2026 06:38:21 GMT); CI: push run 44032631708 (`b47069b`) verify and publish success; no change under `site/`, `tools/` or `.github/` since PR #26 (tree objects identical); `git fsck --connectivity-only --no-dangling` exit 0.
 
@@ -376,7 +380,7 @@ every owner message, and checked against the code (record:
   Options were: clear return periods longer than the fund's life (chosen, D94), or keep them labelled. The owner
   published Run 3 without waiting for this (21-Oct-2026) and kept blank-cell values under the existing
   rule (D81).
-- **8 renames: confirmed by the owner 9-Nov-2026 (D96); not yet applied.** `rename_schemes.js` (reading the Monitor's true dates)
+- **8 renames: confirmed by the owner 9-Nov-2026 (D96); applied 18-Nov-2026 in the October analytics run** (branch `data/2026-10-analytics`; `update-log/2026-10_Oct-2026.md`). The renamed records keep their older return figures until the October MF bake refreshes them. The history below is as written before the apply. `rename_schemes.js` (reading the Monitor's true dates)
   finds 8 renames in the Sep and Aug Monitors that it used to miss: HDFC Retirement Savings →
   Retirement (Hybrid-Debt Plan); four Kotak overseas FoFs, Omni → Active; two Axis FoFs, Active →
   Omni; Motilal Oswal Asset Allocation Passive FoF-Aggressive → Multi Asset Passive FoF (looks
