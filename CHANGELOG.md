@@ -18,6 +18,16 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - Release record of PR #52 (October analytics) and the Reckoner run claim (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the October analytics claim released (PR #52, `15129cb`); the Reckoner run
+  claim (TASK-020 + TASK-029, OPS-02) recorded with its condensed contract v2.1.
+- `docs/KNOWN_ISSUES.md`: new C52 (17 Zerodha funds keep September analytics) and C53 (Kotak Corporate Bond Fund(G)
+  equity look-through entry).
+- `TASK_REGISTER.md` (TASK-020, -021, -024, -029), `CHAT_REGISTRY.md` (OPS-02), `INTEGRATION_AND_REGRESSION_LOG.md` (baseline
+  `15129cb`, rows #48 to #52, the PR #52 entry).
+
 ## 2026-11-18 - Oct-2026 analytics and the 8 renames (data/2026-10-analytics)
 
 ### Changed

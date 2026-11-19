@@ -225,6 +225,8 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C49 | Net Asset Allocation counts every "Global Funds" record as equity, including a GIFT City G-Sec feeder, and REIT/InvIT as direct equity (EX-01 N3) | UI/data | P3 | Open (owner rule) | - | Net Asset Allocation slide, `buildDeck` in `site/index.html` |
 | C50 | Watch item: one unexplained, unreproduced misrouting of a Direct monitor file through the Regular parser in the Data Refresh upload (EX-01 N4) | UI | P3 | Open (watch; not reproduced in 4 further runs) | - | Section 7 upload, `REFRESH` in `site/index.html` |
 | C51 | The young-fund rule (D94, D103) runs only in the monthly bake: the page's Section 7 uploader does not apply it, and SIF, PMS and AIF young funds keep their `si` | Data | P2 | Open (TASK-039 must not start meanwhile) | - | `REFRESH.parseMfMonitor` / `parseMfMonitorDirect` in `site/index.html`; `tools/lib/fund_life.js`; SIF sibling, PMS/AIF tools |
+| C52 | 17 Zerodha funds keep September analytics: the October workbooks spell them "Zerodha CASE ..." | Data | P2 | Open (an alias is its own task) | - | `tools/merge_analytics.js`, `REFRESH.parseAnalytics`, EQUITY/HYBRID/DEBT_ANALYTICS |
+| C53 | Kotak Corporate Bond Fund(G) carries an older equity look-through entry | Data | P3 | Open | - | EQUITY_ANALYTICS |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -2180,6 +2182,21 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **Impact:** low today: the uploader is a fallback route and its changes last only for the session; SIF, PMS and AIF figures come from their own tools.
 - **Suggested fix:** move the rule into the page parsers together with TASK-039 (one Direct-plan parser for the bake and the upload), with the owner deciding whether D94 / D103 extend to SIF, PMS and AIF. TASK-039 must not start until this item is planned with it.
 - **Related:** C16, C20, C43; D94, D103, D42, D80; TASK-067, TASK-039.
+
+### C52. 17 Zerodha funds keep September analytics under the October label
+**P2 | Open (an alias is its own task) | -**
+
+- **What (October analytics run, PR #52, 19-Nov-2026):** the October Equity, Hybrid and Debt Analytics workbooks name the Zerodha schemes "Zerodha CASE ...", which match no MASTER name, so `merge_analytics.js` adds them as orphan keys and the 17 Zerodha MF/ETF records keep their September holdings under "Analytics as on 31st October 2026". The owner accepted this for October ("Yes, publish", 19-Nov-2026, after MOD-03 named the 17 funds).
+- **Impact:** on screen, in Excel and in the deck those funds show September look-through dated October (not fabricated: stale, disclosed in `docs/update-log/2026-10_Oct-2026.md`).
+- **Suggested fix:** a reviewed analytics-name alias (a tool change with its own contract), then re-run the analytics steps.
+- **Related:** D70, D100; C51; the residual-stale list in the October update log.
+
+### C53. Kotak Corporate Bond Fund(G) carries an older equity look-through entry
+**P3 | Open | -**
+
+- **What (found in the October analytics run, 19-Nov-2026):** a debt fund has an entry in EQUITY_ANALYTICS that predates the run (the run did not change it), so the fund can show an equity look-through.
+- **Suggested fix:** check the entry against the debt workbook and remove it in a reviewed data change.
+- **Related:** C52; the October update log.
 
 ---
 
