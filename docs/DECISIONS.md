@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102, D104 and D105 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100 and D103 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102, D104 and D105 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103 and D106 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -139,6 +139,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D103 | 18-Nov-2026 | A fund younger than one year loses its since-inception figure only beyond +-300% (owner; refines D94) | Data | Active |
 | D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load 1% for 1 year, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
 | D105 | 18-Nov-2026 | The October Reckoner run as approved ("Approve all"): label "30th September 2026", the blanks (one expected figure per fund), APMI-derived figures, 5 PMS name links, the three-AIF override, Phillip Growth, Mosaic II exit load, SageOne from the deck; Karma WB AUM and Neo net figures pending (owner; answers DEC-OPEN-04) | Reckoner | Active |
+| D106 | 19-Nov-2026 | October MF cycle: five funds added by hand (classes as proposed), no expected range yet for them and Lakshya Overnight, the ICICI exit-load text, the JioBlackRock "*" figures, two unusual since-inception figures kept (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1081,6 +1082,37 @@ and the entry says so. "—" means no date is recorded.
   one year, in MASTER and in DIRECT_PERF, and clears every return period longer than the fund's life; the rehearsal
   differs only in the 13 JioBlackRock records and the C43 ETF. Reversible by a tool change and a re-bake.
 - **Source:** the owner's chat answer of 18-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D106 - October MF cycle: five funds added by hand, no expected range for the new funds yet, the JioBlackRock expected figures, two unusual figures kept
+`Active` - 19-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** OPS-02's rehearsal of the October MF bake (TASK-021 part B, 19-Nov-2026) found five new funds on Monitor
+  sheets the bake refreshes but never adds (D80: added by hand with the owner), one new fund the bake adds itself with
+  no band (Lakshya Overnight Fund), three JioBlackRock debt records whose copied 1-year return the young-fund rule clears
+  (D94, D103), and two since-inception figures that look unusual. The Guardian pre-check asked for the owner's explicit
+  decision on the hand-adds (D105 had covered them only by inference).
+- **Decision:** The owner chose the button "Approve all" (the other button was "I'll answer each"; 19-Nov-2026, MOD-03
+  chat) in answer to "Approve the October fund performance points as recommended?". So approved:
+  1. Add by hand (a stub record whose figures the bake fills from the Monitor by exact name; no figure typed):
+     SBI CRISIL - IBX SDL Index - June 2034 Index Fund-Reg(G) and Tata CRISIL-IBX Financial Services 3-6 Months Debt
+     Index Fund-Reg(G) as Debt / ETF / Debt ETF; ICICI Pru Dynamic Asset Allocation Passive FOF(G), Nippon India Income
+     Plus Arbitrage Omni FOF-Reg(G) and Quant Income Plus Arbitrage Active FoF-Reg(G) as Hybrid / Mutual Fund / Hybrid
+     Other.
+  2. No expected-return range for now for these five and for Lakshya Overnight Fund-Reg(G): their 1Y/3Y/5Y show "-"
+     until the owner gives ranges (a range then goes into `var IRR` in the IRR sibling).
+  3. The ICICI fund's exit load is typed from the Monitor's own remark: "NIL upto 30% of units and 1% for remaining
+     units on or before 12M, NIL after 12M".
+  4. JioBlackRock Overnight, Liquid and Money Market (Regular) show their band mid-point marked "*" at 1Y (5.13%*,
+     5.50%*, 6.50%*) instead of the copied 1-year return (Gate B condition G4 of TASK-067).
+  5. The since-inception figures of the JioBlackRock Nifty 8-13 yr G-Sec Index Fund (-9.31% after 11 weeks; the C16
+     record is released) and ICICI Pru Dynamic Asset Allocation Passive FOF (-12.66% after 7 weeks) are kept as the
+     Monitor gives them.
+- **Rationale:** the owner accepted MOD-03's recommendations.
+- **Alternatives / supersedes:** answering point by point; ranges by peer group: not chosen. Makes D105's inferred
+  coverage of the hand-adds explicit.
+- **Consequences:** OPS-02 runs the October MF cycle (TASK-021 part B, TASK-023) under its contract: MASTER effective
+  7,686 -> 7,692; performance and SIF "31st October 2026"; High risk, the owner's yes on the final summary before the
+  merge. KNOWN_ISSUES records the funds without a range.
+- **Source:** the owner's chat answer of 19-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 
