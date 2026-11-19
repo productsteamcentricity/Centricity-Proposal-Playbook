@@ -18,6 +18,27 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - October MF cycle: performance and SIF as on 31-Oct-2026 (data/2026-10)
+
+### Changed
+- MF performance (Regular monitor, NAV 2-Nov-2026, D99; Direct monitor, NAV 30-Oct-2026), MF benchmarks and SIF performance
+  as on 31-Oct-2026: about 2,135 MASTER funds, 1,702 Direct overlays, 47 benchmark categories and 30 SIFs refreshed;
+  `DATA_DATES.performance` and `.sif` "31st October 2026" (TASK-021 part B, OPS-02).
+- The young-fund rule (D94, D103) applied to data for the first time: 28 fields cleared on 14 records (TASK-023). JioBlackRock
+  Overnight / Liquid / Money Market now show the band mid-point 5.13* / 5.50* / 6.50* at 1Y/3Y/5Y.
+
+### Added
+- Five funds the monitor lists only on refresh-only sheets, added by hand with the owner (D80, D106; figures from the monitor):
+  SBI CRISIL - IBX SDL Index - June 2034, Tata CRISIL-IBX Financial Services 3-6 Months, ICICI Pru Dynamic Asset Allocation
+  Passive FOF, Nippon India and Quant Income Plus Arbitrage FoFs; Lakshya Overnight Fund added by the bake. MASTER 7,686 -> 7,692.
+
+### Fixed
+- KNOWN_ISSUES C20 (JioBlackRock pre-launch returns), C43 (UTI BSE India Sector Leaders ETF since-inception) and C16 (the held
+  G-Sec record and its inception).
+
+### Docs
+- `docs/update-log/2026-10_Oct-2026.md` Run 2; `docs/KNOWN_ISSUES.md` C60-C66; `docs/PROJECT_STATE.md`; `CLAUDE.md` headline.
+
 ## 2026-11-19 - D106 and the October MF cycle claim (OPS-02; docs only)
 
 ### Added
