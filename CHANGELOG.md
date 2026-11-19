@@ -18,6 +18,13 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - Release record of PR #54 (the October Reckoner run; docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the TASK-020 + TASK-029 claim released (PR #54, `430e53f`); no active claim.
+- `TASK_REGISTER.md`: TASK-020 and TASK-029 VERIFIED COMPLETE; `CHAT_REGISTRY.md` (OPS-02); `INTEGRATION_AND_REGRESSION_LOG.md`
+  (baseline `430e53f`, site S9, rows #53 and #54, the PR #54 entry).
+
 ## 2026-11-19 - "October 2026" Reckoner: Select, PMS and AIF as on 30-Sep-2026 (data/2026-09-5)
 
 ### Changed

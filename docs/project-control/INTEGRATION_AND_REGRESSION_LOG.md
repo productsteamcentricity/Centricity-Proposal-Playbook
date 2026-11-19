@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `430e53f` (PR #54, the "October 2026" Reckoner run; site content S9). verify_page: MASTER effective 7,686; Select 185 (185 in MASTER); PMS 696 / AIF 11 / benchmarks 4; PMS_PERF_ALIAS 29 (1 null); EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES pms "30th September 2026", analytics "31st October 2026", performance and sif "30th September 2026"; 0 duplicates; 0 script errors; npm test 7 files, 979 checks; live 7 of 7 equal `site/`; push run 44483073883 success. Recovery: restore `backups/2026-11-19_pre-2026-09-5-reckoner/` (six files) or `git revert -m 1 430e53f`.**
+
 **Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `15129cb` (PR #52, the October analytics run: the 8 D96 renames and the October analytics; site content S8). verify_page: EQUITY_ANALYTICS 1,231, DATA_DATES.analytics "31st October 2026", every other count and date unchanged; npm test 968; live 7 of 7 equal `site/`; push run 44470666872 success. Recovery: restore `backups/2026-11-18_pre-2026-10-analytics/` (six files) or `git revert -m 1 15129cb`.**
 
 **Update 18-Nov-2026 (MOD-03): `main` = `origin/main` = `44590d4` (PR #47, TASK-067: tools only, the young-fund rule in the MF bake). `site/` unchanged (S7); `npm test` 6 of 6 files, 968 checks; `verify_page` unchanged; live 7 of 7 equal `site/`; push run 44303328861 success. Recovery point for page code, tools or docs: `44590d4` (revert PR #47 with `git revert -m 1 44590d4` if the rule must go). PRs #42 to #46 were documents only.**
@@ -115,9 +117,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#52)
+## 4. Per-PR integration table (#1-#54)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #52 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 52 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #54 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 54 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -183,6 +185,8 @@ written down at the time.
 | #50 | 18-Nov-2026 | `002400f` | docs/mod-03-oct-analytics-claim-20261118 | GOV | MOD-03 | Claim of the October analytics run | 4 files, docs only | success | 7 of 7 | site stays S7 |
 | #51 | 18-Nov-2026 | `04d0fb2` | docs/mod-03-claim-amend-blocklib-test-20261118 | GOV | MOD-03 | Add tools/test/blocklib.test.js to that claim | 1 file, docs only | success | 7 of 7 | site stays S7; no security-reviewer run before the push (one register line; MOD-03 checked ASCII, paths and data by hand) |
 | #52 | 19-Nov-2026 | `15129cb` / 44470666872 | data/2026-10-analytics | OPS | OPS-02 | October analytics run: the 8 D96 renames, the October Equity/Hybrid/Debt analytics (D100) | 9 files: site/index.html, site/Centricity_IRR_Offshore.js, tools/test/blocklib.test.js, tools/README.md, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S8 (analytics 31-Oct-2026); High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #53 | 19-Nov-2026 | `8178fd3` | docs/mod-03-release-pr52-reckoner-claim-20261119 | GOV | MOD-03 | Release record of PR #52; Reckoner claim; C52, C53 | 6 files, docs only | success | 7 of 7 | site stays S8 |
+| #54 | 19-Nov-2026 | `430e53f` / 44483073883 | data/2026-09-5 | OPS | OPS-02 | "October 2026" Reckoner run (D98, D101 to D105) | 18 files: site/index.html, site/Centricity_SIF_Refresh.js, 4 tools + pins + a new test, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S9; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 
@@ -686,3 +690,18 @@ PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records wer
 | Gate E | client-facing: accepted by the owner before the merge |
 | Follow-ups | C52 (Zerodha alias), C53 (Kotak Corporate Bond equity entry); a stray extract folder that ARC-01 wrote outside the repository was removed by MOD-03 |
 | Rollback | `git revert -m 1 15129cb49116565760843b521c6c194c54801f80`, or restore `backups/2026-11-18_pre-2026-10-analytics/` |
+
+### PR #54 - the "October 2026" Reckoner run (19-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / decisions | TASK-020, TASK-029; D98, D101, D102, D103, D104, D105 |
+| Chat and worktree | OPS-02; `.claude/worktrees/investment-proposal-dashboard-c68580` |
+| Branch / base / head / merge | `data/2026-09-5` / `8178fd3` / `517bcc3` / `430e53f` |
+| Gate B | ARC-01 pre-check STOP (no current contract), re-check of v2 GO WITH CONDITIONS, contract v2.1; DIFF REVIEW GO WITH CONDITIONS, no BLOCKER or MAJOR (a first attempt stalled after 600 s and was re-run; the stalled run's temp extracts were removed by MOD-03). Minor notes: SISOP's exit load shows the PMS row's text; stored MASTER values under the overlay (C56, C57); an existing Crescita si above 1 (not written by this PR) |
+| Approved within D105 by MOD-03 | null list 58 (50 + 4 mid-points of the two new records + Julius Baer and Phillip once re-pointed); Phillip Conservative Credit from the slide-76 CCP Growth table; one restore from the backup and re-run |
+| Gate C | npm test 979 (7 files) and verify_page reproduced by ARC-01 on the head; financial-data-reviewer PASS on the final state; browser 5 of 5 incl. Excel and PowerPoint (21 slides) per OPS-02 |
+| Gate D | the owner's "Yes, publish" (19-Nov-2026) after MOD-03's summary; merged with `--match-head-commit 517bcc3`; push run 44483073883 success; live 7 of 7 = `site/`; local `main` advanced (14.4 E; one file was briefly locked by OneDrive and written on retry) |
+| Gate E | client-facing: accepted by the owner before the merge |
+| Open for the owner | C59 (Live Output grand total leaves out "*" figures), Phillip's SI basis, Neo net figures, Karma Capital Wealth Builder AUM, the Prism name (C6), the Negen name, C41 (static benchmark rows) |
+| Rollback | `git revert -m 1 430e53f37dbb72e53fc0e560e1b93d1ae2d171df`, or restore `backups/2026-11-19_pre-2026-09-5-reckoner/` |
