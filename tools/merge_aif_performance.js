@@ -17,23 +17,41 @@
 // The AIF grid has no 2Y column, so the benchmark block is taken from the PMS – EQUITY grid
 // instead: it carries all four indices WITH 2Y, on the same as-on date, and its 1M/3M/6M/1Y/3Y/5Y
 // values match the AIF grid's to the rounding the deck prints.
+//
+// Coverage gate (name-based since the October 2026 run): it lists every MASTER AIF fund that has a row
+// today and would lose it. Any loss fails the run, unless the owner has read the list and passes
+// --accept-missing <n> with exactly that number (the D71 pattern of merge_reckoner.js --accept-drops).
+// A new row (a new fund in the deck) can no longer hide a loss, as a count comparison did.
 const fs = require('fs');
 const path = require('path');
+
+// Pure gate, exported for tools/test/aif_accept_missing.test.js. hadRow / hasRow: names of MASTER AIF
+// funds with a row before / after; accept: the owner's --accept-missing number, or null.
+function coverageGate(hadRow, hasRow, accept) {
+  const after = new Set(hasRow);
+  const lost = [...new Set(hadRow)].filter(n => !after.has(n)).sort();
+  const accepted = accept !== null && accept === lost.length;
+  return { lost, pass: lost.length === 0 || accepted, accepted, mismatch: accept !== null && !accepted };
+}
+if (require.main !== module) { module.exports = { coverageGate }; return; }
+
 const B = require('./lib/blocklib');
 const PPT = require('./lib/pptx');
 
-const USAGE = 'Usage: node tools/merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--allow-layout-change] [--apply]';
+const USAGE = 'Usage: node tools/merge_aif_performance.js "<Monthly Investment Reckoner - <Month Year>.pptx>" [--html site/index.html] [--allow-layout-change] [--accept-missing <n>] [--apply]';
 const usage = msg => { if (msg) console.error(msg); console.error(USAGE); process.exit(2); };
 const argv = process.argv.slice(2);
-let APPLY = false, ALLOW_LAYOUT = false, HTML = null, SRC = null;
+let APPLY = false, ALLOW_LAYOUT = false, HTML = null, SRC = null, ACCEPT_MISSING = null;
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === '--apply') APPLY = true;
   else if (a === '--allow-layout-change') ALLOW_LAYOUT = true;
-  else if (a === '--html') {
+  else if (a === '--html' || a === '--accept-missing') {
     const v = argv[++i];
     if (v == null || v.startsWith('--')) usage(a + ' needs a value');
-    HTML = v;
+    if (a === '--html') HTML = v;
+    else if (!/^\d+$/.test(v)) usage('*** --accept-missing takes the number of MASTER AIF funds the owner accepts losing their row');
+    else ACCEPT_MISSING = Number(v);
   } else if (a.startsWith('--')) usage('unknown flag: ' + a);
   else if (SRC === null) SRC = a;
   else usage('unexpected extra argument: ' + a);
@@ -220,10 +238,14 @@ for (const [k, v] of Object.entries(aif)) {
 console.log('GATE returns in range and mcap never over 100%: ' + (bad.length ? '*** ' + bad.slice(0, 4).join(' | ') : 'PASS'));
 if (bad.length) fail = true;
 if (short.length) console.log('  note — the deck leaves a market-allocation bucket blank, so these do not reach 100%: ' + short.join(' | '));
-const before = MASTER.filter(r => r.product_class === 'AIF' && cur.aif[r.name]).length;
-const after = MASTER.filter(r => r.product_class === 'AIF' && aif[r.name]).length;
-console.log('GATE MASTER AIF funds with performance: ' + before + ' -> ' + after + ': ' + (after < before ? '*** FAIL fewer funds would have performance' : 'PASS'));
-if (after < before) fail = true;
+const hadRow = MASTER.filter(r => r.product_class === 'AIF' && cur.aif[r.name]).map(r => r.name);
+const hasRow = MASTER.filter(r => r.product_class === 'AIF' && aif[r.name]).map(r => r.name);
+const cov = coverageGate(hadRow, hasRow, ACCEPT_MISSING);
+console.log('GATE MASTER AIF funds with performance: ' + hadRow.length + ' -> ' + hasRow.length + ', losing a row: ' + cov.lost.length + ': ' +
+  (!cov.lost.length ? 'PASS' : cov.accepted ? 'ACCEPTED (--accept-missing ' + ACCEPT_MISSING + ')' : '*** FAIL funds would lose their performance row'));
+cov.lost.forEach(n => console.log('     - ' + n));
+if (cov.mismatch) console.log('*** --accept-missing ' + ACCEPT_MISSING + ' does not match the ' + cov.lost.length + ' funds this run would leave without a row');
+if (!cov.pass || cov.mismatch) fail = true;
 console.log('GATE pms carried forward untouched: ' + Object.keys(cur.pms).length);
 console.log('GATE benchmarks: ' + Object.keys(benchmarks).length + (benchmarks === cur.benchmarks ? ' (unchanged)' :
   ' (refreshed, incl. 2Y; SI set to null for every benchmark, because the deck prints "-" there)'));

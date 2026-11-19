@@ -1159,6 +1159,23 @@ node tools/verify_page.js site
 
 All four are dry-run by default; add `--apply` to write. Gates refuse to write on a regression.
 
+### October 2026: PMS and AIF from the Reckoner, APMI and factsheets (TASK-020, D95, D102, D105)
+
+No vendor `PMS_Scheme_Performance` file came for 30-Sep-2026. The October 2026 Reckoner run (branch `data/2026-09-5`,
+update log `docs/update-log/2026-09_Sep-2026.md`) wrote the PMS figures as on 30-Sep-2026 with a reviewed one-off
+script kept in the month's `_review/` (its SHA-256 is in the update log): the deck's PMS grid (slides 18-19), the deck's
+debt PMS slides, APMI (30-Sep since-inception points, period returns derived from APMI's monthly series) and the
+managers' factsheets; `DATA_DATES.pms` = "30th September 2026". The repeatable tool is TASK-082. Effects on later runs:
+- `merge_pms_performance.js` replaces `PMS_PERFORMANCE.pms` wholesale from the vendor file: it would drop the four
+  Reckoner-only keys (Equinova Edge PMS, Burman Capital Management PMS, Julius Baer Premier Focused Portfolio, Phillip
+  Conservative Credit Portfolio), and it would bring back the vendor's SageOne Core row, frozen at about 30-Nov-2023.
+  Its repin gate stops on pinned names only; read the pms_alias pins before any vendor run.
+- `merge_aif_performance.js` rebuilds the `aif` block from the deck only: next month it drops Karma Capital Jasmine Fund
+  again unless the deck lists it (its row came from the September factsheet), and it never sets `DATA_DATES.pms`.
+- The page comment above `window.PMS_PERFORMANCE` (~index.html 2962-2965) still names the vendor file as the source.
+- `merge_reckoner.js` `NARRATIVE` carries the owner's keep list (D102); the rest of `NARRATIVE` was not refreshed from
+  the deck index (owner's waiver, D104). Known items: KNOWN_ISSUES C54 to C59.
+
 ### PMS performance
 
 `PMS_PERFORMANCE.pms` is **replaced wholesale**; `aif` and `benchmarks` are carried forward

@@ -18,6 +18,25 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - "October 2026" Reckoner: Select, PMS and AIF as on 30-Sep-2026 (data/2026-09-5)
+
+### Changed
+- `site/index.html`: Centricity Select 178 -> 185 (+10, -3; the owner's keep list held); 4 instruments added (Aionios
+  Alpha Fund I, Sundaram SISOP, Equinova Edge PMS, Mosaic Multiyield Fund Series II; owner ranges D102); PMS performance
+  as on 30-Sep-2026 for 27 of 29 MASTER PMS (deck, APMI and factsheets, one-off reviewed script; 4 new pms keys, 696);
+  AIF performance from the deck plus Karma's September factsheet (aif 11); benchmarks refreshed; 58 stale MASTER return
+  fields set to null (one expected figure per fund, D105); `DATA_DATES.pms` "30th September 2026"; PMS_PERF_ALIAS 29.
+- `site/Centricity_SIF_Refresh.js`: Prism Hybrid Long-Short 9-11%, SBI Magnum Equity Ex-Top 100 Long-Short 14-16%.
+- `tools/data/pins.json`: 2 Reckoner pins (D98), 2 AIF pins, 5 PMS alias pins (D105).
+- `tools/merge_reckoner.js`: `NARRATIVE` keep list (D102), Mosaic Series II, Motilal Gift City (C5).
+- `tools/add_reckoner_funds.js`: 4 ADD entries; optional owner `irr` range per entry.
+- `tools/merge_aif_performance.js`: name-based coverage gate and the owner-only `--accept-missing <n>`; new
+  `tools/test/aif_accept_missing.test.js` (11 checks; `npm test` 979).
+- Docs: `docs/update-log/2026-09_Sep-2026.md` (Run 4), `tools/README.md`, `docs/MONTHLY_UPDATE_PROCESS.md`,
+  `.claude/skills/monthly-update/SKILL.md`, `docs/project-control/INTERFACE_CONTRACTS.md`, `docs/INPUT_FILES.md`,
+  `docs/OPERATING_MANUAL.md`, `docs/KNOWN_ISSUES.md` (C54-C59; B1, B2, C4, C5, C6, C38, C41), `docs/PROJECT_STATE.md`,
+  `CLAUDE.md` headline.
+
 ## 2026-11-19 - Release record of PR #52 (October analytics) and the Reckoner run claim (docs only)
 
 ### Changed

@@ -403,6 +403,10 @@ exceptions are noted under their files:
   Date` is 31-Jul, and its rows match the Aug-2026 deck ("as on July 31st"), not the Sep deck. The
   AIF part, from the Sep deck, really is 31-Aug. The label is the owner's call (`KNOWN_ISSUES.md` B1).
 - No file holds 31-Aug or later data yet.
+- **Update 19-Nov-2026 (October 2026 Reckoner run, D95, D105):** no vendor file came for 30-Sep-2026. The PMS figures as on
+  30-Sep-2026 were written from the Reckoner deck's PMS grid and debt PMS slides, APMI and the managers' factsheets by a
+  reviewed one-off script (`docs/update-log/2026-09_Sep-2026.md`; `docs/OPERATING_MANUAL.md`, the monthly Reckoner).
+  The block now carries four Reckoner-only keys that this vendor file and `merge_pms_performance.js` know nothing about.
 - **Recognise:** any sheet whose row 1 contains both `Scheme Name` and `Scheme Return 1 Year`. The
   sheet has been seen as `PMS Performance` and as `Sheet1` (`merge_pms_performance.js:95-105`).
   25 columns are required (`:107-113`): `Scheme Name`, `AUM`, `P/E Ratio`, `Large Cap`, `Mid Cap`,

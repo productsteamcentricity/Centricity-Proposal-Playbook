@@ -26,7 +26,12 @@
     "Karma Capital Wealth Builder ": {"key":"Karma - Wealth Builder","pin":true,"why":"distinct from Fractal Capital - Wealth Builder, which is a different manager","note":"KEY ENDS IN A SPACE on purpose: the MASTER record does. The Fractal false positive this pin used to block is \"Fractal Capital - Wealth Builder\"; \"Karma - Wealth Builder\" is the Karma house name, and the deck recommends it (slide 26)."},
     "TCG Transformative Growth Portfolio": {"key":"TCG Transformative Growth Portfolio","pin":true,"why":"the file carries this name verbatim"},
     "Emkay Golden Decade PMS": {"key":"Emkay Investments - Indias Golden Decade of Growth","repin":true,"pin":true,"why":"the only Emkay Golden Decade strategy in the file","note":"The vendor dropped the doubled apostrophe it used to write (\"India''s\" -> \"Indias\") from the Aug-2026 file (first seen in the 03-Sep issue). Same scheme, same manager; still the only Emkay Golden Decade strategy in the file, the other seven Emkay schemes are unrelated mandates. Shared by both tools (repin + pin), so they cannot disagree."},
-    "Motilal Oswal Founders Portfolio": {"key":"Motilal Oswal-Founders","pin":true,"why":"the only Founders strategy among the 10 Motilal Oswal schemes in the file"}
+    "Motilal Oswal Founders Portfolio": {"key":"Motilal Oswal-Founders","pin":true,"why":"the only Founders strategy among the 10 Motilal Oswal schemes in the file"},
+    "Burman Capital Management PMS": {"key":"Burman Capital Management PMS","pin":true,"why":"owner approval D105: 30-Sep figures from the Reckoner deck (slide 19) under a Reckoner-only key","note":"Was a null pin (absent from the vendor file). The key is written by the October Reckoner run's one-off script (TASK-020); merge_pms_performance.js replaces the pms block wholesale and would drop it (KNOWN_ISSUES)."},
+    "Julius Baer Premier Focused Portfolio": {"key":"Julius Baer Premier Focused Portfolio","pin":true,"why":"owner approval D105: 30-Sep figures from APMI (Julius Baer Premier Focused Portfolio) under a Reckoner-only key","note":"Was a null pin. See Burman Capital Management PMS."},
+    "Phillip Conservative Credit Portfolio": {"key":"Phillip Conservative Credit Portfolio","pin":true,"why":"owner approval D105: 30-Sep Growth option figures from the Reckoner deck (slide 76, the Performance (CCP) table: this product, started 6-Oct-2025) under a Reckoner-only key","note":"Was a null pin. See Burman Capital Management PMS."},
+    "Equinova Edge PMS": {"key":"Equinova Edge PMS","pin":true,"why":"owner approval D105: added to the universe in the October Reckoner run (D101); 30-Sep figures from APMI and the manager's monthly table","note":"Not in the alias map before the run: the one-off script writes the entry (as it re-points the null pins of Burman, Julius Baer and Phillip), pin_pms_alias.js then only cross-checks them."},
+    "Sundaram SISOP": {"key":"Sundaram Alternate - SISOP","pin":true,"why":"owner D101: Sundaram SISOP is the vendor's Sundaram Alternate - SISOP; owner approval D105","note":"Added to the universe in the October Reckoner run; add_reckoner_funds.js writes the alias through pmsKey."}
   },
   "reckoner": {
     "ICICI Prudential Large cap": "ICICI Prudential Large Cap",
@@ -40,7 +45,9 @@
     "HDFC Low Ultra Short to Short Term Fund(G)": "HDFC Ultra Short to Short Term Fund(G)",
     "Axis Treasury Ultra Short to Short Term Fund(G)": "Axis Ultra Short to Short Term Fund-Reg(G)",
     "Alf Accurate Budding Beasts PMS": "AlfAccurate Budding Beasts PMS",
-    "Motilal Oswal Alternative Investment": "Motilal Oswal Alternative Investment (Inbound)"
+    "Motilal Oswal Alternative Investment": "Motilal Oswal Alternative Investment (Inbound)",
+    "Motilal Oswal Founders Fund Series VII": "Motilal Oswal Founders Fund",
+    "Alchemy Long Term Ventures Fund 3": "Alchemy Long Term Ventures Fund"
   },
   "reckoner_notes": {
     "Karma Capital Wealth Builder": "TARGET ENDS IN A SPACE on purpose: the MASTER record does.",
@@ -52,11 +59,15 @@
     "HDFC Low Ultra Short to Short Term Fund(G)": "Sep-2026: the deck applied the SEBI \"Low Duration -> Ultra Short to Short Term\" rename ON TOP of the old name instead of replacing it (\"HDFC Low Duration\" -> \"HDFC Low Ultra Short to Short Term\"; \"Axis Treasury Advantage\" -> \"Axis Treasury Ultra Short to Short Term\"). No normalisation can bridge that, and each has a near-twin that is a DIFFERENT fund: the targets are sub_category \"Low Duration\", while HDFC/Axis \"Ultra Short Term Fund\" are \"Ultra Short Duration\". Both appear under the deck's own LOW DURATION FUNDS heading.",
     "Axis Treasury Ultra Short to Short Term Fund(G)": "See HDFC Low Ultra Short to Short Term Fund(G).",
     "Alf Accurate Budding Beasts PMS": "Added to the universe 20-Aug-2026 by add_reckoner_funds.js; MASTER uses the AMC's own one-word spelling.",
-    "Motilal Oswal Alternative Investment": "Added 20-Aug-2026 by add_reckoner_funds.js; the GIFT City record carries the (Inbound) suffix its peers use. The Sep-2026 deck dropped this fund (KNOWN_ISSUES A20)."
+    "Motilal Oswal Alternative Investment": "Added 20-Aug-2026 by add_reckoner_funds.js; the GIFT City record carries the (Inbound) suffix its peers use. The Sep-2026 deck dropped this fund (KNOWN_ISSUES A20).",
+    "Motilal Oswal Founders Fund Series VII": "Owner D98 (17-Nov-2026): the October 2026 deck's Series VII is our Motilal Oswal Founders Fund record. Also used by merge_aif_performance.js.",
+    "Alchemy Long Term Ventures Fund 3": "Owner D98 (17-Nov-2026): the October 2026 deck's Fund 3 (Series 3) is our Alchemy Long Term Ventures Fund record. Also used by merge_aif_performance.js."
   },
   "aif_performance": [
     "Motilal Oswal Founders Fund*",
     "Alchemy Long Term Ventures Fund*",
-    "Vedartha India Opportunities Fund I"
+    "Vedartha India Opportunities Fund I",
+    "Motilal Oswal Founders Fund Series VII",
+    "Alchemy Long Term Ventures Fund 3"
   ]
 }
