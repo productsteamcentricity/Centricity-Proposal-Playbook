@@ -153,9 +153,9 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-018 | Docs-consistency PR (widened: E6-E15 + ARC-01 findings E17; gated OPS/NB) | GOV | VERIFIED COMPLETE | - | GOV-01 (PR #35, `ddd0304`) | Done |
 | TASK-019 | Owner sends the desk request pack | OPS | UNKNOWN / NEEDS INVESTIGATION | P1 | owner | R |
 | TASK-020 | Sep-2026 Reckoner catch-up | OPS | VERIFIED COMPLETE (PR #54, `430e53f`, 19-Nov-2026; the owner's yes before the merge) | - | OPS-02 | Done |
-| TASK-021 | Oct-2026 MF cycle | OPS | IN PROGRESS (19-Nov-2026: part A live via PR #52; part B claimed, D106) | P1 | OPS-02 | R |
+| TASK-021 | Oct-2026 MF cycle | OPS | VERIFIED COMPLETE (part A PR #52 `15129cb`; part B PR #57 `ca8b519`, 19-Nov-2026; the owner's yes before each merge) | - | OPS-02 | Done |
 | TASK-022 | Feed the Portfolio Matrix from the MF Screener data pack (bridge tool, merge override, tests, docs, regression run) | NB | PLANNED | P1 | NB-05 (proposed; MOD-03 launches it) | R |
-| TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | IN PROGRESS (in TASK-021 part B, claimed 19-Nov-2026) | P1 | OPS-02 | R |
+| TASK-023 | Apply the C20 decision (13 JioBlackRock records) | OPS | VERIFIED COMPLETE (PR #57, `ca8b519`; C16, C20, C43 fixed) | - | OPS-02 | Done |
 | TASK-024 | Apply the 8 confirmed scheme renames (D96) | OPS | VERIFIED COMPLETE (PR #52, `15129cb`, 19-Nov-2026) | - | OPS-02 | Done |
 | TASK-025 | PMS label (B1) | OPS | BLOCKED | P1 | MOD-02 assigns | O |
 | TASK-026 | One rule for the headline expected return | NB | BLOCKED | P2 | MOD-02 assigns | D |

@@ -18,6 +18,13 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - Release record of PR #57 (the October MF cycle; docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the TASK-021 part B + TASK-023 claim released (PR #57, `ca8b519`); no active claim.
+- `TASK_REGISTER.md`: TASK-021 and TASK-023 VERIFIED COMPLETE; `CHAT_REGISTRY.md` (OPS-02); `INTEGRATION_AND_REGRESSION_LOG.md`
+  (baseline `ca8b519`, site S10, rows #55 to #57, the PR #57 entry with its follow-ups).
+
 ## 2026-11-19 - October MF cycle: performance and SIF as on 31-Oct-2026 (data/2026-10)
 
 ### Changed

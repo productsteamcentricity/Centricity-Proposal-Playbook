@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `ca8b519` (PR #57, the October 2026 MF cycle; site content S10). verify_page: MASTER effective 7,692; Select 185 (185); PMS 696 / AIF 11 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES performance, sif and analytics "31st October 2026", pms "30th September 2026", riskMatrix "30 Sep 2026"; 0 duplicates; 0 script errors; npm test 979; live 7 of 7 equal `site/`; push run 44527224542 success. Recovery: restore `backups/2026-11-19_pre-2026-10-mf/` (six files) or `git revert -m 1 ca8b519`.**
+
 **Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `430e53f` (PR #54, the "October 2026" Reckoner run; site content S9). verify_page: MASTER effective 7,686; Select 185 (185 in MASTER); PMS 696 / AIF 11 / benchmarks 4; PMS_PERF_ALIAS 29 (1 null); EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES pms "30th September 2026", analytics "31st October 2026", performance and sif "30th September 2026"; 0 duplicates; 0 script errors; npm test 7 files, 979 checks; live 7 of 7 equal `site/`; push run 44483073883 success. Recovery: restore `backups/2026-11-19_pre-2026-09-5-reckoner/` (six files) or `git revert -m 1 430e53f`.**
 
 **Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `15129cb` (PR #52, the October analytics run: the 8 D96 renames and the October analytics; site content S8). verify_page: EQUITY_ANALYTICS 1,231, DATA_DATES.analytics "31st October 2026", every other count and date unchanged; npm test 968; live 7 of 7 equal `site/`; push run 44470666872 success. Recovery: restore `backups/2026-11-18_pre-2026-10-analytics/` (six files) or `git revert -m 1 15129cb`.**
@@ -117,9 +119,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#54)
+## 4. Per-PR integration table (#1-#57)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #54 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 54 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #57 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 57 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -187,6 +189,9 @@ written down at the time.
 | #52 | 19-Nov-2026 | `15129cb` / 44470666872 | data/2026-10-analytics | OPS | OPS-02 | October analytics run: the 8 D96 renames, the October Equity/Hybrid/Debt analytics (D100) | 9 files: site/index.html, site/Centricity_IRR_Offshore.js, tools/test/blocklib.test.js, tools/README.md, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S8 (analytics 31-Oct-2026); High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 | #53 | 19-Nov-2026 | `8178fd3` | docs/mod-03-release-pr52-reckoner-claim-20261119 | GOV | MOD-03 | Release record of PR #52; Reckoner claim; C52, C53 | 6 files, docs only | success | 7 of 7 | site stays S8 |
 | #54 | 19-Nov-2026 | `430e53f` / 44483073883 | data/2026-09-5 | OPS | OPS-02 | "October 2026" Reckoner run (D98, D101 to D105) | 18 files: site/index.html, site/Centricity_SIF_Refresh.js, 4 tools + pins + a new test, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S9; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #55 | 19-Nov-2026 | `ed31e4d` | docs/mod-03-release-pr54-20261119 | GOV | MOD-03 | Release record of PR #54 | 5 files, docs only | success | 7 of 7 | site stays S9 |
+| #56 | 19-Nov-2026 | `5053b55` | docs/mod-03-d106-mf-claim-20261119 | GOV | MOD-03 | D106; claim of the October MF cycle | 7 files, docs only | success | 7 of 7 | site stays S9 |
+| #57 | 19-Nov-2026 | `ca8b519` / 44527224542 | data/2026-10 | OPS | OPS-02 | October 2026 MF cycle (D80, D94, D96, D99, D103, D106) | 7 files: site/index.html, site/Centricity_SIF_Refresh.js, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S10; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 
@@ -705,3 +710,15 @@ PRs #31 to #33 (2-Nov-2026) have a row in section 4 only: their gate records wer
 | Gate E | client-facing: accepted by the owner before the merge |
 | Open for the owner | C59 (Live Output grand total leaves out "*" figures), Phillip's SI basis, Neo net figures, Karma Capital Wealth Builder AUM, the Prism name (C6), the Negen name, C41 (static benchmark rows) |
 | Rollback | `git revert -m 1 430e53f37dbb72e53fc0e560e1b93d1ae2d171df`, or restore `backups/2026-11-19_pre-2026-09-5-reckoner/` |
+
+### PR #57 - the October 2026 MF cycle (19-Nov-2026)
+
+| Field | Value |
+|---|---|
+| Task / decisions | TASK-021 part B, TASK-023; D80, D94, D96, D99, D103, D106 |
+| Branch / base / head / merge | `data/2026-10` / `5053b55` / `3bb56ab` / `ca8b519` |
+| Gate B | ARC-01 pre-check and DIFF REVIEW GO WITH CONDITIONS. Only DIRECT_PERF, MASTER, MF_BENCHMARK_PERF and DATA_DATES.performance changed in content (the analytics stores re-serialised, equal content); SIF sibling `var SIF` and its date; other siblings byte-identical; +6 MASTER records (5 D106 hand-adds, Lakshya Overnight); clears 28 fields on 14 records; the 37 PMS/AIF stored changes verified as no runtime change. Not in the first summary and put to the owner before the merge: 9 SIF exit-load changes (from the 2-Nov SIF monitor), 2 MF expense changes, 37 fund-manager changes |
+| Gate C | ARC-01 re-ran verify_page and npm test (979) on the head; financial-data-reviewer PASS WITH NOTES (an independent replay reproduced all 2,071 refreshed records and 1,702 Direct entries); browser 8 of 8 per OPS-02 |
+| Gate D | the owner's "Yes, publish" (19-Nov-2026), given again after the extra changes were named; merged with `--match-head-commit 3bb56ab`; push run 44527224542 success; live 7 of 7 = `site/`; local `main` advanced (14.4 E) |
+| Follow-ups (docs) | the update log step 8 must list the 9 SIF exit-load changes; "the bake does not write exit_load" is wrong (the parser merges a non-empty [Exit Load] cell; Helios gained a double space); the UTI si value label; the KNOWN_ISSUES item 8 heading; C67 (average maturity shown as a percent on the Performance Sheet) |
+| Rollback | `git revert -m 1 ca8b519f530e51f952dcfdbf2c518e025955f4d3`, or restore `backups/2026-11-19_pre-2026-10-mf/` |
