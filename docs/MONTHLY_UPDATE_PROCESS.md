@@ -213,7 +213,7 @@ and count lines never fail a run). **Exit 1: a gate failed — stop and read the
 `--apply`** (it would refuse anyway). Exit 2: a usage or input error (unknown flag, bad label, a
 missing value, two files for one input, a missing input file or `--html` page) — fix the command or
 the folder. Override flags are owner decisions, never Claude's: `--accept-drops <n>` (step 14),
-`--allow-coverage-drop` (step 6), `--allow-shrink` (step 4), `--allow-layout-change` (step 15).
+`--allow-coverage-drop` (step 6), `--allow-shrink` (step 4), `--allow-layout-change` and `--accept-missing <n>` (step 15).
 `merge_pms_performance.js` (step 12) has no override.
 
 | Step | Command (add `--apply` after a clean dry-run) | Stop and ask when |
@@ -233,7 +233,7 @@ the folder. Override flags are owner decisions, never Claude's: `--accept-drops 
 | 13 | `node tools/pin_pms_alias.js --html site/index.html` (after step 12 is applied) | any `*** key not in PMS_PERFORMANCE.pms` (blocks all pins) |
 | 14 | `node tools/merge_reckoner.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` | a drop gate fails: a DROPPED fund whose category also lists an unmatched deck name (a join failure), more than 5% dropped, a category emptied, or a dropped fund still under an unmapped deck heading. Only the 5% and emptied-category gates can be waived, with `--accept-drops <n>` after the owner confirms the DROPPED list; `NARRATIVE` not refreshed from the deck's index slides |
 | 14a | `node tools/add_reckoner_funds.js "<M>/<Monthly Investment Reckoner….pptx>" --html site/index.html` — only if step 14 lists deck funds with no MASTER record | always confirm with the owner: this changes the universe |
-| 15 | `node tools/merge_aif_performance.js "<M>/<Monthly Investment Reckoner….pptx>"` | MASTER-coverage gate fails; the deck-layout gate fails (`--allow-layout-change` only after the slides were checked with the owner) |
+| 15 | `node tools/merge_aif_performance.js "<M>/<Monthly Investment Reckoner….pptx>"` | MASTER-coverage gate fails: it lists, by name, the MASTER AIF funds that would lose their row (`--accept-missing <n>` only after the owner has read the names); the deck-layout gate fails (`--allow-layout-change` only after the slides were checked with the owner) |
 | 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | a failed gate (totals, or `MASTER PMS/AIF with look-through` falling); a scheme listed under `no MASTER instrument`; two sheets qualify (pass `--sheet`). Record the printed `look-through as on` date in the update log: the tool leaves `DATA_DATES.analytics` alone (D70) |
 | 17 | `node tools/verify_page.js site` | exit 1, or see B6 |
 

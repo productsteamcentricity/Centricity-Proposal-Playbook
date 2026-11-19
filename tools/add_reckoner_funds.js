@@ -8,7 +8,11 @@
 // from the PMS_PERFORMANCE block already baked into the page (run merge_pms_performance.js first).
 // Expected IRR has no per-fund source anywhere in the pack, so each band is taken from the fund's
 // PEER CATEGORY in MASTER — asserted below and re-derived at run time, so the run fails loudly if
-// a peer group ever stops being unanimous.
+// a peer group ever stops being unanimous. An ADD entry may instead carry the owner's own range,
+// `irr: { low, high, src }` (decimals; e.g. owner decision D102); it replaces the peer band before
+// the mid-point is set, is printed as "owner range <src>", and passes the same 0 < low < high < 50%
+// gate. Note: the peer band is read from MASTER's stored irr_low/irr_high, which the IRR sibling
+// (Centricity_IRR_Offshore.js) overrides at page load for some peers (KNOWN_ISSUES).
 //
 // Safety (KNOWN_ISSUES A20): the dry run exits 1 when any gate failed and --apply refuses on the
 // same condition. Before a hard-coded ADD slide number is used, that slide must name the fund
@@ -104,6 +108,52 @@ const ADD = [
     select: { category: 'GIFT CITY FUNDS', sheet: 'Gift City Funds', kind: 'gift' },
     exit_load: 'Upto 6 months - 4%, >6 to 12 months - 3%, >12 to 24 months - 2%, >24 to 36 months - 1%, >36 months - Nil',
   },
+  // October 2026 deck (data as on 30-Sep-2026): owner decisions D101 (add the three products; Mosaic Series II on
+  // Series I's terms), D102 (ranges) and D104/D105 (Equinova exit load; Mosaic II exit-load text).
+  {
+    name: 'Aionios Alpha Fund I',
+    deckName: 'Aionios Alpha Fund I',
+    reckonerName: 'Aionios Alpha Fund I (CAT III AIF)',
+    slide: 55,
+    asset_class: 'Equity', product_class: 'AIF', sub_category: 'AIF CAT III - Listed Equity',
+    peer: { product_class: 'AIF', sub_category: 'AIF CAT III - Listed Equity' },
+    irr: { low: 0.17, high: 0.19, src: 'D102' },     // the peer group is not unanimous (17-19% / 20-22%)
+    select: { category: 'EQUITY AIFs- Listed Equities', sheet: 'EQUITY AIFs- Listed Equities', kind: 'aif' },
+    exit_load: 'NIL (no lock-in)',
+  },
+  {
+    name: 'Sundaram SISOP',
+    deckName: 'Sundaram SISOP',
+    reckonerName: 'Sundaram India Secular Opportunities Portfolio (SISOP)',
+    slide: 28,
+    asset_class: 'Equity', product_class: 'PMS', sub_category: 'Equity PMS',
+    peer: { product_class: 'PMS', sub_category: 'Equity PMS', category: 'MULTI CAP PMS' },
+    irr: { low: 0.16, high: 0.18, src: 'D102' },     // replaces the peer band 15-17%
+    select: { category: 'MULTI CAP PMS', sheet: 'Equity Multi Cap PMS', kind: 'pms' },
+    pmsKey: 'Sundaram Alternate - SISOP',             // owner D101: the same product
+    exit_load: '1% in 1st year',
+  },
+  {
+    name: 'Equinova Edge PMS',
+    deckName: 'Equinova Edge PMS',
+    reckonerName: 'Equinova Edge PMS',
+    slide: 33,
+    asset_class: 'Equity', product_class: 'PMS', sub_category: 'Equity PMS',
+    peer: { product_class: 'PMS', sub_category: 'Equity PMS', category: 'MULTI CAP PMS' },
+    irr: { low: 0.16, high: 0.18, src: 'D102' },     // replaces the peer band 15-17%
+    select: { category: 'MULTI CAP PMS', sheet: 'Equity Multi Cap PMS', kind: 'pms' },
+    exit_load: '1% for 1 year',                       // D104 as corrected (owner, 18-Nov-2026)
+  },
+  {
+    name: 'Mosaic Multiyield Fund Series II',
+    deckName: 'Mosaic Multiyield Fund Series II',
+    reckonerName: 'Mosaic Multiyield Fund Series II (Cat II AIF)',
+    slide: 82,
+    asset_class: 'Debt', product_class: 'AIF', sub_category: 'Debt AIF',
+    peer: { names: ['Mosaic Multiyield Fund Series I'] },   // D101: same return expectation as Series I
+    select: { category: 'DEBT AIFs', sheet: 'DEBT AIF ', kind: 'aif' },   // the sheet key ends in a space (A25)
+    exit_load: 'Close Ended; Avg 5 years',            // D105
+  },
 ];
 
 const html = fs.readFileSync(HTML, 'utf8');
@@ -166,9 +216,10 @@ for (const spec of ADD) {
   const fact = {};
   details.forEach(d => { fact[d.label.toLowerCase().replace(/[^a-z]/g, '')] = d.value; });
 
-  const band = peerBand(spec.peer);
+  const band = spec.irr ? { low: spec.irr.low, high: spec.irr.high, owner: spec.irr.src || 'owner' } : peerBand(spec.peer);
   if (band.err) { console.error('   *** IRR peer band: ' + band.err); fail = true; continue; }
-  console.log('   IRR ' + pct(band.low) + ' - ' + pct(band.high) + '   (from ' + band.n +
+  if (band.owner) console.log('   IRR ' + pct(band.low) + ' - ' + pct(band.high) + '   (owner range ' + band.owner + ')');
+  else console.log('   IRR ' + pct(band.low) + ' - ' + pct(band.high) + '   (from ' + band.n +
     ' peer' + (band.n === 1 ? '' : 's') + ': ' + band.sample.join(', ') + ')');
 
   const rec = {};

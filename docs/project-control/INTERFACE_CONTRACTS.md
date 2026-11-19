@@ -97,13 +97,13 @@ reviews).
 
 | Store | Keys | In baseline MASTER | In effective MASTER | Note |
 |---|---|---|---|---|
-| CENTRICITY_SELECT | 178 | 178 | 178 | the CI "rename canary" |
+| CENTRICITY_SELECT | 185 | 185 | 185 | the CI "rename canary" (178 until the Oct-2026 Reckoner run) |
 | RISK_MATRIX | 1,088 | 1,088 | 1,076 | 12 keys name rows the SIF sibling removes at load; 0 of the 30 effective SIFs has a row (C42) |
 | EQUITY_ANALYTICS | 1,203 | 1,145 | 1,157 | 12 keys match only effective names (re-keyed SIF entries) |
 | HYBRID_ANALYTICS | 264 | 213 | 226 | 13 keys match only effective names |
 | DEBT_ANALYTICS | 511 | 490 | 490 | |
 | DIRECT_PERF | 1,689 | 1,689 | 1,689 | keyed by the Regular name |
-| PMS_PERF_ALIAS | 27 | 27 | 27 | |
+| PMS_PERF_ALIAS | 29 | 29 | 29 | 1 null pin (Sundaram F.I.R.S.T.) since the Oct-2026 Reckoner run (27, 4 null, before) |
 | IRR sibling `var IRR` | 2,065 | 2,065 | 2,051 | all 2,065 apply, because IRR runs before the SIF sibling removes 14 of those names |
 | PMS_AIF_TERMS | 73 | 55 exact | 50 exact | normalised match at use (~L3878-3881) |
 
@@ -123,8 +123,8 @@ PMS/AIF schemes), so "every key in MASTER" is not an invariant for them.
 | `CENTRICITY_SELECT` (~L1440) | `{MASTER name: {reckonerName, category, sheet, kind, rationale?, alpha?, beta?, sharpe?, sortino?, stdDev?, benchmark?, details?:[{label,value}]}}`; `kind` in mf, pms, aif, unlisted, gift | ratios as stored (alpha unit unclear, C23; ratios are May-2026 values, C36) | 178 | `merge_reckoner`, `add_reckoner_funds`, `rename_schemes`, `fold_duplicate_names` | Select popover and badges; `verify_page` join |
 | `MF_BENCHMARK_PERF` (~L1444) | `{Monitor sheet: [{name, mtd, r1m..r10y, si?}]}` | Decimals | 47 sheets, 334 rows | `bake_month` via `parseMfMonitor` (a sheet is replaced only when benchmark rows were found) | `mfBenchmarkPerfFor` (through `MF_BM_FOR_SUB`, `MF_BM_PREFERRED`) |
 | `DIRECT_PERF` (`^window\.DIRECT_PERF = `, ~L1230) | `{Regular MASTER name: {mtd, r1m..r10y, si, expense, mcap_large/mid/small/other, aum, ytm, avg_maturity, mod_duration}}` | Must equal MASTER's scale (decimals; `aum`, maturity, duration raw) | 1,689 | `bake_month` (full rebuild by `tools/lib/direct_perf.js`), `rebuild_directperf`, `merge_expense_exitload` (expense), `rename_schemes`, `fold_duplicate_names`; runtime `parseMfMonitorDirect` (merges) | `H.toDirect` (its 19-key list is the field contract) |
-| `PMS_PERFORMANCE` (`^window\.PMS_PERFORMANCE = `, ~L2966) | `{pms:{scheme:{aum, exit_load, r1m..r5y, si, sd1y, sd3y, alpha1y, alpha3y, sharpe1y, sharpe3y, sortino1y, sortino3y, beta1y, beta3y, pe, mcap_*?, top_sector_pct?}}, aif:{name:{inception, inception_full, aum, r1m..r5y, si, mcap_*}}, benchmarks:{index:{r1m..r5y, si}}}` | Returns, SD, alpha decimals; sharpe, sortino, beta, pe plain ratios; aum INR crore | pms 692, aif 12, benchmarks 4 | `merge_pms_performance` (`pms` replaced whole; `aif`, `benchmarks` carried), `merge_aif_performance` (`aif` rebuilt; `benchmarks` when the count matches; `pms` carried) | `applyPmsPerformance` (copies onto MASTER PMS/AIF records, sets `_pms_source`), `H.isExpectedReturn`, `verify_page`. **`.benchmarks` has no reader in the page** (C41) |
-| `PMS_PERF_ALIAS` (~L2972) | `{MASTER PMS/AIF name: PMS_PERFORMANCE key or null}`; `null` blocks the fuzzy match | - | 27 (4 null) | `merge_pms_performance` (repins), `pin_pms_alias` (pins), `add_reckoner_funds`; pin lists from `tools/data/pins.json` | `applyPmsPerformance`; `verify_page` "MASTER PMS with perf 23 of 27" |
+| `PMS_PERFORMANCE` (`^window\.PMS_PERFORMANCE = `, ~L2966) | `{pms:{scheme:{aum, exit_load, r1m..r5y, si, sd1y, sd3y, alpha1y, alpha3y, sharpe1y, sharpe3y, sortino1y, sortino3y, beta1y, beta3y, pe, mcap_*?, top_sector_pct?}}, aif:{name:{inception, inception_full, aum, r1m..r5y, si, mcap_*}}, benchmarks:{index:{r1m..r5y, si}}}` | Returns, SD, alpha decimals; sharpe, sortino, beta, pe plain ratios; aum INR crore | pms 696, aif 11, benchmarks 4 (Oct-2026 Reckoner run: 4 Reckoner-only pms keys and Karma's aif row written by a one-off script; `merge_pms_performance` would drop those keys, KNOWN_ISSUES) | `merge_pms_performance` (`pms` replaced whole; `aif`, `benchmarks` carried), `merge_aif_performance` (`aif` rebuilt; `benchmarks` when the count matches; `pms` carried) | `applyPmsPerformance` (copies onto MASTER PMS/AIF records, sets `_pms_source`), `H.isExpectedReturn`, `verify_page`. **`.benchmarks` has no reader in the page** (C41) |
+| `PMS_PERF_ALIAS` (~L2972) | `{MASTER PMS/AIF name: PMS_PERFORMANCE key or null}`; `null` blocks the fuzzy match | - | 29 (1 null) | `merge_pms_performance` (repins), `pin_pms_alias` (pins), `add_reckoner_funds`; pin lists from `tools/data/pins.json` | `applyPmsPerformance`; `verify_page` "MASTER PMS with perf 28 of 29" |
 | `RISK_MATRIX` (`^window\.RISK_MATRIX = `, ~L5533) | `{exact MASTER name: {be, sd, al, so, sh, co, ir, dc, rr?, bm, fl?}}`; `fl` in `split`, `lowcorr` (D74) | **Percent points** for `sd`, `al`, `dc`, `rr` (shown raw with "%"); `be`, `so`, `sh`, `co`, `ir` plain ratios. Not decimals. | 1,088 (966 with metrics, 433 with `rr`, 33 with `fl`) | `merge_risk_matrix` (full replace; `bm` kept, `c` dropped, `fl` added), `rename_schemes`, `fold_duplicate_names`. `build_risk_matrix.py` writes a separate `.js` outside `site/` | `PortfolioMatrixTab`, deck matrix slide, Select popover flag, `H.riskFlagged` |
 | `DATA_DATES` (`^window\.DATA_DATES = \{` ~L1448; `window.DATA_DATES.riskMatrix = ` ~L5535; SIF sibling `:61`) | keys `performance`, `analytics`, `pms`, `sif`, `riskMatrix` | Long labels "30th September 2026" for performance, analytics, pms, sif; short "30 Sep 2026" for riskMatrix (`blocklib.checkAsOn`) | effective 28-Oct-2026: performance / analytics / sif "30th September 2026", pms "31st August 2026" (over 31-Jul data, B1), riskMatrix "30 Sep 2026"; the block's `sif` is a dash placeholder | `bake_month` (performance, analytics), `merge_analytics` (analytics), `merge_pms_performance` (pms), `merge_risk_matrix` (riskMatrix line), `merge_sif_monitor` (sif line); runtime `parseMfMonitor`, `parseMfMonitorDirect` (performance), `parseSif` (sif). Never `merge_pms_aif_analytics` (D70). | 29 references: `dataAsOf`, every export stamp, UI labels; `verify_page` prints it |
 
@@ -223,7 +223,7 @@ in `bake_month`, `merge_analytics`, `merge_pms_performance`; `replaceOnce` in `m
 | `tools/lib/pptx.js` | `entries(file)`, `slideText(xml)`, `slideTables(xml)` | dependency-free `.pptx` reader (A28 open) | `merge_aif_performance` directly; `reck_parse.js` and `reck_narrative.js` (so every Reckoner tool) |
 | `tools/lib/reck_parse.js` | `parse(pptx)` | Reckoner performance grids in order; as a command it always writes its second argument | `merge_reckoner` |
 | `tools/lib/reck_narrative.js` | `slides(pptx)`, `about(slide)`, `details(slide)` | narrative slides | `merge_reckoner`, `add_reckoner_funds` |
-| `tools/data/pins.json` | `_about`, `trailing_space`, `pms_alias` (16), `reckoner` (12), `reckoner_notes` (10), `aif_performance` (3) | byte-exact names; each loader exits 1 if names with an edge space differ from `trailing_space` (A25); pins change only with the owner (D75) | `loadPins()` copied in `merge_pms_performance`, `pin_pms_alias`, `merge_reckoner`, `merge_aif_performance` |
+| `tools/data/pins.json` | `_about`, `trailing_space`, `pms_alias` (21), `reckoner` (14), `reckoner_notes` (12), `aif_performance` (5) | byte-exact names; each loader exits 1 if names with an edge space differ from `trailing_space` (A25); pins change only with the owner (D75) | `loadPins()` copied in `merge_pms_performance`, `pin_pms_alias`, `merge_reckoner`, `merge_aif_performance` |
 
 ---
 
@@ -345,7 +345,7 @@ empty MASTER). `bake_month` runs none.
 | Exit 2 | usage or input error: unknown flag, stray word, value flag without a value, bad `--as-on`, missing or duplicate input, missing `--html` (or `--sibling` / `--js` / `--dir`); checked before anything is read; prints the `Usage: node tools/...` line or, for a bad `--as-on` in `bake_month` and `merge_analytics`, a `***` reason only (Correction 2-Nov-2026). 43 cases in `tools/test/tool_inputs.test.js` cover only two of the conditions above: an input path that does not exist (21 cases: source file, folder, or the `--dir` / `--monitor` / `--expense` / `--hybrid` / `--slides` value) and an `--html` (or `--sibling`) page that does not exist (22 cases). Each must exit 2 with a Usage line and no stack trace, and every case otherwise passes valid flags. The test also fails when a new top-level tool has no case. Unknown flag, stray word, value flag without a value, bad `--as-on`, a second input, and a missing `--html` on `merge_pms_performance` / `pin_pms_alias` / `merge_reckoner` have no automated test (KNOWN_ISSUES A32, TASK-076). Hand-probed on 2-Nov-2026: 25 of 25 tools exit 2 on an unknown flag and on a stray word; the 6 `--as-on` tools on a bad label; the 3 tools without `--html` (Correction 2-Nov-2026) |
 | Gate lines | `GATE <name>: PASS` or `GATE <name>: *** FAIL ...`; `CHECK`, `WARN` and count lines never fail a run. Exceptions: `fold_duplicate_names` omits the `GATE` prefix; a few checks only print (e.g. `merge_pms_aif_analytics.js:191-192` prints `*** unresolved` without failing) |
 | Writes | built in memory, written once through `blocklib` (atomic per file; a two-file write is two renames) |
-| Owner-only overrides | `--accept-drops <n>` (`merge_reckoner`), `--allow-coverage-drop` (`merge_direct_equity_returns`), `--allow-shrink` (`rekey_sif_analytics`), `--allow-layout-change` (`merge_aif_performance`) |
+| Owner-only overrides | `--accept-drops <n>` (`merge_reckoner`), `--allow-coverage-drop` (`merge_direct_equity_returns`), `--allow-shrink` (`rekey_sif_analytics`), `--allow-layout-change` and `--accept-missing <n>` (`merge_aif_performance`) |
 | Backups | before the first `--apply` of a run, copy the six deploy files to `backups/<YYYY-MM-DD>_pre-<YYYY-MM>-refresh/`; no tool makes the backup itself (`tools/README.md` section 1) |
 | Default target | 18 tools default `--html` to `site/index.html` and find siblings beside it; `merge_sif_monitor` (`--sibling`), `update_market_slides` (`--js`), `update_closing_slides` (`--sibling`) default their sibling; **`merge_pms_performance`, `pin_pms_alias`, `merge_reckoner` have no default and exit 2 without `--html`** |
 | `--as-on` style | long ("30th September 2026") for performance, analytics, pms, sif, look-through; short ("30 Sep 2026") for riskMatrix and `build_risk_matrix.py` |
@@ -371,8 +371,8 @@ section 3, and every chat that reads gate lines.
 | `merge_pms_performance.js` | `"<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "<long>" --html site/index.html [--apply]` | PMS_PERFORMANCE.pms, PMS_PERF_ALIAS repins, DATA_DATES.pms |
 | `pin_pms_alias.js` | `--html site/index.html [--apply]` | PMS_PERF_ALIAS pins |
 | `merge_reckoner.js` | `"<Reckoner .pptx>" --html site/index.html [--accept-drops n] [--apply]` | CENTRICITY_SELECT |
-| `add_reckoner_funds.js` | `"<Reckoner .pptx>" [--html p] [--usd-inr 88] [--apply]` | MASTER, CENTRICITY_SELECT, PMS_PERF_ALIAS, `var NEW_GIFT` |
-| `merge_aif_performance.js` | `"<Reckoner .pptx>" [--html p] [--allow-layout-change] [--apply]` | PMS_PERFORMANCE.aif (+ .benchmarks) |
+| `add_reckoner_funds.js` | `"<Reckoner .pptx>" [--html p] [--usd-inr 88] [--apply]`; an `ADD` entry may carry an owner `irr` range | MASTER, CENTRICITY_SELECT, PMS_PERF_ALIAS, `var NEW_GIFT` |
+| `merge_aif_performance.js` | `"<Reckoner .pptx>" [--html p] [--allow-layout-change] [--accept-missing n] [--apply]` | PMS_PERFORMANCE.aif (+ .benchmarks) |
 | `merge_pms_aif_analytics.js` | `"<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "<long>" [--html p] [--sheet name] [--apply]` | EQUITY_ANALYTICS, `var EQ`; never DATA_DATES |
 | `merge_bond_list.js` | `"<Bond List.xlsx>" --desk <Invictus or OneDigital> [--sheet "<tab>"] [--apply] [--html p]` | MASTER Bonds of that desk |
 | `update_closing_slides.js` | `--dir "<render dir>" [--sibling p] [--apply]` | `EXTRA_SLIDES.disclaimer`, `.thankyou` |
@@ -391,29 +391,28 @@ section 3, and every chat that reads gate lines.
 
 ## 6. `verify_page.js` output and CI expectations
 
-Output of `node tools/verify_page.js site` on 28-Oct-2026 (exit 0; re-run by the writer, identical to the
-CLAUDE.md headline):
+Output of `node tools/verify_page.js site` on 19-Nov-2026 (OPS-02, the October 2026 Reckoner run, branch
+`data/2026-09-5`; exit 0; the 28-Oct-2026 snapshot it replaces had Select 178, pms 692, aif 12, PMS_PERF_ALIAS 27 (4 null),
+EQUITY_ANALYTICS 1205 and MASTER PMS with perf 23 of 27):
 
 ```
-MASTER effective          7682
-CENTRICITY_SELECT         178   (keys present in MASTER: 178)
-  with rationale          133
+MASTER effective          7686
+CENTRICITY_SELECT         185   (keys present in MASTER: 185)
+  with rationale          135
   with risk ratios        46
-  with details            51
-PMS_PERFORMANCE.pms       692
-PMS_PERFORMANCE.aif       12
+  with details            53
+PMS_PERFORMANCE.pms       696
+PMS_PERFORMANCE.aif       11
 PMS_PERFORMANCE.benchmark 4
-PMS_PERF_ALIAS            27   (null pins: 4)
-EQUITY_ANALYTICS          1205
+PMS_PERF_ALIAS            29   (null pins: 1)
+EQUITY_ANALYTICS          1231
 RISK_MATRIX               1088
 PMS_AIF_TERMS             73
 EXTRA_SLIDES              6
-DATA_DATES                {"performance":"30th September 2026","analytics":"30th September 2026","pms":"31st August 2026","sif":"30th September 2026","riskMatrix":"30 Sep 2026"}
+DATA_DATES                {"performance":"30th September 2026","analytics":"31st October 2026","pms":"30th September 2026","sif":"30th September 2026","riskMatrix":"30 Sep 2026"}
 duplicate MASTER names    0
 file ends </html>         yes
-MASTER PMS with perf      23 of 27
-
-script errors (excluding the CDN globals): 0
+MASTER PMS with perf      28 of 29
 ```
 
 | Aspect | Contract (VERIFIED, `tools/verify_page.js`) |

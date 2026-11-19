@@ -111,13 +111,23 @@ const SMART_BETA = /(momentum|low\s*vol|value\s*20|alpha\s*50|equal\s*weight|qua
 //   '360 0ne Early-Stage Fund Series I ', 'Campus Fund III ' and 'ValueQuest S.C.A.L.E. Fund II '
 //   are MASTER names that end in a space.
 const NARRATIVE = {
+  // KEEP LIST (owner decision D102, 18-Nov-2026: "Keep tracking them"): Select entries the October 2026 deck no longer
+  // lists but the owner keeps. They stay every month until removed here (KNOWN_ISSUES). The sheet keys equal the live
+  // entries' `sheet`, so a kept entry comes back byte-identical. The deck's replacements (Gold ETF FoFs, Aditya Birla SL
+  // Flexi Cap, Invesco India Large & Mid Cap) are added from the deck as usual.
+  'EQUITY AIFs- Listed Equities': { cat: 'EQUITY AIFs- Listed Equities', kind: 'aif', names: ['Karma Capital Jasmine Fund'] },
+  'Commodities': { cat: 'COMMODITIES', kind: 'mf', names: [
+    'HDFC Gold ETF', 'ICICI Pru Gold ETF', 'Mirae Asset Gold ETF', 'Nippon India ETF Gold BeES', 'SBI Gold ETF'] },
+  'Multi Cap and Focused': { cat: 'DIVERSIFIED EQUITY FUNDS', kind: 'mf', names: ['360 ONE Focused Fund-Reg(G)'] },
+  'Large&Mid and Flexi': { cat: 'DIVERSIFIED EQUITY FUNDS', kind: 'mf', names: ['Tata Large & Mid Cap Fund-Reg(G)'] },
   'Income Plus Arbitrage': { cat: 'INCOME PLUS ARBITRAGE', kind: 'mf', names: [
     'HDFC Income Plus Arbitrage Active FOF-Reg(G)', 'Bandhan Income Plus Arbitrage Active FOF-Reg(G)',
     'Kotak Income Plus Arbitrage Omni FOF-Reg(G)', 'ICICI Pru Income plus Arbitrage Omni FOF(G)'] },
   'Debt PMS': { cat: 'DEBT PMS', kind: 'pms', names: [
     'Neo Yield Enhancer', 'Phillip Conservative Credit Portfolio', 'Sundaram F.I.R.S.T. Debt PMS'] },
   'DEBT AIF ': { cat: 'DEBT AIFs', kind: 'aif', names: [
-    'Northern Arc Money Market Alpha Fund', 'Vivriti Short Term Debt Fund ', 'Mosaic Multiyield Fund Series I',
+    // Mosaic Multiyield: Series I closed to subscriptions; Series II replaces it (owner D101 item 6, D102).
+    'Northern Arc Money Market Alpha Fund', 'Vivriti Short Term Debt Fund ', 'Mosaic Multiyield Fund Series II',
     'UTI Structured Debt Fund IV', 'Neo Infra Income Opportunities Fund II', 'InCred Credit Opportunities Fund III ',
     // Sep-2026 moved this under a new "Long - Short AIF" index heading, which the dashboard has no
     // Select bucket for. MASTER files it Debt / AIF / Debt AIF, so it stays in DEBT AIFs — deck
@@ -132,7 +142,9 @@ const NARRATIVE = {
     'Orbis', 'Parag Parikh Financial Advisory Services', 'Goodluck Defence & Aerospace', 'ESDS Software Solution'] },
   'Gift City Funds': { cat: 'GIFT CITY FUNDS', kind: 'gift', names: [
     'Mirae Asset Global Asset Allocation Fund (Outbound)', 'Ashoka Whiteoak Emerging Fund (Outbound)',
-    'DSP Global Equity Fund (Outbound)', 'Alchemy India Long Term Fund (Inbound)'] },
+    'DSP Global Equity Fund (Outbound)', 'Alchemy India Long Term Fund (Inbound)',
+    // C5 (owner D101 item 4): the deck's "Motilal Oswal Gift City India Equity Fund – Inbound" is this record.
+    'Motilal Oswal Alternative Investment (Inbound)'] },
 };
 // Deck name -> MASTER name, where normalisation cannot bridge the gap on its own. Maintained in
 // tools/data/pins.json (section `reckoner`, with the reason for each pin in `reckoner_notes`);

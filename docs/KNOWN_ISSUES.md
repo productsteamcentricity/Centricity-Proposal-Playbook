@@ -227,6 +227,12 @@ catch-up (`docs/PRD.md` §11.3). **Blocks**: a step cannot be completed until th
 | C51 | The young-fund rule (D94, D103) runs only in the monthly bake: the page's Section 7 uploader does not apply it, and SIF, PMS and AIF young funds keep their `si` | Data | P2 | Open (TASK-039 must not start meanwhile) | - | `REFRESH.parseMfMonitor` / `parseMfMonitorDirect` in `site/index.html`; `tools/lib/fund_life.js`; SIF sibling, PMS/AIF tools |
 | C52 | 17 Zerodha funds keep September analytics: the October workbooks spell them "Zerodha CASE ..." | Data | P2 | Open (an alias is its own task) | - | `tools/merge_analytics.js`, `REFRESH.parseAnalytics`, EQUITY/HYBRID/DEBT_ANALYTICS |
 | C53 | Kotak Corporate Bond Fund(G) carries an older equity look-through entry | Data | P3 | Open | - | EQUITY_ANALYTICS |
+| C54 | The owner's Select keep list lives in `merge_reckoner.js` `NARRATIVE` and blocks those drops every month until removed | Tools | P3 | Open (by design, D102) | **Affects** the Reckoner step | `tools/merge_reckoner.js` NARRATIVE |
+| C55 | `NARRATIVE` was not refreshed from the October 2026 deck index (owner's waiver, D104): Vivriti Diversified Bond Fund III, PROMAFT Partners Fund I (Cat II AIF), ICICI Prudential PIPE Fund (Cat III AIF), Gift City list differences | Data | P3 | Open (owner, D104) | — | `tools/merge_reckoner.js` NARRATIVE |
+| C56 | Stored MASTER IRR bands differ from the IRR sibling's runtime bands for some records; `add_reckoner_funds.js` peerBand reads MASTER | Data | P3 | Open | — | `site/Centricity_IRR_Offshore.js` `var IRR`; MASTER |
+| C57 | Later runs can undo October's PMS/AIF data: a vendor `merge_pms_performance.js` run drops the 4 Reckoner-only keys; `merge_aif_performance.js` drops Karma's row and never sets `DATA_DATES.pms` | Tools | P2 | Open (TASK-082) | **Affects** the next PMS/AIF run | `PMS_PERFORMANCE`; `tools/merge_pms_performance.js`, `tools/merge_aif_performance.js` |
+| C58 | The vendor's SageOne Core Portfolio row was frozen at about 30-Nov-2023 and was live until the October 2026 Reckoner run | Data | P3 | Fixed 19-Nov-2026 (deck 30-Sep row); watch the next vendor run | — | `PMS_PERFORMANCE.pms` "SageOne - Core Portfolio" |
+| C59 | The Live Output Investment Proposal tab's GRAND TOTAL leaves out the band mid-points its rows show with *, so it differs from Section 4 and the deck | Page (UI) | P2 | Open (owner, with C24/C28) | **Affects** client-facing totals | `site/index.html` ProposalTab totals (~L7418-7462) |
 | R1 | Client PII still public in the outgoing owner's repo and site | Security | P1 | Open (outgoing owner) | — | upstream `Portfolio_Review_Build_Prompt.md` |
 | R2 | Public repo and site; `robots.txt` ineffective | Security | P2 | Accepted (D60); `noindex` meta added 19-Oct-2026 (PR #12, D77) | — | `site/robots.txt`; `site/index.html:3` |
 | R3 | CDN scripts load without integrity (SRI) | Security | P2 | Closed 19-Oct-2026 (PR #12, D77) | — | `site/index.html:1224-1228` |
@@ -1107,6 +1113,8 @@ record keeps its "Equity ETF" class and has no analytics-store entry; it is not 
 ### B1. No PMS performance file transferred; PMS is 31-Jul-2026 data under a 31-Aug-2026 label
 **P2 · Open (desk) · Blocks the PMS step**
 
+**Update 19-Nov-2026 (October 2026 Reckoner run, D95, D105):** PMS performance now as on 30-Sep-2026 for 27 of 29 MASTER PMS (Neo Yield Enhancer keeps its 31-Jul net row until net 30-Sep figures come; Sundaram F.I.R.S.T. has no source) under `DATA_DATES.pms` "30th September 2026", with the AIF rows. Closes when the repeatable route (TASK-082) exists; later-run risks: C57.
+
 **Update 18-Nov-2026 (D105).** The owner approved the label "30th September 2026" (DEC-OPEN-04 answered). B1 closes when the October Reckoner run (TASK-020) is merged.
 
 **Update 18-Nov-2026 (D102).** The owner chose one date for the PMS and AIF tables: performance as on 30-Sep-2026 (the deck, and APMI where the deck has no 30-Sep row). The label (DEC-OPEN-04) is to be confirmed; if it becomes "30th September 2026", B1 closes with the October Reckoner run.
@@ -1134,6 +1142,8 @@ record keeps its "Equity ETF" class and has no analytics-store entry; it is not 
 
 ### B2. Live Sep-2026 Reckoner deck not in the pack
 **P2 · Partly fixed 25-Oct-2026 (handover export) · Open (desk) for the Oct-2026 deck · Blocks the Reckoner and AIF steps**
+
+**Update 19-Nov-2026:** the "October 2026" deck (data as on 30-Sep-2026) was applied in the October 2026 Reckoner run (branch `data/2026-09-5`; D98, D101, D102, D105).
 
 - **Evidence:** Only `monthly-updates/2026-07_Jul-2026/Monthly Investment Reckoner - August 2026.pptx`
   (as on 31-Jul) was transferred. The Sep-2026 deck (as on 31-Aug), which produced today's
@@ -1351,6 +1361,8 @@ commit adds a new root `README.md`.
 ### C4. Mosaic Multiyield Series I keeps a Select badge
 **P2 · Open (desk) · Affects the Reckoner step**
 
+**Update 19-Nov-2026:** applied. Mosaic Multiyield Fund Series II was added (13-14%, exit load "Close Ended; Avg 5 years") and holds the Select badge; Series I lost it (D102).
+
 **Update 18-Nov-2026 (D102).** Series I loses its Select entry in the October Reckoner run.
 
 **Update 18-Nov-2026 (D101).** The desk via the owner: Mosaic Multiyield is close-ended; Series I has closed subscriptions and Series II is open with the same return expectation and terms: add Series II in the Reckoner run. Whether Series I keeps its badge: to be confirmed (INFERRED: no).
@@ -1363,6 +1375,8 @@ new money.
 
 ### C5. Motilal Oswal Gift City India Equity Fund – Inbound: very likely our existing record under a new deck label
 **P2 · Open (desk to confirm, then a pin) · Affects the Reckoner step**
+
+**Update 19-Nov-2026:** applied. Gift City Select membership comes only from `NARRATIVE['Gift City Funds']`, not from a pin, so the record was added there; Motilal Oswal Alternative Investment (Inbound) holds the Select badge again.
 
 **Update 18-Nov-2026 (D101).** Confirmed ("Yes"): one product under two labels. Add the Reckoner pin in the October Reckoner run.
 
@@ -1385,6 +1399,8 @@ without adding a fund.
 
 ### C6. Prism Hybrid Long-Short Fund has no AMC prefix
 **P3 · Open · —**
+
+**Update 19-Nov-2026:** the band (9-11%) is applied in the SIF sibling. The AMC is not: setting `sif_amc` without renaming the record would create a wrong match key (the sibling strips the AMC prefix from the name); the rename is an open owner question (Q9).
 
 **Update 18-Nov-2026 (D101).** Prism Hybrid Long-Short Fund is run by JioBlackRock Mutual Fund; expected range 9%-11%. Applied in the October run (SIF sibling).
 
@@ -1931,6 +1947,8 @@ reviewed data change, and record it in DECISIONS. Related: C28.
 ### C38. The "SBI" AMC of the Magnum Equity Ex-Top 100 SIF was inferred, not sourced
 **P3 · Open (desk) · —**
 
+**Update 19-Nov-2026:** the AMC "SBI" is now sourced (owner D101) and the band 14-16% is applied in the SIF sibling.
+
 **Update 18-Nov-2026 (D101).** Confirmed: Magnum Equity Ex-Top 100 Long-Short SIF is run by SBI Mutual Fund; expected range 14%-16%. Applied in the October run (SIF sibling).
 
 The SIF Monitor's raw name is `Magnum Equity Ex-Top 100 Long-Short Fund-Reg(G)`, with no AMC. The
@@ -1978,6 +1996,8 @@ as at `2b2a397`; re-find them with the grep pattern given.
 
 ### C41. PMS/AIF benchmark rows show static values; the monthly benchmark refresh reaches no page
 **P2 · Open (owner decision: source and refresh) · Affects the AIF step (its benchmark refresh is never shown)**
+
+**Update 19-Nov-2026:** the static PMS/AIF benchmark rows (May-2026 values) now sit under the "30th September 2026" label; the owner was told (MOD-03).
 
 - **What (found 28-Oct-2026 during the MOD-01 handover reconstruction):** the benchmark rows under the
   PMS and AIF buckets on the screen's Performance tab (`site/index.html:7934`), in the Excel export
@@ -2197,6 +2217,41 @@ as at `2b2a397`; re-find them with the grep pattern given.
 - **What (found in the October analytics run, 19-Nov-2026):** a debt fund has an entry in EQUITY_ANALYTICS that predates the run (the run did not change it), so the fund can show an equity look-through.
 - **Suggested fix:** check the entry against the debt workbook and remove it in a reviewed data change.
 - **Related:** C52; the October update log.
+
+### C54. The owner's Select keep list lives in `NARRATIVE`
+**P3 | Open (by design, D102) | Affects the Reckoner step**
+
+- **What (October 2026 Reckoner run, 19-Nov-2026):** the owner keeps Karma Capital Jasmine Fund, the five gold ETFs (HDFC, ICICI Pru, Mirae Asset, Nippon India BeES, SBI), 360 ONE Focused Fund and Tata Large & Mid Cap Fund in Centricity Select although the deck no longer lists them ("Keep tracking them", D102). `merge_reckoner.js` has no keep mechanism, so they are listed in `NARRATIVE` with a D102 comment. They stay every month until removed there.
+- **Suggested fix:** ask the owner each Reckoner cycle whether the list still holds; a `select_keep` section in `tools/data/pins.json` would be cleaner (a tool change).
+
+### C55. `NARRATIVE` not refreshed from the October 2026 deck index (waiver)
+**P3 | Open (owner, D104) | -**
+
+- **What:** MONTHLY_UPDATE_PROCESS B4 row 14 asks for `NARRATIVE` to be re-read from the deck's index every month. The October 2026 run changed only the decided items (keep list, Mosaic Series II for Series I, the Motilal Gift City entry, C5). Not taken, on the owner's word (D104): Vivriti Diversified Bond Fund III and PROMAFT Partners Fund I (Cat II AIFs), ICICI Prudential PIPE Fund (Cat III AIF), and the Gift City list differences (JioBlackRock Advantage World Equity, ABSL Emerging Market Equity (IFSC), Bandhan India Small Cap (IFSC); Mirae Global Asset Allocation no longer in the deck). None of the three AIFs is a GIFT City fund.
+- **Suggested fix:** decide them with the owner; the Gift City list belongs to TASK-083.
+
+### C56. Stored IRR bands differ from the IRR sibling's runtime bands
+**P3 | Open | -**
+
+- **What:** `Centricity_IRR_Offshore.js` overwrites irr_low/irr_high at page load for 2,065 names, so the expected figure the page shows (the band mid-point, marked *) can differ from MASTER's stored band and from a stored mid-point. `add_reckoner_funds.js` derives a new fund's band from the stored MASTER bands of its peers. Found in the October 2026 Reckoner run: e.g. AIF CAT III peers store 17-19% or 20-22% while their runtime bands are 16-18%. The run nulled the stored mid-points of the PMS/AIF records it touched (owner's one-figure rule, D105), so each of them now shows its runtime mid-point.
+- **Suggested fix:** fold the IRR sibling into MASTER (TASK-045) or make peerBand read the runtime band.
+
+### C57. Later runs can undo the October PMS/AIF data
+**P2 | Open (TASK-082) | Affects the next PMS/AIF run**
+
+- **What:** the October 2026 Reckoner run wrote the PMS figures as on 30-Sep-2026 with a one-off script, including four keys no vendor file has (Equinova Edge PMS, Burman Capital Management PMS, Julius Baer Premier Focused Portfolio, Phillip Conservative Credit Portfolio), and Karma Capital Jasmine Fund's AIF row from its factsheet. `merge_pms_performance.js` replaces the pms block wholesale (it would drop the four keys; its repin gate stops on pinned names only) and would restore the vendor's frozen SageOne row (C58). `merge_aif_performance.js` rebuilds the aif block from the deck (Karma's row goes unless the deck lists it) and never sets `DATA_DATES.pms`. The page comment above `window.PMS_PERFORMANCE` still names the vendor file.
+- **Suggested fix:** the repeatable PMS/AIF tool, TASK-082; until then read OPERATING_MANUAL "The monthly Reckoner" before any PMS/AIF run.
+
+### C58. SageOne Core Portfolio: a frozen vendor row was live
+**P3 | Fixed 19-Nov-2026 | watch the next vendor run**
+
+- **What:** the vendor entry "SageOne - Core Portfolio" had a Risk Ratios Date of 30-Nov-2023 in all three vendor workbooks and showed those figures (1Y 37.21%, SI 19.33%, AUM 2,975 Cr) on the live page. The October 2026 run replaced them with the deck's 30-Sep row (financial-data-reviewer, 18-Nov-2026). A vendor merge would bring the old row back (C57).
+
+### C59. The Live Output Investment Proposal tab's GRAND TOTAL leaves out the * mid-points
+**P2 | Open (owner, with C24/C28) | Affects client-facing totals**
+
+- **What (browser check of the October 2026 Reckoner run, 19-Nov-2026):** the Investment Proposal tab of Section 6.1 weights the raw `fund.r1y/r3y/r5y` and skips nulls, while Section 4 and the deck weight `H.effectiveReturn` (the band mid-point when a period is missing, shown with *). For a 10-fund test proposal the tab read 1Y 9.52 / 3Y 13.63 / 5Y 11.81 while Section 4 and the deck read 11.81 / 14.61 / 14.74; averaging without the starred cells gives exactly the tab's figures. The code is unchanged; the gap shows more since the run nulled stored PMS/AIF mid-points (owner's one-figure rule, D105; C56), which turns them into runtime fallbacks. Related to C24 and C28, not the same item.
+- **Suggested fix:** one weighting rule for all three places (a reviewed page-code change, D82 area); the owner decides whether totals include expected figures (C24).
 
 ---
 

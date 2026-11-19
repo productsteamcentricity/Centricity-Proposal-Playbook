@@ -70,7 +70,7 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    category (the gate pairs within one), a universe change (step 14a), 0 joins, a wholly empty return
    column, any FAIL gate, or a count that moves for no reason you can explain. Never add an override
    flag without the owner: `--accept-drops <n>` (Reckoner), `--allow-coverage-drop` (DE returns),
-   `--allow-shrink` (SIF re-key), `--allow-layout-change` (AIF). Use the `financial-data-reviewer`
+   `--allow-shrink` (SIF re-key), `--allow-layout-change` and `--accept-missing <n>` (AIF). Use the `financial-data-reviewer`
    agent to spot-check scale (Monitor percents ÷ 100) and 5–10 sample records against the workbooks.
 5. **Slides (B5)** when a new Outlook / Market Update deck is present: empty `C:\t\`, render with
    PowerPoint COM at 2001×1125 (logos and slide numbers deleted first), re-encode into `C:\t\q82\`,

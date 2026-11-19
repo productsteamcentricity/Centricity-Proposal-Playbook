@@ -42,7 +42,7 @@ tests re-checked the same day with the C19 parser change (refresh-only Monitor s
    without the word FAIL). Lines marked `CHECK` or `WARN`, and gates that only print counts, never
    fail a run, so read the whole dry run even when it exits 0. Any `*** AMBIGUOUS` is a stop for the
    owner. Override flags exist for owner decisions only: `--accept-drops <n>` (Reckoner),
-   `--allow-coverage-drop` (DE returns), `--allow-shrink` (SIF re-key), `--allow-layout-change` (AIF).
+   `--allow-coverage-drop` (DE returns), `--allow-shrink` (SIF re-key), `--allow-layout-change` and `--accept-missing <n>` (AIF).
 4. **Back up the six deploy files before the first `--apply` of a run.** They go to
    `backups/<YYYY-MM-DD>_pre-<YYYY-MM>-refresh/` (§2 step 0; `backups/README.md`). Every write to the
    deploy files goes through `tools/lib/blocklib.js`: a temp file beside the target, then a rename,
@@ -157,7 +157,9 @@ same numbering, so "step 12" means the same tool in both.
    `node tools/rename_schemes.js --monitor "$M/Daily MF monitor_<date>.xlsx"`
 2. **Bake.** This step needs the Regular and Direct monitors at the top of `$M` and the three
    Analytics workbooks in `$M/Analytics/`.
-   `node tools/bake_month.js --dir "$M" --as-on "31st October 2026"`
+   `node tools/bake_month.js --dir "$M" --as-on "31st October 2026" --nav-date 2026-11-02 --nav-date-direct 2026-10-30`
+   (the two NAV flags as for October 2026, D99: the Regular monitor's NAV date was 2-Nov, the Direct one's 30-Oct; without
+   them both default to the `--as-on` date, D91.)
 3. **Fill the variant analytics.** Run this after every bake.
    `node tools/fill_variant_analytics.js --dir "$M"`
 4. **Re-key the SIF analytics.** Run this after every bake. If its store-size gate fails because a
@@ -206,8 +208,12 @@ line, never off the file name.
       owner first. The funds it adds are the ones hard-coded in its `ADD` list (§6). A fact-card AUM
       in USD mn is converted at `--usd-inr` (default 88).
       `node tools/add_reckoner_funds.js "$M/Monthly Investment Reckoner - <Month Year>.pptx"`
+      An `ADD` entry may carry the owner's own expected range, `irr: { low, high, src }`, which replaces the
+      peer band (printed as "owner range <src>"; October 2026: D102).
 15. **AIF performance and benchmarks.** This uses the same deck as step 14. If the layout gate fails,
-    check the slides by hand; `--allow-layout-change` only with the owner.
+    check the slides by hand; `--allow-layout-change` only with the owner. If the coverage gate lists
+    MASTER AIF funds that would lose their row (the deck no longer carries them), re-run with
+    `--accept-missing <that many>` only after the owner has read the names (October 2026: 3, D105).
     `node tools/merge_aif_performance.js "$M/Monthly Investment Reckoner - <Month Year>.pptx"`
 16. **PMS/AIF look-through** (only when the file is supplied). Record the `look-through as on` line
     in the update log; the page has no label for it (D70). If two sheets carry the holdings header,
@@ -253,7 +259,7 @@ writing `site/index.html` writes only the blocks named.
 | `merge_pms_performance.js` | `PMS_Scheme_Performance_<Month Year>.xlsx`. The sheet is found by its header (`Scheme Name` + `Scheme Return 1 Year`), and 25 columns are required. Also PMS_PERFORMANCE, PMS_PERF_ALIAS, MASTER and the `pms_alias` entries marked `repin` in `tools/data/pins.json`. | `PMS_PERFORMANCE.pms`, **replaced wholesale** (`aif` and `benchmarks` are carried over). The `repin` entries in PMS_PERF_ALIAS. `DATA_DATES.pms`. One atomic write. | `AUM column treated as …` (rupees or crore). The duplicate-row list. `pms N -> M`. A `repin` key missing from the file stops the run (exit 1). The re-pointed pins table: check each 1Y/AUM. `still pinned null` (from the live alias map; its "file offers" names are hints, never applied). Gates (exit 1): MASTER PMS funds with performance must not fall, values in range, `DATA_DATES.pms` set. No override flag. | `node tools/merge_pms_performance.js "<PMS_Scheme_Performance_<Month Year>.xlsx>" --as-on "<label>" --html site/index.html [--apply]` |
 | `pin_pms_alias.js` | PMS_PERF_ALIAS, `PMS_PERFORMANCE.pms` as baked, the MASTER PMS records, and the `pms_alias` entries marked `pin` in `tools/data/pins.json`. | PMS_PERF_ALIAS. | Any `*** not in the alias map` or `*** key not in PMS_PERFORMANCE.pms` line: one blocks **all** pins. The per-pin 1Y/3Y/AUM lines. `GATE still pinned null`. Gates (exit 1): every pin resolves against the PMS block on disk; MASTER PMS funds with performance must not fall. | `node tools/pin_pms_alias.js --html site/index.html [--apply]` |
 | `merge_reckoner.js` | The Reckoner `.pptx`: its performance grids (8+ columns, presentation order) and its narrative slides. Also CENTRICITY_SELECT, MASTER (`name`, `prev_name`, `sub_category`) and the `reckoner` pins in `tools/data/pins.json`. | CENTRICITY_SELECT. | `N -> M (+added, -dropped)`. `GATE categories` must be 33. `RESOLVED VIA prev_name`. `NEW ENTRIES WITH NO RATIONALE`. Write gates (exit 1): every key in MASTER; no dropped fund whose category also holds an unmatched deck name; at most 5% dropped; no category emptied (D71); no dropped fund still listed under a deck heading `GRID` does not map (D76). `--accept-drops <n>` waives only the 5% and emptied-category gates, and only when the run drops exactly n. | `node tools/merge_reckoner.js "<Monthly Investment Reckoner - <Month Year>.pptx>" --html site/index.html [--accept-drops <n>] [--apply]` |
-| `merge_aif_performance.js` | Two grids in the same `.pptx`: the `AIF PERFORMANCE` grid, and the `PMS – EQUITY` grid (benchmarks with 2Y). Also PMS_PERFORMANCE, the MASTER AIF records and the `aif_performance` pins in `tools/data/pins.json`. | `PMS_PERFORMANCE.aif`, rebuilt wholesale. `.benchmarks`, only if the count matches (benchmark SI is set to null). `pms` is left untouched. | The benchmark slide. The per-fund old→new table. `deck rows with no MASTER AIF record`. Gates (exit 1): returns within ±100%, m-cap sum ≤ 102% (under 98% is only noted), AIF coverage must not fall, deck layout as expected (m-cap sub-header in the last four columns, a PMS – EQUITY grid with 2Y, the stored benchmark count), which `--allow-layout-change` overrides after a hand check. | `node tools/merge_aif_performance.js "<Reckoner .pptx>" [--html <p>] [--allow-layout-change] [--apply]` |
+| `merge_aif_performance.js` | Two grids in the same `.pptx`: the `AIF PERFORMANCE` grid, and the `PMS – EQUITY` grid (benchmarks with 2Y). Also PMS_PERFORMANCE, the MASTER AIF records and the `aif_performance` pins in `tools/data/pins.json`. | `PMS_PERFORMANCE.aif`, rebuilt wholesale. `.benchmarks`, only if the count matches (benchmark SI is set to null). `pms` is left untouched. | The benchmark slide. The per-fund old→new table. `deck rows with no MASTER AIF record`. Gates (exit 1): returns within ±100%, m-cap sum ≤ 102% (under 98% is only noted), no MASTER AIF fund may lose its row (by name; `--accept-missing <n>` accepts exactly n, listed), deck layout as expected (m-cap sub-header in the last four columns, a PMS – EQUITY grid with 2Y, the stored benchmark count), which `--allow-layout-change` overrides after a hand check. | `node tools/merge_aif_performance.js "<Reckoner .pptx>" [--html <p>] [--allow-layout-change] [--apply]` |
 | `merge_pms_aif_analytics.js` | `PMS & AIF Analytics <Month Year>.xlsx`: the sheet whose header carries the look-through columns (two such sheets need `--sheet`); `Holding(%)` is a fraction. Also MASTER, EQUITY_ANALYTICS and `var EQ` in `site/Centricity_June_Refresh.js`. | EQUITY_ANALYTICS (the schemes it builds are replaced). Also `var EQ` in `Centricity_June_Refresh.js`, for shared keys; both in one `writeFilesAtomic` call. Never `DATA_DATES` (D70). | The `mapped N of M` table (total %). `no MASTER instrument — holdings skipped`. `stale look-through` (listed, kept). The `look-through as on` line, for the update log. Gates (exit 1): totals ~100 and reconcile, MASTER PMS/AIF with look-through must not fall. | `node tools/merge_pms_aif_analytics.js "<PMS & AIF Analytics <Month Year>.xlsx>" --as-on "<label>" [--sheet "<name>"] [--html <p>] [--apply]` |
 | `add_reckoner_funds.js` (on demand) | The Reckoner `.pptx`, at the slide numbers hard-coded in `ADD`; the slide of each fund not yet in MASTER must name it or the run refuses. Also MASTER, CENTRICITY_SELECT, PMS_PERF_ALIAS, PMS_PERFORMANCE, and `NEW_GIFT` in the June sibling. | MASTER (new records), CENTRICITY_SELECT, PMS_PERF_ALIAS. A GIFT City add also goes into `NEW_GIFT` in `Centricity_June_Refresh.js`, only while this deck names the fund; both files in one `writeFilesAtomic` call. | `already in MASTER — skipping` (all four today; a skipped fund gets no slide check). `slide N names the fund: PASS`. Each `=== <fund> ===` block: IRR band and peers, AUM conversion (the USD/INR line), rationale. `MASTER baseline N -> M`. Gates (exit 1): no duplicate names, full field set, IRR bands sane, `NEW_GIFT` readable. | `node tools/add_reckoner_funds.js "<Reckoner .pptx>" [--html <p>] [--usd-inr 88] [--apply]` (`--pms` is accepted and ignored) |
 
@@ -608,7 +614,9 @@ Only what an operator must know before running each tool. Line references are to
   yourself: a renamed fund filed under a different heading can pass. The tool does not check that
   the deck is newer than the live Select list.
 - `NARRATIVE` (`:110`) is hand-copied from the deck's index slides 2–4 and must be re-read every
-  month. The trailing spaces in `'DEBT AIF '` and `'Unlisted Equity '` are deliberate.
+  month. Since October 2026 it also carries the owner's keep list (D102): Select entries the deck no
+  longer lists but the owner keeps; they block those drops every month until removed. The October 2026 run
+  did not refresh the rest of `NARRATIVE` from the deck's index (owner's waiver, D104). The trailing spaces in `'DEBT AIF '` and `'Unlisted Equity '` are deliberate.
 
 **merge_aif_performance.js**
 - No as-on date is stored for AIF anywhere. Read it off the slide and record it in
@@ -617,6 +625,10 @@ Only what an operator must know before running each tool. Line references are to
   `--allow-layout-change` only after checking the slides. If the issue was the benchmark grid or its
   count, the stored benchmarks are kept. Never run it at the same time as `merge_pms_performance.js`,
   because both rewrite PMS_PERFORMANCE.
+- It rebuilds the `aif` block from the deck grid only. A fund the deck leaves out loses its row, so the
+  coverage gate lists it by name and fails; `--accept-missing <n>` (owner only) accepts exactly n. A row
+  from another source (October 2026: Karma Capital Jasmine Fund from its factsheet) is written afterwards,
+  and the next run drops it again unless the deck lists the fund. It never sets `DATA_DATES.pms`.
 
 **merge_pms_aif_analytics.js**
 - It never writes `DATA_DATES.analytics` (the MF analytics label; D70). `--as-on` is still
@@ -627,8 +639,10 @@ Only what an operator must know before running each tool. Line references are to
 **add_reckoner_funds.js**
 - Its data lives in the code. The `ADD` list (`:57`) carries slide numbers from the Aug-2026 deck;
   the slide of a fund not yet in MASTER must name that fund, or the run refuses. Adding a fund from
-  a newer deck means updating its slide in `ADD` (a `feat/` PR). Today all four funds are already
-  in MASTER and are skipped before the slide check.
+  a newer deck means updating its slide in `ADD` (a reviewed change). Since the October 2026 run all eight
+  funds are in MASTER and are skipped before the slide check.
+- `irr: { low, high, src }` on an entry replaces the peer band before the 1Y/3Y/5Y mid-point is set. The peer
+  band reads MASTER's stored irr_low/irr_high, which the IRR sibling overrides at page load for some peers.
 - `--pms` is ignored. The PMS figures come from the PMS_PERFORMANCE already in the page, so apply
   step 12 first. A GIFT City fund goes back into `NEW_GIFT` only while the deck still names it.
 
