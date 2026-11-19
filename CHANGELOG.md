@@ -18,6 +18,16 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-19 - D106 and the October MF cycle claim (OPS-02; docs only)
+
+### Added
+- D106: the owner approved the October MF cycle points: five funds added by hand (classes as proposed), no expected range
+  yet for them and Lakshya Overnight, the ICICI exit-load text, the JioBlackRock "*" figures, two unusual figures kept.
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the TASK-021 part B + TASK-023 claim (OPS-02) and its condensed contract.
+- `DECISION_LOG.md` (next D107), `TASK_REGISTER.md` (TASK-021, TASK-023), `CHAT_REGISTRY.md` (OPS-02), `docs/project-control/README.md`.
+
 ## 2026-11-19 - Release record of PR #54 (the October Reckoner run; docs only)
 
 ### Changed
