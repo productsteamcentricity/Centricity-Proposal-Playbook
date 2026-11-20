@@ -18,6 +18,16 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-20 - D107 and the claim for the November Market Update slides (docs only)
+
+### Added
+- D107: the November 2026 Market Update slides are all eight (the November Reckoner's slides 5-10, then the two Invictus
+  "Recent Market Updates" slides), each with its own date; a one-off.
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the claim (OPS-02, `site/Centricity_ExtraSlides.js` market slides only;
+  Guardian pre-check GO WITH CONDITIONS). `DECISION_LOG.md` (next D108), `CHAT_REGISTRY.md` (OPS-02), project-control README.
+
 ## 2026-11-19 - Release record of PR #57 (the October MF cycle; docs only)
 
 ### Changed
