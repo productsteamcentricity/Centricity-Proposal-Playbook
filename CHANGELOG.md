@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-20 - November 2026 Market Update slides: 8 slides (data/2026-10-mkt)
+
+### Changed
+- `site/Centricity_ExtraSlides.js`: `EXTRA_SLIDES.market` 6 -> 8 slides, written by `tools/update_market_slides.js` (OPS-02):
+  the November Reckoner's six market slides (Equity, Institutional Activity, Debt, Gold, Brent, Overall; October data), then
+  the two Invictus "Recent Market Updates" slides (13-Nov-2026). Each slide keeps its own date. The other EXTRA_SLIDES keys
+  and every byte outside the literal are unchanged. The file grows by about 1.1 MB (2.62 MB -> 3.74 MB); the deck by 2 slides.
+- D107 is a one-off owner choice (the pagers file sent had 2 slides, not the usual 6): the process documents keep one pagers
+  deck as the source, so `docs/MONTHLY_UPDATE_PROCESS.md` and `tools/README.md` are unchanged.
+
+### Docs
+- `docs/update-log/2026-10_Oct-2026.md` Run 3; `docs/PROJECT_STATE.md`.
+
 ## 2026-11-20 - D107 and the claim for the November Market Update slides (docs only)
 
 ### Added
