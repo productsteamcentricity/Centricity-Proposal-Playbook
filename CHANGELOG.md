@@ -18,6 +18,12 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-20 - Claim for the November 2026 Reckoner run (OPS-02; docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the claim for the "November 2026" Reckoner run (data as on 31-Oct-2026;
+  D108; branch `data/2026-10-2`; Guardian pre-check GO WITH CONDITIONS). `CHAT_REGISTRY.md` (OPS-02).
+
 ## 2026-11-20 - Release record of PR #60 (market slides); D108; C67, C68 (docs only)
 
 ### Added
