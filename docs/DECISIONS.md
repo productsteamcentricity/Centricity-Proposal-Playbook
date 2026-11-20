@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88 and D97 under "Process", D98, D101, D102, D104 and D105 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103 and D106 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104 and D105 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103 and D106 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -140,6 +140,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D104 | 18-Nov-2026 | Further desk facts for the October Reckoner run: Karma's 30-Sep factsheet, Equinova exit load 1% for 1 year, Alchemy Leaders row is 30-Sep, three AIFs are Cat II/III not GIFT City (owner) | Reckoner | Active |
 | D105 | 18-Nov-2026 | The October Reckoner run as approved ("Approve all"): label "30th September 2026", the blanks (one expected figure per fund), APMI-derived figures, 5 PMS name links, the three-AIF override, Phillip Growth, Mosaic II exit load, SageOne from the deck; Karma WB AUM and Neo net figures pending (owner; answers DEC-OPEN-04) | Reckoner | Active |
 | D106 | 19-Nov-2026 | October MF cycle: five funds added by hand (classes as proposed), no expected range yet for them and Lakshya Overnight, the ICICI exit-load text, the JioBlackRock "*" figures, two unusual since-inception figures kept (owner) | Data | Active |
+| D107 | 19-Nov-2026 | November 2026 Market Update slides: all eight (the Reckoner's six, then the two Invictus slides), each with its own date; a one-off (owner) | Process | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1810,6 +1811,25 @@ and the entry says so. "—" means no date is recorded.
 - **Source:** `docs/project-control/DECISION_LOG.md` DEC-OPEN-35 (section 1.6); the owner's chat answer of 17-Nov-2026
   (MOD-03). The wording is MOD-03's summary of the owner's button answer; the owner confirms it (DECISION_LOG section
   1.5 step 2).
+
+#### D107 - November 2026 Market Update slides: all eight, the Reckoner's six then the two Invictus slides (one-off)
+`Active` - 19-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** The owner sent "Invictus Market Outlook Pagers_November 2026.pptx" ("Update the market outlook pagers -
+  first priority"). It holds 2 slides titled "Recent Market Updates" (data as on 13-Nov-2026), where every earlier issue
+  had 5 or 6. The usual six market slides (Equity Update x2, Debt Update, Commodity Update x2, Overall Market Update)
+  are slides 5-10 of "Monthly Investment Reckoner - November 2026" (October data); the October pagers equalled the
+  October Reckoner's slides 5-10 text for text.
+- **Decision:** Offered the Reckoner's six (MOD-03's recommendation), the two new slides, waiting for the desk, or all
+  eight, the owner wrote "all 8" (19-Nov-2026, MOD-03 chat). The dashboard's Market Update slides become eight: the
+  Reckoner's slides 5-10 in deck order, then the two Invictus slides. Each slide keeps its own date.
+- **Rationale:** the owner's choice.
+- **Alternatives / supersedes:** six or two slides, or waiting for a usual pagers file: not chosen.
+- **Consequences:** `tools/update_market_slides.js` writes `EXTRA_SLIDES.market` in `site/Centricity_ExtraSlides.js`
+  (6 -> 8 slides, about +1.1 MB); the deck gains two slides. This is a one-off for November 2026: the process documents
+  keep one pagers deck as the source, and the slide source is put to the owner again next month. Two figures differ
+  between the sources (the Reckoner's 10-year yield 7.41% vs 7.20% on its own 6-Nov curve; forex reserves "fell to
+  $719.75 bn" vs "rose to $719.55 bn"): shown as each source prints them, for the desk to check.
+- **Source:** the owner's chat answer of 19-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ---
 
