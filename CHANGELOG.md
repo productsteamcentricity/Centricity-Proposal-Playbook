@@ -18,6 +18,22 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-20 - "November 2026" Reckoner: Select, PMS and AIF as on 31-Oct-2026 (data/2026-10-2)
+
+### Changed
+- PMS performance as on 31-Oct-2026 for 27 of 29 MASTER PMS (deck slides 18-19 and 75; APMI's reported figures for ICICI Pru
+  Contra, AlfAccurate IOP, Julius Baer and Abakkus Diversified Alpha); Equinova Edge AUM 438 Cr. Neo Yield Enhancer keeps its
+  31-Jul net row; Sundaram F.I.R.S.T. has no source. `DATA_DATES.pms` "31st October 2026" (OPS-02, D108).
+- AIF performance as on 31-Oct-2026 (deck slide 42, 9 funds, Buoyant AIF SI as on 30-Sep as printed; Karma Capital Jasmine Fund
+  from its October factsheet); benchmarks refreshed. aif 11 -> 10.
+- Centricity Select 185 -> 184: + DSP Small Cap Fund (no rationale yet); - Alchemy Long Term Ventures Fund (left the deck; its
+  4 stored returns are nulled, D105, so it shows its expected 18.00*), - Campus Fund III.
+- `tools/merge_reckoner.js`: Campus Fund III removed from the NARRATIVE list (D108 item 4).
+
+### Docs
+- `docs/update-log/2026-10_Oct-2026.md` Run 4; `docs/KNOWN_ISSUES.md` B1, C55, C57 updated, C69-C71 new; `docs/PROJECT_STATE.md`;
+  `CLAUDE.md` headline.
+
 ## 2026-11-20 - Claim for the November 2026 Reckoner run (OPS-02; docs only)
 
 ### Changed

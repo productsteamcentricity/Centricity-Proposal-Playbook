@@ -108,8 +108,7 @@ const SMART_BETA = /(momentum|low\s*vol|value\s*20|alpha\s*50|equal\s*weight|qua
 // TRAILING SPACES ARE DATA (KNOWN_ISSUES A25) — keep them byte-exact, never trim:
 //   sheet keys 'DEBT AIF ' and 'Unlisted Equity ' match the `sheet` of the live CENTRICITY_SELECT
 //   entries; 'Vivriti Short Term Debt Fund ', 'InCred Credit Opportunities Fund III ',
-//   '360 0ne Early-Stage Fund Series I ', 'Campus Fund III ' and 'ValueQuest S.C.A.L.E. Fund II '
-//   are MASTER names that end in a space.
+//   '360 0ne Early-Stage Fund Series I ' and 'ValueQuest S.C.A.L.E. Fund II ' are MASTER names that end in a space.
 const NARRATIVE = {
   // KEEP LIST (owner decision D102, 18-Nov-2026: "Keep tracking them"): Select entries the October 2026 deck no longer
   // lists but the owner keeps. They stay every month until removed here (KNOWN_ISSUES). The sheet keys equal the live
@@ -136,7 +135,8 @@ const NARRATIVE = {
   // The deck renamed this heading to "Private Equity/ Venture Capital Fund" in Sep-2026; same
   // bucket, same members plus Carnelian, whose MASTER class is AIF CAT II - Unlisted Equity.
   'EQUITY AIFs- Unlisted Equities': { cat: 'EQUITY AIFs- Unlisted Equities', kind: 'aif', names: [
-    'InCred Growth Partners Fund II', '360 0ne Early-Stage Fund Series I ', 'Campus Fund III ',
+    // Campus Fund III removed (owner D108 item 4, 20-Nov-2026): no longer in the deck (November 2026).
+    'InCred Growth Partners Fund II', '360 0ne Early-Stage Fund Series I ',
     'ValueQuest S.C.A.L.E. Fund II ', 'Carnelian Private Growth & Innovation Fund'] },
   'Unlisted Equity ': { cat: 'UNLISTED EQUITIES', kind: 'unlisted', names: [
     'Orbis', 'Parag Parikh Financial Advisory Services', 'Goodluck Defence & Aerospace', 'ESDS Software Solution'] },
