@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 20-Nov-2026 (MOD-03): `main` = `origin/main` = `c6d4fac` (PR #60, the November Market Update slides, D107; site content S11). Only `site/Centricity_ExtraSlides.js` changed (EXTRA_SLIDES.market 6 -> 8; sha256 55951e32...; 3,736,788 bytes); verify_page unchanged (MASTER 7,692; EXTRA_SLIDES 6 keys; 0 errors); npm test 979; live 7 of 7 equal `site/`; push run 44709471337 success. Recovery: restore `backups/2026-11-20_pre-2026-10-mkt/` or `git revert -m 1 c6d4fac`.**
+
 **Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `ca8b519` (PR #57, the October 2026 MF cycle; site content S10). verify_page: MASTER effective 7,692; Select 185 (185); PMS 696 / AIF 11 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES performance, sif and analytics "31st October 2026", pms "30th September 2026", riskMatrix "30 Sep 2026"; 0 duplicates; 0 script errors; npm test 979; live 7 of 7 equal `site/`; push run 44527224542 success. Recovery: restore `backups/2026-11-19_pre-2026-10-mf/` (six files) or `git revert -m 1 ca8b519`.**
 
 **Update 19-Nov-2026 (MOD-03): `main` = `origin/main` = `430e53f` (PR #54, the "October 2026" Reckoner run; site content S9). verify_page: MASTER effective 7,686; Select 185 (185 in MASTER); PMS 696 / AIF 11 / benchmarks 4; PMS_PERF_ALIAS 29 (1 null); EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES pms "30th September 2026", analytics "31st October 2026", performance and sif "30th September 2026"; 0 duplicates; 0 script errors; npm test 7 files, 979 checks; live 7 of 7 equal `site/`; push run 44483073883 success. Recovery: restore `backups/2026-11-19_pre-2026-09-5-reckoner/` (six files) or `git revert -m 1 430e53f`.**
@@ -119,9 +121,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#57)
+## 4. Per-PR integration table (#1-#60)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #57 on 18-19-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 57 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #60 on 18-20-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 60 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -192,6 +194,9 @@ written down at the time.
 | #55 | 19-Nov-2026 | `ed31e4d` | docs/mod-03-release-pr54-20261119 | GOV | MOD-03 | Release record of PR #54 | 5 files, docs only | success | 7 of 7 | site stays S9 |
 | #56 | 19-Nov-2026 | `5053b55` | docs/mod-03-d106-mf-claim-20261119 | GOV | MOD-03 | D106; claim of the October MF cycle | 7 files, docs only | success | 7 of 7 | site stays S9 |
 | #57 | 19-Nov-2026 | `ca8b519` / 44527224542 | data/2026-10 | OPS | OPS-02 | October 2026 MF cycle (D80, D94, D96, D99, D103, D106) | 7 files: site/index.html, site/Centricity_SIF_Refresh.js, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S10; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #58 | 19-Nov-2026 | `adb6be6` | docs/mod-03-release-pr57-20261119 | GOV | MOD-03 | Release record of PR #57 | 5 files, docs only | success | 7 of 7 | site stays S10 |
+| #59 | 20-Nov-2026 | `d421ef2` | docs/mod-03-d107-market-claim-20261120 | GOV | MOD-03 | D107; market-slides claim | 6 files, docs only | success | 7 of 7 | site stays S10 |
+| #60 | 20-Nov-2026 | `c6d4fac` / 44709471337 | data/2026-10-mkt | OPS | OPS-02 | November Market Update slides (D107: 8 slides) | 4 files: site/Centricity_ExtraSlides.js, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S11; High risk (owner decision); Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 

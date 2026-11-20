@@ -18,6 +18,18 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-20 - Release record of PR #60 (market slides); D108; C67, C68 (docs only)
+
+### Added
+- D108: the owner approved the twelve points of the November 2026 Reckoner run (31-Oct data) as recommended.
+- KNOWN_ISSUES C67 (average maturity shown as a percent on the Performance Sheet) and C68 (faint logo on divider slides; a
+  stray "1" on the portfolio divider).
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the market-slides claim released (PR #60, `c6d4fac`); no active claim.
+- `CHAT_REGISTRY.md` (OPS-02), `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `c6d4fac`, site S11, rows #58 to #60),
+  `DECISION_LOG.md` (next D109), project-control README.
+
 ## 2026-11-20 - November 2026 Market Update slides: 8 slides (data/2026-10-mkt)
 
 ### Changed
