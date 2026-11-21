@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103 and D106 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106 and D109 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -142,6 +142,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D106 | 19-Nov-2026 | October MF cycle: five funds added by hand (classes as proposed), no expected range yet for them and Lakshya Overnight, the ICICI exit-load text, the JioBlackRock "*" figures, two unusual since-inception figures kept (owner) | Data | Active |
 | D107 | 19-Nov-2026 | November 2026 Market Update slides: all eight (the Reckoner's six, then the two Invictus slides), each with its own date; a one-off (owner) | Process | Active |
 | D108 | 20-Nov-2026 | The November 2026 Reckoner run (31-Oct data) as recommended: Alchemy LTV 3 out, Karma Jasmine row from its factsheet, DSP Small Cap in, Campus Fund III out, APMI 31-Oct figures for four PMS, Equinova AUM 438 Cr; Neo and Karma Wealth Builder AUM unchanged (owner) | Reckoner | Active |
+| D109 | 21-Nov-2026 | "Other Funds Analytics" (31-Oct-2026): refresh only the existing hybrid entries (23 visible funds, 18 keys not in MASTER); no gold, silver, international or FoF analytics; no new retirement plans; Hang Seng ETFs and the FoF matcher as separate items (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1115,6 +1116,32 @@ and the entry says so. "—" means no date is recorded.
   7,686 -> 7,692; performance and SIF "31st October 2026"; High risk, the owner's yes on the final summary before the
   merge. KNOWN_ISSUES records the funds without a range.
 - **Source:** the owner's chat answer of 19-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D109 - "Other Funds Analytics" as on 31-Oct-2026: refresh only the existing hybrid entries
+`Active` - 21-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the owner sent "Other Funds Analytics.xlsx" (an ACE MF portfolio export of 345 schemes, October 2026
+  holdings) and asked for the analytics of those funds as on 31-Oct-2026. OPS-02's read-only dry runs found that only
+  41 existing HYBRID_ANALYTICS entries would change: 23 visible funds (Solution Oriented: children's and retirement
+  funds that still showed September holdings under the 31-Oct label) and 18 keys not in MASTER. The 40 debt entries
+  were already current; 145 gold, silver and international funds are outside the look-through by design; most FoFs
+  hold only fund units ("Others 100%"). MOD-03 put five points with a recommendation each.
+- **Decision:** the owner chose the button "Approve all" (the other button was "I'll answer each"; 21-Nov-2026, MOD-03
+  chat). So approved:
+  1. Refresh only the existing hybrid entries from a hybrid-only re-cut of the workbook (23 visible funds and the 18
+     keys not in MASTER; nothing added); the debt part is not run (no change).
+  2. No analytics entries for gold, silver and international funds or for FoFs.
+  3. The retirement plans the dashboard does not carry are not added in this run (no universe change).
+  4. The two Hang Seng equity ETFs filed as Debt (KNOWN_ISSUES C21) are reclassified in a separate change.
+  5. The FoF-to-underlying matcher (`H.fofUnderlyingName`) that resolves several FoFs to unrelated funds is logged
+     (KNOWN_ISSUES C72) and fixed separately.
+- **Rationale:** the owner accepted MOD-03's recommendations.
+- **Alternatives / supersedes:** answering point by point; adding the classes with no entry today: not chosen.
+  Extends D100.
+- **Consequences:** OPS-02 runs the refresh on branch `data/2026-10-3` (High risk: contract, Guardian pre-check, Gate
+  B, the owner's yes before the merge). `DATA_DATES.analytics` stays "31st October 2026". The 23 funds are absent from
+  the monthly Hybrid Analytics workbook, so they go stale again next month unless the desk's export includes them or
+  this step repeats.
+- **Source:** the owner's chat answer of 21-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 
