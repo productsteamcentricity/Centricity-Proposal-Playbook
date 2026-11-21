@@ -1459,8 +1459,8 @@ Status: ANSWERED.
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D108 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D109**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D109 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D110**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1564,3 +1564,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 19-Nov-2026 | D106 recorded (the owner's "Approve all" for the October MF cycle: hand-adds, no ranges yet, ICICI exit load, JioBlackRock "*" figures, two unusual figures kept). | MOD-03 |
 | 19-Nov-2026 | D107 recorded (the owner's "all 8" for the November Market Update slides; a one-off). | MOD-03 |
 | 20-Nov-2026 | D108 recorded (the owner's "Approve all" for the November 2026 Reckoner run). | MOD-03 |
+| 21-Nov-2026 | D109 recorded (the owner's "Approve all" for the "Other Funds Analytics" hybrid refresh). | MOD-03 |

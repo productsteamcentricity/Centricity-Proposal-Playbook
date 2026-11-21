@@ -18,6 +18,17 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-21 - Release record of PR #63; D109; claim for the "Other Funds Analytics" hybrid refresh (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the November 2026 Reckoner claim released at the merge of PR #63
+  (`68f6081`, 21-Nov-2026, after Gate B and the owner's yes; stop hash 2459f81a... -> 6bc71bbb... accepted for the 5
+  APMI cells under D108 item 8); the claim for the "Other Funds Analytics" hybrid refresh (branch `data/2026-10-3`;
+  Guardian pre-check GO WITH CONDITIONS).
+- `docs/DECISIONS.md`: D109, the owner's "Approve all" of 21-Nov-2026 for the five points of that refresh.
+- `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `68f6081`, rows #61 to #63), `DECISION_LOG.md`
+  (next D110), `docs/project-control/README.md`.
+
 ## 2026-11-20 - "November 2026" Reckoner: Select, PMS and AIF as on 31-Oct-2026 (data/2026-10-2)
 
 ### Changed
