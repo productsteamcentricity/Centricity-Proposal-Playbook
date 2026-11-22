@@ -1,6 +1,8 @@
 # Project state
 
-_Last updated: 20-Nov-2026 (later) - the "November 2026" Reckoner run (OPS-02, branch `data/2026-10-2`, not merged until Gate B and the owner's yes; D108): Centricity Select 185 -> 184 (+ DSP Small Cap; - Alchemy Long Term Ventures Fund, - Campus Fund III, the latter also removed from `merge_reckoner.js` NARRATIVE); PMS performance as on 31-Oct-2026 for 27 of 29 MASTER PMS and AIF 10 (incl. Karma Jasmine), `DATA_DATES.pms` "31st October 2026"; 4 Alchemy LTV return fields nulled (D105). `verify_page`: Select 184, aif 10; other counts unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 4._
+_Last updated: 22-Nov-2026 - the "Other Funds Analytics" hybrid refresh (OPS-02, branch `data/2026-10-3`, not merged until Gate B and the owner's yes; D109): HYBRID_ANALYTICS for 41 existing keys (the 23 hybrid Solution Oriented funds clients can select, plus 18 keys not in MASTER) take their 31-Oct-2026 holdings; residual stale MF/ETF analytics 60 -> 37; nothing added; `verify_page` unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 5._
+
+_Previous update: 20-Nov-2026 (later) - the "November 2026" Reckoner run (OPS-02, branch `data/2026-10-2`, not merged until Gate B and the owner's yes; D108): Centricity Select 185 -> 184 (+ DSP Small Cap; - Alchemy Long Term Ventures Fund, - Campus Fund III, the latter also removed from `merge_reckoner.js` NARRATIVE); PMS performance as on 31-Oct-2026 for 27 of 29 MASTER PMS and AIF 10 (incl. Karma Jasmine), `DATA_DATES.pms` "31st October 2026"; 4 Alchemy LTV return fields nulled (D105). `verify_page`: Select 184, aif 10; other counts unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 4._
 
 _Previous update: 20-Nov-2026 - the November Market Update slides (OPS-02, branch `data/2026-10-mkt`, not merged until Gate B and the owner's yes; D107): `EXTRA_SLIDES.market` 6 -> 8 slides (the November Reckoner's slides 5-10, then the two Invictus "Recent Market Updates" slides; a one-off), `site/Centricity_ExtraSlides.js` +1.1 MB; no data change, `verify_page` identical (EXTRA_SLIDES 6 counts keys). Record: `update-log/2026-10_Oct-2026.md`, Run 3._
 
@@ -82,7 +84,7 @@ on 30-Sep), followed by the **October-2026 MF cycle** (`/monthly-update October 
 | Domain | As on | Next due |
 |---|---|---|
 | MF performance (Regular + Direct), MF benchmarks | **31-Oct-2026** (October MF bake, 19-Nov-2026; Regular monitor NAV 2-Nov-2026, D99; Direct NAV 30-Oct-2026, D91). Young-fund rule applied (D94, D103): 28 fields cleared on 14 records. Exceptions: Debt ETF durations / maturities kept from earlier months where the Monitor cell is blank (D81); funds absent from the Monitor (bake CHECK, 38; among them HDFC Nifty SDL Oct 2026, C61); 25 new launches without AUM in the 2-Nov monitor are not in MASTER yet | Nov-2026 MF cycle |
-| Equity / Hybrid / Debt analytics | 31-Oct-2026 (October analytics run, 18-Nov-2026; 60 MF/ETF and 24 SIF entries not in the October workbooks keep earlier holdings; 5 SIFs have no analytics anywhere) | Nov-2026 MF cycle |
+| Equity / Hybrid / Debt analytics | 31-Oct-2026 (October analytics run, 18-Nov-2026; plus the 23 hybrid Solution Oriented funds from "Other Funds Analytics", 22-Nov-2026, D109; 37 MF/ETF and 24 SIF entries not in the October workbooks keep earlier holdings, down from 60 MF/ETF; 5 SIFs have no analytics anywhere; the 23 go stale again unless the desk includes them, KNOWN_ISSUES "Before the next refresh" item 13) | Nov-2026 MF cycle |
 | Listed Direct Equity universe + returns | 30-Sep-2026 (no October file) | Nov-2026 MF cycle |
 | Expense ratio, exit load | Sep-2026 workbooks (no October workbooks; the bake writes `expense` from the 2-Nov monitor as every month) | Nov-2026 MF cycle |
 | SIF performance | **31-Oct-2026** (SIF monitor of 2-Nov-2026, D99; 5 monitor rows with no SIF record) | Nov-2026 MF cycle |
@@ -100,6 +102,8 @@ plan's date, and one legacy "Mutual Funds" record). Detail: `docs/update-log/202
 Run 2.
 
 ## Latest verification
+
+22-Nov-2026 (the "Other Funds Analytics" hybrid refresh, branch `data/2026-10-3` at `origin/main` `aee2c3e` plus the run; OPS-02): `verify_page` exit 0, identical to the baseline (MASTER 7692; EQUITY_ANALYTICS 1231; dates unchanged; 0 duplicates; 0 script errors); `site/index.html` sha256 1edc9faf... = the rehearsal; both value-faithfulness checks PASS. Tests and reviews: `update-log/2026-10_Oct-2026.md`, Run 5.
 
 20-Nov-2026 (the "November 2026" Reckoner run, branch `data/2026-10-2` at `origin/main` `7f0a134` plus the run; OPS-02): `verify_page` exit 0: MASTER 7692, Select 184 (184 in MASTER), pms 696 / aif 10 / benchmarks 4, PMS_PERF_ALIAS 29 (null pins: 1), MASTER PMS with perf 28 of 29, `DATA_DATES.pms` "31st October 2026"; EQUITY_ANALYTICS 1231, RISK_MATRIX 1088, EXTRA_SLIDES 6 and the other dates unchanged; 0 duplicates; 0 script errors; `npm test` 7 of 7 files, 979 checks, 0 failures. `site/index.html` sha256 6bc71bbb... = the rehearsal. Reviews: `update-log/2026-10_Oct-2026.md`, Run 4.
 
