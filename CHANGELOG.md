@@ -18,6 +18,16 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-22 - Release record of PR #65 (the Other Funds analytics refresh); C73, C74 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the claim for the "Other Funds Analytics" hybrid refresh (D109)
+  released at the merge of PR #65 (`f650ce1`, 22-Nov-2026, after Gate B and the owner's yes). No active claim.
+- `docs/KNOWN_ISSUES.md`: C73 (a hybrid fund's cash counted as debt in the allocation split), C74 (cash and other
+  non-stock rows in the equity look-through top-20). Both predate the run.
+- `INTEGRATION_AND_REGRESSION_LOG.md`: baseline `f650ce1`, rows #64 and #65 (PR #64 was merged without a PR verify run,
+  which GitHub never created; the push run passed). `CHAT_REGISTRY.md`, `docs/project-control/README.md` (next C75).
+
 ## 2026-11-22 - "Other Funds Analytics": hybrid analytics as on 31-Oct-2026 for 23 funds (data/2026-10-3)
 
 ### Changed

@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 22-Nov-2026 (MOD-03): `main` = `origin/main` = `f650ce1` (PR #65, the "Other Funds Analytics" hybrid refresh, D109; site content S13). Only HYBRID_ANALYTICS changed (41 entries; 269 keys); site/index.html sha256 1edc9faf...; verify_page identical to S12 (MASTER effective 7,692; Select 184 (184); PMS 696 / AIF 10 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES unchanged; 0 duplicates; 0 script errors); npm test 979; live 7 of 7 equal `site/`; push run 45027990209 success. Recovery: restore `backups/2026-11-21_pre-2026-10-ofa-hybrid/` or `git revert -m 1 f650ce1`.**
+
 **Update 21-Nov-2026 (MOD-03): `main` = `origin/main` = `68f6081` (PR #63, the November 2026 Reckoner run, D108; site content S12). verify_page: MASTER effective 7,692; Select 184 (184 in MASTER); PMS 696 / AIF 10 / benchmarks 4; PMS_PERF_ALIAS 29 (1 null); EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES performance, analytics, pms and sif "31st October 2026", riskMatrix "30 Sep 2026"; 0 duplicates; 0 script errors; npm test 979; site/index.html sha256 6bc71bbb...; live 7 of 7 equal `site/`; push run 44800373855 success. Recovery: restore `backups/2026-11-20_pre-2026-10-2-reckoner/` or `git revert -m 1 68f6081`.**
 
 **Update 20-Nov-2026 (MOD-03): `main` = `origin/main` = `c6d4fac` (PR #60, the November Market Update slides, D107; site content S11). Only `site/Centricity_ExtraSlides.js` changed (EXTRA_SLIDES.market 6 -> 8; sha256 55951e32...; 3,736,788 bytes); verify_page unchanged (MASTER 7,692; EXTRA_SLIDES 6 keys; 0 errors); npm test 979; live 7 of 7 equal `site/`; push run 44709471337 success. Recovery: restore `backups/2026-11-20_pre-2026-10-mkt/` or `git revert -m 1 c6d4fac`.**
@@ -123,9 +125,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#63)
+## 4. Per-PR integration table (#1-#65)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #63 on 18-21-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 63 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #65 on 18-22-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 65 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -202,6 +204,8 @@ written down at the time.
 | #61 | 20-Nov-2026 | `c24064c` | docs/mod-03-release-pr60-d108-20261120 | GOV | MOD-03 | Release record of PR #60; D108; C67, C68 | 8 files, docs only | success | 7 of 7 | site stays S11 |
 | #62 | 20-Nov-2026 | `7f0a134` | docs/mod-03-nov-reckoner-claim-20261120 | GOV | MOD-03 | Claim of the November Reckoner run | 3 files, docs only | success | 7 of 7 | site stays S11 |
 | #63 | 21-Nov-2026 | `68f6081` / 44800373855 | data/2026-10-2 | OPS | OPS-02 | November 2026 Reckoner run (D108: 31-Oct PMS/AIF, Select 184) | 7 files: site/index.html, tools/merge_reckoner.js, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S12; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #64 | 21-Nov-2026 | `aee2c3e` / 44913330909 | docs/mod-03-release-pr63-d109-20261121 | GOV | MOD-03 | Release record of PR #63; D109; claim of the Other Funds analytics refresh | 7 files, docs only | **no PR run**: GitHub created no pull_request run for this PR and MOD-03 merged it without noticing (the check watcher returned at once with no checks). The push run on `main` ran verify = success; its first publish attempt failed (artifact not found, a GitHub-side error) and the re-run (attempt 2) succeeded | 7 of 7 | site stays S12; process slip disclosed to the owner on 21-Nov-2026; MOD-03 now confirms a PR's verify check exists and passed before merging |
+| #65 | 22-Nov-2026 | `f650ce1` / 45027990209 | data/2026-10-3 | OPS | OPS-02 | "Other Funds Analytics" hybrid refresh (D109: 41 HYBRID_ANALYTICS entries) | 5 files: site/index.html, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S13; High risk (owner decision, re-cut input); Gate B GO WITH CONDITIONS; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 
