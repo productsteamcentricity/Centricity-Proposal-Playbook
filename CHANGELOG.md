@@ -18,6 +18,17 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-22 - "Other Funds Analytics": hybrid analytics as on 31-Oct-2026 for 23 funds (data/2026-10-3)
+
+### Changed
+- HYBRID_ANALYTICS: the 23 hybrid Solution Oriented funds (children's and retirement plans), stale since September, take their
+  31-Oct-2026 holdings from "Other Funds Analytics.xlsx"; 18 more keys not in MASTER are refreshed with them. Nothing is added;
+  DATA_DATES unchanged (OPS-02, D109).
+
+### Docs
+- `docs/update-log/2026-10_Oct-2026.md` Run 5; `docs/KNOWN_ISSUES.md` C72 new, C21 updated, "Before the next refresh" item 13; `docs/PROJECT_STATE.md`
+  (residual stale MF/ETF analytics 60 -> 37). CLAUDE.md unchanged.
+
 ## 2026-11-21 - Release record of PR #63; D109; claim for the "Other Funds Analytics" hybrid refresh (docs only)
 
 ### Changed
