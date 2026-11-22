@@ -18,6 +18,16 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - D110; claim for bundle 1 of the follow-up fixes; EX-02 registered (docs only)
+
+### Changed
+- `docs/DECISIONS.md`: D110, the owner's "Approve all" of 22-Nov-2026 for six follow-up fixes (C70, C71, the Alchemy
+  band, C21, C72 and C74, C73).
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: the claim for bundle 1, the data clean-up of MASTER (OPS-02, branch
+  `data/2026-11-cleanup`; Guardian pre-check GO WITH CONDITIONS; KNOWN_ISSUES IDs C75-C78 reserved for it).
+- `CHAT_REGISTRY.md`: EX-02 (look-through code fixes, bundle 2) and OPS-02. `DECISION_LOG.md` (next D111),
+  `docs/project-control/README.md` (next D111, C79, EX-03).
+
 ## 2026-11-22 - Release record of PR #65 (the Other Funds analytics refresh); C73, C74 (docs only)
 
 ### Changed

@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106 and D109 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 and D110 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -143,6 +143,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D107 | 19-Nov-2026 | November 2026 Market Update slides: all eight (the Reckoner's six, then the two Invictus slides), each with its own date; a one-off (owner) | Process | Active |
 | D108 | 20-Nov-2026 | The November 2026 Reckoner run (31-Oct data) as recommended: Alchemy LTV 3 out, Karma Jasmine row from its factsheet, DSP Small Cap in, Campus Fund III out, APMI 31-Oct figures for four PMS, Equinova AUM 438 Cr; Neo and Karma Wealth Builder AUM unchanged (owner) | Reckoner | Active |
 | D109 | 21-Nov-2026 | "Other Funds Analytics" (31-Oct-2026): refresh only the existing hybrid entries (23 visible funds, 18 keys not in MASTER); no gold, silver, international or FoF analytics; no new retirement plans; Hang Seng ETFs and the FoF matcher as separate items (owner) | Data | Active |
+| D110 | 22-Nov-2026 | Follow-up fixes as recommended: clear Alchemy LTV's leftover AUM and m-cap split (C70); the 12 AIFs show their current band mid-point (C71); Alchemy LTV 17-19% confirmed; the Hang Seng ETFs and the Hang Seng TECH ETF FoF to Global Funds / International (C21); FoF strict matching with owner pins and no cash rows in the top-20 (C72, C74); the arbitrage rule before a cash bucket (C73) (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1142,6 +1143,35 @@ and the entry says so. "—" means no date is recorded.
   the monthly Hybrid Analytics workbook, so they go stale again next month unless the desk's export includes them or
   this step repeats.
 - **Source:** the owner's chat answer of 21-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D110 - Follow-up fixes (C70, C71, the Alchemy band, C21, C72, C74, C73), as recommended
+`Active` - 22-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the reviews of the November Reckoner run and the Other Funds Analytics refresh left data and code items
+  that predate them. OPS-02's read-only preparation (rehearsed on copies, reviewed by the architect and the financial
+  reviewer) proposed three bundles; MOD-03 put six points with a recommendation each.
+- **Decision:** the owner chose the button "Approve all" (the other button was "I'll answer each"; 22-Nov-2026, MOD-03
+  chat). So approved:
+  1. C70: Alchemy Long Term Ventures Fund's `aum` (630) and market-cap split, left from its removed AIF row, are
+     cleared (the AUM then shows "-").
+  2. C71: the stored r1y/r3y/r5y of 12 AIFs (an older band's mid-point, outside the band the page applies) are nulled
+     under D105, so the page shows the current IRR band's mid-point with "*" (e.g. InCred Growth Partners II 27.5%* ->
+     23.5%* within 22-25%). No reported return is lost.
+  3. Alchemy Long Term Ventures Fund's expected range is 17-19% (the current IRR file and the IRR sibling; the page
+     already shows 18%*). The 20-22% in MASTER and the Terms sibling is an older edition; the Terms sibling's stale
+     ranges (17 funds) are fixed as a separate item.
+  4. C21: the two Hang Seng equity ETFs and the Hang Seng TECH ETF FoF move to Global Funds / Mutual Funds /
+     International, like their peers (they then count as equity in the net allocation).
+  5. C72 and C74 (code, by a separate EX chat): FoF-to-underlying matching becomes strict, with a short list of
+     owner-approved pins; cash, TREPS and other non-stock rows leave the equity top-20 stock list (percent shares
+     unchanged).
+  6. C73: the rule for arbitrage and equity-savings funds (hedged equity) is decided first; then a "Cash & Others"
+     bucket is added, with a sample deck for the owner.
+- **Rationale:** the owner accepted MOD-03's recommendations.
+- **Alternatives / supersedes:** answering point by point; one combined PR: not chosen. Extends D105 and D108.
+- **Consequences:** bundle 1 (points 1, 2, 4; 50 MASTER fields) by OPS-02 on `data/2026-11-cleanup`, before the
+  November MF bake; bundle 2 (point 5) by EX-02 after bundle 1 merges; bundle 3 (point 6) later. Each is High risk:
+  contract, Guardian pre-check, Gate B and the owner's yes before the merge.
+- **Source:** the owner's chat answer of 22-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 
