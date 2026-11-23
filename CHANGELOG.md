@@ -18,6 +18,28 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - The D112 new funds and peer bands, TASK-088 (data/2026-11-d112-adds)
+
+### Added
+- `site/index.html` `window.MASTER`: 30 records (D112, D113). 23 October MF launches as stubs (class, band, inception,
+  fund manager and exit load from the 2-Nov Regular monitor; returns, AUM and m-cap empty until the November bake);
+  Maverick Simulation Solutions and API Holdings (PharmEasy) (Unlisted Equity, 20-22%); Vivriti Diversified Bond Fund
+  III (Debt AIF, 12.5-13.5%); ICICI Prudential PIPE Fund (Cat III AIF, 16-18%); PROMAFT Partners Fund I (Cat II AIF,
+  22-25%); JioBlackRock Advantage World Equity Fund (Outbound) and Aditya Birla Emerging Market Equity Fund (Outbound)
+  (GIFT City, 10-12%). MASTER effective 7,692 -> 7,723.
+- `site/Centricity_SIF_Refresh.js` `var SIF`: Tata Titanium Active Asset Allocator Long-Short Fund (Hybrid SIF, 9-11%,
+  from the November Reckoner; not yet in the SIF Monitor). 30 -> 31.
+- `site/Centricity_June_Refresh.js` `var NEW_GIFT`: the two GIFT City funds (the sibling replaces every GIFT City row at
+  load). 58 -> 60.
+- `window.DIRECT_PERF`: 17 Direct-plan entries for the new stubs, from `tools/rebuild_directperf.js` (Direct monitor,
+  NAV 30-Oct-2026); no existing entry changed.
+
+### Changed
+- Expected-return bands on 101 MF/ETF records that had none (each its class peers' most common band; D113), so their
+  1Y/3Y/5Y show the band mid-point with "*" instead of "-". Only the 2 UTI segregated portfolios stay without one.
+- Docs: `docs/update-log/2026-11-23_d112-new-funds.md` (new); KNOWN_ISSUES C89 and C90 (new), C60 closed, C24, C55 and
+  C64 updated; `docs/PROJECT_STATE.md`; the CLAUDE.md headline.
+
 ## 2026-11-23 - Release record of PR #70 (TASK-086); D113; claim for TASK-088, the new funds (docs only)
 
 ### Changed
