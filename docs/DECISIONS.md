@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 and D110 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109, D110 and D111 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -144,6 +144,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D108 | 20-Nov-2026 | The November 2026 Reckoner run (31-Oct data) as recommended: Alchemy LTV 3 out, Karma Jasmine row from its factsheet, DSP Small Cap in, Campus Fund III out, APMI 31-Oct figures for four PMS, Equinova AUM 438 Cr; Neo and Karma Wealth Builder AUM unchanged (owner) | Reckoner | Active |
 | D109 | 21-Nov-2026 | "Other Funds Analytics" (31-Oct-2026): refresh only the existing hybrid entries (23 visible funds, 18 keys not in MASTER); no gold, silver, international or FoF analytics; no new retirement plans; Hang Seng ETFs and the FoF matcher as separate items (owner) | Data | Active |
 | D110 | 22-Nov-2026 | Follow-up fixes as recommended: clear Alchemy LTV's leftover AUM and m-cap split (C70); the 12 AIFs show their current band mid-point (C71); Alchemy LTV 17-19% confirmed; the Hang Seng ETFs and the Hang Seng TECH ETF FoF to Global Funds / International (C21); FoF strict matching with owner pins and no cash rows in the top-20 (C72, C74); the arbitrage rule before a cash bucket (C73) (owner) | Data | Active |
+| D111 | 23-Nov-2026 | Bundle 2 (C72, C74) as recommended: 5 owner pins for FoF look-through, the "Nifty200" letter/digit split, non-stock option (b) with money-market fund units only (liquid-fund units stay), multi-fund FoFs show no look-through; a "Not included" note as a separate item (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1172,6 +1173,31 @@ and the entry says so. "—" means no date is recorded.
   November MF bake; bundle 2 (point 5) by EX-02 after bundle 1 merges; bundle 3 (point 6) later. Each is High risk:
   contract, Guardian pre-check, Gate B and the owner's yes before the merge.
 - **Source:** the owner's chat answer of 22-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D111 - Look-through code fixes (bundle 2: C72, C74): owner pins and the non-stock rule
+`Active` - 23-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** D110 point 5 approved strict FoF matching with a short list of owner pins and the removal of non-stock
+  rows from the equity top-20. EX-02's read-only preparation (TASK-086; simulation, prototype, new tests; a financial
+  review found the pins correct) left five points; MOD-03 put them with a recommendation each.
+- **Decision:** the owner chose "Approve all" (23-Nov-2026), then answered the open point on liquid funds with "No,
+  money-market only". So approved:
+  1. Five pins (`H.FOF_UNDERLYING`, D75): BHARAT Bond FOF April 2030 and April 2031 and BHARAT Bond ETF FOF April 2032
+     and April 2033, each to the BHARAT Bond ETF of the same year; ICICI Pru Bharat 22 FOF to Bharat 22 ETF.
+  2. Name matching splits letters from digits ("Nifty200" = "Nifty 200").
+  3. Non-stock rows (option (b)): the Overlap set (`_CASH_RE`, `_NONSTOCK_RE`, `_DERIV_RE`) plus "Others", "Other
+     Derivaties", state SDLs and money-market fund units. Liquid-fund units are NOT removed (owner: money-market only).
+     Percent shares are unchanged; the Overlap Matrix moves slightly (counts in the TASK-086 contract).
+  4. A "Not included" note on the equity slide and Excel sheet 9 is a separate item, with a sample deck for the owner
+     first; it is not part of bundle 2.
+  5. FoFs that hold several funds show no look-through rather than a wrong single-fund look-through.
+- **Rationale:** the owner accepted MOD-03's recommendations, except liquid-fund units.
+- **Alternatives / supersedes:** option (a) (the Overlap set only); liquid-fund units removed too: not chosen. Extends
+  D110 point 5 and D75.
+- **Consequences:** EX-02 implements TASK-086 on `fix/lookthrough-fof-nonstock` (High risk: contract, Guardian
+  pre-check, Gate B, the owner's yes before the merge). The pins are keyed by MASTER name: a rename of a pin key or
+  target needs a pin update (owner, code PR), which makes that monthly refresh non-routine; documented in the
+  OPERATING_MANUAL, the monthly-update skill and KNOWN_ISSUES.
+- **Source:** the owner's chat answers of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 

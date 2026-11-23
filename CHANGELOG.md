@@ -18,6 +18,18 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - Release record of PR #68 (data clean-up); D111; claim for TASK-086 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: bundle 1 of the follow-up fixes released at the merge of PR #68
+  (`eb3a562`, 23-Nov-2026, after Gate B and the owner's yes); the claim for TASK-086, bundle 2 (EX-02, branch
+  `fix/lookthrough-fof-nonstock`; Guardian pre-check GO WITH CONDITIONS; KNOWN_ISSUES IDs C79-C88 reserved).
+- `docs/DECISIONS.md`: D111, the owner's "Approve all" and "money-market only" for bundle 2 (23-Nov-2026).
+- Corrections from the Gate B review of PR #68: `docs/update-log/2026-10_Oct-2026.md` Run 6 (seven, not five, of the 12
+  names end in a space); `docs/KNOWN_ISSUES.md` the C21 detail status line (partly fixed).
+- `TASK_REGISTER.md` (TASK-086), `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `eb3a562`, rows #66
+  to #68), `DECISION_LOG.md` (next D112), `docs/project-control/README.md` (next TASK-087, D112, C89).
+
 ## 2026-11-23 - Follow-up data clean-up: C70, C71, C21 (data/2026-11-cleanup)
 
 ### Changed
