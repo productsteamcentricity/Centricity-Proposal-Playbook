@@ -229,7 +229,7 @@ in `bake_month`, `merge_analytics`, `merge_pms_performance`; `replaceOnce` in `m
 
 ## 4. Page APIs
 
-### 4.1 `window.H` (69 keys; core object ~L1898, extensions from ~L1907; VERIFIED by vm)
+### 4.1 `window.H` (71 keys; core object ~L1908, extensions from ~L1917; VERIFIED by vm, 23-Nov-2026, TASK-086: 69 -> 71 with `isNonStockName` and `FOF_UNDERLYING`)
 
 | Group | Members | Contract | Consumers |
 |---|---|---|---|
@@ -238,8 +238,8 @@ in `bake_month`, `merge_analytics`, `merge_pms_performance`; `replaceOnce` in `m
 | KPIs | `computeKPIs(selected, corpus)` | `{totalPct, allocatedCr, irrLow, irrHigh, irrMid, r3y, r5y}`; a missing IRR counts as 0 (C24, DEC-OPEN-15) | `App` |
 | Returns | `effectiveReturn(fund, key)`, `isFallbackReturn`, `isExpectedReturn(fund, key, entry)` (D83), `weightedReturns`, `rollupReturns` | `isExpectedReturn` reads the stored MASTER record (cached index), PMS_PERFORMANCE and `_pms_source`; an entry override (`<key>Ov`) is never marked | deck `star()`, UI |
 | Minimums | `minInvestment`, `fmtMinInv`, `minInvBreaches` | INR crore floors (PMS 0.50, AIF 1.00, two name overrides) | UI |
-| FoF | `isFof`, `fofUnderlyingName`, `holdingsLookupName` | a FoF resolves to its underlying instrument's analytics | scope gates, aggregators |
-| **Single predicates** | `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` (7 buckets in `CREDIT_BUCKETS`; blank -> Unrated; non-ratings -> Others) | the only gates for these tests; never re-inline (CLAUDE.md rule 8) | scope gates and scoped aggregators (lines in the map, section 5.1) |
+| FoF | `isFof`, `fofUnderlyingName`, `holdingsLookupName`, `FOF_UNDERLYING` (owner pins, `{FoF name: MASTER name}`) | a FoF resolves to its underlying instrument's analytics: a pin first (a pin whose target is not in MASTER returns null), else the strict rule (same asset class, same AMC word, every candidate token in the FoF name, at least 2 tokens, letters split from digits, a tie returns null), else null (D111, C72). Pins are keyed by MASTER name: a rename of a key or target needs a pin update (C88) | scope gates, aggregators; `lookthrough.test.js` |
+| **Single predicates** | `isHybridScheme`, `isEquitySIF`, `isSelfDescribingDebt`, `creditBucket` (7 buckets in `CREDIT_BUCKETS`; blank -> Unrated; non-ratings -> Others), `isNonStockName(name)` (cash, repo, TREPS, CCIL, net current assets, T-bills, GOI gilts, index and stock options, "Others", "Other Derivaties", state SDLs, money-market fund units; D111, C74) | the only gates for these tests; never re-inline (CLAUDE.md rule 8). `isNonStockName` filters stock lists only (m-cap, sector and exposure shares unchanged) | scope gates and scoped aggregators; `isNonStockName`: `computeOverlap` (Overlap Matrix on screen, Excel sheet, deck PNG) and `aggEquityScoped` (top-20) (lines in the map, section 5.1) |
 | Credit | `fundRatingBuckets(rec, hybrid)`, `normaliseRatings` (sums to exactly 100), `CREDIT_COLORS` | reads the full rating map; top-20 holdings only as a fallback | exports, UI |
 | Scope / look-through | `hasEqHoldings`, `hasDbHoldings`, `inEquityScope`, `inDebtScope`, `analyticsGroupLabel`, `aggEquityScoped(selected, corpus, exclude?)`, `aggDebtScoped`; legacy `aggEquity`, `aggDebt` | `exclude` defaults to `window.__EQ_EXCLUDE` / `__DB_EXCLUDE` (set by `App`), so slides honour on-screen toggles | exports, UI |
 | Other aggregates | `aggAMC`, `aggLiquidity`, `classifyLiquidity`, `parseIssuer`, `normCo`, `eligibleOverlapFunds`, `computeOverlap`, `overlapClass`, `overlapClassCentricity`, `buildOverlapPng(funds, threshold)` (needs a canvas; the layout test stubs it) | - | exports, UI |

@@ -1,6 +1,8 @@
 # Project state
 
-_Last updated: 23-Nov-2026 - the follow-up data clean-up (OPS-02, branch `data/2026-11-cleanup`, not merged until Gate B and the owner's yes; D110 points 1, 2, 4): 50 MASTER fields - Alchemy Long Term Ventures Fund's leftover AUM and market-cap split cleared (C70); 12 AIF records show their current band mid-point with * (C71); the two Hang Seng ETFs and the Hang Seng TECH ETF FoF filed Global Funds / International (C21 part a). `verify_page` unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 6. Next: bundles 2-3 (C72+C74, C73) by EX-02._
+_Last updated: 23-Nov-2026 (later) - the look-through code fixes, TASK-086 bundle 2 (EX-02, branch `fix/lookthrough-fof-nonstock`, not merged until Gate B and the owner's yes; D110, D111): FoFs resolve only by a strict name rule or 5 owner pins (`H.FOF_UNDERLYING`), so 34 multi-fund FoFs show "Not included" instead of another fund's holdings (C72 closed); one predicate `H.isNonStockName` removes cash and other non-stock rows from the equity top-20 and the Overlap Matrix, liquid-fund units kept (C74 closed); new KNOWN_ISSUES C79-C83, C85-C88 (C84 withdrawn as a duplicate of C78). `verify_page` unchanged; `npm test` 8 files. Record: `update-log/2026-11-23_task-086-lookthrough-fixes.md`. Next: bundle 3 (C73) after the owner's arbitrage rule (C77); the "Not included" note on the equity slide and Excel (C79, a separate item)._
+
+_Previous update: 23-Nov-2026 - the follow-up data clean-up (OPS-02, branch `data/2026-11-cleanup`, not merged until Gate B and the owner's yes; D110 points 1, 2, 4): 50 MASTER fields - Alchemy Long Term Ventures Fund's leftover AUM and market-cap split cleared (C70); 12 AIF records show their current band mid-point with * (C71); the two Hang Seng ETFs and the Hang Seng TECH ETF FoF filed Global Funds / International (C21 part a). `verify_page` unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 6. Next: bundles 2-3 (C72+C74, C73) by EX-02._
 
 _Previous update: 22-Nov-2026 - the "Other Funds Analytics" hybrid refresh (OPS-02, branch `data/2026-10-3`, not merged until Gate B and the owner's yes; D109): HYBRID_ANALYTICS for 41 existing keys (the 23 hybrid Solution Oriented funds clients can select, plus 18 keys not in MASTER) take their 31-Oct-2026 holdings; residual stale MF/ETF analytics 60 -> 37; nothing added; `verify_page` unchanged. Record: `update-log/2026-10_Oct-2026.md`, Run 5._
 
@@ -104,6 +106,8 @@ plan's date, and one legacy "Mutual Funds" record). Detail: `docs/update-log/202
 Run 2.
 
 ## Latest verification
+
+23-Nov-2026 (TASK-086, the look-through code fixes, branch `fix/lookthrough-fof-nonstock` at `origin/main` `5759d7d` plus the change; EX-02): `verify_page` exit 0, identical to the base (MASTER 7692; EQUITY_ANALYTICS 1231; 0 duplicates; 0 script errors); `npm test` 8 of 8 files, 0 failures (`lookthrough.test.js` 280 checks, new); `site/index.html` sha256 119980bf... = the rehearsal; every data block byte-identical (blocklib comparison). Browser, Excel and PowerPoint checks and the reviews: `update-log/2026-11-23_task-086-lookthrough-fixes.md`.
 
 23-Nov-2026 (the follow-up data clean-up, branch `data/2026-11-cleanup` at `origin/main` `6dc4260` plus the run; OPS-02): `verify_page` exit 0, identical to the base (MASTER 7692; counts and dates unchanged; 0 duplicates; 0 script errors); `npm test` 7 of 7 files, 979 checks, 0 failures; `site/index.html` sha256 b28be4bd... = the rehearsal. Reviews: `update-log/2026-10_Oct-2026.md`, Run 6.
 

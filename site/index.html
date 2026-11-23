@@ -1825,6 +1825,17 @@ window.linkIdcwToGrowth();
   // "Nifty 50" goes and "Tata Nifty India Digital ETF" stays. "Call Money" is
   // overnight interbank cash, not an option.
   const _DERIV_RE = /^(nifty|midcpnifty|sensex|bank\s*nifty)\b|^call\s*money\b|[-–]\s*\d*\s*(calls?|puts?|fut(ures?)?)\s*$/i;
+  // Four more labels the workbooks put in a stock list (D111): a bare "Others" line, "Other
+  // Derivatives" (spelt "Derivaties" in the source), a state development loan written as
+  // "<coupon>% <State> SDL - <date>", and units of a money-market fund (liquid-fund units stay: D111).
+  const _OTHER_NONSTOCK_RE = /^others?$|^other\s*derivat|^\d[\d.]*\s*%\s*[a-z][a-z ]*\bsdl\b|\bmoney\s*market\s*fund\b/i;
+  // The one test for "this holdings row is not a stock" (the four patterns above). Shared by the
+  // Overlap Matrix and the equity look-through's stock list (KNOWN_ISSUES C74, D111); never re-inline
+  // (CLAUDE.md rule 8). It filters stock lists only: m-cap, sector and exposure shares are unchanged.
+  function isNonStockName(name) {
+    const n = String(name == null ? '' : name);
+    return _CASH_RE.test(n) || _NONSTOCK_RE.test(n) || _DERIV_RE.test(n) || _OTHER_NONSTOCK_RE.test(n);
+  }
 
   function eligibleOverlapFunds(selected) {
     const COMMODITY_RE = /\bgold\b|\bsilver\b/i;
@@ -1852,8 +1863,7 @@ window.linkIdcwToGrowth();
     function getStocks(fund) {
       const raw = window.EQUITY_ANALYTICS[fund.name]?.stocks
         || (window.HYBRID_ANALYTICS[fund.name]?.eq_stocks || []);
-      return raw.filter(x => !_CASH_RE.test(x.name) && !_NONSTOCK_RE.test(x.name)
-        && !_DERIV_RE.test(x.name));
+      return raw.filter(x => !isNonStockName(x.name));
     }
     // Collapse each fund's rows onto normCo keys: sum same-name duplicates, drop
     // non-positive weights. BOTH funds must go through this or the matrix is not
@@ -1900,7 +1910,7 @@ window.linkIdcwToGrowth();
     AC_ORDER, PC_ORDER, acIdx, pcIdx, sortFundsByTaxonomy, buildTree, displayPC,
     classifyLiquidity, parseIssuer,
     computeKPIs, aggEquity, aggDebt, aggAMC, aggLiquidity,
-    normCo, eligibleOverlapFunds, computeOverlap, overlapClass
+    normCo, isNonStockName, eligibleOverlapFunds, computeOverlap, overlapClass
   };
 })();
 </script>
@@ -2036,38 +2046,53 @@ window.linkIdcwToGrowth();
     );
   }
 
+  // Owner-approved pins (D110): FoF name -> the MASTER name of the one instrument it wraps, for a
+  // FoF the strict rule below cannot resolve (the underlying is another AMC's, or not filed as an ETF
+  // or index fund). A new pin is an identity decision: the owner approves it, in a code PR (C72).
+  H.FOF_UNDERLYING = {
+    "BHARAT Bond FOF - April 2030 -Reg(G)": "BHARAT Bond ETF - April 2030",
+    "BHARAT Bond FOF - April 2031 -Reg(G)": "BHARAT Bond ETF - April 2031",
+    "BHARAT Bond ETF FOF - April 2032 -Reg(G)": "BHARAT Bond ETF - April 2032",
+    "BHARAT Bond ETF FOF - April 2033 -Reg(G)": "BHARAT Bond ETF - April 2033",
+    "ICICI Pru Bharat 22 FOF-(G)": "Bharat 22 ETF"
+  };
+  // "Nifty200" and "Nifty 200" are one name: split letters from digits before tokenising.
+  function _tokStrict(s) {
+    return _tok(String(s || '').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Za-z])/g, '$1 $2'));
+  }
+  function _amcToken(s) {
+    return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ')[0];
+  }
+  // Strict rule (KNOWN_ISSUES C72, D110). A FoF resolves to a non-FoF ETF or index fund only when:
+  // the same asset class (no fallback to other classes); the same AMC (first word of the name);
+  // every token of the candidate's name is in the FoF's name; at least 2 such tokens. The candidate
+  // with the most tokens wins; a tie at the top returns null. Anything else returns null, and the
+  // FoF sits out of the look-through ("Not included") instead of borrowing another fund's holdings.
   H.fofUnderlyingName = function(fund) {
     if (!H.isFof(fund)) return null;
     const master = window.MASTER || [];
-    // Candidate pool: non-FOF ETFs + Index Funds (same asset class preferred).
-    // Index funds are matched on SUB-category — their product_class is "Mutual Fund" now that they
-    // are nested there, so testing product_class would empty this pool of every index fund.
-    const candidates = master.filter(f =>
-      (f.product_class === 'ETF' || f.sub_category === 'Index Fund') &&
-      !H.isFof(f) && f.name !== fund.name
-    );
-    if (candidates.length === 0) return null;
-
-    const fofToks = _tok(fund.name);
-    if (fofToks.size === 0) return null;
-
-    // Prefer same asset_class (Equity FOF → Equity ETF, Debt FOF → Debt ETF, Commodity → Commodity)
-    const sameClass = candidates.filter(f => f.asset_class === fund.asset_class);
-    const pool = sameClass.length > 0 ? sameClass : candidates;
-
-    let best = null, bestScore = 0;
-    for (const c of pool) {
-      const cToks = _tok(c.name);
-      let overlap = 0;
-      for (const t of fofToks) if (cToks.has(t)) overlap++;
-      // Bias towards candidates whose token set is largely covered by the FOF
-      const cover = cToks.size > 0 ? overlap / cToks.size : 0;
-      const score = overlap + cover * 2; // weighted score
-      if (score > bestScore && overlap >= 2) {
-        bestScore = score; best = c;
-      }
+    if (Object.prototype.hasOwnProperty.call(H.FOF_UNDERLYING, fund.name)) {
+      const pin = H.FOF_UNDERLYING[fund.name];
+      return pin && master.some(f => f.name === pin) ? pin : null;
     }
-    return best ? best.name : null;
+    const fofToks = _tokStrict(fund.name);
+    const amc = _amcToken(fund.name);
+    if (fofToks.size < 2 || !amc) return null;
+    // Index funds are matched on SUB-category: their product_class is "Mutual Fund".
+    let best = [], bestN = 0;
+    for (const c of master) {
+      if (!(c.product_class === 'ETF' || c.sub_category === 'Index Fund')) continue;
+      if (H.isFof(c) || c.name === fund.name || c.asset_class !== fund.asset_class) continue;
+      if (_amcToken(c.name) !== amc) continue;
+      const cToks = _tokStrict(c.name);
+      if (cToks.size < 2) continue;
+      let covered = true;
+      for (const t of cToks) if (!fofToks.has(t)) { covered = false; break; }
+      if (!covered) continue;
+      if (cToks.size > bestN) { bestN = cToks.size; best = [c]; }
+      else if (cToks.size === bestN) best.push(c);
+    }
+    return best.length === 1 ? best[0].name : null;
   };
 
   // ===== Weighted-average returns (SUMPRODUCT-style) =====
@@ -2333,12 +2358,12 @@ window.linkIdcwToGrowth();
       if (eqA && isEqDirect) {
         for (const k of Object.keys(eq_mcap)) eq_mcap[k] += (eqA.mcap[k]||0)/100 * A;
         for (const [sec, v] of Object.entries(eqA.sector)) eq_sector[sec] = (eq_sector[sec]||0) + v/100 * A;
-        for (const st of eqA.stocks) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
+        for (const st of eqA.stocks) if (!H.isNonStockName(st.name)) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
         eq_exposure += (eqA.total/100) * A;
       } else if (hyA && isHybridMF) {
         for (const k of Object.keys(eq_mcap)) eq_mcap[k] += (hyA.eq_mcap[k]||0)/100 * A;
         for (const [sec, v] of Object.entries(hyA.eq_sector)) eq_sector[sec] = (eq_sector[sec]||0) + v/100 * A;
-        for (const st of hyA.eq_stocks) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
+        for (const st of hyA.eq_stocks) if (!H.isNonStockName(st.name)) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
         eq_exposure += hyA.eq_total/100 * A;
       } else if (eqA && isHybridMF) {
         // An equity-only long-short SIF is registered as a Hybrid scheme, but with no debt leg its
@@ -2347,7 +2372,7 @@ window.linkIdcwToGrowth();
         // hybrid store so a fund present in both is still read from its hybrid record.
         for (const k of Object.keys(eq_mcap)) eq_mcap[k] += (eqA.mcap[k]||0)/100 * A;
         for (const [sec, v] of Object.entries(eqA.sector)) eq_sector[sec] = (eq_sector[sec]||0) + v/100 * A;
-        for (const st of eqA.stocks) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
+        for (const st of eqA.stocks) if (!H.isNonStockName(st.name)) eq_stocks[st.name] = (eq_stocks[st.name]||0) + st.pct/100 * A;
         eq_exposure += (eqA.total/100) * A;
       } else if (isEqDirect || isHybridMF) {
         // No holdings in the backend data — skip the fund entirely rather than substituting a

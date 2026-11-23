@@ -317,7 +317,7 @@ Three places make it stick; miss any one and it half-reverts:
 | | |
 |---|---|
 | `SHEET_MAP['Index']` | `['Equity', 'Mutual Fund', 'Index Fund']` — a new fund off the Monitor's *Index* sheet must be filed like one off *Flexi Cap Fund*, or the next upload re-creates the old bucket. (Updated 19-Oct-2026: a `SHEET_MAP` entry is also what lets a sheet *create* records; the four mixed-class sheets are refresh-only and must never be added here — *Data-hygiene traps*, D80.) |
-| `H.fofUnderlyingName` | its candidate pool matches index funds on **`sub_category`**; testing `product_class` would empty it of all 522 |
+| `H.fofUnderlyingName` | its candidate pool matches index funds on **`sub_category`**; testing `product_class` would empty it of all 522. (Updated 23-Nov-2026, TASK-086, D111: the match is now strict - same asset class, same AMC word, every candidate token in the FoF name, at least 2 tokens, a tie returns null - and owner pins in `H.FOF_UNDERLYING` come first; see the trap "FoF pins are keyed by MASTER name") |
 | `PC_ORDER` | "Index Fund" removed |
 
 `H.displayPC` is now a plain accessor. `DEFAULT_STRATEGIES`, `LIQUIDITY_MAP` and the scope gates
@@ -390,6 +390,22 @@ mount. The lag has not been re-tested there, so keep verifying with Node or Grep
 **Multi-megabyte lines.** `EQUITY_ANALYTICS` is a single 6.7 MB line; `MASTER` is 2.4 MB. PowerShell
 `-match`/`-replace` on these hangs for minutes. Use Node (`fs.readFileSync` + index arithmetic) or
 `Grep` with `-o`. Never `Read` the whole file.
+
+**FoF pins are keyed by MASTER name** (23-Nov-2026, TASK-086, D111, KNOWN_ISSUES C88). A FoF borrows
+its look-through from one underlying ETF or index fund. `H.fofUnderlyingName` finds it by a strict
+name rule, or by an owner pin in `H.FOF_UNDERLYING` (page code, next to the function: the four BHARAT
+Bond FoFs and ICICI Pru Bharat 22 FOF). Both the key and the target of a pin are MASTER names, and
+`rename_schemes.js` does not know about them: **a rename of a pin key or target needs a pin update
+(owner, code PR)**. `tools/test/lookthrough.test.js` fails with that remedy when a pin no longer applies;
+a refresh that trips it is no longer routine. A FoF that matches nothing (multi-asset, allocator,
+income-plus-arbitrage FoFs) shows "Not included" rather than another fund's holdings.
+
+**One test for "not a stock"** (23-Nov-2026, TASK-086, D111, KNOWN_ISSUES C74). `H.isNonStockName`
+decides which holdings rows are not stocks (cash, TREPS, repo, CCIL, net current assets, T-bills, GOI
+gilts, index and stock options, "Others", "Other Derivaties", state SDLs, money-market fund units).
+The Overlap Matrix and the equity look-through's top-20 both call it; never re-inline the patterns.
+It filters the stock list only: m-cap, sector and exposure shares are unchanged. Liquid-fund units are
+deliberately kept (the owner's choice, C85).
 
 ### Data-hygiene traps on every refresh
 
