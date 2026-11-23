@@ -1459,8 +1459,8 @@ Status: ANSWERED.
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D111 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D112**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D113 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D114**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1567,3 +1567,5 @@ None of them may be implemented on the strength of the recommendation alone.
 | 21-Nov-2026 | D109 recorded (the owner's "Approve all" for the "Other Funds Analytics" hybrid refresh). | MOD-03 |
 | 23-Nov-2026 | D110 recorded (the owner's "Approve all" of 22-Nov-2026 for the six follow-up fixes). | MOD-03 |
 | 23-Nov-2026 | D111 recorded (the owner's "Approve all" and "money-market only" for bundle 2, TASK-086). | MOD-03 |
+| 23-Nov-2026 | D112 recorded (include every new fund; the "Others" label; never blank for PMS/AIF/SIF; peer ranges; PR #70 fixed first). | MOD-03 |
+| 23-Nov-2026 | D113 recorded (the owner's "Approve all" for the D112 new-fund lists; HDFC 70:30 as Hybrid 9-11%). | MOD-03 |

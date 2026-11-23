@@ -18,6 +18,25 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - Release record of PR #70 (TASK-086); D113; claim for TASK-088, the new funds (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-086 released at the merge of PR #70 (`a016fc5`, after Gate B, the
+  fix of its one finding, a delta Gate B and the owner's yes); the claim for TASK-088, the D112 new funds and peer bands
+  (OPS-02, `data/2026-11-d112-adds`; contract v2 after a Guardian STOP on v1; C89 and C90 reserved).
+- `docs/DECISIONS.md`: D113, the owner's "Approve all" for the D112 new-fund lists, with HDFC 70:30 as Hybrid 9-11%.
+- `TASK_REGISTER.md` (TASK-086 complete; TASK-087 planned; TASK-088), `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md`
+  (baseline `a016fc5`, rows #69 and #70), `DECISION_LOG.md` (next D114), `docs/project-control/README.md` (next TASK-089,
+  D114, C91).
+
+## 2026-11-23 - D112 (include new funds; the "Others" label; never blank for PMS/AIF/SIF) (docs only)
+
+### Changed
+- `docs/DECISIONS.md`: D112, the owner's decisions of 23-Nov-2026 after three reported issues: every new fund in the
+  Reckoner, SIF Monitor and MF Monitor is added (Tata Titanium Active Asset Allocator, Hybrid SIF, 9-11%); the equity
+  "Others" label; the band mid-point instead of a blank for PMS/AIF/SIF everywhere; peer-based ranges; PR #70 fixed
+  before its merge. `DECISION_LOG.md` (next D113), `docs/project-control/README.md`.
+
 ## 2026-11-23 - Look-through fixes: FoF matching and non-stock rows, C72 + C74 (fix/lookthrough-fof-nonstock)
 
 ### Fixed

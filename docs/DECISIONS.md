@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109, D110 and D111 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109, D110, D111, D112 and D113 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -145,6 +145,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D109 | 21-Nov-2026 | "Other Funds Analytics" (31-Oct-2026): refresh only the existing hybrid entries (23 visible funds, 18 keys not in MASTER); no gold, silver, international or FoF analytics; no new retirement plans; Hang Seng ETFs and the FoF matcher as separate items (owner) | Data | Active |
 | D110 | 22-Nov-2026 | Follow-up fixes as recommended: clear Alchemy LTV's leftover AUM and m-cap split (C70); the 12 AIFs show their current band mid-point (C71); Alchemy LTV 17-19% confirmed; the Hang Seng ETFs and the Hang Seng TECH ETF FoF to Global Funds / International (C21); FoF strict matching with owner pins and no cash rows in the top-20 (C72, C74); the arbitrage rule before a cash bucket (C73) (owner) | Data | Active |
 | D111 | 23-Nov-2026 | Bundle 2 (C72, C74) as recommended: 5 owner pins for FoF look-through, the "Nifty200" letter/digit split, non-stock option (b) with money-market fund units only (liquid-fund units stay), multi-fund FoFs show no look-through; a "Not included" note as a separate item (owner) | Data | Active |
+| D112 | 23-Nov-2026 | New funds in the Reckoner, the SIF Monitor and the MF Monitor are added, never discarded (Tata Titanium Active Asset Allocator, Hybrid SIF, 9-11%); the equity market-cap bucket is labelled "Others (cash, unlisted, foreign, REITs)" with no separate cash bar; PMS/AIF/SIF never show a blank 1Y/3Y/5Y (the range average, everywhere; young MFs keep D94); funds without a range get a peer-based range (owner) | Data | Active |
+| D113 | 23-Nov-2026 | The D112 new-fund lists as recommended: Tata Titanium Active Asset Allocator Long-Short Fund (Hybrid SIF, 9-11%); 22 MF launches as stubs; 7 Reckoner instruments incl. two GIFT City (Outbound) funds; peer bands for 101 MF/ETF records; HDFC 70:30 index fund as Hybrid / Equity Savings 9-11% (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1197,6 +1199,71 @@ and the entry says so. "—" means no date is recorded.
   pre-check, Gate B, the owner's yes before the merge). The pins are keyed by MASTER name: a rename of a pin key or
   target needs a pin update (owner, code PR), which makes that monthly refresh non-routine; documented in the
   OPERATING_MANUAL, the monthly-update skill and KNOWN_ISSUES.
+- **Source:** the owner's chat answers of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D112 - Include every new fund; the "Others" label; never blank for PMS/AIF/SIF; peer ranges
+`Active` - 23-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the owner reported three issues (23-Nov-2026): Tata Titanium Active Asset Allocator missing although in
+  the Investment Reckoner; a higher "Others" share in the equity analytics; 3Y/5Y figures where a fund has none.
+  MOD-03's read-only investigation (each finding re-checked) found: SIFs never come from the Reckoner and the October
+  SIF bake skipped 5 unmatched SIF Monitor rows without naming them; the market-cap "Others" bucket holds cash, TREPS,
+  net current assets, REITs/InvITs, foreign and unlisted shares, and several funds held more cash in October; missing
+  PMS/AIF horizons show the band mid-point (D105) on screen and in the deck but not in the Excel export or the
+  Section 4 Proposal total.
+- **Decision (the owner's words, 23-Nov-2026, and answers to MOD-03's four questions):**
+  1. "Make sure to include all the new entries from Investment Reckoner, SIF Monitor, MF Monitor. Whenever a new fund
+     is there which is not part of the existing list in the dashboard, it should be included rather than being
+     discarded." Tata Titanium Active Asset Allocator is added as a Hybrid SIF with the range 9-11% (like the other
+     three Active Asset Allocator SIFs). This changes D80 (refresh-only Monitor sheets never create records) and the
+     SIF Monitor merge, which skipped unmatched rows.
+  2. The equity market-cap "Others" bucket is renamed "Others (cash, unlisted, foreign, REITs)" on screen, in Excel and
+     in the deck. No separate cash bar.
+  3. "Never leave it blank; always include average of the expected ranges", for PMS, AIF and SIF: every surface
+     (screen, the Section 4 and Live Output totals, the Excel export, the deck) shows the band mid-point marked "*"
+     where a 1Y/3Y/5Y figure is missing. Young mutual funds keep D94's blanks.
+  4. A fund with no expected range gets one from its category peers: OPS-02 proposes the list, the owner approves it.
+  5. PR #70 (TASK-086): the strict matcher's weakness with short numeric tokens, found at Gate B, is fixed before the
+     merge ("Fix it first").
+- **Rationale:** the owner's product choices.
+- **Alternatives / supersedes:** keeping D80's refresh-only rule; a separate cash bar; blank horizons for young PMS/AIF
+  (D94 extended); asking the desk for every missing range: not chosen. Changes D80; extends D105 and D106 point 2.
+- **Consequences:** OPS-02 prepares the data adds (the SIF list, MF and Reckoner funds not yet on the dashboard, the
+  peer ranges) and the tool and process change; EX-02 does the label and the never-blank consistency as separate PRs
+  after PR #70. Each is a claimed change with its own review and the owner's yes before the merge.
+- **Source:** the owner's chat messages of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D113 - The D112 new-fund lists (bundle B1), as recommended
+`Active` - 23-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** under D112 OPS-02 listed every fund in the November Reckoner, the 2-Nov SIF Monitor and the 2-Nov / 30-Oct
+  MF Monitors that is not on the dashboard, and every record without an expected range, with a recommendation each.
+- **Decision:** the owner chose "Approve all" (23-Nov-2026) and then answered one revised point. So approved:
+  1. Tata Titanium Active Asset Allocator Long-Short Fund (the deck's full name; Reckoner slide 94; not in the 2-Nov SIF
+     Monitor) joins `var SIF` in the SIF sibling as a Hybrid SIF with the range 9-11%.
+  2. The SIF Monitor has no new fund: its 30 funds match the 30 records (the October "5 unmatched" were category
+     headings).
+  3. 22 new MF launches the October bake did not create (no numeric AUM) are added as stubs (name as the Monitor spells
+     it, class, inception, fund manager, exit load; returns, AUM and m-cap null until the next bake fills them, as D106
+     did); HDFC FTSE India Equity ETF is filed as an Index Fund. JioBlackRock Income Plus Arbitrage Omni FOF is Hybrid
+     Other. HDFC Nifty LargeMidcap250 Plus 8-13 yr G-Sec 70:30 Index Fund is Hybrid / Mutual Fund / Equity Savings with
+     9-11%, like its Edelweiss 70:30 twin (the owner's second answer, which replaces the first proposal, Equity / Index
+     Fund 11-13%). The 9 segregated portfolios stay out.
+  4. Seven Reckoner instruments are added with peer classes and bands: Maverick Simulation Solutions and PharmEasy
+     (unlisted equity), Vivriti Diversified Bond Fund III (12.5-13.5%, the median of 10 Debt AIF peer bands), ICICI
+     Prudential PIPE Fund (a Cat III AIF, D104; separate from the ICICI Pru PIPE Strategy PMS), PROMAFT, and two GIFT
+     City funds named by the convention: JioBlackRock Advantage World Equity Fund (Outbound) and Aditya Birla Emerging
+     Market Equity Fund (Outbound), written to the June sibling's `NEW_GIFT` and to MASTER; their AUM stays null (the deck
+     gives only the master fund's AUM).
+  5. 101 MF/ETF records without a range get the most common band of their class and sub-category peers (equal to the
+     median in every row), with OPS-02's hand exceptions; the two segregated UTI portfolios stay without a band.
+  6. Separately (a later tools bundle): on the refresh-only Monitor sheets a new fund is created when a name rule gives
+     its class; any other is listed for the owner, never dropped (changes D80).
+- **Rationale:** the owner accepted the recommendations; for HDFC 70:30 the exact twin on the dashboard decides.
+- **Alternatives / supersedes:** typing October figures for the MF launches by hand (no: the bake fills them).
+  Implements D112 points 1 and 4.
+- **Consequences:** OPS-02 runs TASK-088 on `data/2026-11-d112-adds` (High risk: contract v2, Guardian pre-check,
+  Gate B, the owner's yes before the merge). Effective MASTER 7,692 -> 7,723; `var SIF` 30 -> 31; `NEW_GIFT` 58 -> 60.
+  KNOWN_ISSUES C89 (class questions: the 1D Rate Liquid ETF, the Mirae 75:25 and 50:50 funds) and C90 (the latent
+  heading-row substring match in parseSif; the Titanium name watch).
 - **Source:** the owner's chat answers of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit

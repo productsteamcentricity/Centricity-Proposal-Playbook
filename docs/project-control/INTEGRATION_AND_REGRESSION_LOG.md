@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 23-Nov-2026 (MOD-03): `main` = `origin/main` = `a016fc5` (PR #70, TASK-086, the look-through code fixes C72 and C74, D110 and D111; site content S15). Code only in site/index.html (sha256 0261d219...); every data block byte-identical; verify_page identical to S14 (MASTER effective 7,692; Select 184 (184); PMS 696 / AIF 10 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; 0 duplicates; 0 script errors); npm test 8 files (lookthrough 284); FoFs 197, 67 resolve, 34 in a look-through scope; live 7 of 7 equal `site/`; push run 45141991063 success. Recovery: restore `backups/2026-11-23_pre-ex02-bundle2/` or `git revert -m 1 a016fc5`.**
+
 **Update 23-Nov-2026 (MOD-03): `main` = `origin/main` = `eb3a562` (PR #68, bundle 1 of the follow-up fixes, D110; site content S14). Only MASTER changed (50 fields on 16 records); site/index.html sha256 b28be4bd...; verify_page identical to S13 (MASTER effective 7,692; Select 184 (184); PMS 696 / AIF 10 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES unchanged; 0 duplicates; 0 script errors); npm test 979; live 7 of 7 equal `site/`; push run 45106916337 success. Recovery: restore `backups/2026-11-23_pre-2026-11-cleanup/` or `git revert -m 1 eb3a562`.**
 
 **Update 22-Nov-2026 (MOD-03): `main` = `origin/main` = `f650ce1` (PR #65, the "Other Funds Analytics" hybrid refresh, D109; site content S13). Only HYBRID_ANALYTICS changed (41 entries; 269 keys); site/index.html sha256 1edc9faf...; verify_page identical to S12 (MASTER effective 7,692; Select 184 (184); PMS 696 / AIF 10 / benchmarks 4; EQUITY_ANALYTICS 1,231; RISK_MATRIX 1,088; DATA_DATES unchanged; 0 duplicates; 0 script errors); npm test 979; live 7 of 7 equal `site/`; push run 45027990209 success. Recovery: restore `backups/2026-11-21_pre-2026-10-ofa-hybrid/` or `git revert -m 1 f650ce1`.**
@@ -127,9 +129,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#68)
+## 4. Per-PR integration table (#1-#70)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #68 on 18-23-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 68 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #70 on 18-23-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 70 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -211,6 +213,8 @@ written down at the time.
 | #66 | 22-Nov-2026 | `0e26c71` | docs/mod-03-release-pr65-20261122 | GOV | MOD-03 | Release record of PR #65; C73, C74 | 6 files, docs only | success | 7 of 7 | site stays S13 |
 | #67 | 23-Nov-2026 | `6dc4260` | docs/mod-03-d110-cleanup-claim-20261123 | GOV | MOD-03 | D110; claim of bundle 1; EX-02 | 6 files, docs only | success | 7 of 7 | site stays S13 |
 | #68 | 23-Nov-2026 | `eb3a562` / 45106916337 | data/2026-11-cleanup | OPS | OPS-02 | Follow-up fixes bundle 1: data clean-up of MASTER (D110: C70, C71, C21; 50 fields) | 5 files: site/index.html, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S14; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #69 | 23-Nov-2026 | `5759d7d` | docs/mod-03-release-pr68-d111-20261123 | GOV | MOD-03 | Release record of PR #68; D111; claim of TASK-086 | 10 files, docs only | success | 7 of 7 | site stays S14 |
+| #70 | 23-Nov-2026 | `a016fc5` / 45141991063 | fix/lookthrough-fof-nonstock | EX | EX-02 | TASK-086 look-through code fixes C72, C74 (D110, D111) | 11 files: site/index.html (code), tools/test/lookthrough.test.js, docs | PR run success (on 089510d and 9505147) | 7 of 7 = site/ (MOD-03) | site S15; High risk; Gate B GO WITH CONDITIONS, one finding fixed before the merge, delta Gate B GO; the owner's yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 
