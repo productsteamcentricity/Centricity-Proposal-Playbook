@@ -76,8 +76,8 @@ VERIFIED). This table adds the grep anchor and the dependants.
 | `EQUITY_ANALYTICS` (1,203), `HYBRID_ANALYTICS` (264), `DEBT_ANALYTICS` (511), empty `BONDS` / `PMS_HOLDINGS`, `CENTRICITY_SELECT` (178) | L1435-1440 | `window\.EQUITY_ANALYTICS = ` | look-through, overlap, Select popover, `verify_page` |
 | `MF_BENCHMARK_PERF` (47 Monitor sheets) | L1444 | `^window\.MF_BENCHMARK_PERF = ` | `mfBenchmarkPerfFor` (screen, Excel, deck) |
 | `DATA_DATES`, `dataAsOf`, `linkIdcwToGrowth()` **run at load** | L1446-1474 | `^window\.DATA_DATES = \{`, `linkIdcwToGrowth();` | every "as on" label |
-| Core `window.H` (22 keys) | L1476-1905 | `window\.H = \{` | UI, exports |
-| `H` extensions (47 more, 69 keys in all): returns, predicates, credit, scope, name resolution, plan switch, charts | L1907-2928 | `H\.isHybridScheme = ` | UI, exports, `pptx_layout.test.js` |
+| Core `window.H` (23 keys; `isNonStockName` added 23-Nov-2026, TASK-086) | L1476-1915 | `window\.H = \{` | UI, exports |
+| `H` extensions (48 more, 71 keys in all; `FOF_UNDERLYING` added 23-Nov-2026, TASK-086): returns, predicates, credit, scope, name resolution, plan switch, charts | L1917-2953 | `H\.isHybridScheme = ` | UI, exports, `pptx_layout.test.js` |
 | Config + PMS overlay: `RISK_PROFILES`, live `BENCHMARKS` (L2960), `PMS_PERFORMANCE`, `PMS_PERF_ALIAS`, `applyPmsPerformance()` **run at load** (L3054), static `PMS_BENCHMARK_PERF` (L3057), `MF_BM_FOR_SUB`, `MF_BM_PREFERRED` | L2930-3176 | `^window\.PMS_PERFORMANCE = `, `applyPmsPerformance()` | MASTER PMS/AIF fields; benchmark rows on screen, in Excel and in the deck |
 | `window.REFRESH` parsers; closure-private `SHEET_MAP` (43), `DEBT_STYLE_SHEETS`, `REFRESH_ONLY_SHEETS` (4) | L3177-3944 | `<script>// ===== In-browser xlsx parsers`, `window\.REFRESH = REFRESH` | Section 7 uploads **and**, offline, `bake_month`, `merge_analytics`, `fill_variant_analytics` |
 | `window.EXPORTS`: Excel, master export, PowerPoint with the measured design system (D82) | L3945-5521 | `const DS = \{`, `function buildDeck`, `window\.EXPORTS = \{` | App buttons; `pptx_layout.test.js` |
@@ -344,10 +344,11 @@ VERIFIED: `bake_month.js:76-111`, `merge_analytics.js:75-77`, `fill_variant_anal
 
 | Predicate | Defined (anchor) | Used by | Copies elsewhere |
 |---|---|---|---|
-| `H.isHybridScheme` (asset_class Hybrid and product_class Mutual Fund / Hybrid SIF / SIF) | ~L2253 `H\.isHybridScheme = ` | `inEquityScope`, `inDebtScope`, `aggEquityScoped`, `aggDebtScoped` | none in the scope gates or aggregators; not used by any sibling or tool |
-| `H.isEquitySIF` | ~L2259 | `inEquityScope`, `aggEquityScoped` | none |
-| `H.isSelfDescribingDebt` (Bonds or MLD) | ~L2232 | `hasDbHoldings`, `inDebtScope`, `aggDebtScoped` | `product_class === 'MLD'` again at ~L2440 only to choose the MLD sector bucket / Unrated default (intended) |
-| `H.creditBucket` (7 fixed buckets, `CREDIT_BUCKETS`) | ~L2168 | `fundRatingBuckets`, `aggDebtScoped`, legacy `aggDebt` | none |
+| `H.isHybridScheme` (asset_class Hybrid and product_class Mutual Fund / Hybrid SIF / SIF) | ~L2278 `H\.isHybridScheme = ` | `inEquityScope`, `inDebtScope`, `aggEquityScoped`, `aggDebtScoped` | none in the scope gates or aggregators; not used by any sibling or tool |
+| `H.isEquitySIF` | ~L2284 | `inEquityScope`, `aggEquityScoped` | none |
+| `H.isSelfDescribingDebt` (Bonds or MLD) | ~L2257 | `hasDbHoldings`, `inDebtScope`, `aggDebtScoped` | `product_class === 'MLD'` again at ~L2465 only to choose the MLD sector bucket / Unrated default (intended) |
+| `H.creditBucket` (7 fixed buckets, `CREDIT_BUCKETS`) | ~L2193 | `fundRatingBuckets`, `aggDebtScoped`, legacy `aggDebt` | none |
+| `H.isNonStockName` (cash, repo, TREPS, CCIL, net current assets, T-bills, GOI gilts, index and stock options, "Others", "Other Derivaties", state SDLs, money-market fund units; added 23-Nov-2026, TASK-086, D111) | ~L1835 `function isNonStockName` (first closure, exported on the core `window.H`) | `computeOverlap` (`getStocks`), `aggEquityScoped` (three stock loops) | none (the patterns `_CASH_RE`, `_NONSTOCK_RE`, `_DERIV_RE`, `_OTHER_NONSTOCK_RE` are read only by it); legacy `aggEquity` unfiltered (dead code) |
 
 Asset-class tests deliberately not routed through the predicates: `H.netAllocation` (`asset_class ===
 'Hybrid'`) and the three performance-bucket functions (5.2).
@@ -364,6 +365,7 @@ Asset-class tests deliberately not routed through the predicates: `H.netAllocati
 | Workbook date to calendar day | page `isoDay` (~L3288), SIF sibling `isoDayLite`, `tools/lib/dates.js` | A6 / D73 ("same rule" in three places) |
 | Expected returns written as track record | `merge_bond_list.js`, `add_reckoner_funds.js`, page `parseBonds` / `parsePMSHoldings`, `applyPmsPerformance` keeps stored mid-points | C28, C37; the deck marks them `*` (D83, `H.isExpectedReturn`) |
 | SIF name normaliser | sibling `_normSif` (used by the delete filter and `parseSif`) | single copy inside the sibling |
+| FoF to underlying lookup | `H.holdingsLookupName` vs inline copies in `aggEquityScoped` (~L2353) and `aggDebtScoped` (~L2438); all call `H.fofUnderlyingName`, so they agree | C83 (fold later) |
 
 ### 5.3 Load-time mutations the bake captures
 

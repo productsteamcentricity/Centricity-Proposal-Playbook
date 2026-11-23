@@ -59,7 +59,10 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    in every tool). Exit 0 still needs a full read.
    `merge_sif_monitor.js` requires `--as-on`. PMS-alias, Reckoner and AIF pins live only in
    `tools/data/pins.json`; the PMS/AIF look-through pins are still the `PIN` map in
-   `merge_pms_aif_analytics.js` (D75).
+   `merge_pms_aif_analytics.js` (D75); the FoF look-through pins are `H.FOF_UNDERLYING` in the page code
+   (D111). All are keyed by MASTER name: a rename of a FoF pin's key or target (`rename_schemes.js`) needs a pin update by
+   the owner in a code PR, and `npm test` (`lookthrough.test.js`) fails until then; the refresh is then no
+   longer routine (KNOWN_ISSUES C88).
    Read the bake's `refresh-only rows not merged` list every month (C19, D80): a new fund on one of
    the four refresh-only Monitor sheets is added to MASTER by hand with the owner, never by the bake
    and never by moving the sheet into `SHEET_MAP`.

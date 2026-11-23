@@ -18,6 +18,41 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - Look-through fixes: FoF matching and non-stock rows, C72 + C74 (fix/lookthrough-fof-nonstock)
+
+### Fixed
+- **FoF look-through (C72, TASK-086, D110, D111).** `H.fofUnderlyingName` no longer lends a FoF another fund's holdings.
+  It now resolves only by a strict rule (same asset class, same AMC word, every candidate token in the FoF's name, at least
+  2 tokens, letters split from digits, a tie returns null) or by one of 5 owner pins in the new `H.FOF_UNDERLYING`:
+  - the four BHARAT Bond FoFs -> the BHARAT Bond ETF of the same year;
+  - ICICI Pru Bharat 22 FOF -> Bharat 22 ETF.
+  The effect:
+  - 67 of 197 FoFs resolve (was 132, of which 68 were wrong);
+  - 34 multi-fund FoFs (multi-asset, allocator, income-plus-arbitrage, flexicap passive) now show "Not included" instead
+    of a Nifty 50 ETF's, an IT ETF's or an SDL index fund's holdings;
+  - BHARAT Bond ETF FOF April 2033 shows AAA/A1+ 87.16% instead of SOV 95.76%.
+- **Non-stock rows in the equity top-20 (C74).** One predicate `H.isNonStockName` (the Overlap Matrix's cash / repo /
+  TREPS / net-current-asset / T-bill / gilt / option patterns plus "Others", "Other Derivaties", state SDLs and money-market
+  fund units, D111) filters the stock list of `H.aggEquityScoped` (screen, Excel "Equity Analytics", deck) and the
+  Overlap Matrix.
+  - The m-cap, sector and exposure shares do not change.
+  - Liquid-fund units stay (owner's choice, C85).
+  - The Overlap Matrix changes for 640 of the 78,503 pairs that involve a fund holding one of the 14 newly dropped names:
+    mean 0.31 pp, 8 pairs one colour band lower.
+
+### Added
+- `tools/test/lookthrough.test.js` (284 checks; part of `npm test`). After Gate B the strict rule also counts short
+  tokens ("50", "30", "IT"), so a "Quality 30" FoF can never take a "Quality 50" ETF after a rename; today's resolutions
+  are unchanged.
+- KNOWN_ISSUES C79-C83 and C85-C88; C84 withdrawn (SUPERSEDED -> C78, a duplicate).
+- Record: `docs/update-log/2026-11-23_task-086-lookthrough-fixes.md`.
+
+### Changed
+- Docs: OPERATING_MANUAL (trap rows: FoF pins keyed by MASTER name; one test for "not a stock"), INTERFACE_CONTRACTS
+  4.1 (`window.H` 69 -> 71 keys), ARCHITECTURE_AND_DEPENDENCY_MAP (core 22 -> 23 keys; 5.1; 5.2), ARCHITECTURE,
+  `.claude/skills/monthly-update/SKILL.md` (the FoF pins and the rename ripple, C88).
+- `verify_page` output unchanged; no data block, sibling or tool changed.
+
 ## 2026-11-23 - Release record of PR #68 (data clean-up); D111; claim for TASK-086 (docs only)
 
 ### Changed
