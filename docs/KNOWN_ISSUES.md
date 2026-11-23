@@ -1717,7 +1717,7 @@ waiting for this decision and held the G-Sec record instead)
 - **Update 18-Nov-2026 (TASK-067, NB-04):** rule merged (TASK-067); data applied by the October bake (TASK-021). `bake_month.js` now applies `tools/lib/fund_life.js` after the Regular merge: on each MF record the Monitor refreshed, every return for a period longer than the fund's life (to the Regular monitor's real NAV date, `--nav-date`) is set to null, and a fund younger than one year loses an `si` beyond +-300% (D103; every other young-fund `si` stays); DIRECT_PERF gets the same rule against each Direct row's own inception. On the September inputs it clears 27 fields on the 13 Regular records (r3m on 13, r6m on 11, r1y on Overnight, Liquid and Money Market); the October dry run (NAV 2026-11-02) clears the same 27. A cleared r1y of a record with an IRR band (the three debt funds) shows the band mid-point marked "*" (`H.effectiveReturn`); r3m and r6m show "-". The 44-day `si` values (e.g. Large Cap -45.35%) are within +-300% and stay (D103). Close this item when the October bake is published and checked.
 
 ### C21. Taxonomy oddities on the Monitor's ETF and FoF sheets
-**P3 · Open · —**
+**P3 · Partly fixed 23-Nov-2026 (part (a), the Hang Seng records, by PR #68, D110); part (b) open · —**
 
 - `Mirae Asset Hang Seng TECH ETF` and `Nippon India ETF Hang Seng BeES` are filed in MASTER as Debt /
   ETF / Debt ETF. Both are listed on the mapped `Debt Oriented` sheet (and on `Solution

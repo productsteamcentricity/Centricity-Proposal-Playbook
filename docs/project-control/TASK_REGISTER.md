@@ -42,7 +42,7 @@ TASK-060, TASK-061 and TASK-074 notes) take effect when the record that adds the
 1. **Search first.** Before adding a task, search this file for the KNOWN_ISSUES ID, REQ ID or key words.
    If the owner repeats a request, update the existing task (add the new date and source to its
    evidence line). Never open a second task for the same work.
-2. **New task = next free number.** Next free on 17-Nov-2026: **TASK-086** (TASK-079 to TASK-085 were created that day). Numbers are never reused,
+2. **New task = next free number.** Next free on 23-Nov-2026: **TASK-087** (TASK-079 to TASK-085 were created on 17-Nov-2026, TASK-086 on 23-Nov-2026). Numbers are never reused,
    renumbered or recycled, even when a task is dropped (mark it SUPERSEDED and say by what).
 3. **Every task records:** title (imperative), workstream (EX, NB, OPS, GOV), status, priority, owner
    chat, depends on, blocked by, acceptance criteria, evidence or next step, related REQ / KNOWN_ISSUES /
@@ -218,6 +218,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-083 | GIFT City products from the offshore options deck (D90) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
 | TASK-084 | One Bond List from the two desk lists, new file layout (D90) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
 | TASK-085 | Direct Equity returns from a public price source (D89) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
+| TASK-086 | Look-through code fixes C72 (strict FoF matching, owner pins) and C74 (non-stock rows out of the equity top-20) (D110, D111) | EX | IN PROGRESS | P2 | EX-02 | R |
 
 Counts (17-Nov-2026): 85 tasks. Completed history 18 (VERIFIED COMPLETE 17, IMPLEMENTED NOT FULLY VERIFIED 1).
 Open 67: BLOCKED 22, NOT STARTED 27, PLANNED 14, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 1, IMPLEMENTED NOT FULLY VERIFIED 1 (the one IMPLEMENTED NOT FULLY VERIFIED is TASK-064: it stays in group R until TASK-081 records its results).
