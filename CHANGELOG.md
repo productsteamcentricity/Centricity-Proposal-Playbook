@@ -18,6 +18,19 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-23 - Follow-up data clean-up: C70, C71, C21 (data/2026-11-cleanup)
+
+### Changed
+- MASTER, 50 fields (OPS-02, D110): Alchemy Long Term Ventures Fund's leftover AUM (630) and market-cap split cleared (C70);
+  12 AIF records lose a stored 1Y/3Y/5Y figure taken from an older band, so they show the current band mid-point with *
+  (e.g. InCred Growth Partners Fund II 27.50% -> 23.50%*, C71); Mirae Asset Hang Seng TECH ETF, Nippon India ETF Hang Seng
+  BeES and the Hang Seng TECH ETF FoF filed Global Funds / Mutual Funds / International like their peers (C21 part a; they now
+  count as equity in the net asset allocation).
+
+### Docs
+- `docs/update-log/2026-10_Oct-2026.md` Run 6; `docs/KNOWN_ISSUES.md` C70, C71 closed, C21 partly fixed, C75-C78 new;
+  `docs/PROJECT_STATE.md`. CLAUDE.md and DECISIONS.md unchanged (D110 is on main).
+
 ## 2026-11-23 - D110; claim for bundle 1 of the follow-up fixes; EX-02 registered (docs only)
 
 ### Changed
