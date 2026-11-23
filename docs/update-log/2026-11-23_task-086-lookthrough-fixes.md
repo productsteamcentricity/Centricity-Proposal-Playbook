@@ -16,7 +16,8 @@
 | C74 | the three `if (!H.isNonStockName(st.name))` loops in `H.aggEquityScoped` (~L2361, L2366, L2375) | The equity look-through's stock list (screen top-20, Excel "Equity Analytics", deck "Portfolio Analytics - Equity") drops non-stock rows. m-cap, sector and exposure shares are unchanged; every remaining stock keeps its percentage. Listed Direct Equity is not filtered. |
 | C72 | `H.FOF_UNDERLYING`, `H.fofUnderlyingName = function` (~L2049-2095) | Owner pins first (5: BHARAT Bond FOF April 2030 / 2031 and BHARAT Bond ETF FOF April 2032 / 2033 -> "BHARAT Bond ETF - April <year>"; ICICI Pru Bharat 22 FOF -> "Bharat 22 ETF"). Otherwise a strict rule: a non-FoF ETF or index fund of the same asset class (no fallback to other classes), the same AMC word, every candidate token in the FoF's name, at least 2 tokens (letters split from digits, "Nifty200" = "Nifty 200"); the candidate with the most tokens wins; a tie returns null. Null means "Not included" in the look-through. |
 
-`window.H`: 69 -> 71 keys (core 22 -> 23). The diff is +60 / -35 lines in 9 hunks between ~L1827 and ~L2375.
+`window.H`: 69 -> 71 keys (core 22 -> 23). The diff is +60 / -35 lines in 9 hunks between ~L1827 and ~L2375 (first
+commit `089510d`); the Gate B fix adds +3 / -2 lines at ~L2037-2046 (section "Fix after Gate B").
 
 ## Rehearsal and apply
 - **Prototype:** the same replacements applied to a scratch copy of `site/` (exact-once string replacements, then an atomic
@@ -53,7 +54,7 @@
 - `node tools/verify_page.js site`: exit 0, output identical to the base (MASTER 7692; EQUITY_ANALYTICS 1231; 0
   duplicates; 0 script errors).
 - `npm test`: 8 of 8 files, 0 failures. The new `tools/test/lookthrough.test.js` passes 280 checks; on the base page it
-  fails 38.
+  fails 38. (After the Gate B fix below: 284 checks; 40 fail on the base.)
 - Block-by-block comparison with `tools/lib/blocklib.js`: MASTER, EQUITY_ANALYTICS, HYBRID_ANALYTICS, DEBT_ANALYTICS,
   CENTRICITY_SELECT, MF_BENCHMARK_PERF, PMS_PERFORMANCE, PMS_PERF_ALIAS, RISK_MATRIX and DIRECT_PERF identical. The 12
   data lines (12,830,573 characters) are identical and in order. The file ends with `</body></html>`.
@@ -87,6 +88,26 @@
   - Notes: the Quantum Gold tie (C81, commodity, no client effect); "Repono Ltd." matches the old `_CASH_RE` (C80; no
     fund holds it); CDMDF and debt-scheme units and REIT NCD tranches stay (C85).
 - `security-reviewer` before the push, the PR `verify` check, Gate B (MOD-03): recorded on the PR.
+
+## Fix after Gate B: numeric tokens (23-Nov-2026)
+- **Finding (MOD-03's Gate B, adversarial review; the owner chose "Fix it first"):** the strict rule's tokeniser `_tok`
+  kept only tokens longer than 2 characters, so "50", "30" or "IT" did not count in the coverage check. On this data a
+  more specific candidate always won, but after a rename or removal of the winning ETF a near-namesake could win:
+  "Alpha Nifty 200 Quality 30 ETF FoF" took a "Quality 50" ETF, "Alpha Nifty India Defence ETF FoF" took a "Nifty 50" ETF.
+- **Fix:** `_tok` keeps every non-noise token, however short (`site/index.html` ~L2046, `.filter(t => t.length > 0 &&
+  !_NOISE.has(t))`). Its only caller is `_tokStrict` (the strict FoF rule), so nothing else changes.
+- **Test:** the test's private copy of the rule uses the same tokeniser, plus 4 synthetic cases: "Quality 30" vs "Quality
+  50" (null); Defence FoF vs "Nifty 50" ETF (null); "Nifty 50" FoF -> "Nifty 50" ETF rather than "Nifty Next 50"; a
+  flexicap FoF vs "Nifty IT" ETF (null). `lookthrough.test.js` 284 passed; the first two fail on the 089510d page; on the
+  base page 40 fail.
+- **Same output as 089510d (Node vm, prototype `119980bf...` against the new head):** FoF resolution and scope 0 of 197
+  differ; `aggEquityScoped` 0 of 6,784 single-fund look-throughs differ (the full JSON: m-cap, sectors, stocks, exposure,
+  skipped); `aggDebtScoped` 0 of 760; `isNonStockName` 0 of 2,418 holding names; `computeOverlap` 0 of 3,000 random pairs.
+  So 67 FoFs resolve, 34 in scope, Hang Seng TECH ETF FoF null, the 5 pins resolve, and the browser, Excel and deck
+  evidence above stands without a re-run.
+- **New head:** `site/index.html` sha256 **0261d219bb96fb7a2557c02c152e54372792453cc1a380fd928bb1fbb20969af**; +3 / -2
+  lines on 089510d. `verify_page` identical to the base; `npm test` 8 of 8 files; every data block byte-identical
+  (blocklib); siblings unchanged.
 
 ## KNOWN_ISSUES
 - **Closed:** C72, C74.

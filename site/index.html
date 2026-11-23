@@ -2034,7 +2034,8 @@ window.linkIdcwToGrowth();
     return /\bFOF\b|\bFoF\b|Fund\s+of\s+Funds?/i.test(n);
   };
 
-  // Normalise to a comparable token list (drop noise words)
+  // Normalise to a comparable token list (drop noise words). Every other token counts, however short:
+  // "50" vs "30" or "IT" tell two index funds apart (Gate B of TASK-086). Only the strict FoF rule uses it.
   const _NOISE = new Set(['etf','fof','fofs','reg','g','idcw','pru','passive','active',
     'fund','of','funds','plan','direct','growth','dividend','div',
     'reinvestment','reinv','option','scheme']);
@@ -2042,7 +2043,7 @@ window.linkIdcwToGrowth();
     return new Set(
       String(s || '').toLowerCase()
         .replace(/[^a-z0-9]+/g, ' ').split(' ')
-        .filter(t => t.length > 2 && !_NOISE.has(t))
+        .filter(t => t.length > 0 && !_NOISE.has(t))
     );
   }
 

@@ -107,7 +107,7 @@ Run 2.
 
 ## Latest verification
 
-23-Nov-2026 (TASK-086, the look-through code fixes, branch `fix/lookthrough-fof-nonstock` at `origin/main` `5759d7d` plus the change; EX-02): `verify_page` exit 0, identical to the base (MASTER 7692; EQUITY_ANALYTICS 1231; 0 duplicates; 0 script errors); `npm test` 8 of 8 files, 0 failures (`lookthrough.test.js` 280 checks, new); `site/index.html` sha256 119980bf... = the rehearsal; every data block byte-identical (blocklib comparison). Browser, Excel and PowerPoint checks and the reviews: `update-log/2026-11-23_task-086-lookthrough-fixes.md`.
+23-Nov-2026 (TASK-086, the look-through code fixes, branch `fix/lookthrough-fof-nonstock` at `origin/main` `5759d7d` plus the change; EX-02): `verify_page` exit 0, identical to the base (MASTER 7692; EQUITY_ANALYTICS 1231; 0 duplicates; 0 script errors); `npm test` 8 of 8 files, 0 failures (`lookthrough.test.js` 284 checks, new); `site/index.html` sha256 0261d219... after the Gate B fix (short tokens count in the strict FoF rule; look-through output identical to the first commit's 119980bf..., which equalled the rehearsal); every data block byte-identical (blocklib comparison). Browser, Excel and PowerPoint checks and the reviews: `update-log/2026-11-23_task-086-lookthrough-fixes.md`.
 
 23-Nov-2026 (the follow-up data clean-up, branch `data/2026-11-cleanup` at `origin/main` `6dc4260` plus the run; OPS-02): `verify_page` exit 0, identical to the base (MASTER 7692; counts and dates unchanged; 0 duplicates; 0 script errors); `npm test` 7 of 7 files, 979 checks, 0 failures; `site/index.html` sha256 b28be4bd... = the rehearsal. Reviews: `update-log/2026-10_Oct-2026.md`, Run 6.
 

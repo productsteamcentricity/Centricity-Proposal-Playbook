@@ -154,7 +154,7 @@ for (const [k, v] of Object.entries(PINS)) {
 const NOISE = new Set(['etf', 'fof', 'fofs', 'reg', 'g', 'idcw', 'pru', 'passive', 'active', 'fund', 'of', 'funds', 'plan', 'direct',
   'growth', 'dividend', 'div', 'reinvestment', 'reinv', 'option', 'scheme']);
 const toks = s => new Set(String(s || '').replace(/([A-Za-z])(\d)/g, '$1 $2').replace(/(\d)([A-Za-z])/g, '$1 $2').toLowerCase()
-  .replace(/[^a-z0-9]+/g, ' ').split(' ').filter(t => t.length > 2 && !NOISE.has(t)));
+  .replace(/[^a-z0-9]+/g, ' ').split(' ').filter(t => t.length > 0 && !NOISE.has(t)));   // short tokens count ("50", "IT")
 const amc = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ')[0];
 function strictRef(fund) {
   const ft = toks(fund.name), a = amc(fund.name);
@@ -208,6 +208,17 @@ check('synthetic: one shared token is not enough', withMaster([R('Alpha Gold FoF
 check('synthetic: another asset class is never used (no fallback)', withMaster([R('Alpha Multi Asset Nifty 50 FoF-Reg(G)', 'Hybrid', 'Mutual Fund', 'Solution Oriented'), R('Alpha Nifty 50 ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(R('Alpha Multi Asset Nifty 50 FoF-Reg(G)', 'Hybrid', 'Mutual Fund', 'Solution Oriented'))) === null);
 check('synthetic: the most specific candidate wins', withMaster([FOF, ETF, R('Alpha Nifty 200 ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(FOF)) === ETF.name);
 check('synthetic: a tie at the top returns null', withMaster([FOF, ETF, R('Alpha Nifty 200 Quality 30 Fund ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(FOF)) === null);
+// Short tokens count (Gate B of TASK-086): a number or a two-letter word the FoF does not carry rejects a candidate.
+check('synthetic: "Quality 30" FoF never takes a "Quality 50" ETF', withMaster([FOF, R('Alpha Nifty 200 Quality 50 ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(FOF)) === null);
+{
+  const DEF = R('Alpha Nifty India Defence ETF FoF-Reg(G)', 'Equity', 'ETF', 'Equity ETF');
+  check('synthetic: a Defence FoF never takes a "Nifty 50" ETF', withMaster([DEF, R('Alpha Nifty 50 ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(DEF)) === null);
+  const N50 = R('Alpha Nifty 50 ETF FoF-Reg(G)', 'Equity', 'ETF', 'Equity ETF');
+  check('synthetic: a matching number resolves ("Nifty 50" FoF -> "Nifty 50" ETF, not "Nifty Next 50")',
+    withMaster([N50, R('Alpha Nifty 50 ETF', 'Equity', 'ETF', 'Equity ETF'), R('Alpha Nifty Next 50 ETF', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(N50)) === 'Alpha Nifty 50 ETF');
+  const FLEXI = R('Alpha Diversified Equity Flexicap FoF-Reg(G)', 'Equity', 'ETF', 'Equity ETF');
+  check('synthetic: a two-letter token counts (a flexicap FoF never takes a "Nifty IT" ETF)', withMaster([FLEXI, R('Alpha ETF Nifty IT', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(FLEXI)) === null);
+}
 check('synthetic: a FoF is never an underlying', withMaster([FOF, R('Alpha Nifty 200 Quality 30 ETF FoF-Dir(G)', 'Equity', 'ETF', 'Equity ETF')], () => H.fofUnderlyingName(FOF)) === null);
 check('synthetic: not a FoF returns null', withMaster([ETF], () => H.fofUnderlyingName(ETF)) === null);
 {

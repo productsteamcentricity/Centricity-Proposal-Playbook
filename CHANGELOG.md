@@ -41,7 +41,9 @@ Dates are commit dates in IST.
     mean 0.31 pp, 8 pairs one colour band lower.
 
 ### Added
-- `tools/test/lookthrough.test.js` (280 checks; part of `npm test`).
+- `tools/test/lookthrough.test.js` (284 checks; part of `npm test`). After Gate B the strict rule also counts short
+  tokens ("50", "30", "IT"), so a "Quality 30" FoF can never take a "Quality 50" ETF after a rename; today's resolutions
+  are unchanged.
 - KNOWN_ISSUES C79-C83 and C85-C88; C84 withdrawn (SUPERSEDED -> C78, a duplicate).
 - Record: `docs/update-log/2026-11-23_task-086-lookthrough-fixes.md`.
 
