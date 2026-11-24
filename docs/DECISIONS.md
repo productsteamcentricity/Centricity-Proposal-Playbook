@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109, D110, D111, D112 and D113 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 to D113, D114 and D115 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -147,6 +147,8 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D111 | 23-Nov-2026 | Bundle 2 (C72, C74) as recommended: 5 owner pins for FoF look-through, the "Nifty200" letter/digit split, non-stock option (b) with money-market fund units only (liquid-fund units stay), multi-fund FoFs show no look-through; a "Not included" note as a separate item (owner) | Data | Active |
 | D112 | 23-Nov-2026 | New funds in the Reckoner, the SIF Monitor and the MF Monitor are added, never discarded (Tata Titanium Active Asset Allocator, Hybrid SIF, 9-11%); the equity market-cap bucket is labelled "Others (cash, unlisted, foreign, REITs)" with no separate cash bar; PMS/AIF/SIF never show a blank 1Y/3Y/5Y (the range average, everywhere; young MFs keep D94); funds without a range get a peer-based range (owner) | Data | Active |
 | D113 | 23-Nov-2026 | The D112 new-fund lists as recommended: Tata Titanium Active Asset Allocator Long-Short Fund (Hybrid SIF, 9-11%); 22 MF launches as stubs; 7 Reckoner instruments incl. two GIFT City (Outbound) funds; peer bands for 101 MF/ETF records; HDFC 70:30 index fund as Hybrid / Equity Savings 9-11% (owner) | Data | Active |
+| D114 | 23-Nov-2026 | One expected-figure rule on every proposal surface: the starred band mid-point also for young MFs and in the Excel proposal sheet (revises D112 point 3); fund performance tables keep "-"; only the look-through "Others" bar is renamed; the screen star follows the deck's rule (owner) | Data | Active |
+| D115 | 24-Nov-2026 | Tata CRISIL-IBX FS 3-6M debt index band 6-7.5% (its twin's); OPS-02 proposes corrections for category bands that look high; a fund younger than one year shows no since-inception figure (changes D103) (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1265,6 +1267,49 @@ and the entry says so. "—" means no date is recorded.
   KNOWN_ISSUES C89 (class questions: the 1D Rate Liquid ETF, the Mirae 75:25 and 50:50 funds) and C90 (the latent
   heading-row substring match in parseSif; the Titanium name watch).
 - **Source:** the owner's chat answers of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D114 - One expected-figure rule on every proposal surface (TASK-087)
+`Active` - 23-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** EX-02's preparation of TASK-087 (D112 points 2 and 3) found that young mutual funds already show the
+  starred band mid-point on screen and in the deck for periods D94 clears (H.effectiveReturn fills a missing period at
+  display time; about 986 MF/ETF records), while the Excel proposal sheet and the Live Output total leave them out (C59).
+  So D112's "young mutual funds keep D94's blanks" rested on a wrong premise. MOD-03 put four questions.
+- **Decision:** the owner chose the recommended answer to each (23-Nov-2026):
+  1. One rule everywhere: a missing 1Y/3Y/5Y shows the band mid-point marked "*" for every fund with a band, young
+     mutual funds included, on screen, in the Section 4 and Live Output totals, in the Excel proposal sheet and in the
+     deck. This revises D112 point 3.
+  2. The fund performance tables (the Performance Sheet, Excel sheets 3-8, the deck's Fund Performance slides) keep
+     "-": they show published figures only.
+  3. Only the equity look-through "Others" bar is renamed "Others (cash, unlisted, foreign, REITs)"; the fund-level
+     market-cap "Others" column stays.
+  4. The star in the Live Output and Section 4 rows follows the deck's rule (`H.isExpectedReturn`), including stored
+     bond yields, FD rates and stored AIF mid-points.
+- **Rationale:** one consistent rule across the screen, the totals, Excel and the deck.
+- **Alternatives / supersedes:** blank young MFs everywhere (changes 986 funds' figures); Excel alone blank: not
+  chosen. Revises D112 point 3.
+- **Consequences:** EX-02 implements TASK-087 (closes C59 for the 1Y/3Y/5Y totals; the IRR range totals still differ,
+  C24). The star in Excel shows only in Excel (C91).
+- **Source:** the owner's chat answers of 23-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D115 - The Tata 3-6M debt index band; a review of high category bands; no since-inception under one year
+`Active` - 24-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the Gate B review of PR #72 (TASK-088) found Tata CRISIL-IBX Financial Services 3-6 Months Debt Index Fund
+  at its category mode of 9-11% while its exact twin (SBI) reads 6-7.5%; several inherited category bands that look
+  high (the 1D Rate Liquid ETFs at Gilt 9-11%, SDL/G-sec target-maturity index funds at 9-11% against YTMs of about
+  7.3-7.8%, Income Plus Arbitrage FoFs at 10-12%); and Direct-mode since-inception figures of days-old funds up to
+  225% (Kotak Nifty 500 Index Fund after 4 days), inside D103's +-300% bound.
+- **Decision:** the owner chose (24-Nov-2026):
+  1. "Fix to 6-7.5%, then publish": Tata CRISIL-IBX FS 3-6M takes 6-7.5%, like its twin (applied in PR #72 before
+     the merge).
+  2. "Yes, propose corrections": OPS-02 proposes a corrected band for each category band that looks high, with its
+     basis, for the owner's approval before any change.
+  3. "Hide SI under 1 year": a fund younger than one year shows no since-inception figure, in Regular and Direct.
+     This changes D103 (which cleared since-inception only beyond +-300%).
+- **Rationale:** a figure that looks implausible to a client does more harm than a blank or a peer band.
+- **Alternatives / supersedes:** keeping 9-11%; keeping D103's bound: not chosen. Changes D103; extends D113.
+- **Consequences:** points 2 and 3 are follow-up tasks (OPS-02 prepares; point 3 touches tools/lib/fund_life.js, the MF
+  bake, buildDirectPerf and the stored figures), each claimed with its own review and the owner's yes.
+- **Source:** the owner's chat answers of 24-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 

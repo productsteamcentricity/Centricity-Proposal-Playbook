@@ -219,8 +219,8 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-084 | One Bond List from the two desk lists, new file layout (D90) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
 | TASK-085 | Direct Equity returns from a public price source (D89) | OPS/NB | PLANNED | P1 | MOD-03 assigns | R |
 | TASK-086 | Look-through code fixes C72 (strict FoF matching, owner pins) and C74 (non-stock rows out of the equity top-20) (D110, D111) | EX | VERIFIED COMPLETE (PR #70, a016fc5, 23-Nov-2026) | P2 | EX-02 | R |
-| TASK-087 | D112 points 2 and 3: the equity "Others (cash, unlisted, foreign, REITs)" label; never blank for PMS/AIF/SIF (Excel export, Section 4 totals, the Live Output star) | EX | PLANNED (after TASK-088) | P2 | EX-02 | R |
-| TASK-088 | D112 bundle B1: the new funds and peer bands of D113 (Titanium SIF, 22 MF stubs, 7 Reckoner instruments, 101 bands) | OPS | IN PROGRESS | P1 | OPS-02 | R |
+| TASK-087 | D112 points 2 and 3, D114: the equity "Others (cash, unlisted, foreign, REITs)" label; one expected-figure rule on every proposal surface (Excel export, totals, the screen star) | EX | IN PROGRESS | P2 | EX-02 | R |
+| TASK-088 | D112 bundle B1: the new funds and peer bands of D113 (Titanium SIF, 22 MF stubs, 7 Reckoner instruments, 101 bands) | OPS | VERIFIED COMPLETE (PR #72, 368fe0a, 24-Nov-2026) | P1 | OPS-02 | R |
 
 Counts (17-Nov-2026): 85 tasks. Completed history 18 (VERIFIED COMPLETE 17, IMPLEMENTED NOT FULLY VERIFIED 1).
 Open 67: BLOCKED 22, NOT STARTED 27, PLANNED 14, UNKNOWN / NEEDS INVESTIGATION 2, IN PROGRESS 1, IMPLEMENTED NOT FULLY VERIFIED 1 (the one IMPLEMENTED NOT FULLY VERIFIED is TASK-064: it stays in group R until TASK-081 records its results).

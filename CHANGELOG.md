@@ -18,6 +18,18 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-24 - Release record of PR #72 (TASK-088, new funds); D114, D115; claim for TASK-087 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-088 released at the merge of PR #72 (`368fe0a`, 24-Nov-2026, after
+  Gate B, one band corrected at the owner's choice, and the owner's yes); the claim for TASK-087 (EX-02, the "Others"
+  label and one expected-figure rule; Guardian pre-check GO WITH CONDITIONS; C91 and C92 reserved).
+- `docs/DECISIONS.md`: D114 (one expected-figure rule on every proposal surface; revises D112 point 3) and D115 (the
+  Tata 3-6M band; a review of high category bands; no since-inception under one year, changing D103).
+- `INTERFACE_CONTRACTS.md` (NEW_GIFT 60, `var SIF` 31, MASTER bands in force for names not in `var IRR`), `TASK_REGISTER.md`,
+  `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `368fe0a`, rows #71 and #72), `DECISION_LOG.md` (next
+  D116), `docs/project-control/README.md` (next C93).
+
 ## 2026-11-23 - The D112 new funds and peer bands, TASK-088 (data/2026-11-d112-adds)
 
 ### Added
