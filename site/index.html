@@ -758,7 +758,8 @@ table.atable td.num,
 /* Fallback-IRR display tint */
 .htable td.fallback,
 .sel-table td.fallback { color: var(--gold-deep); font-style: italic; }
-.htable td.fallback::after { content: '*'; color: var(--gold); margin-left: 2px; }
+.htable td.fallback::after,
+.sel-table td.fallback::after { content: '*'; color: var(--gold); margin-left: 2px; }
 
 /* ===== Expected Future Value card ===== */
 .fv-card { padding: 4px 4px 8px; }
@@ -2098,21 +2099,22 @@ window.linkIdcwToGrowth();
 
   // ===== Weighted-average returns (SUMPRODUCT-style) =====
   // Given an array of {fund, pct} entries, returns the % allocation weighted average
-  // of irr_low / irr_high / r3y / r5y (using H.effectiveReturn for missing values).
+  // of irr_low / irr_high / r1y / r3y / r5y (using H.effectiveReturn for missing returns: the band mid-point).
+  // The one rule for 1Y/3Y/5Y totals: Section 4, the Live Output Investment Proposal tab and the deck (C59, D112).
   // Weights are renormalised over rows that have a value for the metric so that missing
   // values do not artificially deflate the weighted average.
   H.weightedReturns = function(entries) {
-    const out = { pct: 0, irr_low: null, irr_high: null, r3y: null, r5y: null };
+    const out = { pct: 0, irr_low: null, irr_high: null, r1y: null, r3y: null, r5y: null };
     if (!entries || entries.length === 0) return out;
-    const keys = ['irr_low', 'irr_high', 'r3y', 'r5y'];
+    const keys = ['irr_low', 'irr_high', 'r1y', 'r3y', 'r5y'];
     const acc = {}; const wAcc = {};
     for (const k of keys) { acc[k] = 0; wAcc[k] = 0; }
     for (const s of entries) {
       const w = s.pct || 0;
       out.pct += w;
       for (const k of keys) {
-        // Use effectiveReturn for r3y/r5y; raw irr_low/irr_high values
-        const v = (k === 'r3y' || k === 'r5y') ? H.effectiveReturn(s.fund, k) : s.fund[k];
+        // Use effectiveReturn for r1y/r3y/r5y; raw irr_low/irr_high values
+        const v = (k === 'r1y' || k === 'r3y' || k === 'r5y') ? H.effectiveReturn(s.fund, k) : s.fund[k];
         if (v != null && !isNaN(v) && w > 0) { acc[k] += v * w; wAcc[k] += w; }
       }
     }
@@ -3999,6 +4001,17 @@ window.mfBenchmarkPerfFor = function(sub) {
       // Two header rows in Excel
       aoa.push(["", "", "Expected Pre-Tax IRR", "", "", "", "", "", "", ""]);
       aoa.push(["Instrument", "% Alloc", "Low", "High", "1Y", "3Y", "5Y", "Amount (₹ Cr)", "Strategy", "Exit Load"]);
+      // D112: never a blank where the page shows an expected figure. A period with no published return
+      // shows H.effectiveReturn (the IRR band mid-point) with "*", as Section 4, Live Output and the deck do;
+      // H.isExpectedReturn decides the star (D83). The cell stays a number: the "*" is its number format.
+      let xrUsed = false;
+      const xrCell = (s, k) => {
+        const v = H.effectiveReturn(s.fund, k);
+        if (v == null || isNaN(v)) return null;   // no figure and no band: the cell stays empty
+        if (!H.isExpectedReturn(s.fund, k, s)) return v;
+        xrUsed = true;
+        return { t: 'n', v: v, z: 'General"*"' };
+      };
       // Group by AC -> sub
       const sorted = H.sortFundsByTaxonomy(selected.map(s=>s.fund)).map(f=>selected.find(s=>s.fund===f));
       const groups = {};
@@ -4020,9 +4033,9 @@ window.mfBenchmarkPerfFor = function(sub) {
               s.pct,
               s.fund.irr_low,
               s.fund.irr_high,
-              s.fund.r1y,
-              s.fund.r3y,
-              s.fund.r5y,
+              xrCell(s, 'r1y'),
+              xrCell(s, 'r3y'),
+              xrCell(s, 'r5y'),
               { f: `B2*B${rowNum}/100` },
               strat,
               s.fund.exit_load || ""
@@ -4043,6 +4056,12 @@ window.mfBenchmarkPerfFor = function(sub) {
         "",
         ""
       ]);
+      if (xrUsed) {
+        // The deck's STAR_NOTE (buildDeck) says the same; it adds "Weighted rows include these figures", and this
+        // sheet has no weighted return rows. Keep the two in step.
+        aoa.push([]);
+        aoa.push(["* No return is published for this period: the figure is the expected return held in the data (the IRR band mid-point, or the yield or rate of a bond or FD), not past performance."]);
+      }
       const ws = XLSX.utils.aoa_to_sheet(aoa);
       ws['!cols'] = [{wch: 45}, {wch: 10}, {wch: 12}, {wch: 12}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 14}, {wch: 16}, {wch: 38}];
       XLSX.utils.book_append_sheet(wb, ws, "Investment Proposal");
@@ -4169,7 +4188,7 @@ window.mfBenchmarkPerfFor = function(sub) {
       aoa.push([]);
       aoa.push(["Market Cap Allocation"]);
       aoa.push(["Bucket", "%"]);
-      for (const k of ["Large","Mid","Small","Others"]) aoa.push([k, eq.mcap[k]]);
+      for (const k of ["Large","Mid","Small","Others"]) aoa.push([k === "Others" ? "Others (cash, unlisted, foreign, REITs)" : k, eq.mcap[k]]);
       aoa.push([]);
       aoa.push(["Top 10 Sectors"]);
       aoa.push(["Sector", "%"]);
@@ -5054,7 +5073,7 @@ window.mfBenchmarkPerfFor = function(sub) {
       sectionTitle(s, "Top Market Cap", PL.x, top, PL.w);
       s.addChart(pptx.ChartType.bar, [{
         name: "Market Cap",
-        labels: ["Large", "Mid", "Small", "Others"],
+        labels: ["Large", "Mid", "Small", "Others (cash, unlisted, foreign, REITs)"],
         values: ["Large","Mid","Small","Others"].map(k => parseFloat(eq.mcap[k].toFixed(2)))
       }], { ...PPT_CHART_OPTS, x: PL.x, y: top + 0.36, w: PL.w, h: lh, barDir: "col" });
       place(s, "chart", PL.x, top + 0.36, PL.w, lh, bottom);
@@ -6884,8 +6903,8 @@ function SelectedTable({
       style: {
         textAlign: "center"
       },
-      className: (H.effectiveReturn(s.fund, 'r1y') || 0) < 0 ? "neg" : "",
-      title: H.isFallbackReturn(s.fund, 'r1y') ? "IRR mid-point (no past return)" : ""
+      className: ((H.effectiveReturn(s.fund, 'r1y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(s.fund, 'r1y', s) ? " fallback" : ""),
+      title: H.isExpectedReturn(s.fund, 'r1y', s) ? "Expected return: no return is published for this period" : ""
     }, /*#__PURE__*/React.createElement(PctInput, {
       value: H.effectiveReturn(s.fund, 'r1y'),
       onCommit: v => setRet(i, 'r1yOv', v)
@@ -6893,8 +6912,8 @@ function SelectedTable({
       style: {
         textAlign: "center"
       },
-      className: (H.effectiveReturn(s.fund, 'r3y') || 0) < 0 ? "neg" : "",
-      title: H.isFallbackReturn(s.fund, 'r3y') ? "IRR mid-point (no past return)" : ""
+      className: ((H.effectiveReturn(s.fund, 'r3y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(s.fund, 'r3y', s) ? " fallback" : ""),
+      title: H.isExpectedReturn(s.fund, 'r3y', s) ? "Expected return: no return is published for this period" : ""
     }, /*#__PURE__*/React.createElement(PctInput, {
       value: H.effectiveReturn(s.fund, 'r3y'),
       onCommit: v => setRet(i, 'r3yOv', v)
@@ -6902,8 +6921,8 @@ function SelectedTable({
       style: {
         textAlign: "center"
       },
-      className: (H.effectiveReturn(s.fund, 'r5y') || 0) < 0 ? "neg" : "",
-      title: H.isFallbackReturn(s.fund, 'r5y') ? "IRR mid-point (no past return)" : ""
+      className: ((H.effectiveReturn(s.fund, 'r5y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(s.fund, 'r5y', s) ? " fallback" : ""),
+      title: H.isExpectedReturn(s.fund, 'r5y', s) ? "Expected return: no return is published for this period" : ""
     }, /*#__PURE__*/React.createElement(PctInput, {
       value: H.effectiveReturn(s.fund, 'r5y'),
       onCommit: v => setRet(i, 'r5yOv', v)
@@ -6929,18 +6948,7 @@ function SelectedTable({
       r3y: null,
       r5y: null
     };
-    const r1yTot = function () {
-      let acc = 0,
-        w = 0;
-      for (const s of selected) {
-        const v = H.effectiveReturn ? H.effectiveReturn(s.fund, 'r1y') : s.fund.r1y;
-        if (v != null && !isNaN(v)) {
-          acc += v * s.pct;
-          w += s.pct;
-        }
-      }
-      return w > 0 ? acc / w : null;
-    }();
+    const r1yTot = tot.r1y;
     return /*#__PURE__*/React.createElement("tr", {
       className: "tot"
     }, /*#__PURE__*/React.createElement("td", {
@@ -7446,12 +7454,6 @@ function ProposalTab({
       pct = 0,
       irrLo = 0,
       irrHi = 0;
-    let r1ys = 0,
-      r3ys = 0,
-      r5ys = 0,
-      r1yw = 0,
-      r3yw = 0,
-      r5yw = 0;
     let expSum = 0,
       expW = 0;
     for (const s of selected) {
@@ -7460,31 +7462,20 @@ function ProposalTab({
       pct += p;
       irrLo += (s.fund.irr_low || 0) * p;
       irrHi += (s.fund.irr_high || 0) * p;
-      if (s.fund.r1y != null) {
-        r1ys += s.fund.r1y * p;
-        r1yw += p;
-      }
-      if (s.fund.r3y != null) {
-        r3ys += s.fund.r3y * p;
-        r3yw += p;
-      }
-      if (s.fund.r5y != null) {
-        r5ys += s.fund.r5y * p;
-        r5yw += p;
-      }
       if (s.fund.expense != null) {
         expSum += s.fund.expense * p;
         expW += p;
       }
     }
+    const wr = H.weightedReturns(selected);
     return {
       amount: amt,
       pct,
       irrLo: pct ? irrLo / pct : 0,
       irrHi: pct ? irrHi / pct : 0,
-      r1y: r1yw ? r1ys / r1yw : null,
-      r3y: r3yw ? r3ys / r3yw : null,
-      r5y: r5yw ? r5ys / r5yw : null,
+      r1y: wr.r1y,
+      r3y: wr.r3y,
+      r5y: wr.r5y,
       expense: expW ? expSum / expW : null
     };
   }, [selected, corpus]);
@@ -7541,14 +7532,14 @@ function ProposalTab({
   }, f.pct.toFixed(2), "%"), /*#__PURE__*/React.createElement("td", {
     className: "c"
   }, H.fmtPct(f.fund.irr_low), " \u2013 ", H.fmtPct(f.fund.irr_high)), /*#__PURE__*/React.createElement("td", {
-    className: "num " + ((H.effectiveReturn(f.fund, 'r1y') || 0) < 0 ? "neg" : "") + (H.isFallbackReturn(f.fund, 'r1y') ? " fallback" : ""),
-    title: H.isFallbackReturn(f.fund, 'r1y') ? "Using IRR mid-point (no past return on file)" : ""
+    className: "num " + ((H.effectiveReturn(f.fund, 'r1y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(f.fund, 'r1y', f) ? " fallback" : ""),
+    title: H.isExpectedReturn(f.fund, 'r1y', f) ? "Expected return: no return is published for this period" : ""
   }, H.fmtPct(H.effectiveReturn(f.fund, 'r1y'))), /*#__PURE__*/React.createElement("td", {
-    className: "num " + ((H.effectiveReturn(f.fund, 'r3y') || 0) < 0 ? "neg" : "") + (H.isFallbackReturn(f.fund, 'r3y') ? " fallback" : ""),
-    title: H.isFallbackReturn(f.fund, 'r3y') ? "Using IRR mid-point (no past return on file)" : ""
+    className: "num " + ((H.effectiveReturn(f.fund, 'r3y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(f.fund, 'r3y', f) ? " fallback" : ""),
+    title: H.isExpectedReturn(f.fund, 'r3y', f) ? "Expected return: no return is published for this period" : ""
   }, H.fmtPct(H.effectiveReturn(f.fund, 'r3y'))), /*#__PURE__*/React.createElement("td", {
-    className: "num " + ((H.effectiveReturn(f.fund, 'r5y') || 0) < 0 ? "neg" : "") + (H.isFallbackReturn(f.fund, 'r5y') ? " fallback" : ""),
-    title: H.isFallbackReturn(f.fund, 'r5y') ? "Using IRR mid-point (no past return on file)" : ""
+    className: "num " + ((H.effectiveReturn(f.fund, 'r5y') || 0) < 0 ? "neg" : "") + (H.isExpectedReturn(f.fund, 'r5y', f) ? " fallback" : ""),
+    title: H.isExpectedReturn(f.fund, 'r5y', f) ? "Expected return: no return is published for this period" : ""
   }, H.fmtPct(H.effectiveReturn(f.fund, 'r5y'))), /*#__PURE__*/React.createElement("td", {
     className: "c",
     style: {
@@ -8196,7 +8187,7 @@ function EquityTab({
     className: "hint"
   }, "No equity exposure in the current selection (all contributing funds may be excluded)."));
   const mcapData = {
-    labels: ["Large Cap", "Mid Cap", "Small Cap", "Others"],
+    labels: ["Large Cap", "Mid Cap", "Small Cap", ["Others", "(cash, unlisted,", "foreign, REITs)"]],
     datasets: [{
       data: [eq.mcap.Large, eq.mcap.Mid, eq.mcap.Small, eq.mcap.Others],
       backgroundColor: GOLD,
@@ -8225,6 +8216,11 @@ function EquityTab({
     data: mcapData,
     options: {
       indexAxis: 'x',
+      layout: {
+        padding: {
+          top: 14
+        }
+      },
       plugins: {
         legend: {
           display: false
@@ -8236,6 +8232,13 @@ function EquityTab({
         }
       },
       scales: {
+        x: {
+          ticks: {
+            maxRotation: 0,
+            minRotation: 0,
+            autoSkip: false
+          }
+        },
         y: {
           ticks: {
             callback: v => v + '%'

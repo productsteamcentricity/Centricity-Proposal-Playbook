@@ -88,6 +88,17 @@ Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
   content frame, no layout warning, AMC bars summing to 100% in at most 12 bars, one rationale card per
   sub-category, numbered continuation titles; and a unit test of the table engine (a 90-row table
   paged without losing a row or ending a page on a group heading). The check count follows the data.
+- `lookthrough.test.js` (about 290 checks, added 23-Nov-2026 with TASK-086, C72 and C74, D111). It loads the page in a vm:
+  `H.isNonStockName` on named non-stock and stock labels and against the Overlap Matrix's old filter plus the D111 labels
+  on every holding name; single-fund equity look-throughs (m-cap, sector, exposure and stock weights against a reference
+  sum, no non-stock row); every FoF against an independent copy of the strict rule and the owner pins; synthetic FoF cases
+  (AMC, coverage, short tokens such as "50", ties, no class fallback). A pin or label that the data no longer carries
+  fails with the remedy (C88).
+- `expected_returns.test.js` (58 checks, added 24-Nov-2026 with TASK-087, D112 and D114). Seven synthetic records added to
+  the vm's MASTER for the test (never to `site/`): `H.weightedReturns` weights 1Y/3Y/5Y through `H.effectiveReturn`; the
+  Excel "Investment Proposal" sheet holds `H.effectiveReturn` in each 1Y/3Y/5Y cell, starred (`General"*"`) exactly when
+  `H.isExpectedReturn`, empty when there is no figure and no band, an override unstarred, a note row only when something
+  is starred; the Equity Analytics market-cap label.
 
 CI runs `npm ci` and then the tests on every PR. Add a `<name>.test.js` file beside them for any new
 library function or parser rule.

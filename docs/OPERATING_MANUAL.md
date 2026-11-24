@@ -407,6 +407,14 @@ The Overlap Matrix and the equity look-through's top-20 both call it; never re-i
 It filters the stock list only: m-cap, sector and exposure shares are unchanged. Liquid-fund units are
 deliberately kept (the owner's choice, C85).
 
+**One rule for expected figures** (24-Nov-2026, TASK-087, D112, D114, KNOWN_ISSUES C59). Where a proposal shows
+1Y/3Y/5Y and no return is published for the period, every output shows the IRR band mid-point
+(`H.effectiveReturn`) and marks it "*" by `H.isExpectedReturn` (D83): Section 4, the Live Output "Investment
+Proposal" tab, the deck and the Excel "Investment Proposal" sheet (a number with the format `General"*"`, plus a
+note row; C91: the star shows in Excel only). Young mutual funds are included (D114). Every 1Y/3Y/5Y total comes from
+`H.weightedReturns`. The fund performance tables (screen, Excel sheets 3-8, deck) show published figures only and
+keep "-". `H.computeKPIs` still has its own copy of the mid-point rule (C92): change both together.
+
 ### Data-hygiene traps on every refresh
 
 - **Issuer names carry the instrument, not just the issuer**, and the layout changed with the
@@ -804,8 +812,9 @@ since-inception return of 297,765% (C43). `tools/lib/direct_perf.js` applies the
 DIRECT_PERF, per key after its rows merge, against the Direct row's own inception; a cleared Direct
 field is deleted, so Direct mode shows the Regular value (`H.toDirect`). On the page a cleared
 `r1y`/`r3y`/`r5y` of a record with an IRR band shows the band mid-point marked "*"
-(`H.effectiveReturn`), and that mid-point also enters the weighted totals (the r1y total and
-`H.weightedReturns` use `effectiveReturn`); any other cleared field shows "-". A cleared period value that
+(`H.effectiveReturn`) in Section 4, the Live Output tab, the deck and, since TASK-087 (D114), the Excel
+"Investment Proposal" sheet; that mid-point also enters the weighted 1Y/3Y/5Y totals (`H.weightedReturns`, the one
+rule for all of them); any other cleared field shows "-", and the fund performance tables show "-" for it. A cleared period value that
 the Monitor itself published (the merge changed it) is listed under `WARN period values this Monitor
 published and the rule cleared`: the Monitor's inception and its own figure disagree, so ask the owner. Fund life is measured to the monitors'
 **real NAV dates**: `--nav-date` (Regular) and `--nav-date-direct` (Direct), both defaulting to the
