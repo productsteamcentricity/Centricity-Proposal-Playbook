@@ -147,8 +147,8 @@ Direct NAV 30-Oct; the young-fund rule applied, C20 and C43 fixed; 5 hand-added 
 performance **31-Oct-2026** (the "November 2026" Reckoner run, 20-Nov-2026, D108; PMS from the deck and APMI, Neo
 Yield Enhancer still 31-Jul; `DATA_DATES.pms` "31st October 2026"; later-run risks KNOWN_ISSUES C57); PMS/AIF
 look-through 31-Jul-2026; fund managers = the 2-Nov
-Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,692 ·
+Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,723 ·
 Centricity Select 184 (184 in MASTER) · PMS 696 / AIF 10 / benchmarks 4 · PMS_PERF_ALIAS 29 (1 null) · RISK_MATRIX 1,088 ·
-EQUITY_ANALYTICS 1,231 · 0 duplicates · 0 script errors. Next due: the Nov-2026 MF cycle. Open from October: KNOWN_ISSUES C60 (six funds without a range), C61 to C66.
+EQUITY_ANALYTICS 1,231 · 0 duplicates · 0 script errors. Next due: the Nov-2026 MF cycle. Open from October: KNOWN_ISSUES C61 to C66. D113 (23-Nov): 23 October MF launches added as stubs (figures from the Nov bake), 7 Reckoner instruments and Titanium added, peer bands on 101 funds (C60 closed).
 The Portfolio Matrix is to be fed from the MF dashboard from the October cycle (D86; the data-pack reading is INFERRED); the
 build is TASK-022, and until it is merged the page keeps '30 Sep 2026' (KNOWN_ISSUES B8, C46).
