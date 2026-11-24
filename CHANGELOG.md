@@ -37,6 +37,8 @@ Dates are commit dates in IST.
 ### Changed
 - Expected-return bands on 101 MF/ETF records that had none (each its class peers' most common band; D113), so their
   1Y/3Y/5Y show the band mid-point with "*" instead of "-". Only the 2 UTI segregated portfolios stay without one.
+- Gate B correction (owner, 24-Nov-2026): Tata CRISIL-IBX Financial Services 3-6 Months Debt Index Fund 9-11% -> 6-7.5%,
+  its exact twin's band (SBI CRISIL-IBX FS 3-6M), the twin rule as for HDFC 70:30.
 - Docs: `docs/update-log/2026-11-23_d112-new-funds.md` (new); KNOWN_ISSUES C89 and C90 (new), C60 closed, C24, C55 and
   C64 updated; `docs/PROJECT_STATE.md`; the CLAUDE.md headline.
 
