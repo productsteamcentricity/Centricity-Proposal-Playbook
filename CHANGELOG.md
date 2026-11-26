@@ -18,6 +18,18 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-26 - Release record of PR #74 (TASK-087); D116, D117; claim for TASK-090 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-087 released at the merge of PR #74 (`eb00377`, 26-Nov-2026); the
+  claim for TASK-090 (OPS-02: 539 debt band changes and 9 matured removals; Guardian pre-check GO WITH CONDITIONS;
+  C93 and C94 reserved).
+- `docs/DECISIONS.md`: D116 (band corrections, matured removals, the absolute since-inception return under one year)
+  and D117 (debt MF indicative ranges from the category average YTM); D115 points 1 and 3 marked superseded.
+- `TASK_REGISTER.md` (TASK-087 complete; TASK-089, TASK-090, TASK-091), `CHAT_REGISTRY.md`,
+  `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `eb00377`, rows #73 and #74), `DECISION_LOG.md` (next D118),
+  `docs/project-control/README.md` (next TASK-092, D118, C95).
+
 ## 2026-11-24 - One rule for expected 1Y/3Y/5Y figures; the look-through "Others" label (fix/expected-figures-label)
 
 ### Changed

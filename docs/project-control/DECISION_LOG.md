@@ -1459,8 +1459,8 @@ Status: ANSWERED.
 
 ## 2.1 Load-bearing approved decisions a Moderator must know
 
-`docs/DECISIONS.md` holds D1-D115 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
-Superseded D4, D5, D41, D45, D69. Next free: **D116**. The one-line summaries below are pointers; read the entry
+`docs/DECISIONS.md` holds D1-D117 (never reused). Statuses there: Open D2, D58; D43 "Active (premise reopened)";
+Superseded D4, D5, D41, D45, D69. Next free: **D118**. The one-line summaries below are pointers; read the entry
 before acting on it.
 
 | D | Title (short) | Status in DECISIONS.md | Why it matters now |
@@ -1570,3 +1570,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 23-Nov-2026 | D112 recorded (include every new fund; the "Others" label; never blank for PMS/AIF/SIF; peer ranges; PR #70 fixed first). | MOD-03 |
 | 23-Nov-2026 | D113 recorded (the owner's "Approve all" for the D112 new-fund lists; HDFC 70:30 as Hybrid 9-11%). | MOD-03 |
 | 24-Nov-2026 | D114 (one expected-figure rule; TASK-087) and D115 (the Tata 3-6M band; high-band review; no since-inception under one year) recorded. | MOD-03 |
+| 26-Nov-2026 | D116 (band corrections, matured removals, absolute since-inception) and D117 (debt MF ranges from the category average YTM) recorded; D115 points 1 and 3 superseded. | MOD-03 |

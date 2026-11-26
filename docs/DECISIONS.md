@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 to D113, D114 and D115 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 to D113, D114 to D117 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -148,7 +148,9 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D112 | 23-Nov-2026 | New funds in the Reckoner, the SIF Monitor and the MF Monitor are added, never discarded (Tata Titanium Active Asset Allocator, Hybrid SIF, 9-11%); the equity market-cap bucket is labelled "Others (cash, unlisted, foreign, REITs)" with no separate cash bar; PMS/AIF/SIF never show a blank 1Y/3Y/5Y (the range average, everywhere; young MFs keep D94); funds without a range get a peer-based range (owner) | Data | Active |
 | D113 | 23-Nov-2026 | The D112 new-fund lists as recommended: Tata Titanium Active Asset Allocator Long-Short Fund (Hybrid SIF, 9-11%); 22 MF launches as stubs; 7 Reckoner instruments incl. two GIFT City (Outbound) funds; peer bands for 101 MF/ETF records; HDFC 70:30 index fund as Hybrid / Equity Savings 9-11% (owner) | Data | Active |
 | D114 | 23-Nov-2026 | One expected-figure rule on every proposal surface: the starred band mid-point also for young MFs and in the Excel proposal sheet (revises D112 point 3); fund performance tables keep "-"; only the look-through "Others" bar is renamed; the screen star follows the deck's rule (owner) | Data | Active |
-| D115 | 24-Nov-2026 | Tata CRISIL-IBX FS 3-6M debt index band 6-7.5% (its twin's); OPS-02 proposes corrections for category bands that look high; a fund younger than one year shows no since-inception figure (changes D103) (owner) | Data | Active |
+| D115 | 24-Nov-2026 | Tata CRISIL-IBX FS 3-6M debt index band 6-7.5% (its twin's); OPS-02 proposes corrections for category bands that look high; a fund younger than one year shows no since-inception figure (changes D103) (owner) | Data | Active; point 1 superseded by D117 point 4, point 3 by D116 point 4 |
+| D116 | 24-Nov-2026 | 191 band corrections approved (most later superseded for debt MF by D117); the var IRR copy edited directly; 9 matured target-maturity funds removed; a fund under one year shows its ABSOLUTE since-inception return, not a blank (replaces D115 point 3) (owner) | Data | Active |
+| D117 | 26-Nov-2026 | Debt MF indicative ranges from the category average YTM: October = the owner's file; from November the MF Monitor mean rounded to the nearest 0.25% (half-up) then +-0.25%, footnote dated to the portfolio month-end; Medium to Long Duration -> Long Term, Gilt 10Y -> Government Securities; CRISIL-IBX FS index funds 7.00-7.50%; index/target-maturity funds within 3 months of maturity -> Overnight (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1310,6 +1312,53 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** points 2 and 3 are follow-up tasks (OPS-02 prepares; point 3 touches tools/lib/fund_life.js, the MF
   bake, buildDirectPerf and the stored figures), each claimed with its own review and the owner's yes.
 - **Source:** the owner's chat answers of 24-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D116 - Band corrections, matured removals and the absolute since-inception return
+`Active` - 24-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** OPS-02's preparation of D115 points 2 and 3 proposed 191 band corrections (each fund to the band of the
+  active category it resembles), the removal of 9 target-maturity funds whose maturity date has passed, and a rule for
+  the since-inception figure of funds under one year.
+- **Decision:** the owner chose (24-Nov-2026):
+  1. "Approve all" for the 191 corrections; the bands held in `var IRR` (the copy of the owner's range workbook in the
+     IRR sibling) are edited there directly ("Edit the dashboard now"), and the owner receives the list to update the
+     master workbook.
+  2. The 9 matured target-maturity funds are removed from the dashboard.
+  3. (Superseded for debt MF by D117 before it was applied: 140 of the 191 rows take D117's category ranges; the 51
+     non-debt rows (Income Plus Arbitrage and hybrid FoFs) stay.)
+  4. "Don't hide, just write the absolute return in the SI return place": a fund younger than one year shows its
+     absolute (cumulative, not annualised) return since inception, marked as absolute. This replaces D115 point 3 and
+     reworks D103. Sources: the MF Monitor gives a CAGR (converted exactly with the days since inception); the SIF
+     Monitor and the Reckoner deck already give absolute figures under one year.
+- **Rationale:** the owner's product choices.
+- **Alternatives / supersedes:** a blank under one year (D115 point 3); asking the desk for a new workbook: not chosen.
+- **Consequences:** TASK-090 applies the bands and removals; TASK-091B (tools) and an EX label piece implement point 4.
+  Open with the owner: whether a SIF over one year shows an annualised since-inception figure.
+- **Source:** the owner's chat answers of 24-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D117 - Debt mutual fund indicative ranges from the category average YTM
+`Active` - 26-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the owner (26-Nov-2026): "For debt mutual funds, the indicative IRR ranges will be updated every month when
+  I share the MF Monitor file ... Calculate average YTM for each debt mutual fund category and then include it in the
+  nearest 0.5% YTM range by subtracting 0.25% and adding 0.25% to the average so that the range always ends in either
+  xx.x5% or xx.x0%", and "Update the IRR range for the debt mutual funds as of October 31 from the attached file" (a
+  workbook of 16 categories with the old range, the 31-Oct average and the new range), with a footnote that the YTM is
+  as of 31-Oct-2026. OPS-02 mapped the categories and reconciled D116; MOD-03 put six points.
+- **Decision:** the owner chose "Yes, all six" (26-Nov-2026):
+  1. October: the file's "New" ranges as given (several are 0.25% wide or not centred on the average; used as is).
+  2. From November: the mean YTM of each debt category from the MF Monitor (Regular plans; segregated, unclaimed and
+     blank-YTM rows excluded), rounded to the nearest 0.25% (ties rounded half-up), then minus and plus 0.25%.
+  3. The source each month is the MF Monitor the owner shares; the footnote is dated to the month-end of its portfolio.
+  4. Medium to Long Duration takes Long Term's range; Gilt 10Y constant duration takes Government Securities' range.
+  5. The CRISIL-IBX Financial Services index funds (SBI and Tata included) take "Index Funds - Fixed Income" 7.00-7.50%
+     (replaces D115 point 1).
+  6. An index or target-maturity fund within 3 months of its maturity takes the Overnight range 5.25-5.75% (a rule: in
+     October it catches 5 Dec-2026 funds, Baroda BNP Paribas NIFTY SDL Dec 2026 included).
+- **Rationale:** the owner's rule ties the debt ranges to current yields.
+- **Alternatives / supersedes:** the other rounding reading (6.69 -> 6.45-6.95%); a separate YTM file each month: not
+  chosen. Supersedes D116 for 140 debt rows and D115 point 1.
+- **Consequences:** TASK-090 applies 539 band changes (515 in `var IRR`, 24 in MASTER) and the 9 removals; TASK-089 adds
+  the labels, the footnotes and `DATA_DATES.debtYtm`; TASK-091A builds the monthly tool.
+- **Source:** the owner's chat messages of 26-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
 
