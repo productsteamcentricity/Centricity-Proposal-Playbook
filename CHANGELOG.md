@@ -18,6 +18,29 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-24 - One rule for expected 1Y/3Y/5Y figures; the look-through "Others" label (fix/expected-figures-label)
+
+### Changed
+- **Expected figures, everywhere a proposal shows 1Y/3Y/5Y (TASK-087, D112, D114).** Where no return is published for a
+  period, Section 4, the Live Output "Investment Proposal" tab, the deck and now the Excel "Investment Proposal" sheet all
+  show the IRR band mid-point, marked "*" by `H.isExpectedReturn`, young mutual funds included.
+  - Excel: the cell is a number with the format `General"*"` (Excel shows "0.18*"), plus a note row; it was blank. C91: the
+    star shows in Excel only.
+  - Section 4 gains the "*"; the Live Output tab also stars stored yields, FD rates and stored mid-points, as the deck does.
+  - The fund performance tables keep "-" (published figures only).
+- **One weighting rule (closes C59).** `H.weightedReturns` now weights 1Y too; the Live Output tab's GRAND TOTAL uses it, so
+  its 1Y/3Y/5Y totals equal Section 4's and the deck's (e.g. a six-fund test proposal: -2.00 / 10.75 / 8.84 -> 4.90 / 11.79
+  / 12.00). The IRR range keeps its rule (C24).
+- **Label (D112 a).** The equity look-through's market-cap bucket reads "Others (cash, unlisted, foreign, REITs)" on screen
+  (three level lines; the chart's x axis takes the dashboard style: no vertical gridlines or axis line, Cambria labels), in Excel "Equity Analytics" and on the deck chart.
+
+### Added
+- `tools/test/expected_returns.test.js` (58 checks, synthetic records only).
+- KNOWN_ISSUES C91, C92. Record: `docs/update-log/2026-11-24_task-087-expected-figures.md` (with the counts of newly starred
+  cells: 2,715 Section 4 cells in 1,305 records).
+- Docs: OPERATING_MANUAL (trap "One rule for expected figures"), PRD section 8, TESTING.md and tools/README.md (the test
+  list, with `lookthrough.test.js` added late), INTERFACE_CONTRACTS (Returns row).
+
 ## 2026-11-24 - Release record of PR #72 (TASK-088, new funds); D114, D115; claim for TASK-087 (docs only)
 
 ### Changed

@@ -691,6 +691,13 @@ Three cards. The changes they make are **session-only**.
 **`effectiveReturn(fund, key)`**
 - The recorded return, or else the IRR mid-point (flagged as a fallback), or else null.
 
+**Proposal 1Y/3Y/5Y totals** (`H.weightedReturns`; 24-Nov-2026, D112, D114)
+- One rule for Section 4, the Live Output "Investment Proposal" tab and the deck: sum(effectiveReturn * pct) / sum(pct) over the
+  funds that have a figure (the band mid-point counts), for 1Y, 3Y and 5Y. The three show the same totals; their IRR range
+  keeps the KPI rule above (C24).
+- An expected figure (`H.isExpectedReturn`) is marked "*" in all four outputs, Excel included. The fund performance
+  tables show published figures only.
+
 **Plan switch** (`H.toDirect`)
 - Overrides the returns, AUM, expense, m-cap split and debt stats from `DIRECT_PERF[regularName]`.
 - IRR, exit load and taxonomy are untouched.
