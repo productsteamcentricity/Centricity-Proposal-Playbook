@@ -61,15 +61,15 @@ category's "New" range, as in the file:
 | Floating Rate Funds | 7.50-7.75% | 12 | Floating Rate |
 | Credit Risk Funds | 7.75-8.25% | 14 | Credit Risk |
 | Medium Term Debt Funds | 8.00-8.50% | 13 | Medium Duration |
-| Long Term Debt Funds | 7.25-7.75% | 24 | Long Duration; Medium to Long Duration (D117 point 3) |
-| Government Securities Funds | 6.75-7.25% | 28 | "Short & Mid Term" (the monitor's sheet of active gilt funds); Gilt 10Y (D117 point 3) |
+| Long Term Debt Funds | 7.25-7.75% | 24 | Long Duration; Medium to Long Duration (D117 point 4) |
+| Government Securities Funds | 6.75-7.25% | 28 | "Short & Mid Term" (the monitor's sheet of active gilt funds); Gilt 10Y (D117 point 4) |
 | Index Funds - Fixed Income | 7.00-7.50% | 118 | Debt ETF and the Gilt-filed ETFs: target-maturity, G-Sec, SDL, PSU and AAA indices, BHARAT Bond, CRISIL-IBX Financial Services, 10-year gilt ETFs, debt FoFs |
 | Fixed Maturity Funds (FMPs) | 7.00-7.50% | 0 | no dashboard records |
 
-- **The twin-band reversal (D117 point 4).** The CRISIL-IBX Financial Services 3-6M and 9-12M index funds go to 7.00-7.50%
+- **The twin-band reversal (D117 point 5).** The CRISIL-IBX Financial Services 3-6M and 9-12M index funds go to 7.00-7.50%
   with their category. That includes SBI 3-6M, SBI 9-12M and the Tata 3-6M, which TASK-088's Gate B correction (24-Nov,
   the twin rule) had put at 6-7.5%. This replaces D115 point 1's twin band.
-- **The 3-month rule (D117 point 5).** An index or target-maturity fund whose maturity month (in its name) is 1-3 months
+- **The 3-month rule (D117 point 6).** An index or target-maturity fund whose maturity month (in its name) is 1-3 months
   after the as-on month takes Overnight. On 31-Oct-2026 it catches all five December-2026 funds:
   - Tata Nifty G-Sec Dec 2026 (YTM 5.30%);
   - HDFC Nifty G-Sec Dec 2026 (5.32%);
@@ -128,7 +128,7 @@ Debt ETF record whose band comes from D116, not from the file.
   the category's 7.50-7.75%. Accept it, or name an exception.
 - Bandhan 90:10 Nov 2026 matures about 7-Nov-2026 (inferred from a 38-day average maturity on the 30-Sep portfolio). It
   is removed, as approved.
-- In four categories the file's range sits away from the category's own average. The file is used as is (D117 point 6):
+- In four categories the file's range sits away from the category's own average. The file is used as is (D117 point 1):
   - Money Market: average 7.32, range 6.75-7.00;
   - Short Term: average 7.82, range 7.25-7.50;
   - Credit Risk: average 8.62, range 7.75-8.25;
@@ -247,3 +247,5 @@ show; the bake must not re-create them as records.
 **Final files.**
 - `site/index.html` sha256 6311cfc8ce8c8f4c3540434c12625f5fcf73367aebb355afdbb41006e0dc1370.
 - `site/Centricity_IRR_Offshore.js` sha256 e55c569f41ac22090bced260abe6ad9b065426cb49c83a201b73d62ed395f4fe.
+
+_Correction 26-Nov-2026 (MOD-03, release record of PR #76): the D117 clause numbers above were renumbered to match docs/DECISIONS.md (mapping = point 4, twin-band reversal = point 5, 3-month rule = point 6, file used as is = point 1); the data is unchanged._

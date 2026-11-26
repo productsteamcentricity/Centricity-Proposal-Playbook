@@ -18,6 +18,17 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-26 - Release record of PR #76 (TASK-090, debt bands); D118; claim for TASK-089 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-090 released at the merge of PR #76 (`eb5fce6`, 26-Nov-2026, after
+  Gate B and the owner's yes); the claim for TASK-089 (EX-02: the logo, the labels, the return-basis and debt notes).
+- `docs/DECISIONS.md`: D118 (the owner's "Approve all" for TASK-089).
+- Corrections from the Gate B review of PR #76: the D117 clause numbers in `docs/update-log/2026-11-26_task090-debt-bands.md`
+  and KNOWN_ISSUES C94.
+- `TASK_REGISTER.md`, `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `eb5fce6`, rows #75 and #76),
+  `DECISION_LOG.md` (next D119), `docs/project-control/README.md`.
+
 ## 2026-11-26 - October debt MF ranges from category YTM; the D116 rows; 9 matured funds removed, TASK-090 (data/2026-11-task090-debt-bands)
 
 ### Changed
