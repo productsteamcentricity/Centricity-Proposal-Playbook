@@ -18,6 +18,28 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-26 - October debt MF ranges from category YTM; the D116 rows; 9 matured funds removed, TASK-090 (data/2026-11-task090-debt-bands)
+
+### Changed
+- Expected-return bands on 539 records (D116, D117). 488 are debt MF / ETF records that take their category's range
+  from the owner's October YTM file, used as is: Overnight 5.25-5.75%, Liquid 6.25-6.75%, Money Market 6.75-7.00%,
+  Ultra Short 7.00-7.25%, Low Duration, Short Term and Banking & PSU 7.25-7.50%, Corporate Bond, Dynamic Bond and
+  Floating Rate 7.50-7.75%, Credit Risk 7.75-8.25%, Medium Term 8.00-8.50%, Long Term (with Medium to Long Duration)
+  7.25-7.75%, Government Securities (with Gilt 10Y) 6.75-7.25%, Index Funds - Fixed Income 7.00-7.50%. The
+  overnight-rate ETFs and the 5 December-2026 target-maturity funds take Overnight. The CRISIL-IBX Financial Services
+  index funds, SBI and Tata included, take 7.00-7.50% (replacing the 24-Nov twin band). 51 are D116's non-debt FoF
+  rows (Income Plus Arbitrage 7-7.5%; Multi Asset / DAA 8-10%; Aggressive Hybrid 9-10%; Conservative Hybrid 8-9%).
+  515 bands are in `site/Centricity_IRR_Offshore.js` `var IRR` (its header count now 2056), 24 in MASTER.
+
+### Removed
+- 9 target-maturity funds whose date has been reached (Jul-Nov 2026; HDFC Nifty SDL Oct 2026 is C61): from MASTER,
+  DEBT_ANALYTICS and `var IRR`, and Bandhan 90:10 Nov 2026 from DIRECT_PERF (via `tools/rebuild_directperf.js`).
+  MASTER effective 7,723 -> 7,714.
+
+### Docs
+- `docs/update-log/2026-11-26_task090-debt-bands.md` (new); KNOWN_ISSUES C61 closed, C89 updated, C93 and C94 new;
+  `docs/PROJECT_STATE.md`; the CLAUDE.md headline.
+
 ## 2026-11-26 - Release record of PR #74 (TASK-087); D116, D117; claim for TASK-090 (docs only)
 
 ### Changed
