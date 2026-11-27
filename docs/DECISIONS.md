@@ -10,7 +10,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 - **IDs.** D1–D59 are inherited from the outgoing owner's working notes, numbered as in the handover
   archaeology pass. D60–D69 were taken during the transfer (16-Oct-2026); D70 onward come from the
   tool fixes that followed it, except that D84 onward are owner decisions taken in chat (D84 to D86, D92 and D93
-  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 to D113, D114 to D117 under "Data model &
+  sit under the "Risk matrix" heading, D87, D88, D97 and D107 under "Process", D98, D101, D102, D104, D105 and D108 under "Reckoner / PMS / AIF", D89 to D91, D94 to D96, D99, D100, D103, D106, D109 to D113, D114 to D118 under "Data model &
   taxonomy"). IDs are never reused.
 - **Status.** `Active` = in force. `Superseded` = replaced (the entry says by what). `Open` = not
   decided yet, or the agreed action is not done.
@@ -151,6 +151,7 @@ to run anything. Procedures are in `docs/MONTHLY_UPDATE_PROCESS.md`; the full tr
 | D115 | 24-Nov-2026 | Tata CRISIL-IBX FS 3-6M debt index band 6-7.5% (its twin's); OPS-02 proposes corrections for category bands that look high; a fund younger than one year shows no since-inception figure (changes D103) (owner) | Data | Active; point 1 superseded by D117 point 4, point 3 by D116 point 4 |
 | D116 | 24-Nov-2026 | 191 band corrections approved (most later superseded for debt MF by D117); the var IRR copy edited directly; 9 matured target-maturity funds removed; a fund under one year shows its ABSOLUTE since-inception return, not a blank (replaces D115 point 3) (owner) | Data | Active |
 | D117 | 26-Nov-2026 | Debt MF indicative ranges from the category average YTM: October = the owner's file; from November the MF Monitor mean rounded to the nearest 0.25% (half-up) then +-0.25%, footnote dated to the portfolio month-end; Medium to Long Duration -> Long Term, Gilt 10Y -> Government Securities; CRISIL-IBX FS index funds 7.00-7.50%; index/target-maturity funds within 3 months of maturity -> Overnight (owner) | Data | Active |
+| D118 | 26-Nov-2026 | Logo fix by measurement for all logos; "Indicative Return Range" labels; the note "Indicative returns are post-expense and pre-tax."; a debt note dated by DATA_DATES.debtYtm for the D117 YTM-banded set (H.isDebtMutualFund); the invisible Thank You logo a separate item (owner) | Data | Active |
 
 Dates are when the change shipped. Where the manual and the commit disagree, the commit date is used
 and the entry says so. "—" means no date is recorded.
@@ -1358,6 +1359,29 @@ and the entry says so. "—" means no date is recorded.
   chosen. Supersedes D116 for 140 debt rows and D115 point 1.
 - **Consequences:** TASK-090 applies 539 band changes (515 in `var IRR`, 24 in MASTER) and the 9 removals; TASK-089 adds
   the labels, the footnotes and `DATA_DATES.debtYtm`; TASK-091A builds the monthly tool.
+- **Source:** the owner's chat messages of 26-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+
+#### D118 - The OneDigital logo, "Indicative Return Range" labels and the return-basis and debt notes (TASK-089)
+`Active` - 26-Nov-2026 (chat with MOD-03) - **owner decision**
+- **Context:** the owner asked (26-Nov-2026) for the OneDigital logo to show at the same size as Centricity's in the
+  presentation, for the "expected pre-tax" label to read "Indicative return range", for a footnote that indicative
+  returns are post-expense and pre-tax, and for a footnote dating the debt fund YTM. EX-02 measured the cause of the small
+  logo (transparent padding in the PNG, stretched into a fixed box) and put five recommendations.
+- **Decision:** the owner chose "Approve all" (26-Nov-2026):
+  1. Every logo is trimmed of transparent margins and placed "contain" in its deck box and in the screen header (SVG
+     kept as vector; very large images not scanned).
+  2. "Indicative Return Range" replaces the "Expected Pre-Tax IRR / Return" wording in the tables and headline figures,
+     the fund pills and rollup, the internal forms and alerts, and the star note.
+  3. The note "Indicative returns are post-expense and pre-tax." appears on the deck, the Excel proposal sheet and under
+     the Section 4 and Live Output tables; the Portfolio Construct line stays.
+  4. The Thank You / divider logo, invisible today (white on white, C68), is a separate item needing dark logo variants.
+  5. "Indicative ranges for debt mutual funds are based on the category average YTM as on <DATA_DATES.debtYtm>." shows
+     when the proposal holds a fund in the D117 YTM-banded set: `H.isDebtMutualFund` = asset_class Debt and
+     product_class Mutual Fund or ETF, minus 11 named exclusions (unclaimed and segregated plans, two blends, the ABSL
+     Income Plus Arbitrage FOF). It is the single gate; TASK-091A uses it and keeps no copy.
+- **Rationale:** the owner's requests, implemented by measurement (D82).
+- **Consequences:** EX-02 implements TASK-089 (High risk; the owner sees a sample deck before the merge); `DATA_DATES.debtYtm`
+  starts at "31st October 2026" and TASK-091A keeps it current.
 - **Source:** the owner's chat messages of 26-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
 
 ### Analytics & credit
