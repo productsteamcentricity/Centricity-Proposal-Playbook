@@ -698,6 +698,18 @@ Three cards. The changes they make are **session-only**.
 - An expected figure (`H.isExpectedReturn`) is marked "*" in all four outputs, Excel included. The fund performance
   tables show published figures only.
 
+**Return labels and notes** (27-Nov-2026, TASK-089, D118)
+- The band shown for each fund and for the proposal is labelled "Indicative Return Range" everywhere a client or the
+  desk sees it (Section 4, the Live Output tabs, Excel, the deck). "Expected Pre-Tax IRR" is no longer shown.
+- Every proposal carries the note "Indicative returns are post-expense and pre-tax." (`H.RETURN_BASIS_NOTE`): under
+  Section 4, under the Live Output "Investment Proposal" tab, in Excel sheet 1 and in the deck's Investment Option notes.
+- When the selection holds a debt mutual fund (`H.isDebtMutualFund`: asset class Debt, product class Mutual Fund or
+  ETF, minus 11 named records whose range is not their category YTM), a second note names the date of the YTM data:
+  "Indicative ranges for debt mutual funds are based on the category average YTM as on <DATA_DATES.debtYtm>."
+  (`H.debtYtmNote`; no note when the date is empty).
+- The picked logo (Invictus or OneDigital) is trimmed of its transparent margins and placed at its own aspect in its
+  box, on the page header and on every slide; it is never stretched.
+
 **Plan switch** (`H.toDirect`)
 - Overrides the returns, AUM, expense, m-cap split and debt stats from `DIRECT_PERF[regularName]`.
 - IRR, exit load and taxonomy are untouched.

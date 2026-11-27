@@ -108,6 +108,8 @@ ahead of the runtime re-assignments later in the file (MASTER is re-assigned by 
 | KPIs (weighted IRR band, 3Y/5Y) | `H.computeKPIs`, `H.effectiveReturn` | §8 |
 | Regular ↔ Direct plan overlay, then user overrides | `H.applyPlanSelected` → `H.applyOverrides` (order matters) | §8 |
 | Minimum tickets | `H.minInvestment`, `H.minInvBreaches` | §7.5 |
+| Return-basis and debt-YTM footnotes; the debt mutual fund set (D118) | `H.RETURN_BASIS_NOTE`, `H.debtYtmNote`, `H.isDebtMutualFund` (single gate), `DATA_DATES.debtYtm` | §8 |
+| Presentation logo: trim and "contain" (D118) | `trimLogo`, `logoAlphaBox`, `stampLogo`, `window.__SELECTED_LOGO_ASPECT` | - |
 | Equity / debt look-through | `H.aggEquityScoped`, `H.aggDebtScoped` | §8 |
 | Credit buckets (7 fixed, sums to 100%) | `H.creditBucket`, `H.fundRatingBuckets`, `H.normaliseRatings`, `H.CREDIT_COLORS` | §8 |
 | Overlap matrix (symmetric Σmin) | `computeOverlap` | §8 |
