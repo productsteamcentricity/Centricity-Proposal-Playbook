@@ -1123,7 +1123,7 @@ These are carried over from the outgoing owner's working notes.
 - **Rename before bake** (`rename_schemes.js`). Renames stamp `prev_name`, which `H.buildFundIndex`, `merge_reckoner.js` and `merge_risk_matrix.js` all consult.
 - **The Monitor decides spellings.** Do not "prettify" a fund name the Monitor does not use, or the next bake re-creates the orphan.
 - **Single predicates.**
-  - `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt` and `H.creditBucket` are the only gates.
+  - `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`, `H.creditBucket` and `H.isDebtMutualFund` (D118) are the only gates.
   - Never re-inline their tests.
   - Index funds are matched on `sub_category`, never on `product_class`.
 - `blocklib.writeBlocks` derives its `</html>` guard from its input. Do not weaken it.

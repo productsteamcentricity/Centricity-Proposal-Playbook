@@ -18,7 +18,7 @@ Read `docs/ARCHITECTURE.md` and `docs/DECISIONS.md` first. Then evaluate the pro
   PptxGenJS 3.12.0, Chart.js 4.4.0 from pinned CDNs). Do not introduce a bundler, server,
   database or framework without a written justification in `docs/DECISIONS.md`.
 - **Single predicates.** `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`,
-  `H.creditBucket` are the only gates; never re-inline their tests.
+  `H.creditBucket`, `H.isDebtMutualFund` are the only gates; never re-inline their tests.
 - **Deliberate oddities stay** (see `docs/OPERATING_MANUAL.md` → Traps): `Mutual Funds` plural,
   the hand-animated nav scroll, unclassified legacy SIF rows, dead code kept for parity.
 - **Every tool is dry-run by default** and every write goes through a gate the operator reads.
