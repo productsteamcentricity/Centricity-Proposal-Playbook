@@ -63,6 +63,11 @@ Keep the task list current. Summary of Part B (details and gates are in the proc
    (D111). All are keyed by MASTER name: a rename of a FoF pin's key or target (`rename_schemes.js`) needs a pin update by
    the owner in a code PR, and `npm test` (`lookthrough.test.js`) fails until then; the refresh is then no
    longer routine (KNOWN_ISSUES C88).
+   `DATA_DATES.debtYtm` is the as-on date of the YTM data behind the debt mutual funds' bands (D117, D118): it must name
+   the same month as the bands in force. Until the band tool (TASK-091A) exists, change it only in the PR that changes
+   the debt bands (`blocklib.setDataDate`); after that, the tool stamps it. The debt-fund set is `H.isDebtMutualFund`
+   (11 named exclusions beside it; `labels_notes.test.js` fails if one is renamed or removed: update the list with the
+   operator's YTM list, in a code PR).
    Read the bake's `refresh-only rows not merged` list every month (C19, D80): a new fund on one of
    the four refresh-only Monitor sheets is added to MASTER by hand with the owner, never by the bake
    and never by moving the sheet into `SHEET_MAP`.

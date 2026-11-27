@@ -50,7 +50,8 @@ input, select, textarea { font-family: Cambria, Georgia, serif; }
   font-family: Cambria, Georgia, serif;
 }
 .app-header .sub { color: var(--tan); font-style: italic; font-size: 13px; margin-left: 16px; letter-spacing: 0.02em; }
-.app-header .logo { position: absolute; right: 24px; top: 14px; height: 44px; }
+.app-header .logo { position: absolute; right: 24px; top: 16px; height: 40px; max-width: 200px; object-fit: contain; object-position: right center; }   /* the trimmed mark, "contain" in 200 x 40 like the deck box (TASK-089) */
+.return-notes { margin-top: 6px; }
 
 .app-footer {
   background: var(--black);
@@ -1450,6 +1451,7 @@ window.DATA_DATES = {
   performance: "31st October 2026",   // MF Monitor / returns as-on date
   analytics:   "31st October 2026",  // Equity / Hybrid / Debt analytics as-on date
   pms:         "31st October 2026",  // PMS scheme performance (PMS_Scheme_Performance monthly file)
+  debtYtm:     "31st October 2026",  // category average YTM behind the debt mutual funds' indicative ranges; empty = no note (TASK-089)
   sif:         "—"  // pre-sibling placeholder — Centricity_SIF_Refresh.js ships the SIF data and overwrites this; the Section 7 "SIF Monitor" uploader then wins at runtime
 };
 window.dataAsOf = function() {
@@ -2095,6 +2097,38 @@ window.linkIdcwToGrowth();
       else if (cToks.size === bestN) best.push(c);
     }
     return best.length === 1 ? best[0].name : null;
+  };
+
+  // ===== Return-basis footnotes (owner request 26-Nov-2026, TASK-089) =====
+  // One text each for the screen, the Excel proposal sheet and the deck's Investment Option slides.
+  H.RETURN_BASIS_NOTE = "Indicative returns are post-expense and pre-tax.";
+  // The debt mutual funds whose indicative range is their category average YTM (D117, D118): asset class Debt,
+  // product class Mutual Fund or ETF, minus the records whose band the YTM rule does not set. This is the single
+  // gate: the debt-YTM footnote here and the monthly band tool (TASK-091A, which evaluates it from the page) both use
+  // it. The list is agreed with the operator's TASK-090 list; a test compares the matched set with it (0 differences).
+  // Change it only with that list, in a code PR.
+  const DEBT_YTM_EXCLUDED = new Set([
+    "Quantum Liquid Fund - Unclaimed IDCW Plan Above 3Y",           // unclaimed-amount plans: not investable
+    "Quantum Liquid Fund - Unclaimed IDCW Plan Below 3Y",
+    "Quantum Liquid Fund - Unclaimed Redemption Plan Above 3Y",
+    "Quantum Liquid Fund - Unclaimed Redemption Plan Below 3Y",
+    "Franklin India Short Term Income Plan-Segregated Portfolio 3-Ret(G)",   // segregated portfolios
+    "Franklin India Credit Risk Fund-Segregated Portfolio 3-(G)",
+    "UTI Medium Term Fund (Segregated - 06032020)-Reg(G)",
+    "UTI Credit Risk Fund (Segregated - 06032020)-Reg(G)",
+    "Aditya Birla SL Income Plus Arbitrage Active FOF-Reg(G)",      // a non-debt FoF filed as Debt ETF (D116 band)
+    "Zerodha Nifty LargeMidcap250 Plus 8-13 yr G-Sec 70:30 Index Fund(G)-Direct Plan",   // equity / G-Sec blends (C89)
+    "Mirae Asset Nifty200 Momentum 30 Plus 8-13 yr G-Sec 50:50 ETF"
+  ]);
+  H.isDebtMutualFund = function(f) {
+    return !!f && f.asset_class === 'Debt' && (f.product_class === 'Mutual Fund' || f.product_class === 'ETF') &&
+      !DEBT_YTM_EXCLUDED.has(f.name);
+  };
+  H.debtYtmNote = function(selected) {
+    const d = String((window.DATA_DATES || {}).debtYtm || '').trim();
+    if (!d || d === '-' || d === '\u2014') return null;
+    return (selected || []).some(s => s && H.isDebtMutualFund(s.fund))
+      ? "Indicative ranges for debt mutual funds are based on the category average YTM as on " + d + "." : null;
   };
 
   // ===== Weighted-average returns (SUMPRODUCT-style) =====
@@ -3999,7 +4033,7 @@ window.mfBenchmarkPerfFor = function(sub) {
       aoa.push(["Total Corpus (₹ Cr)", corpus, "", "", "", "", "", "", "", ""]);
       aoa.push([]);
       // Two header rows in Excel
-      aoa.push(["", "", "Expected Pre-Tax IRR", "", "", "", "", "", "", ""]);
+      aoa.push(["", "", "Indicative Return Range", "", "", "", "", "", "", ""]);
       aoa.push(["Instrument", "% Alloc", "Low", "High", "1Y", "3Y", "5Y", "Amount (₹ Cr)", "Strategy", "Exit Load"]);
       // D112: never a blank where the page shows an expected figure. A period with no published return
       // shows H.effectiveReturn (the IRR band mid-point) with "*", as Section 4, Live Output and the deck do;
@@ -4056,11 +4090,14 @@ window.mfBenchmarkPerfFor = function(sub) {
         "",
         ""
       ]);
+      aoa.push([]);
+      aoa.push([H.RETURN_BASIS_NOTE]);
+      const ytmNote = H.debtYtmNote(selected);
+      if (ytmNote) aoa.push([ytmNote]);
       if (xrUsed) {
         // The deck's STAR_NOTE (buildDeck) says the same; it adds "Weighted rows include these figures", and this
         // sheet has no weighted return rows. Keep the two in step.
-        aoa.push([]);
-        aoa.push(["* No return is published for this period: the figure is the expected return held in the data (the IRR band mid-point, or the yield or rate of a bond or FD), not past performance."]);
+        aoa.push(["* No return is published for this period: the figure is the expected return held in the data (the mid-point of the indicative return range, or the yield or rate of a bond or FD), not past performance."]);
       }
       const ws = XLSX.utils.aoa_to_sheet(aoa);
       ws['!cols'] = [{wch: 45}, {wch: 10}, {wch: 12}, {wch: 12}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 14}, {wch: 16}, {wch: 38}];
@@ -4322,9 +4359,18 @@ window.mfBenchmarkPerfFor = function(sub) {
   // own design puts it in; same 4.6:1 aspect, so one image serves both.
   const LOGO_HEADER = { x: 11.21, y: 0.22, w: 2.02, h: 0.44 };
   const LOGO_CLOSING = { x: 8.47, y: 4.33, w: 4.06, h: 0.89 };
+  // The logo is placed "contain" in its box: the trimmed mark's own aspect (window.__SELECTED_LOGO_ASPECT, measured
+  // when the logo is picked) decides its width and height, so it is never stretched, and a mark that carried
+  // transparent padding fills the box like the Centricity mark does (TASK-089). Right-aligned in the header box,
+  // centred in the closing box. Without a measured aspect (no canvas) the box is used as before.
   function stampLogo(slide, logoData, box) {
     if (!logoData) return;
-    slide.addImage(Object.assign({ data: logoData }, box || LOGO_HEADER));
+    const B = box || LOGO_HEADER, asp = window.__SELECTED_LOGO_ASPECT;
+    if (!(asp > 0)) { slide.addImage(Object.assign({ data: logoData }, B)); return; }
+    let w = B.w, h = B.h;
+    if (asp > B.w / B.h) h = B.w / asp; else w = B.h * asp;
+    const x = B === LOGO_HEADER ? B.x + B.w - w : B.x + (B.w - w) / 2;
+    slide.addImage({ data: logoData, x, y: B.y + (B.h - h) / 2, w, h });
   }
 
   // ===== Presentation design system (D82) =====
@@ -4690,7 +4736,7 @@ window.mfBenchmarkPerfFor = function(sub) {
     selected.forEach(sl => { if (!entryOf[sl.fund.name]) entryOf[sl.fund.name] = sl; });
     let starUsed = false;
     const star = (f, k) => { if (H.isExpectedReturn && H.isExpectedReturn(f, k, entryOf[f.name])) { starUsed = true; return "*"; } return ""; };
-    const STAR_NOTE = "* No return is published for this period: the figure is the expected return held in the data (the IRR band mid-point, or the yield or rate of a bond or FD), not past performance. Weighted rows include these figures.";
+    const STAR_NOTE = "* No return is published for this period: the figure is the expected return held in the data (the mid-point of the indicative return range, or the yield or rate of a bond or FD), not past performance. Weighted rows include these figures.";
     // Uploaded extra slides (Market Update deck, section dividers, Thank You) embedded as
     // full-bleed images in Centricity_ExtraSlides.js. imgSlide adds one as a full slide;
     // titledDivider is the native fallback if the sibling file isn't loaded.
@@ -4747,7 +4793,7 @@ window.mfBenchmarkPerfFor = function(sub) {
 
       // Bullets — left-edge anchored (x = 0.25), full slide width
       const bullets = [
-        "Weighted Pre-Tax IRR target balancing return potential and capital protection",
+        "Weighted indicative return range balancing return potential and capital protection",
         "Risk control through diversification across Asset Classes and Sub-Categories",
         "Expense efficiency — preference for institutional/direct-style structures",
         "Liquidity ladder respecting client lock-in tolerance",
@@ -4985,7 +5031,7 @@ window.mfBenchmarkPerfFor = function(sub) {
         const header = [
           [
             H1("Tenure", {rowspan: 2}), H1("Instruments", {rowspan: 2}), H1("Amount (" + uParen + ")", {rowspan: 2}),
-            H1("% Total", {rowspan: 2}), H1("Expected Pre-Tax IRR", {colspan: 2}), H1("3Y", {rowspan: 2}),
+            H1("% Total", {rowspan: 2}), H1("Indicative Return Range", {colspan: 2}), H1("3Y", {rowspan: 2}),
             H1("5Y", {rowspan: 2}), H1("Strategy", {rowspan: 2}), H1("Maturity/Exit", {rowspan: 2})
           ],
           [ H1("Low"), H1("High") ]
@@ -5045,7 +5091,8 @@ window.mfBenchmarkPerfFor = function(sub) {
       };
       // The star note is decided by the rows themselves, so measure once to know whether it shows.
       starUsed = false; build(9);
-      const notes = starUsed ? [STAR_NOTE] : [];
+      const ytmNote = H.debtYtmNote(selected);
+      const notes = [H.RETURN_BASIS_NOTE].concat(ytmNote ? [ytmNote] : [], starUsed ? [STAR_NOTE] : []);
       const fb = footerBlock(notes, null);
       const plan = planTable({
         cols: [{wrap:true, min:0.75}, {wrap:true, min:2.2, prefer:4.0}, {}, {}, {}, {}, {}, {}, {wrap:true, min:1.0, prefer:1.5}, {wrap:true, min:1.6}],
@@ -5520,7 +5567,7 @@ window.mfBenchmarkPerfFor = function(sub) {
         imgSlide(ES.thankyou, LOGO_CLOSING);
       } else {
         const { s } = contentSlide("Important Disclaimer");
-        const body = "This proposal has been prepared by Centricity WealthTech Pvt. Ltd. for internal use and HNI / UHNI / Family Office client conversations. All performance numbers are as on " + window.DATA_DATES.performance + " (MF Monitor) and " + window.DATA_DATES.analytics + " (Analytics). Expected IRR ranges are indicative and based on Centricity Products Team views. Past performance is not indicative of future results.\n\nInvestors are advised to read all scheme-related documents, including PMS offer documents, risk factors and disclosures, carefully before investing. Mutual fund, PMS and AIF investments are subject to market risks.\n\nDirect bond and FD allocations carry issuer credit risk and reinvestment risk on coupon receipts. Hybrid SIF, AIF Cat II / III, REITs / InvITs and unlisted equity investments carry liquidity and lock-in restrictions described in the respective offer documents.";
+        const body = "This proposal has been prepared by Centricity WealthTech Pvt. Ltd. for internal use and HNI / UHNI / Family Office client conversations. All performance numbers are as on " + window.DATA_DATES.performance + " (MF Monitor) and " + window.DATA_DATES.analytics + " (Analytics). Indicative return ranges are post-expense and pre-tax, and based on Centricity Products Team views. Past performance is not indicative of future results.\n\nInvestors are advised to read all scheme-related documents, including PMS offer documents, risk factors and disclosures, carefully before investing. Mutual fund, PMS and AIF investments are subject to market risks.\n\nDirect bond and FD allocations carry issuer credit risk and reinvestment risk on coupon receipts. Hybrid SIF, AIF Cat II / III, REITs / InvITs and unlisted equity investments carry liquidity and lock-in restrictions described in the respective offer documents.";
         s.addText(body, {x:0.4, y:1.1, w:12.5, h:5.8, fontFace:"Cambria", fontSize:12, color:COL.black, valign:"top"});
       }
     }
@@ -5699,7 +5746,7 @@ function Kpis({
     className: "kpi"
   }, /*#__PURE__*/React.createElement("div", {
     className: "label"
-  }, "Weighted IRR (Range)"), /*#__PURE__*/React.createElement("div", {
+  }, "Indicative Return Range (Weighted)"), /*#__PURE__*/React.createElement("div", {
     className: "value"
   }, H.fmtPct(kpis.irrLow), " \u2013 ", H.fmtPct(kpis.irrHigh)), /*#__PURE__*/React.createElement("div", {
     className: "sub"
@@ -5879,7 +5926,7 @@ function AddBondForm({ onAddBond }) {
     /*#__PURE__*/React.createElement("div", { style: { marginBottom: 10 } }, lbl("Bond Name"), /*#__PURE__*/React.createElement("input", { style: inStyle, placeholder: "e.g. 9.25 ABC Capital Ltd 2029", value: name, onChange: e => setName(e.target.value) })),
     /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 14 } },
       /*#__PURE__*/React.createElement("div", null, lbl("Maturity Date"), /*#__PURE__*/React.createElement("input", { type: "date", style: inStyle, value: maturity, onChange: e => setMaturity(e.target.value) })),
-      /*#__PURE__*/React.createElement("div", null, lbl("Pre-tax IRR / Yield (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 9.50", value: yld, onChange: e => setYld(e.target.value) })),
+      /*#__PURE__*/React.createElement("div", null, lbl("Indicative return / Yield (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 9.50", value: yld, onChange: e => setYld(e.target.value) })),
       /*#__PURE__*/React.createElement("div", null, lbl("Rating"),
         /*#__PURE__*/React.createElement("input", { list: "centricity-bond-ratings", style: inStyle, placeholder: "e.g. AA+", value: rating, onChange: e => setRating(e.target.value) }),
         /*#__PURE__*/React.createElement("datalist", { id: "centricity-bond-ratings" }, RATINGS.map(r => /*#__PURE__*/React.createElement("option", { key: r, value: r })))
@@ -5931,7 +5978,7 @@ function AddFundForm({ onAddFund }) {
       /*#__PURE__*/React.createElement("span", { className: "chev" }, "\u25BC")
     ),
     open && /*#__PURE__*/React.createElement("div", { className: "addfund-panel" },
-    /*#__PURE__*/React.createElement("div", { className: "hint", style: { marginTop: 0, marginBottom: 12 } }, "Add any instrument — across any asset class, product class or category — with an expected pre-tax IRR range, exit load and tenure. It becomes selectable in Pick Funds above and is saved with the Master export."),
+    /*#__PURE__*/React.createElement("div", { className: "hint", style: { marginTop: 0, marginBottom: 12 } }, "Add any instrument — across any asset class, product class or category — with an indicative return range, exit load and tenure. It becomes selectable in Pick Funds above and is saved with the Master export."),
     /*#__PURE__*/React.createElement("div", { style: { marginBottom: 10 } }, lbl("Instrument / Fund Name"), /*#__PURE__*/React.createElement("input", { style: inStyle, placeholder: "e.g. XYZ Multi-Asset Fund-Reg(G)", value: name, onChange: e => setName(e.target.value) })),
     /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 10 } },
       /*#__PURE__*/React.createElement("div", null, lbl("Asset Class"), sel(ac, setAc, AC)),
@@ -5939,8 +5986,8 @@ function AddFundForm({ onAddFund }) {
       /*#__PURE__*/React.createElement("div", null, lbl("Category / Sub-Category"), /*#__PURE__*/React.createElement("input", { style: inStyle, placeholder: "e.g. Flexi Cap", value: sub, onChange: e => setSub(e.target.value) }))
     ),
     /*#__PURE__*/React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 10 } },
-      /*#__PURE__*/React.createElement("div", null, lbl("Exp. Pre-tax IRR — Low (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 11.00", value: irrLo, onChange: e => setIrrLo(e.target.value) })),
-      /*#__PURE__*/React.createElement("div", null, lbl("Exp. Pre-tax IRR — High (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 13.00", value: irrHi, onChange: e => setIrrHi(e.target.value) })),
+      /*#__PURE__*/React.createElement("div", null, lbl("Indicative return - Low (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 11.00", value: irrLo, onChange: e => setIrrLo(e.target.value) })),
+      /*#__PURE__*/React.createElement("div", null, lbl("Indicative return - High (%)"), /*#__PURE__*/React.createElement("input", { type: "number", step: "0.01", min: "0", style: inStyle, placeholder: "e.g. 13.00", value: irrHi, onChange: e => setIrrHi(e.target.value) })),
       /*#__PURE__*/React.createElement("div", null, lbl("Tenure"), /*#__PURE__*/React.createElement("input", { style: inStyle, placeholder: "e.g. > 36 Months", value: tenure, onChange: e => setTenure(e.target.value) }))
     ),
     /*#__PURE__*/React.createElement("div", { style: { marginBottom: 14 } }, lbl("Exit Load"), /*#__PURE__*/React.createElement("input", { style: inStyle, placeholder: "e.g. 1% if redeemed within 12 months", value: exit, onChange: e => setExit(e.target.value) })),
@@ -5998,7 +6045,7 @@ function AddedBondPicker({ bonds, selectedNames, onAdd }) {
       style: { marginTop: 10, padding: "8px 10px", background: "var(--bg-yellow)", border: "1px solid var(--border)", fontSize: 12.5 }
     }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("b", null, chosen.name)),
       /*#__PURE__*/React.createElement("div", { style: { marginTop: 4, color: "var(--ink-soft)" } },
-        "Maturity: " + fmtMat(chosen.bond_maturity) + "  ·  Pre-tax IRR / Yield: " + H.fmtPct(chosen.irr_high) + "  ·  Rating: " + (chosen.bond_rating || "—"))),
+        "Maturity: " + fmtMat(chosen.bond_maturity) + "  \u00b7  Indicative return / Yield: " + H.fmtPct(chosen.irr_high) + "  ·  Rating: " + (chosen.bond_rating || "—"))),
     msg && /*#__PURE__*/React.createElement("div", { style: { fontSize: 12, color: "var(--green)", marginTop: 6 } }, msg)
   );
 }
@@ -6222,7 +6269,7 @@ function PickFundsPane({
     }, "5Y ", H.fmtPct(f.r5y))] : [/*#__PURE__*/React.createElement("span", {
       key: "irr",
       className: "pill irr"
-    }, "IRR ", H.fmtPct(f.irr_low), "\u2013", H.fmtPct(f.irr_high)), /*#__PURE__*/React.createElement("span", {
+    }, "Indicative ", H.fmtPct(f.irr_low), "\u2013", H.fmtPct(f.irr_high)), /*#__PURE__*/React.createElement("span", {
       key: "r1y",
       className: "pill " + ((f.r1y || 0) < 0 ? "neg" : "")
     }, "1Y ", H.fmtPct(f.r1y)), /*#__PURE__*/React.createElement("span", {
@@ -6415,7 +6462,7 @@ function SwitchPopover({
     className: "name"
   }, f.name), /*#__PURE__*/React.createElement("div", {
     className: "tag"
-  }, "IRR ", H.fmtPct(f.irr_low), " \u2013 ", H.fmtPct(f.irr_high), " \xB7 1Y ", H.fmtPct(f.r1y), " \xB7 3Y ", H.fmtPct(f.r3y), " \xB7 5Y ", H.fmtPct(f.r5y))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+  }, "Indicative ", H.fmtPct(f.irr_low), " \u2013 ", H.fmtPct(f.irr_high), " \xB7 1Y ", H.fmtPct(f.r1y), " \xB7 3Y ", H.fmtPct(f.r3y), " \xB7 5Y ", H.fmtPct(f.r5y))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     className: "btn-add"
   }, "Select")))))));
 }
@@ -6465,11 +6512,11 @@ function PortfolioRollup({
     style: {
       textAlign: "center"
     }
-  }, "IRR Low"), /*#__PURE__*/React.createElement("th", {
+  }, "Indicative Low"), /*#__PURE__*/React.createElement("th", {
     style: {
       textAlign: "center"
     }
-  }, "IRR High"), /*#__PURE__*/React.createElement("th", {
+  }, "Indicative High"), /*#__PURE__*/React.createElement("th", {
     style: {
       textAlign: "center"
     }
@@ -6622,6 +6669,16 @@ function PortfolioRollup({
       fontWeight: 700
     }
   }, cell(rollup.total.r5y))))));
+}
+// The return-basis footnotes under Section 4 and the Live Output Investment Proposal tab (TASK-089).
+function ReturnBasisNotes({
+  selected
+}) {
+  if (!selected || !selected.length) return null;
+  const ytmNote = H.debtYtmNote ? H.debtYtmNote(selected) : null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "hint return-notes"
+  }, /*#__PURE__*/React.createElement("div", null, H.RETURN_BASIS_NOTE), ytmNote && /*#__PURE__*/React.createElement("div", null, ytmNote));
 }
 function SelectedTable({
   selected,
@@ -6813,7 +6870,7 @@ function SelectedTable({
     style: {
       width: "11%"
     }
-  }, "IRR Range"), /*#__PURE__*/React.createElement("th", {
+  }, "Indicative Return Range"), /*#__PURE__*/React.createElement("th", {
     style: {
       width: "11%"
     }
@@ -6970,7 +7027,9 @@ function SelectedTable({
         textAlign: "center"
       }
     }, H.fmtPct(tot.r5y)), /*#__PURE__*/React.createElement("td", null));
-  })())), /*#__PURE__*/React.createElement("div", {
+  })())), /*#__PURE__*/React.createElement(ReturnBasisNotes, {
+    selected: selected
+  }), /*#__PURE__*/React.createElement("div", {
     className: "dl-bar"
   }, /*#__PURE__*/React.createElement("span", {
     className: "status " + (dlReady ? "green" : "red"),
@@ -7121,11 +7180,11 @@ function FutureValueCard({
     className: "fv-stat"
   }, /*#__PURE__*/React.createElement("div", {
     className: "fv-stat-label"
-  }, "Expected Pre-Tax Return (p.a.)"), /*#__PURE__*/React.createElement("div", {
+  }, "Indicative Return (p.a.)"), /*#__PURE__*/React.createElement("div", {
     className: "fv-stat-value"
   }, (ret * 100).toFixed(2), "%"), /*#__PURE__*/React.createElement("div", {
     className: "fv-stat-sub"
-  }, "Weighted IRR mid-point of selected funds")), /*#__PURE__*/React.createElement("div", {
+  }, "Weighted mid-point of the indicative return ranges")), /*#__PURE__*/React.createElement("div", {
     className: "fv-stat"
   }, /*#__PURE__*/React.createElement("div", {
     className: "fv-stat-label"
@@ -7479,13 +7538,13 @@ function ProposalTab({
       expense: expW ? expSum / expW : null
     };
   }, [selected, corpus]);
-  return /*#__PURE__*/React.createElement("table", {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", {
     className: "htable"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
     style: {
       textAlign: "left"
     }
-  }, "Instrument"), /*#__PURE__*/React.createElement("th", null, "Amount (\u20B9 Cr)"), /*#__PURE__*/React.createElement("th", null, "% Alloc."), /*#__PURE__*/React.createElement("th", null, "IRR Range"), /*#__PURE__*/React.createElement("th", null, "1Y"), /*#__PURE__*/React.createElement("th", null, "3Y"), /*#__PURE__*/React.createElement("th", null, "5Y"), /*#__PURE__*/React.createElement("th", null, "Strategy"), /*#__PURE__*/React.createElement("th", null, "Expense"), /*#__PURE__*/React.createElement("th", null, "Tenure"), /*#__PURE__*/React.createElement("th", {
+  }, "Instrument"), /*#__PURE__*/React.createElement("th", null, "Amount (\u20B9 Cr)"), /*#__PURE__*/React.createElement("th", null, "% Alloc."), /*#__PURE__*/React.createElement("th", null, "Indicative Return Range"), /*#__PURE__*/React.createElement("th", null, "1Y"), /*#__PURE__*/React.createElement("th", null, "3Y"), /*#__PURE__*/React.createElement("th", null, "5Y"), /*#__PURE__*/React.createElement("th", null, "Strategy"), /*#__PURE__*/React.createElement("th", null, "Expense"), /*#__PURE__*/React.createElement("th", null, "Tenure"), /*#__PURE__*/React.createElement("th", {
     style: {
       textAlign: "left"
     }
@@ -7588,7 +7647,9 @@ function ProposalTab({
       fontStyle: "italic",
       padding: 18
     }
-  }, "Add instruments to populate the proposal."))));
+  }, "Add instruments to populate the proposal.")))), /*#__PURE__*/React.createElement(ReturnBasisNotes, {
+    selected: selected
+  }));
 }
 
 // ===== Tab 2: Category Rationale =====
@@ -8959,6 +9020,44 @@ function PlanToggle({ planMode, setPlanMode }) {
 }
 
 // Logo selector for the dashboard header + PPTX deck.
+// The bounding box of a logo's visible pixels in an RGBA buffer (alpha above the threshold), or null when nothing
+// is visible. A pure function, so the logo trim below can be unit-tested without a canvas (TASK-089).
+function logoAlphaBox(rgba, w, h, threshold) {
+  const t = threshold == null ? 16 : threshold;
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (rgba[(y * w + x) * 4 + 3] > t) {
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+// Trim a logo's fully transparent margins once, on a canvas, and measure the mark's aspect (TASK-089). A preset or
+// an upload with padding then shows its mark at the size the box allows. Resolves to { src, aspect }:
+// - an SVG keeps its own source (it stays vector) and only its aspect is measured;
+// - an image above about 25 megapixels is not scanned: its own aspect is used;
+// - without a canvas, or for an image it cannot read, the logo comes back unchanged with aspect null.
+function trimLogo(src) {
+  return new Promise(resolve => {
+    const keep = { src, aspect: null };
+    if (!src || typeof Image === 'undefined' || typeof document === 'undefined') return resolve(keep);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h) return resolve(keep);
+        if (/^data:image\/svg\+xml/i.test(src) || w * h > 25e6) return resolve({ src, aspect: w / h });
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0);
+        const b = logoAlphaBox(ctx.getImageData(0, 0, w, h).data, w, h, 16);
+        if (!b || (b.w >= w - 2 && b.h >= h - 2)) return resolve({ src, aspect: w / h });
+        const o = document.createElement('canvas'); o.width = b.w; o.height = b.h;
+        o.getContext('2d').drawImage(img, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
+        resolve({ src: o.toDataURL('image/png'), aspect: b.w / b.h });
+      } catch (e) { resolve(keep); }
+    };
+    img.onerror = () => resolve(keep);
+    img.src = src;
+  });
+}
 function LogoSwitcher({ choice, setChoice, onUpload, presets, hasCustom }) {
   const opts = ['Centricity'].concat(Object.keys(presets || {}));
   return /*#__PURE__*/React.createElement("span", {
@@ -9157,7 +9256,18 @@ function App() {
   const logoData = logoChoice === 'Custom'
     ? (customLogo || window.CENTRICITY_LOGO)
     : (logoChoice === 'Centricity' ? window.CENTRICITY_LOGO : (LOGO_PRESETS[logoChoice] || window.CENTRICITY_LOGO));
-  useE3(() => { window.__SELECTED_LOGO = logoData; }, [logoData]);
+  // The trimmed mark, keyed by its source, so a previous logo's mark never shows for the new choice (TASK-089).
+  const [logoTrim, setLogoTrim] = useS3(null);   // { for: logoData, src, aspect }
+  useE3(() => {
+    let live = true;
+    trimLogo(logoData).then(v => { if (live) setLogoTrim({ for: logoData, src: v.src, aspect: v.aspect }); });
+    return () => { live = false; };
+  }, [logoData]);
+  const logoView = logoTrim && logoTrim.for === logoData ? logoTrim : null;
+  useE3(() => {
+    window.__SELECTED_LOGO = logoView ? logoView.src : logoData;
+    window.__SELECTED_LOGO_ASPECT = logoView ? logoView.aspect : null;
+  }, [logoData, logoView]);
   useE3(() => { window.__EQ_EXCLUDE = eqExclude; }, [eqExclude]);
   useE3(() => { window.__DB_EXCLUDE = dbExclude; }, [dbExclude]);
   const onLogoUpload = file => {
@@ -9265,7 +9375,7 @@ function App() {
       return false;
     }
     let y = parseFloat(b.yieldPct);
-    if (isNaN(y) || y <= 0) { window.alert("Please enter a valid pre-tax IRR (yield) %."); return false; }
+    if (isNaN(y) || y <= 0) { window.alert("Please enter a valid indicative return (yield) %."); return false; }
     y = Math.round(y * 1e4) / 1e6; // % → decimal, kills float artifacts
     let exitLoad = "Hold-to-maturity";
     const iso = (b.maturity || "").trim() || null;
@@ -9314,7 +9424,7 @@ function App() {
     let lo = parseFloat(o.irrLow), hi = parseFloat(o.irrHigh);
     if (isNaN(lo) && !isNaN(hi)) lo = hi;
     if (isNaN(hi) && !isNaN(lo)) hi = lo;
-    if (isNaN(lo) || isNaN(hi) || lo < 0 || hi < 0) { window.alert("Please enter a valid expected pre-tax IRR range (e.g. 11 – 13)."); return false; }
+    if (isNaN(lo) || isNaN(hi) || lo < 0 || hi < 0) { window.alert("Please enter a valid indicative return range (e.g. 11 \u2013 13)."); return false; }
     if (lo > hi) { const t = lo; lo = hi; hi = t; }
     const irrLow = Math.round(lo * 1e4) / 1e6, irrHigh = Math.round(hi * 1e4) / 1e6;   // % → decimal, kills float artifacts
     const rec = {
@@ -9419,7 +9529,7 @@ function App() {
     hasCustom: !!customLogo
   }), /*#__PURE__*/React.createElement("img", {
     className: "logo",
-    src: logoData,
+    src: logoView ? logoView.src : logoData,
     alt: "Logo"
   })), isShared && /*#__PURE__*/React.createElement("div", {
     className: "shared-banner"
@@ -9511,7 +9621,7 @@ function App() {
   })), /*#__PURE__*/React.createElement(SectionCard, {
     num: "5",
     title: "Expected Future Value",
-    desc: "Compounds the weighted IRR over your chosen tenure."
+    desc: "Compounds the weighted indicative return over your chosen tenure."
   }, /*#__PURE__*/React.createElement(FutureValueCard, {
     corpus: corpus,
     corpusUnit: corpusUnit,

@@ -18,6 +18,30 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-27 - The logo, the return labels and the return-basis notes (TASK-089, D118; `fix/labels-logo-footnotes`)
+
+### Fixed
+- `site/index.html`: the picked logo (Invictus or OneDigital) is no longer stretched. `trimLogo` trims its transparent
+  margins once, `window.__SELECTED_LOGO_ASPECT` carries its aspect and `stampLogo` places it "contain" in its box
+  (right-aligned on content slides, centred on the closing slide). The page header shows it at 40 px high, at most
+  200 px wide. An SVG logo stays vector; an image above 25 MP is used as it is.
+
+### Changed
+- `site/index.html`: "Expected Pre-Tax IRR" reads "Indicative Return Range" in every client-facing place (Section 4,
+  the Live Output tabs, Excel, the deck, the forms, the alerts and the star note).
+- `site/index.html`: new note "Indicative returns are post-expense and pre-tax." (`H.RETURN_BASIS_NOTE`) under Section 4,
+  under the Live Output "Investment Proposal" tab, in Excel sheet 1 and in the deck's Investment Option notes; a second,
+  dated note when the selection holds a debt mutual fund (`H.isDebtMutualFund`, `H.debtYtmNote`).
+- `site/index.html`: new `DATA_DATES.debtYtm` "31st October 2026" (the YTM data behind the October debt bands, D117).
+  `window.H` 71 -> 74 keys. Data blocks byte-identical.
+
+### Added
+- `tools/test/labels_notes.test.js` (56 checks): the labels, both notes, the debt set's exclusions, the logo trim and
+  placement, `setDataDate("debtYtm")`.
+- Docs: OPERATING_MANUAL, ARCHITECTURE, INTERFACE_CONTRACTS, TESTING, MONTHLY_UPDATE_PROCESS, the monthly-update
+  skill, PRD section 8, KNOWN_ISSUES C68 (the Thank You logo cannot be seen: a separate item); record
+  `docs/update-log/2026-11-27_task-089-labels-logo-footnotes.md`.
+
 ## 2026-11-26 - Release record of PR #76 (TASK-090, debt bands); D118; claim for TASK-089 (docs only)
 
 ### Changed

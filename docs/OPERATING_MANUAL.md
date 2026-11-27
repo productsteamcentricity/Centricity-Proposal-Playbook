@@ -415,6 +415,22 @@ note row; C91: the star shows in Excel only). Young mutual funds are included (D
 `H.weightedReturns`. The fund performance tables (screen, Excel sheets 3-8, deck) show published figures only and
 keep "-". `H.computeKPIs` still has its own copy of the mid-point rule (C92): change both together.
 
+**Return-basis notes and `DATA_DATES.debtYtm`** (27-Nov-2026, TASK-089, D118). The client-facing range is the
+"Indicative Return Range". Every proposal carries `H.RETURN_BASIS_NOTE` ("Indicative returns are post-expense and
+pre-tax.") under Section 4's table, under the Live Output Investment Proposal tab, under Excel sheet 1 and on every deck
+Investment Option slide (through `footerBlock`, measured). When the proposal holds a debt mutual fund, `H.debtYtmNote`
+adds "Indicative ranges for debt mutual funds are based on the category average YTM as on <DATA_DATES.debtYtm>."
+- **The single gate is `H.isDebtMutualFund`:** asset class Debt, product class Mutual Fund or ETF, minus the
+  closure-private `DEBT_YTM_EXCLUDED` (11 records whose band the D117 YTM rule does not set: 4 Quantum Liquid
+  "Unclaimed" plans, 4 segregated portfolios, the ABSL Income Plus Arbitrage FOF, 2 equity / G-Sec blends). It equals
+  the set the monthly YTM band tool sets (488 on 27-Nov-2026, the operator's TASK-090 list). The tool evaluates the
+  predicate from the page; never copy it. A fund that leaves or joins the YTM rule changes the list in a code PR, with
+  the operator's list. `labels_notes.test.js` fails, with the remedy, when an excluded name is renamed or removed.
+- **The date:** `DATA_DATES.debtYtm` ("31st October 2026") is the as-on date of the YTM data behind the debt bands. The
+  monthly tool stamps it with `blocklib.setDataDate(html, 'debtYtm', label)` in the same run as the bands, so the two
+  never disagree. Until that tool exists, stamp it in the same PR that changes the debt bands. An empty value shows no
+  note.
+
 ### Data-hygiene traps on every refresh
 
 - **Issuer names carry the instrument, not just the issuer**, and the layout changed with the
@@ -518,6 +534,17 @@ native *and* full-bleed image ones. Two boxes, defined once:
 **No slide image may carry a baked-in logo any more**, or the deck double-stamps. The Disclaimer
 and Thank You renders have their logo picture shape deleted before export (see below); the
 dividers and Market Update slides never had one — their top-right is empty by design.
+
+**The logo is measured, never stretched** (27-Nov-2026, TASK-089, D118). When a logo is picked, `trimLogo` (beside
+`LogoSwitcher`) trims its fully transparent margins once on a canvas and records the mark's aspect
+(`window.__SELECTED_LOGO_ASPECT`). An SVG keeps its own source and only its aspect is measured; an image above about 25
+megapixels is not scanned. The trimmed view is keyed by its source, so a previous logo never shows. `stampLogo` then
+places the mark "contain" in its box: the full width or the full height, whichever the aspect allows; right-aligned in
+`LOGO_HEADER`, centred in `LOGO_CLOSING`. The screen header shows it "contain" in 200 x 40 px. Without a measured aspect
+(a vm, no canvas) the box is used as before. Why: the OneDigital and Invictus PNGs carry wide transparent margins (the
+mark is 71% x 63% of the OneDigital image), so the whole-PNG stretch made them look half the size of the Centricity
+mark. The white mark is invisible on the white Thank You artwork and faint on the white dividers (C68): a dark logo
+variant from the desk is the fix, not this code.
 
 **`forEach(imgSlide)` is a trap.** `forEach` passes *(value, index, array)*, and `imgSlide`'s
 second parameter is the logo box, so the index lands there as a bogus box and the logo silently

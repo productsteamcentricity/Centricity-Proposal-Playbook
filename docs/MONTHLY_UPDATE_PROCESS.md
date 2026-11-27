@@ -237,6 +237,14 @@ the folder. Override flags are owner decisions, never Claude's: `--accept-drops 
 | 16 | `node tools/merge_pms_aif_analytics.js "<M>/<PMS & AIF Analytics….xlsx>" --as-on "31st October 2026"` | a failed gate (totals, or `MASTER PMS/AIF with look-through` falling); a scheme listed under `no MASTER instrument`; two sheets qualify (pass `--sheet`). Record the printed `look-through as on` date in the update log: the tool leaves `DATA_DATES.analytics` alone (D70) |
 | 17 | `node tools/verify_page.js site` | exit 1, or see B6 |
 
+**Debt mutual fund bands and `DATA_DATES.debtYtm` (D117, D118).** The debt mutual funds' indicative ranges are their
+category average YTM, and the page's footnote names the YTM data's as-on date from `DATA_DATES.debtYtm`
+("31st October 2026" since TASK-089). **Gate:** `DATA_DATES.debtYtm` must name the month of the YTM data behind the bands
+in force. Until the monthly band tool (TASK-091A) exists, change the date only in the same PR that changes the debt bands
+(`blocklib.setDataDate(html, 'debtYtm', label)`, a plain long label). A run that refreshes performance but not the debt
+bands leaves it alone. Once TASK-091A merges, that tool stamps it in the same run as the bands, and `--ytm-as-on` is its
+only source. The set of funds is `H.isDebtMutualFund` (the page's single gate; see OPERATING_MANUAL "Return-basis notes").
+
 Periodic inputs (P1–P5) follow the "Periodic" section of `tools/README.md` and always need the
 owner's confirmation of what changed. A Bond List run names its desk (`--desk Invictus` or
 `--desk OneDigital`); the tool refuses a workbook where the sheet for that desk is ambiguous.

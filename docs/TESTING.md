@@ -99,6 +99,12 @@ Runs every `tools/test/*.test.js` file and exits 1 if any fails. Today:
   Excel "Investment Proposal" sheet holds `H.effectiveReturn` in each 1Y/3Y/5Y cell, starred (`General"*"`) exactly when
   `H.isExpectedReturn`, empty when there is no figure and no band, an override unstarred, a note row only when something
   is starred; the Equity Analytics market-cap label.
+- `labels_notes.test.js` (56 checks, added 27-Nov-2026 with TASK-089, D118). It loads the page in a vm with a recording
+  PptxGenJS. No user-facing "Expected Pre-Tax" / "Pre-tax IRR" / "IRR Range" string remains (code lines scanned, comments
+  skipped). The return-basis note; `H.isDebtMutualFund` on synthetic records (Debt Mutual Fund / ETF in; bonds, FDs, AIFs,
+  hybrids out), its 11 exclusions (each still a MASTER record, else it fails with the remedy), and the matched set = the
+  class set minus them. `H.debtYtmNote` with and without a debt fund and with an empty date. The Excel and deck notes on
+  synthetic proposals; `stampLogo`'s "contain" placement for no aspect, a wide and a tall mark; the pure `logoAlphaBox`.
 
 CI runs `npm ci` and then the tests on every PR. Add a `<name>.test.js` file beside them for any new
 library function or parser rule.
@@ -189,6 +195,7 @@ Run with the `/verify-dashboard` skill (or the `qa-verifier` agent) against `nod
 | 9 | Live Output tabs | All 9 render; "⬇ Download slide" works per tab (Performance Sheet = 2 slides since PR #26, 4 before; others 1) |
 | 10 | Credit rating | Debt Analytics doughnut sums to 100%, colours fixed per bucket (`H.CREDIT_COLORS`), same colours in the PPT |
 | 11 | MF Monitor upload | Section 7 card accepts the current monitor: "Updated N schemes · as on …" (session only); since the C19 change it may add "· N rows not merged" (the Sep-2026 Monitor gives 19 in the bake) and must never add "· N rows on unrecognised sheets" |
+| 12 | Logo and notes (TASK-089, D118) | Each logo in the switcher (Centricity, Invictus, OneDigital, an upload) shows its mark "contain" in 200 x 40 px, clear of the switcher's links at 1440 and 1280 px, with no stale mark after switching; in the deck the mark fills its box width or height without stretching. Section 4, the Live Output Investment Proposal tab, Excel sheet 1 and the deck Investment Option slides carry "Indicative returns are post-expense and pre-tax."; with a debt mutual fund in the proposal also the debt-YTM note with `DATA_DATES.debtYtm` |
 
 ### How to drive exports without downloading files (in-page JavaScript)
 
