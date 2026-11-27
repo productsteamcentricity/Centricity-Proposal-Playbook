@@ -51,7 +51,7 @@ Three tools have no default target and need `--html site/index.html`: `merge_pms
 6. **No fabricated data** in client-facing output (no holdings fallback, MLD unrated → "Unrated").
 7. **Rename before bake** (`tools/rename_schemes.js` first, every month). The Monitor decides spellings.
 8. **Single predicates:** `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`,
-   `H.creditBucket`. Deliberate oddities stay (`Mutual Funds` plural, hand-animated nav scroll,
+   `H.creditBucket`, `H.isDebtMutualFund`. Deliberate oddities stay (`Mutual Funds` plural, hand-animated nav scroll,
    12 unclassified legacy SIF rows, dead code kept for parity).
 9. **Invariants:** 0 duplicate MASTER names; Centricity Select keys in MASTER = total; top-10 Direct
    Equity by market cap are "Large Cap"; `DATA_DATES.sif` is not "—".
@@ -149,6 +149,6 @@ Yield Enhancer still 31-Jul; `DATA_DATES.pms` "31st October 2026"; later-run ris
 look-through 31-Jul-2026; fund managers = the 2-Nov
 Monitor's first-named manager only (the Sep bake replaced the 31-Aug roster). `verify_page`: MASTER 7,714 ·
 Centricity Select 184 (184 in MASTER) · PMS 696 / AIF 10 / benchmarks 4 · PMS_PERF_ALIAS 29 (1 null) · RISK_MATRIX 1,088 ·
-EQUITY_ANALYTICS 1,231 · 0 duplicates · 0 script errors. Next due: the Nov-2026 MF cycle. Open from October: KNOWN_ISSUES C61 to C66. D113 (23-Nov): 23 October MF launches added as stubs (figures from the Nov bake), 7 Reckoner instruments and Titanium added, peer bands on 101 funds (C60 closed). D116 and D117 (26-Nov): debt MF ranges from category YTM (the owner's October file; monthly from November, TASK-091A), 9 matured target-maturity funds removed (C61 closed).
+EQUITY_ANALYTICS 1,231 · 0 duplicates · 0 script errors. Next due: the Nov-2026 MF cycle. Open from October: KNOWN_ISSUES C61 to C66. D113 (23-Nov): 23 October MF launches added as stubs (figures from the Nov bake), 7 Reckoner instruments and Titanium added, peer bands on 101 funds (C60 closed). D116 and D117 (26-Nov): debt MF ranges from category YTM (the owner's October file; monthly from November, TASK-091A), 9 matured target-maturity funds removed (C61 closed). D118 (live 28-Nov, PR #78): logos placed at their own aspect, "Indicative Return Range" labels, the note "Indicative returns are post-expense and pre-tax." and the debt YTM note dated by `DATA_DATES.debtYtm`.
 The Portfolio Matrix is to be fed from the MF dashboard from the October cycle (D86; the data-pack reading is INFERRED); the
 build is TASK-022, and until it is merged the page keeps '30 Sep 2026' (KNOWN_ISSUES B8, C46).

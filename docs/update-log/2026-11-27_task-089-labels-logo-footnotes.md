@@ -113,3 +113,9 @@ holding was the excluded record), the live Pages hash check (nothing published).
 - The Thank You slide logo cannot be seen (a white mark on white artwork) before and after this change: KNOWN_ISSUES
   C68, a separate item under D118.
 - `docs/DECISIONS.md` and `CLAUDE.md` (the Moderator's).
+
+_Owner answer 28-Nov-2026 (MOD-03, release record of PR #78): item 2 above is closed. The owner kept the note "Indicative
+returns are post-expense and pre-tax." exactly as approved (option a, no debt carve-out) and said "Yes, publish" after the
+sample deck. Corrections from Gate B: the native "Important Disclaimer" slide text also changed (to "Indicative return
+ranges are post-expense and pre-tax, and based on Centricity Products Team views"), which the "What changed" table does not
+list; and `H.isDebtMutualFund` matches 488 records (the class set is 499 before the 11 exclusions). Minor leftovers: C95, C96._

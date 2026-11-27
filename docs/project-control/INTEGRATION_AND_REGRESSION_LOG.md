@@ -77,6 +77,8 @@ and 7 of 7 live SHA-256).
 
 ## 3. Last verified baseline
 
+**Update 28-Nov-2026 (MOD-03): `main` = `origin/main` = `f5c09cd` (PR #78, TASK-089, the logo fix, the "Indicative Return Range" labels and the return-basis and debt notes, D118; site content S19). Code and CSS only in site/index.html (sha256 bfdddd39...) plus the new `DATA_DATES.debtYtm` "31st October 2026"; the five siblings unchanged; verify_page identical to S18 except the DATA_DATES line (MASTER effective 7,714, 0 duplicates, 0 script errors); `H.isDebtMutualFund` 488; npm test 10 files; live 7 of 7 equal `site/`; push run 46068326666 success. Recovery: `git revert -m 1 f5c09cd`.**
+
 **Update 26-Nov-2026 (MOD-03): `main` = `origin/main` = `eb5fce6` (PR #76, TASK-090, the D116/D117 debt bands and 9 matured removals; site content S18). index.html sha256 6311cfc8...; IRR sibling e55c569f...; verify_page: MASTER effective 7,714, every other line unchanged, 0 duplicates, 0 script errors; var IRR 2,056; DEBT_ANALYTICS 512; DIRECT_PERF 1,718; npm test 9 files; live 7 of 7 equal `site/`; push run 45847410705 success. Recovery: restore `backups/2026-11-26_pre-task090/` or `git revert -m 1 eb5fce6`.**
 
 **Update 26-Nov-2026 (MOD-03): `main` = `origin/main` = `eb00377` (PR #74, TASK-087, the "Others" label and one expected-figure rule, D112 and D114; site content S17). Code only in site/index.html (sha256 df116b3b...); every data block byte-identical; verify_page identical to S16 (MASTER effective 7,723); npm test 9 files (expected_returns 58); live 7 of 7 equal `site/`; push run 45838357942 success. Recovery: restore `backups/2026-11-24_pre-task087/` or `git revert -m 1 eb00377`.**
@@ -135,9 +137,9 @@ Previous baselines: `f5c2431` (PR #29 merge, 30-Oct-2026, S7; the baseline named
 
 ---
 
-## 4. Per-PR integration table (#1-#76)
+## 4. Per-PR integration table (#1-#78)
 
-Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #76 on 18-26-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 76 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
+Rows #37 to #39 were added on 17-Nov-2026 by MOD-03 (TASK-080; `gh pr view`, `gh run list`); rows #40 to #78 on 18-28-Nov-2026. Rows #31 to #36 were added on 17-Nov-2026 (VERIFIED with `gh pr view` and `gh run list`; 0 open PRs: `gh pr list --state open` empty). All 78 PRs are MERGED (the first 30 were VERIFIED with `gh pr list --state all`, recounted 2-Nov-2026 after PR #30). Every PR's own `verify`
 check was SUCCESS and its `publish` job SKIPPED by design (publish runs only on `main`); every one of the 30
 post-merge push runs on `main` had `verify` = success and `publish` = success (VERIFIED job by job with
 `gh run view`; recounted from all 124 jobs on 2-Nov-2026). All merges
@@ -227,6 +229,8 @@ written down at the time.
 | #74 | 26-Nov-2026 | `eb00377` / 45838357942 | fix/expected-figures-label | EX | EX-02 | TASK-087 the "Others" label and one expected-figure rule (D112, D114) | 11 files: site/index.html (code), tools/test/expected_returns.test.js, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S17; High risk; Gate B GO; the owner's yes before the merge |
 | #75 | 26-Nov-2026 | `b728fa0` | docs/mod-03-release-pr74-d116-d117-20261126 | GOV | MOD-03 | Release record of PR #74; D116, D117; claim of TASK-090 | 8 files, docs only | success | 7 of 7 | site stays S17 |
 | #76 | 26-Nov-2026 | `eb5fce6` / 45847410705 | data/2026-11-task090-debt-bands | OPS | OPS-02 | TASK-090 debt bands (539) and 9 matured removals (D116, D117) | 7 files: site/index.html, the IRR sibling, docs | PR run success | 7 of 7 = site/ (MOD-03) | site S18; High risk; Gate B GO WITH CONDITIONS; the owner's yes before the merge |
+| #77 | 27-Nov-2026 | `b77a244` / 45948315903 | docs/mod-03-release-pr76-d118-20261126 | GOV | MOD-03 | Release record of PR #76; D118; claim of TASK-089 | 10 files, docs only | success | 7 of 7 | site stays S18 |
+| #78 | 28-Nov-2026 | `f5c09cd` / 46068326666 | fix/labels-logo-footnotes | EX | EX-02 | TASK-089: logo fix, "Indicative Return Range" labels, return-basis and debt notes, DATA_DATES.debtYtm (D118) | 13 files: site/index.html (code, CSS, one DATA_DATES key), a new test, docs | PR run 45950931283 success | 7 of 7 = site/ (MOD-03) | site S19; High risk; Gate B GO WITH CONDITIONS (met); the owner's wording answer and yes before the merge |
 
 ### 4.1 Totals (VERIFIED)
 

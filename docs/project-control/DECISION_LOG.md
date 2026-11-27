@@ -1572,3 +1572,4 @@ None of them may be implemented on the strength of the recommendation alone.
 | 24-Nov-2026 | D114 (one expected-figure rule; TASK-087) and D115 (the Tata 3-6M band; high-band review; no since-inception under one year) recorded. | MOD-03 |
 | 26-Nov-2026 | D116 (band corrections, matured removals, absolute since-inception) and D117 (debt MF ranges from the category average YTM) recorded; D115 points 1 and 3 superseded. | MOD-03 |
 | 26-Nov-2026 | D118 recorded (the logo, the "Indicative Return Range" labels, the return-basis and debt notes; TASK-089). | MOD-03 |
+| 28-Nov-2026 | D118 updated: the owner kept the note "Indicative returns are post-expense and pre-tax." with no debt carve-out; TASK-089 merged (PR #78). | MOD-03 |

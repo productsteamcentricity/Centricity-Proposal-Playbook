@@ -221,7 +221,7 @@ answers; E = engineering; H = housekeeping; G = governance; Done = completed his
 | TASK-086 | Look-through code fixes C72 (strict FoF matching, owner pins) and C74 (non-stock rows out of the equity top-20) (D110, D111) | EX | VERIFIED COMPLETE (PR #70, a016fc5, 23-Nov-2026) | P2 | EX-02 | R |
 | TASK-087 | D112 points 2 and 3, D114: the equity "Others (cash, unlisted, foreign, REITs)" label; one expected-figure rule on every proposal surface (Excel export, totals, the screen star) | EX | VERIFIED COMPLETE (PR #74, eb00377, 26-Nov-2026) | P2 | EX-02 | R |
 | TASK-088 | D112 bundle B1: the new funds and peer bands of D113 (Titanium SIF, 22 MF stubs, 7 Reckoner instruments, 101 bands) | OPS | VERIFIED COMPLETE (PR #72, 368fe0a, 24-Nov-2026) | P1 | OPS-02 | R |
-| TASK-089 | Owner requests of 26-Nov-2026: the OneDigital logo size in the deck; "Indicative return range" labels; footnotes (post-expense and pre-tax; debt ranges from category YTM as on a date); `DATA_DATES.debtYtm` | EX | IN PROGRESS | P1 | EX-02 | R |
+| TASK-089 | Owner requests of 26-Nov-2026: the OneDigital logo size in the deck; "Indicative return range" labels; footnotes (post-expense and pre-tax; debt ranges from category YTM as on a date); `DATA_DATES.debtYtm` | EX | VERIFIED COMPLETE (PR #78, f5c09cd, 28-Nov-2026) | P1 | EX-02 | R |
 | TASK-090 | D116 and D117 data: 539 band changes (515 in `var IRR`, 24 in MASTER) and the removal of 9 matured target-maturity funds | OPS | VERIFIED COMPLETE (PR #76, eb5fce6, 26-Nov-2026) | P1 | OPS-02 | R |
 | TASK-091 | Tools: A) the monthly debt YTM band tool (D117); B) the absolute since-inception return under one year (D116 point 4), with an EX label piece | NB/OPS | PLANNED (A and B separate; after TASK-090 and TASK-089) | P2 | OPS-02 | R |
 

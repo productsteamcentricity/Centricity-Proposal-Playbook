@@ -73,8 +73,8 @@ so in "Not checked" and review only what you can see. Never guess the scope.
 - **Scale:** MASTER returns, IRR, expense, YTM, m-cap split (`mcap_*`) = decimals (0.12 = 12%); analytics weights =
   percent; RISK_MATRIX `sd`, `al`, `dc`, `rr` = percent points; MF and SIF Monitor values always /100,
   never auto-detected. A mismatch is a STOP.
-- **Single predicates:** `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`, `H.creditBucket`
-  are the only gates; a re-inlined test is a finding. Deliberate oddities stay (CLAUDE.md rule 8).
+- **Single predicates:** `H.isHybridScheme`, `H.isEquitySIF`, `H.isSelfDescribingDebt`, `H.creditBucket`,
+  `H.isDebtMutualFund` are the only gates; a re-inlined test is a finding. Deliberate oddities stay (CLAUDE.md rule 8).
 - **Single writer:** at most one active task modifies `site/index.html`, each sibling and each file in
   `tools/lib/`; a monthly refresh owns all six deploy files. Unregistered overlap is a STOP.
 - **No checkout in the main OneDrive checkout.** Never run `git checkout`, `git switch`, `git merge` or

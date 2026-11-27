@@ -18,6 +18,20 @@ Dates are commit dates in IST.
 
 ---
 
+## 2026-11-28 - Release record of PR #78 (TASK-089: logo, labels, notes); D118 update; C95, C96 (docs only)
+
+### Changed
+- `docs/project-control/ACTIVE_CHANGE_REGISTER.md`: TASK-089 released at the merge of PR #78 (`f5c09cd`, 28-Nov-2026, after
+  Gate B and the owner's yes); no active claim.
+- `docs/DECISIONS.md` D118: the owner kept "Indicative returns are post-expense and pre-tax." with no debt carve-out.
+- `docs/KNOWN_ISSUES.md`: C95 (MasterEditor headers; an always-passing test check) and C96 (the debt note and range overrides).
+- `CLAUDE.md`: `H.isDebtMutualFund` added to the single predicates (rule 8), and likewise in `docs/PRD.md` and the
+  `integration-guardian` and `principal-architect` agent files; the headline notes D118.
+- Corrections from Gate B: `docs/PROJECT_STATE.md` (488, not 499) and the TASK-089 update log (the owner's answer; the
+  disclaimer slide text).
+- `TASK_REGISTER.md`, `CHAT_REGISTRY.md`, `INTEGRATION_AND_REGRESSION_LOG.md` (baseline `f5c09cd`, rows #77 and #78),
+  `DECISION_LOG.md`, `docs/project-control/README.md` (next C97).
+
 ## 2026-11-27 - The logo, the return labels and the return-basis notes (TASK-089, D118; `fix/labels-logo-footnotes`)
 
 ### Fixed

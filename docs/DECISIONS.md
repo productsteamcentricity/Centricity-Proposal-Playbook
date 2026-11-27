@@ -1383,6 +1383,9 @@ and the entry says so. "—" means no date is recorded.
 - **Consequences:** EX-02 implements TASK-089 (High risk; the owner sees a sample deck before the merge); `DATA_DATES.debtYtm`
   starts at "31st October 2026" and TASK-091A keeps it current.
 - **Source:** the owner's chat messages of 26-Nov-2026 (MOD-03). The wording is MOD-03's summary; the owner confirms it.
+- **Update 28-Nov-2026 (owner):** asked whether the debt mutual fund ranges (category YTM, gross of TER) need an exception in
+  point 3, the owner kept the wording exactly: "Indicative returns are post-expense and pre-tax." No carve-out; the debt
+  note of point 5 stays beside it. The owner said "Yes, publish" after the sample deck; TASK-089 merged as PR #78 (`f5c09cd`).
 
 ### Analytics & credit
 
